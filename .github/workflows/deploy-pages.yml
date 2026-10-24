@@ -1,0 +1,83 @@
+name: Déployer sur GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+          cache: npm
+
+      - name: Installer les dépendances
+        run: npm ci
+
+      - name: Vérifier TypeScript
+        run: npm run typecheck
+
+      - name: Exécuter les tests unitaires
+        run: npm run test:ci
+
+      - name: Installer Java pour l’émulateur Firebase
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Vérifier les règles Firebase
+        run: npm run test:rules
+
+      - name: Configurer GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Construire l’application Angular
+        env:
+          PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+        run: |
+          base_href="$PAGES_BASE_PATH"
+          if [ -z "$base_href" ]; then
+            base_href="/"
+          elif [[ "$base_href" != */ ]]; then
+            base_href="${base_href}/"
+          fi
+          npm run build -- --base-href "$base_href"
+          cp dist/jour-de-lampe/browser/index.html dist/jour-de-lampe/browser/404.html
+          touch dist/jour-de-lampe/browser/.nojekyll
+
+      - name: Téléverser l’artefact Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/jour-de-lampe/browser
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Publier sur GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,9 @@
+- Petit message facebook, dire que je me suis chicaner avec l'AI pour le faire
+    - Comme Phil Bond avec une fille
+- Site: présenter le concept, horaire, petite joke comme d'habitude
+- Site: Jour de l'an en forme d'ampoule ou avec ampoule. Quand on allume les bonnes ça transforme le site
+- Devient le Jour de l'AI, avec plein d'image de l'an 2000, et un décompte avant la destruction (du party)
+- Monter 5-6-7 énigmes pour sauver le party
+- NPC AI, voix qui parle sur le site?
+- Vidéo de menace de l'AI
+- Nom de l'AI?

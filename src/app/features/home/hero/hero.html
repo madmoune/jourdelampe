@@ -1,0 +1,41 @@
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-grain" aria-hidden="true"></div>
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <div class="hero-eyebrow eyebrow">
+        <span class="status-dot" aria-hidden="true"></span> Nouvel an · {{ event.edition }}
+      </div>
+      <app-lamp-title />
+      <app-quote-submit />
+      <p class="hero-intro">{{ content.phrases.theme }}</p>
+      <p class="hero-secondary">{{ content.phrases.light }}</p>
+      <div class="hero-details">
+        <div>
+          <a class="button button-yellow hero-button" href="#horaire">
+            Au programme <app-icon name="arrow-down" />
+          </a>
+          <div class="hero-date">
+            <span class="date-dash" aria-hidden="true"></span>{{ event.dateShort }}
+          </div>
+        </div>
+        @if (quotes()[1]; as quote) {
+          <app-quote-badge class="hero-quote" [quote]="quote" />
+        }
+      </div>
+    </div>
+    <div class="hero-art">
+      <div class="art-orbit" aria-hidden="true"></div>
+      <img
+        class="lamp-scene"
+        src="images/lamp-still-life.svg"
+        alt="Une lampe champignon dorée, une lampe de bureau orange et une petite lampe globe."
+        width="740"
+        height="700"
+        fetchpriority="high"
+      />
+      @if (quotes()[0]; as quote) {
+        <app-quote-badge class="art-sticker" [quote]="quote" />
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,107 @@
+:host {
+  display: block;
+  width: 160px;
+  max-width: 100%;
+  --quote-bg: #f7d456;
+}
+:host([data-tone='olive']) {
+  --quote-bg: #bbc5af;
+}
+:host([data-tone='lilac']) {
+  --quote-bg: #d3c6d8;
+}
+:host([data-tone='peach']) {
+  --quote-bg: #e7c39c;
+}
+.badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  aspect-ratio: 1;
+  width: 100%;
+  margin: 0;
+  padding: 20px;
+  border: 1px solid #34402d26;
+  border-radius: 50%;
+  background: var(--quote-bg);
+  color: #20251f;
+  box-shadow:
+    0 0 0 4px var(--quote-ring, var(--paper)),
+    0 0 0 5px #797e5b40;
+  transform: rotate(var(--quote-tilt, -5deg));
+  font-family: var(--display-font);
+  font-size: var(--quote-font-size, 14px);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1.35;
+  text-align: center;
+}
+.badge p {
+  margin: 0;
+}
+.badge-copy {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.badge cite {
+  display: block;
+  margin-top: 6px;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+:host([data-shape='circle'].long-quote) .badge {
+  gap: 5px;
+  font-size: calc(var(--quote-font-size, 14px) * 0.85);
+  line-height: 1.25;
+}
+:host([data-shape='circle'].very-long-quote) {
+  width: 200px;
+}
+:host([data-shape='circle'].very-long-quote) .badge {
+  font-size: 13px;
+  line-height: 1.3;
+}
+.badge app-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+a.badge {
+  transition: transform 180ms;
+}
+a.badge .quote-text {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+a.badge:hover {
+  transform: rotate(0);
+}
+a.badge:hover .quote-text {
+  text-decoration-thickness: 2px;
+}
+a.badge:focus-visible {
+  outline-color: #20251f;
+}
+:host([data-shape='note']) .badge {
+  aspect-ratio: auto;
+  padding: 20px;
+  border-radius: 3px;
+  box-shadow: 4px 5px 0 #20261914;
+  line-height: 1.5;
+}
+:host([data-shape='pill']) .badge {
+  aspect-ratio: auto;
+  flex-direction: row;
+  gap: 12px;
+  padding: 16px 22px;
+  border-radius: 999px;
+  box-shadow: none;
+  line-height: 1.5;
+}
+:host([data-shape='pill']) .badge-copy {
+  flex: 1;
+}

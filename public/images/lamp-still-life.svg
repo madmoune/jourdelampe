@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="740" height="700" viewBox="0 0 740 700" fill="none">
+  <defs>
+    <radialGradient id="halo"><stop stop-color="#F5BE53" stop-opacity=".23"/><stop offset="1" stop-color="#F5BE53" stop-opacity="0"/></radialGradient>
+    <radialGradient id="pool"><stop stop-color="#F7C970" stop-opacity=".34"/><stop offset="1" stop-color="#F7C970" stop-opacity="0"/></radialGradient>
+    <radialGradient id="dome" cx=".36" cy=".27" r=".84"><stop stop-color="#FFEAB0"/><stop offset=".3" stop-color="#F5CA77"/><stop offset=".76" stop-color="#C78935"/><stop offset="1" stop-color="#72451E"/></radialGradient>
+    <radialGradient id="orb" cx=".35" cy=".28" r=".8"><stop stop-color="#FFFBE2"/><stop offset=".55" stop-color="#F6DF9D"/><stop offset="1" stop-color="#C4984D"/></radialGradient>
+    <linearGradient id="stem"><stop stop-color="#78613C"/><stop offset=".35" stop-color="#F2D692"/><stop offset=".58" stop-color="#CBA35C"/><stop offset="1" stop-color="#795D35"/></linearGradient>
+    <linearGradient id="orange" x1="119" y1="257" x2="252" y2="369" gradientUnits="userSpaceOnUse"><stop stop-color="#F29853"/><stop offset=".45" stop-color="#D76532"/><stop offset="1" stop-color="#7C341C"/></linearGradient>
+    <linearGradient id="orangeBase"><stop stop-color="#6D2E20"/><stop offset=".4" stop-color="#D56434"/><stop offset=".65" stop-color="#A04B28"/><stop offset="1" stop-color="#622C1B"/></linearGradient>
+    <linearGradient id="plinth" x1="238" y1="497" x2="553" y2="670" gradientUnits="userSpaceOnUse"><stop stop-color="#56604C"/><stop offset=".43" stop-color="#414B3C"/><stop offset="1" stop-color="#252F28"/></linearGradient>
+    <linearGradient id="smallPlinth"><stop stop-color="#926344"/><stop offset="1" stop-color="#48372A"/></linearGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="21"/></filter>
+    <filter id="soft"><feGaussianBlur stdDeviation="4"/></filter>
+    <filter id="grain"><feTurbulence baseFrequency=".68" numOctaves="3" seed="5" stitchTiles="stitch" type="fractalNoise"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".07"/></feComponentTransfer><feBlend in="SourceGraphic" mode="soft-light"/></filter>
+    <clipPath id="shade"><path d="M207 323C210 231 255 137 361 137C466 137 513 229 516 323C450 351 275 351 207 323Z"/></clipPath>
+  </defs>
+  <ellipse cx="377" cy="331" rx="310" ry="298" fill="url(#halo)"/>
+  <ellipse cx="375" cy="650" rx="300" ry="33" fill="#080E0A" opacity=".4" filter="url(#soft)"/>
+  <path d="M428 553C439 606 567 586 574 626C583 670 641 650 658 679" stroke="#090E0B" stroke-width="4"/>
+  <path d="M137 524C84 549 114 591 72 603C42 612 51 645 86 647" stroke="#0B110C" stroke-width="3"/>
+  <!-- Sculptural green pedestal -->
+  <path d="M236 518L437 467L553 511L351 568L236 518Z" fill="#74806A"/>
+  <path d="M236 518L351 568V686L236 629V518Z" fill="#364333"/>
+  <path d="M351 568L553 511V625L351 686V568Z" fill="url(#plinth)"/>
+  <path d="M351 568L553 511" stroke="#929A7C" stroke-opacity=".3"/>
+  <ellipse cx="387" cy="521" rx="90" ry="29" fill="url(#pool)"/>
+  <!-- Brass mushroom lamp -->
+  <ellipse cx="362" cy="521" rx="70" ry="19" fill="#141A12" opacity=".45" filter="url(#soft)"/>
+  <path d="M302 506C302 495 329 486 363 486C397 486 424 495 424 506V513C424 524 397 533 363 533C329 533 302 524 302 513V506Z" fill="url(#stem)"/>
+  <ellipse cx="363" cy="506" rx="61" ry="19" fill="#E2BE75"/>
+  <path d="M345 320H380V500C380 509 345 509 345 500V320Z" fill="url(#stem)"/>
+  <ellipse cx="362" cy="325" rx="137" ry="27" fill="#FFDC78" opacity=".55" filter="url(#blur)"/>
+  <ellipse cx="362" cy="326" rx="155" ry="29" fill="#6F4B23"/>
+  <ellipse cx="362" cy="327" rx="142" ry="20" fill="#F6D17C"/>
+  <ellipse cx="362" cy="326" rx="113" ry="12" fill="#FFF1AE"/>
+  <path d="M207 323C210 231 255 137 361 137C466 137 513 229 516 323C450 351 275 351 207 323Z" fill="url(#dome)"/>
+  <g clip-path="url(#shade)" stroke="#70421F" stroke-opacity=".22" stroke-width="1.3">
+    <path d="M361 136C225 201 219 302 224 342M361 136C242 197 240 309 240 345M361 136C260 197 259 310 259 347M361 136C279 199 280 310 280 349M361 136C299 200 302 312 302 350M361 136C321 200 323 313 324 351M361 136C340 202 344 314 345 352M361 136V352M361 136C383 202 380 314 382 352M361 136C403 200 403 312 405 351M361 136C424 199 425 312 428 349M361 136C444 198 446 310 450 346M361 136C465 199 468 310 473 344M361 136C486 198 488 305 495 339"/>
+  </g>
+  <path d="M209 321C278 345 445 345 515 321" stroke="#FFE9A7" stroke-opacity=".7" stroke-width="2"/>
+  <path d="M257 225C280 180 314 158 343 154" stroke="#FFF2C7" stroke-width="5" stroke-linecap="round" opacity=".3"/>
+  <!-- Orange vintage desk lamp -->
+  <ellipse cx="142" cy="535" rx="70" ry="16" fill="#050A07" opacity=".5" filter="url(#soft)"/>
+  <path d="M84 512C84 499 109 490 141 490C173 490 198 499 198 512V521C198 532 173 540 141 540C109 540 84 532 84 521V512Z" fill="url(#orangeBase)"/>
+  <ellipse cx="141" cy="511" rx="57" ry="17" fill="#D67541"/>
+  <path d="M141 507V407L190 338" stroke="#6D3824" stroke-width="14" stroke-linejoin="round"/>
+  <path d="M138 502V406L186 339" stroke="#D97E4C" stroke-width="6" stroke-linejoin="round"/>
+  <circle cx="140" cy="406" r="11" fill="#A54F2C"/><circle cx="140" cy="406" r="5" fill="#E8A777"/>
+  <path d="M172 269C201 258 232 274 240 302L256 357L150 391L132 338C123 310 143 280 172 269Z" fill="url(#orange)" transform="rotate(12 194 330)"/>
+  <ellipse cx="194" cy="375" rx="57" ry="16" transform="rotate(-7 194 375)" fill="#64341F"/>
+  <ellipse cx="194" cy="375" rx="48" ry="10" transform="rotate(-7 194 375)" fill="#F9D794"/>
+  <ellipse cx="185" cy="391" rx="60" ry="24" fill="#F5C763" opacity=".2" filter="url(#blur)"/>
+  <rect x="155" y="501" width="9" height="5" rx="2" fill="#273327"/>
+  <!-- Walnut cube and a small glowing opaline lamp -->
+  <path d="M500 530L598 504L668 534L568 564L500 530Z" fill="#B08A62"/>
+  <path d="M500 530L568 564V652L500 615V530Z" fill="#715037"/>
+  <path d="M568 564L668 534V620L568 652V564Z" fill="url(#smallPlinth)"/>
+  <ellipse cx="583" cy="520" rx="55" ry="14" fill="url(#pool)"/>
+  <ellipse cx="582" cy="516" rx="29" ry="9" fill="#8C5D32"/>
+  <path d="M563 486H601V511C601 521 563 521 563 511V486Z" fill="#BD8C4A"/>
+  <circle cx="582" cy="461" r="55" fill="#F5D998" opacity=".18" filter="url(#blur)"/>
+  <circle cx="582" cy="461" r="49" fill="url(#orb)"/>
+  <ellipse cx="568" cy="438" rx="18" ry="11" transform="rotate(-35 568 438)" fill="#FFFDF2" opacity=".23"/>
+  <!-- Graphic stars -->
+  <path d="m551 141 4 15 15 4-15 4-4 15-4-15-15-4 15-4 4-15Z" fill="#F7D456"/>
+  <path d="m170 153 3 10 10 3-10 3-3 10-3-10-10-3 10-3 3-10Z" fill="#D8D9AD"/>
+  <circle cx="609" cy="309" r="3" fill="#E7CC8C"/>
+  <circle cx="102" cy="237" r="2" fill="#E7CC8C"/>
+</svg>

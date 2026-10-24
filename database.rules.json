@@ -1,0 +1,98 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "quotes": {
+      ".read": true,
+      ".write": true,
+      ".validate": "newData.hasChildren(['initialized', 'version']) && newData.child('initialized').val() === true && newData.child('version').val() === 2",
+      "initialized": {
+        ".validate": "newData.val() === true"
+      },
+      "items": {
+        "$id": {
+          ".validate": "$id.matches(/^[A-Za-z0-9_-]{1,80}$/) && newData.hasChildren(['text', 'kind', 'active', 'createdAt', 'updatedAt'])",
+          "text": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 140 && newData.val().matches(/.*[^ ].*/)"
+          },
+          "kind": {
+            ".validate": "newData.val() === 'regular'"
+          },
+          "active": {
+            ".validate": "newData.isBoolean()"
+          },
+          "href": {
+            ".validate": "newData.isString() && newData.val().beginsWith('https://') && newData.val().length <= 2048"
+          },
+          "createdAt": {
+            ".validate": "newData.isNumber() && newData.val() >= 0"
+          },
+          "updatedAt": {
+            ".validate": "newData.isNumber() && newData.val() >= 0"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      },
+      "$other": {
+        ".validate": false
+      },
+      "version": {
+        ".validate": "newData.val() === 2"
+      },
+      "ai": {
+        "$id": {
+          ".validate": "$id.matches(/^[A-Za-z0-9_-]{1,80}$/) && newData.hasChildren(['text', 'kind', 'active', 'createdAt', 'updatedAt'])",
+          "text": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 140 && newData.val().matches(/.*[^ ].*/)"
+          },
+          "kind": {
+            ".validate": "newData.val() === 'ai'"
+          },
+          "active": {
+            ".validate": "newData.isBoolean()"
+          },
+          "href": {
+            ".validate": "newData.isString() && newData.val().beginsWith('https://') && newData.val().length <= 2048"
+          },
+          "createdAt": {
+            ".validate": "newData.isNumber() && newData.val() >= 0"
+          },
+          "updatedAt": {
+            ".validate": "newData.isNumber() && newData.val() >= 0"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      }
+    },
+    "potluck": {
+      ".read": true,
+      ".write": true,
+      ".validate": "newData.hasChildren()",
+      "$id": {
+        ".validate": "$id.matches(/^[A-Za-z0-9_-]{1,80}$/) && newData.hasChildren(['name', 'dish', 'active', 'createdAt', 'updatedAt'])",
+        "name": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 60 && newData.val().matches(/.*[^ ].*/)"
+        },
+        "dish": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 160 && newData.val().matches(/.*[^ ].*/)"
+        },
+        "active": {
+          ".validate": "newData.isBoolean()"
+        },
+        "createdAt": {
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        },
+        "updatedAt": {
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    }
+  }
+}

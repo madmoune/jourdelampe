@@ -1,0 +1,126 @@
+<section aria-label="Gestion des repas du potluck">
+  <div class="toolbar">
+    <div class="tabs" aria-label="État des repas">
+      <button
+        type="button"
+        [class.selected]="filter() === 'active'"
+        [attr.aria-pressed]="filter() === 'active'"
+        (click)="filter.set('active')"
+      >
+        Repas prévus <span>{{ store.active().length }}</span>
+      </button>
+      <button
+        type="button"
+        [class.selected]="filter() === 'removed'"
+        [attr.aria-pressed]="filter() === 'removed'"
+        (click)="filter.set('removed')"
+      >
+        Retirés <span>{{ store.removed().length }}</span>
+      </button>
+    </div>
+    <label for="potluck-search">Rechercher un nom ou un repas</label>
+    <input
+      id="potluck-search"
+      type="search"
+      placeholder="Nom ou repas"
+      [ngModel]="search()"
+      (ngModelChange)="search.set($event)"
+    />
+  </div>
+  <div class="feedback" aria-live="polite" aria-atomic="true">
+    @if (message()) {
+      <p class="success"><app-icon name="check" />{{ message() }}</p>
+    }
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+    @if (store.error()) {
+      <p class="error" role="alert">{{ store.error() }}</p>
+    }
+  </div>
+  @if (store.loading()) {
+    <p class="empty" role="status">Chargement des repas…</p>
+  } @else if (store.ready()) {
+    <div class="meal-list">
+      @for (entry of visible(); track entry.id) {
+        <article class="meal-card" [class.removed]="!entry.active">
+          @if (editing() === entry.id) {
+            <form (ngSubmit)="save(entry)">
+              <label [for]="'meal-name-' + entry.id">Nom</label>
+              <input
+                [id]="'meal-name-' + entry.id"
+                name="name"
+                type="text"
+                [maxlength]="nameMaxLength"
+                [ngModel]="name()"
+                (ngModelChange)="name.set($event)"
+                [disabled]="!!busy()"
+                required
+              />
+              <label [for]="'meal-dish-' + entry.id">Repas</label>
+              <textarea
+                [id]="'meal-dish-' + entry.id"
+                name="dish"
+                rows="3"
+                [maxlength]="dishMaxLength"
+                [ngModel]="dish()"
+                (ngModelChange)="dish.set($event)"
+                [disabled]="!!busy()"
+                required
+              ></textarea>
+              <div class="actions">
+                <button
+                  class="button button-dark"
+                  type="submit"
+                  [disabled]="!!busy() || !name().trim() || !dish().trim()"
+                >
+                  {{ busy() === entry.id ? 'Enregistrement…' : 'Enregistrer' }}</button
+                ><button
+                  class="text-button"
+                  type="button"
+                  (click)="editing.set(null)"
+                  [disabled]="!!busy()"
+                >
+                  Annuler
+                </button>
+              </div>
+            </form>
+          } @else {
+            <div class="meal-owner">
+              <span>{{ entry.name }}</span>
+              @if (!entry.active) {
+                <span class="removed-tag">Retiré</span>
+              }
+            </div>
+            <h3>{{ entry.dish }}</h3>
+            <div class="actions">
+              <button class="text-button" type="button" (click)="edit(entry)" [disabled]="!!busy()">
+                Modifier</button
+              ><button
+                class="text-button"
+                [class.remove]="entry.active"
+                type="button"
+                (click)="toggle(entry)"
+                [disabled]="!!busy()"
+              >
+                {{
+                  busy() === entry.id ? 'Enregistrement…' : entry.active ? 'Retirer' : 'Rétablir'
+                }}
+              </button>
+            </div>
+          }
+        </article>
+      } @empty {
+        <p class="empty">
+          {{
+            filter() === 'removed'
+              ? 'Aucun repas retiré.'
+              : search().trim()
+                ? 'Aucun repas ne correspond à la recherche.'
+                : 'Aucun repas n’a encore été indiqué.'
+          }}
+        </p>
+      }
+    </div>
+  }
+</section>

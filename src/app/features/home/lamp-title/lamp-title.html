@@ -1,0 +1,67 @@
+<h1 id="hero-title" aria-label="Le Jour de Lampe">
+  <span class="title-name">Le Jour de Lampe</span>
+  @for (row of rows; track $index) {
+    <span class="title-row">
+      @for (word of row; track $index) {
+        <span class="title-word">
+          @for (letter of word; track letter.id) {
+            <button
+              class="letter-lamp"
+              type="button"
+              [class.is-on]="titleLights.lights()[letter.id]"
+              [attr.aria-pressed]="titleLights.lights()[letter.id]"
+              [attr.aria-label]="'Lettre ' + letter.character + ', position ' + (letter.id + 1)"
+              (click)="titleLights.toggle(letter.id)"
+            >
+              <svg viewBox="0 0 76 136" fill="none" aria-hidden="true" focusable="false">
+                <defs>
+                  <radialGradient [attr.id]="'lamp-glass-' + letter.id" cx=".36" cy=".28" r=".85">
+                    <stop class="glass-center" />
+                    <stop class="glass-middle" offset=".57" />
+                    <stop class="glass-edge" offset="1" />
+                  </radialGradient>
+                  <linearGradient [attr.id]="'lamp-metal-' + letter.id" x1="0" x2="1">
+                    <stop offset="0" stop-color="#41463d" />
+                    <stop offset=".24" stop-color="#a59c7f" />
+                    <stop offset=".46" stop-color="#d4c69e" />
+                    <stop offset=".7" stop-color="#8a7c5e" />
+                    <stop offset="1" stop-color="#42493d" />
+                  </linearGradient>
+                </defs>
+                <ellipse class="bulb-halo" cx="38" cy="43" rx="35" ry="43" />
+                <ellipse class="bulb-aura" cx="38" cy="43" rx="29" ry="34" />
+                <path
+                  class="bulb-glass"
+                  d="M38 6C19 6 7 19 7 37C7 51 13 61 22 70C27 76 28 82 28 91V95H48V91C48 82 49 76 54 70C63 61 69 51 69 37C69 19 57 6 38 6Z"
+                  [attr.fill]="'url(#lamp-glass-' + letter.id + ')'"
+                />
+                <path class="glass-reflection" d="M16 37C16 24 22 16 32 14" />
+                <path class="glass-reflection-small" d="M60 42C60 51 56 57 51 63" />
+                <path class="filament-leads" d="M33 96V79L25 64M43 96V79L51 64" />
+                <g class="letter-filament" transform="translate(9.5 9) scale(.75 .75)">
+                  <path class="filament-shadow" [attr.d]="glyphs[letter.character]" />
+                  <path class="filament-glow" [attr.d]="glyphs[letter.character]" />
+                  <path class="filament-core" [attr.d]="glyphs[letter.character]" />
+                </g>
+                <path class="glass-neck" d="M29 88H47M29 92H47" />
+                <rect class="socket-collar" x="24" y="94" width="28" height="5" rx="1.5" />
+                <path
+                  class="bulb-screw"
+                  d="M24 99H52V115L46 122H30L24 115V99Z"
+                  [attr.fill]="'url(#lamp-metal-' + letter.id + ')'"
+                />
+                <path
+                  class="screw-grooves"
+                  d="M24 104L52 100M24 110L52 106M25 116L52 112M30 121L47 118"
+                />
+                <path class="screw-highlights" d="M25 102L51 98M25 108L51 104M25 114L51 110" />
+                <path class="bulb-insulator" d="M31 122H45L43 126H33L31 122Z" />
+                <rect class="bulb-contact" x="34" y="126" width="8" height="4" rx="2" />
+              </svg>
+            </button>
+          }
+        </span>
+      }
+    </span>
+  }
+</h1>

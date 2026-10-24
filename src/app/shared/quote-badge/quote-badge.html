@@ -1,0 +1,28 @@
+@if (quote().href; as href) {
+  <a
+    class="badge"
+    [href]="href"
+    target="_blank"
+    rel="noopener noreferrer"
+    [attr.aria-label]="quote().text + ' — lien (nouvel onglet)'"
+  >
+    <app-icon name="spark" />
+    <span class="badge-copy">
+      <span class="quote-text">{{ quote().text }}</span>
+      @if (quote().author; as author) {
+        <cite>— {{ author }}</cite>
+      }
+    </span>
+    <app-icon name="arrow-up-right" />
+  </a>
+} @else {
+  <blockquote class="badge">
+    <app-icon name="spark" />
+    <div class="badge-copy">
+      <p class="quote-text">{{ quote().text }}</p>
+      @if (quote().author; as author) {
+        <cite>— {{ author }}</cite>
+      }
+    </div>
+  </blockquote>
+}

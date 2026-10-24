@@ -1,0 +1,220 @@
+:host {
+  display: block;
+  --letter-width: clamp(39px, 5.15vw, 72px);
+}
+
+h1 {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+.title-name {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.title-row {
+  display: flex;
+  align-items: flex-start;
+  gap: calc(var(--letter-width) * 0.28);
+}
+.title-row + .title-row {
+  margin-top: 5px;
+}
+.title-word {
+  display: flex;
+  gap: 0;
+}
+.letter-lamp {
+  position: relative;
+  display: block;
+  flex-shrink: 0;
+  width: var(--letter-width);
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  -webkit-tap-highlight-color: transparent;
+}
+.letter-lamp svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+.letter-lamp:focus-visible {
+  outline: 2px dashed var(--yellow);
+  outline-offset: 3px;
+}
+.letter-lamp:active {
+  transform: translateY(2px);
+}
+
+// Verre froid presque noir : les lettres restent lisibles, sans donner l'impression d'éclairer.
+.glass-center {
+  stop-color: #101318;
+}
+.glass-middle {
+  stop-color: #090c10;
+}
+.glass-edge {
+  stop-color: #040609;
+}
+.bulb-glass {
+  stroke: #46505c;
+  stroke-width: 1.2;
+}
+.glass-reflection,
+.glass-reflection-small {
+  stroke: #8191a3;
+  stroke-linecap: round;
+  stroke-width: 3;
+  opacity: 0.12;
+}
+.glass-reflection-small {
+  stroke-width: 1.5;
+  opacity: 0.08;
+}
+.filament-leads {
+  stroke: #43505d;
+  stroke-width: 0.9;
+}
+.glass-neck {
+  stroke: #46525f;
+  stroke-width: 0.7;
+  opacity: 0.4;
+}
+.filament-shadow,
+.filament-glow,
+.filament-core {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.filament-shadow {
+  stroke: #020407;
+  stroke-width: 7;
+}
+.filament-core {
+  stroke: #778697;
+  stroke-width: 4;
+}
+.filament-glow {
+  stroke: #fff4b9;
+  stroke-width: 6;
+  filter: blur(1.2px);
+  opacity: 0;
+}
+.bulb-halo {
+  fill: #ffd65a;
+  filter: blur(10px);
+  opacity: 0;
+  pointer-events: none;
+}
+.bulb-aura {
+  fill: #fff0a8;
+  filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+// Verre très lumineux et contour sombre du filament pour détacher chaque lettre du fond.
+.is-on .glass-center {
+  stop-color: #fffef4;
+}
+.is-on .glass-middle {
+  stop-color: #ffe59b;
+}
+.is-on .glass-edge {
+  stop-color: #e0a73f;
+}
+.is-on .bulb-glass {
+  stroke: #fff3bf;
+}
+.is-on .glass-reflection {
+  stroke: #fffdeb;
+  opacity: 0.8;
+}
+.is-on .glass-reflection-small {
+  stroke: #fff4c9;
+  opacity: 0.5;
+}
+.is-on .filament-leads {
+  stroke: #ad6e2c;
+}
+.is-on .glass-neck {
+  stroke: #f7d695;
+  opacity: 0.6;
+}
+.is-on .filament-shadow {
+  stroke: #49250f;
+  stroke-width: 9;
+}
+.is-on .filament-core {
+  stroke: #fffef4;
+  stroke-width: 2.8;
+}
+.is-on .filament-glow {
+  opacity: 0.2;
+}
+.is-on .bulb-halo {
+  opacity: 0.9;
+}
+.is-on .bulb-aura {
+  opacity: 0.55;
+}
+
+.glass-center,
+.glass-middle,
+.glass-edge {
+  transition: stop-color 180ms ease-out;
+}
+.bulb-glass,
+.filament-shadow,
+.filament-core,
+.filament-leads,
+.glass-neck {
+  transition: stroke 180ms ease-out;
+}
+.bulb-halo,
+.bulb-aura,
+.filament-glow,
+.glass-reflection,
+.glass-reflection-small {
+  transition: opacity 180ms ease-out;
+}
+.socket-collar {
+  fill: #3e4032;
+  stroke: #8e805b;
+  stroke-width: 0.6;
+}
+.bulb-screw {
+  stroke: #4b4a39;
+  stroke-width: 0.6;
+  transition: filter 180ms ease-out;
+}
+.letter-lamp:not(.is-on) .bulb-screw {
+  filter: grayscale(1) brightness(0.55);
+}
+.screw-grooves {
+  stroke: #343d32;
+  stroke-width: 2.3;
+}
+.screw-highlights {
+  stroke: #c6b68d;
+  stroke-width: 0.75;
+  opacity: 0.75;
+}
+.bulb-insulator {
+  fill: #30362d;
+}
+.bulb-contact {
+  fill: #b39a60;
+}
+
+@media (max-width: 700px) {
+  :host {
+    --letter-width: clamp(30px, 10.4vw, 58px);
+  }
+}

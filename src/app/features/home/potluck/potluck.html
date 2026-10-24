@@ -1,0 +1,83 @@
+<section class="potluck" id="potluck" aria-labelledby="potluck-title">
+  <div class="potluck-heading">
+    <div>
+      <span class="eyebrow">31 décembre</span>
+      <h3 id="potluck-title">Le potluck</h3>
+    </div>
+    <span class="meal-count"
+      >{{ store.active().length }}
+      {{ store.active().length === 1 ? 'repas prévu' : 'repas prévus' }}</span
+    >
+  </div>
+  <div class="potluck-grid">
+    <form class="potluck-form" (ngSubmit)="submit()">
+      <p>Inscris ton nom et le repas que tu amènes.</p>
+      <label for="potluck-name">Nom</label>
+      <input
+        id="potluck-name"
+        name="name"
+        autocomplete="name"
+        type="text"
+        placeholder="Ton nom"
+        [maxlength]="nameMaxLength"
+        [ngModel]="name()"
+        (ngModelChange)="name.set($event); message.set(''); error.set('')"
+        [disabled]="busy()"
+        required
+      />
+      <label for="potluck-dish">Repas qu’on amène</label>
+      <input
+        id="potluck-dish"
+        name="dish"
+        type="text"
+        placeholder="Ex. : une lasagne"
+        [maxlength]="dishMaxLength"
+        [ngModel]="dish()"
+        (ngModelChange)="dish.set($event); message.set(''); error.set('')"
+        [disabled]="busy()"
+        aria-describedby="potluck-feedback"
+        required
+      />
+      <button
+        class="button button-dark"
+        type="submit"
+        [disabled]="busy() || !store.ready() || !name().trim() || !dish().trim()"
+      >
+        {{ busy() ? 'Enregistrement…' : 'Ajouter mon repas' }}<app-icon name="plus" />
+      </button>
+      <div id="potluck-feedback" aria-live="polite" aria-atomic="true">
+        @if (message()) {
+          <p class="success"><app-icon name="check" />{{ message() }}</p>
+        }
+        @if (error()) {
+          <p class="error" role="alert">{{ error() }}</p>
+        }
+        @if (store.error()) {
+          <p class="error" role="alert">{{ store.error() }}</p>
+        }
+      </div>
+    </form>
+    <div class="potluck-list" aria-live="polite" aria-relevant="additions removals text">
+      <div class="list-heading">
+        <h4>Qui amène quoi?</h4>
+        <app-icon name="spark" />
+      </div>
+      @if (store.loading()) {
+        <p class="empty" role="status">Chargement des repas…</p>
+      } @else {
+        <ul>
+          @for (entry of store.active(); track entry.id) {
+            <li>
+              <span class="guest-name">{{ entry.name }}</span
+              ><span class="guest-dish">{{ entry.dish }}</span>
+            </li>
+          } @empty {
+            @if (!store.error()) {
+              <li class="empty">Personne n’a encore indiqué son repas.</li>
+            }
+          }
+        </ul>
+      }
+    </div>
+  </div>
+</section>

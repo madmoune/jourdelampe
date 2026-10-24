@@ -1,0 +1,87 @@
+:host {
+  display: block;
+  max-width: 470px;
+  margin: 24px 0 25px;
+}
+.quote-form label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.quote-input-row {
+  display: flex;
+  border: 1px solid #f2f0e64d;
+  border-radius: 5px;
+  background: #ffffff06;
+}
+input {
+  min-width: 0;
+  flex: 1;
+  width: 100%;
+  padding: 14px;
+  border: 0;
+  border-radius: 5px 0 0 5px;
+  background: transparent;
+  color: var(--paper);
+  font-size: 14px;
+}
+input::placeholder {
+  color: #a8aea3;
+}
+input:focus-visible {
+  outline: 2px solid var(--yellow);
+  outline-offset: 3px;
+}
+button {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 17px;
+  margin: 4px;
+  border: 0;
+  border-radius: 3px;
+  background: var(--yellow);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 650;
+}
+button app-icon {
+  width: 15px;
+  height: 15px;
+}
+button:disabled {
+  opacity: 0.65;
+}
+.quote-help {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 9px;
+  color: var(--muted);
+  font-size: 10px;
+}
+.success,
+.error {
+  margin: 12px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.success {
+  color: #d5e5bb;
+}
+.error {
+  color: #ffbfaa;
+}
+@media (max-width: 370px) {
+  button {
+    padding-inline: 12px;
+  }
+  button app-icon {
+    display: none;
+  }
+  input {
+    padding-inline: 11px;
+  }
+}

@@ -1,0 +1,143 @@
+<a class="skip-link" href="#contenu">Aller au contenu</a>
+<header class="header">
+  <div class="container header-inner">
+    <a class="brand" href="#" aria-label="Le Jour de Lampe, accueil" (click)="closeMenu()">
+      <span class="brand-mark"><app-icon name="lamp" /></span>
+      <span>LE JOUR<br />DE LAMPE</span>
+    </a>
+    <nav
+      class="navigation"
+      id="navigation"
+      aria-label="Navigation principale"
+      [class.open]="menuOpen()"
+    >
+      <a href="#description" (click)="closeMenu()">Description</a>
+      <a href="#horaire" (click)="closeMenu()">Horaire</a>
+    </nav>
+    <button
+      class="menu-toggle"
+      type="button"
+      [attr.aria-expanded]="menuOpen()"
+      aria-controls="navigation"
+      [attr.aria-label]="menuOpen() ? 'Fermer le menu' : 'Ouvrir le menu'"
+      (click)="menuOpen.set(!menuOpen())"
+    >
+      <app-icon [name]="menuOpen() ? 'close' : 'menu'" />
+    </button>
+  </div>
+</header>
+
+<main id="contenu">
+  <app-hero />
+
+  <div class="ribbon">
+    <p class="container">
+      <app-icon name="spark" />{{ content.phrases.lumens }}<app-icon name="spark" />
+    </p>
+  </div>
+
+  <section class="description light-section" id="description" aria-labelledby="description-title">
+    <div class="container">
+      <div class="section-top">
+        <span class="eyebrow">01 / Description</span><app-icon name="spark" />
+      </div>
+      <div class="description-grid">
+        <div class="description-art">
+          <svg viewBox="0 0 370 370" fill="none" aria-hidden="true" focusable="false">
+            <circle cx="185" cy="185" r="173" stroke="#C8CABC" stroke-dasharray="3 7" />
+            <path
+              d="M71 245c-13 58 14 77 55 51s25-80 71-59 40 54 85 32"
+              stroke="#89927C"
+              stroke-width="2"
+            />
+            <path d="M175 110h21v140h-21z" fill="#D77743" />
+            <ellipse cx="186" cy="253" rx="56" ry="13" fill="#C46E3D" />
+            <path d="M90 157c4-59 34-100 96-100s92 41 96 100c-44 24-149 24-192 0Z" fill="#DB7E48" />
+            <ellipse cx="186" cy="158" rx="95" ry="17" fill="#F2C66C" />
+            <path
+              d="M116 143c1-36 27-65 55-71"
+              stroke="#F2AC76"
+              stroke-width="3"
+              stroke-linecap="round"
+            />
+            <path
+              d="m74 75 4 16 16 4-16 4-4 16-4-16-16-4 16-4 4-16Zm222 107 3 11 11 3-11 3-3 11-3-11-11-3 11-3 3-11Z"
+              fill="#89927C"
+            />
+            <path
+              d="m121 195-6 15m72-19v20m61-16 7 15"
+              stroke="#D5AD48"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+          @if (quotes()[2]; as quote) {
+            <app-quote-badge class="description-quote" [quote]="quote" shape="note" tone="lilac" />
+          }
+        </div>
+        <div class="description-copy">
+          <h2 id="description-title">Description</h2>
+          <p>{{ content.description }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="schedule light-section" id="horaire" aria-labelledby="schedule-title">
+    <div class="container">
+      <div class="section-top">
+        <span class="eyebrow">02 / Horaire</span><app-icon name="calendar" />
+      </div>
+      <div class="schedule-heading">
+        <h2 id="schedule-title">Au programme:</h2>
+        <span class="schedule-year">{{ event.edition - 1 }}</span>
+      </div>
+      <div class="schedule-days">
+        @for (day of content.schedule; track day.day) {
+          <article class="day-card" [class.second-day]="$index === 1">
+            <h3>
+              <span class="day-number">{{ day.day }}</span
+              ><span class="day-month">{{ day.month }}</span>
+            </h3>
+            <ul>
+              @for (activity of day.activities; track activity) {
+                <li>
+                  <app-icon name="spark" /><span>{{ activity }}</span>
+                </li>
+              }
+            </ul>
+            @if ($index === 0 && quotes()[3]; as quote) {
+              <app-quote-badge class="day-quote" [quote]="quote" tone="olive" />
+            }
+          </article>
+        }
+      </div>
+      @if (quotes()[4]; as quote) {
+        <app-quote-badge class="schedule-joke" [quote]="quote" shape="pill" tone="peach" />
+      }
+      <app-potluck />
+      <div class="countdown-panel">
+        <div class="countdown-heading">
+          <h3 class="eyebrow">Compte à rebours</h3>
+          <span>1er janvier {{ event.edition }} · Minuit, heure de Montréal</span>
+        </div>
+        <app-countdown [target]="event.newYearAt" />
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container footer-main">
+    <a class="brand" href="#" aria-label="Retour en haut"
+      ><span class="brand-mark"><app-icon name="lamp" /></span><span>LE JOUR<br />DE LAMPE</span></a
+    >
+    @if (quotes()[5]; as quote) {
+      <app-quote-badge class="footer-quote" [quote]="quote" shape="pill" />
+    }
+    <a class="back-to-top" href="#">Retour en haut <app-icon name="arrow-up-right" /></a>
+  </div>
+  <div class="container footer-bottom">
+    <span>© {{ event.edition }} LE JOUR DE LAMPE</span>
+  </div>
+</footer>

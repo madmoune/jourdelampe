@@ -1,0 +1,35 @@
+<form (ngSubmit)="submit()" class="quote-form">
+  <label for="guest-quote">Ajoute ta citation</label>
+  <div class="quote-input-row">
+    <input
+      id="guest-quote"
+      name="quote"
+      type="text"
+      placeholder="Ta citation…"
+      [maxlength]="maxLength"
+      [ngModel]="text()"
+      (ngModelChange)="text.set($event); message.set(''); error.set('')"
+      [disabled]="busy()"
+      aria-describedby="quote-help quote-feedback"
+      required
+    />
+    <button type="submit" [disabled]="busy() || !text().trim()" aria-label="Ajouter la citation">
+      @if (busy()) {
+        Envoi…
+      } @else {
+        Ajouter <app-icon name="plus" />
+      }
+    </button>
+  </div>
+  <div class="quote-help" id="quote-help">
+    <span>{{ maxLength }} caractères maximum</span><span>{{ text().length }}/{{ maxLength }}</span>
+  </div>
+  <div id="quote-feedback" aria-live="polite" aria-atomic="true">
+    @if (message()) {
+      <p class="success">{{ message() }}</p>
+    }
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+  </div>
+</form>

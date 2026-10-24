@@ -1,0 +1,211 @@
+<header class="management-header">
+  <div class="container">
+    <a routerLink="/" class="home-link"><app-icon name="lamp" /> Le Jour de Lampe</a>
+    <a routerLink="/" class="return-link">Retour au site <app-icon name="arrow-up-right" /></a>
+  </div>
+</header>
+<main class="container management">
+  <div class="page-heading">
+    <div>
+      <span class="eyebrow">Le Jour de Lampe</span>
+      <h1>Gestion du Jour de Lampe</h1>
+    </div>
+    <span class="count"
+      ><app-icon name="spark" />
+      {{ kind() === 'potluck' ? potluck.active().length : activeCount() }}
+      {{
+        kind() === 'potluck'
+          ? potluck.active().length === 1
+            ? 'repas prévu'
+            : 'repas prévus'
+          : kind() === 'ai'
+            ? 'répliques actives'
+            : 'citations en rotation'
+      }}</span
+    >
+  </div>
+  <div class="catalog-switch" aria-label="Sections de la maintenance">
+    <button
+      type="button"
+      [class.selected]="kind() === 'regular'"
+      [attr.aria-pressed]="kind() === 'regular'"
+      (click)="selectKind('regular')"
+      [disabled]="!!busy()"
+    >
+      <span>Citations des invités</span><span class="catalog-count">{{ humanCount() }}</span>
+    </button>
+    <button
+      type="button"
+      [class.selected]="kind() === 'ai'"
+      [attr.aria-pressed]="kind() === 'ai'"
+      (click)="selectKind('ai')"
+      [disabled]="!!busy()"
+    >
+      <span>Répliques de l’AI</span><span class="catalog-count">{{ aiCount() }}</span>
+    </button>
+    <button
+      type="button"
+      [class.selected]="kind() === 'potluck'"
+      [attr.aria-pressed]="kind() === 'potluck'"
+      (click)="selectKind('potluck')"
+      [disabled]="!!busy()"
+    >
+      <span>Potluck</span><span class="catalog-count">{{ potluck.active().length }}</span>
+    </button>
+  </div>
+  <p class="catalog-description">
+    {{
+      kind() === 'potluck'
+        ? 'Les noms et les repas prévus pour le potluck.'
+        : kind() === 'ai'
+          ? 'Une chance sur dix par visite, uniquement dans la pastille du haut. Signature : AI.'
+          : 'Les citations des invités sont mélangées entre les pastilles du site.'
+    }}
+  </p>
+  @if (kind() === 'potluck') {
+    <app-potluck-management />
+  } @else {
+    <div class="toolbar">
+      <div class="tabs" aria-label="État des citations">
+        <button
+          type="button"
+          [class.selected]="filter() === 'active'"
+          [attr.aria-pressed]="filter() === 'active'"
+          (click)="filter.set('active')"
+        >
+          {{ kind() === 'ai' ? 'Actives' : 'En rotation' }} <span>{{ activeCount() }}</span>
+        </button>
+        <button
+          type="button"
+          [class.selected]="filter() === 'removed'"
+          [attr.aria-pressed]="filter() === 'removed'"
+          (click)="filter.set('removed')"
+        >
+          Retirées <span>{{ removedCount() }}</span>
+        </button>
+      </div>
+      <div class="filters">
+        <label class="search"
+          ><span>Rechercher</span
+          ><input
+            type="search"
+            placeholder="Texte d’une citation"
+            [ngModel]="search()"
+            (ngModelChange)="search.set($event)"
+        /></label>
+      </div>
+    </div>
+    <div class="feedback" aria-live="polite" aria-atomic="true">
+      @if (message()) {
+        <p class="success"><app-icon name="check" /> {{ message() }}</p>
+      }
+      @if (error()) {
+        <p class="error" role="alert">{{ error() }}</p>
+      }
+      @if (store.error()) {
+        <p class="error" role="alert">{{ store.error() }}</p>
+      }
+    </div>
+    @if (store.loading()) {
+      <p class="empty" role="status">Chargement des citations…</p>
+    } @else if (store.ready()) {
+      <div class="quote-list">
+        @for (quote of visible(); track quoteKey(quote)) {
+          <article
+            class="quote-card"
+            [class.ai]="quote.kind === 'ai'"
+            [class.removed]="!quote.active"
+          >
+            <div class="quote-type">
+              <span class="type-tag">{{ quote.kind === 'ai' ? 'AI vexée' : 'Humains' }}</span>
+              @if (!quote.active) {
+                <span class="removed-tag">Retirée</span>
+              }
+            </div>
+            @if (editing() === quoteKey(quote)) {
+              <form (ngSubmit)="save(quote)" class="edit-form">
+                <label [for]="'text-' + quoteKey(quote)">Citation</label>
+                <textarea
+                  [id]="'text-' + quoteKey(quote)"
+                  name="text"
+                  rows="3"
+                  [maxlength]="maxLength"
+                  [ngModel]="draft()"
+                  (ngModelChange)="draft.set($event)"
+                  [disabled]="!!busy()"
+                  required
+                ></textarea>
+                <span class="character-count">{{ draft().length }}/{{ maxLength }}</span>
+                <label [for]="'link-' + quoteKey(quote)">Lien (facultatif)</label>
+                <input
+                  [id]="'link-' + quoteKey(quote)"
+                  name="link"
+                  type="url"
+                  placeholder="https://…"
+                  [ngModel]="link()"
+                  (ngModelChange)="link.set($event)"
+                  [disabled]="!!busy()"
+                />
+                <div class="actions">
+                  <button
+                    class="button button-dark"
+                    type="submit"
+                    [disabled]="!!busy() || !draft().trim()"
+                  >
+                    {{ busy() === quoteKey(quote) ? 'Enregistrement…' : 'Enregistrer' }}</button
+                  ><button
+                    class="text-button"
+                    type="button"
+                    (click)="editing.set(null)"
+                    [disabled]="!!busy()"
+                  >
+                    Annuler
+                  </button>
+                </div>
+              </form>
+            } @else {
+              <blockquote>{{ quote.text }}</blockquote>
+              @if (quote.href) {
+                <a class="quote-link" [href]="quote.href" target="_blank" rel="noopener noreferrer"
+                  >Ouvrir le lien <app-icon name="arrow-up-right"
+                /></a>
+              }
+              <div class="actions">
+                <button
+                  class="text-button"
+                  type="button"
+                  (click)="edit(quote)"
+                  [disabled]="!!busy()"
+                >
+                  Modifier</button
+                ><button
+                  class="text-button"
+                  [class.remove]="quote.active"
+                  type="button"
+                  (click)="toggle(quote)"
+                  [disabled]="!!busy()"
+                >
+                  {{
+                    busy() === quoteKey(quote)
+                      ? 'Enregistrement…'
+                      : quote.active
+                        ? 'Retirer'
+                        : 'Rétablir'
+                  }}
+                </button>
+              </div>
+            }
+          </article>
+        } @empty {
+          <p class="empty">
+            {{
+              filter() === 'removed'
+                ? 'Aucune citation retirée.'
+                : 'Aucune citation ne correspond à la recherche.'
+            }}
+          </p>
+        }
+      </div>
+    }
+  }
+</main>
