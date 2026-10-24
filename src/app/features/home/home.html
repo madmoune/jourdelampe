@@ -102,7 +102,17 @@
             <ul>
               @for (activity of day.activities; track activity) {
                 <li>
-                  <app-icon name="spark" /><span>{{ activity }}</span>
+                  <app-icon name="spark" />
+                  @if ($index === 1 && activity === 'Amener de la nourriture pour le potluck') {
+                    <span
+                      >{{ activity }} —
+                      <a class="potluck-link" href="#potluck"
+                        >inscrire ce qu’on amène dans la liste</a
+                      ></span
+                    >
+                  } @else {
+                    <span>{{ activity }}</span>
+                  }
                 </li>
               }
             </ul>

@@ -213,6 +213,16 @@ h2 {
   margin-top: 5px;
   opacity: 0.6;
 }
+.day-card .potluck-link {
+  color: #253020;
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.day-card .potluck-link:hover {
+  color: #a04b2f;
+}
 .countdown-panel {
   border: 1px solid #c9cdbf;
   border-radius: 5px;

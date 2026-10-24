@@ -120,4 +120,13 @@ describe('accueil', () => {
       ),
     ).toBe(false);
   });
+
+  it('relie la mention du potluck dans l’horaire du 31 à la liste', () => {
+    const link = page.querySelector<HTMLAnchorElement>('.potluck-link');
+    expect(link?.getAttribute('href')).toBe('#potluck');
+    expect(link?.textContent).toContain('inscrire ce qu’on amène');
+    expect(page.querySelector('#horaire')?.textContent).toContain(
+      'Amener de la nourriture pour le potluck',
+    );
+  });
 });
