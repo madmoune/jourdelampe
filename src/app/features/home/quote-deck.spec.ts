@@ -97,4 +97,15 @@ describe('mise en avant de la citation ajoutée', () => {
     entries.update((quotes) => quotes.filter((quote) => quote.id !== added.id));
     expect(deck.quotes().some((quote) => quote.id === added.id)).toBe(false);
   });
+
+  it('réinitialise la mise en avant quand une nouvelle rotation est demandée', () => {
+    const { deck } = createDeck();
+    deck.showAdded(added);
+    expect(deck.quotes()[0]).toEqual(added);
+
+    deck.redraw();
+
+    expect(deck.quotes()[0]).not.toEqual(added);
+    expect(deck.quotes()).toHaveLength(6);
+  });
 });

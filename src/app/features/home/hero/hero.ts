@@ -17,5 +17,10 @@ import { QuoteSubmit } from '../quote-submit/quote-submit';
 export class Hero {
   protected readonly event = EVENT;
   protected readonly content = CONTENT;
-  protected readonly quotes = inject(QuoteDeck).quotes;
+  private readonly quoteDeck = inject(QuoteDeck);
+  protected readonly quotes = this.quoteDeck.quotes;
+
+  protected redrawQuotes(): void {
+    this.quoteDeck.redraw();
+  }
 }

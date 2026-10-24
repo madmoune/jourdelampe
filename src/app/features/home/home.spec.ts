@@ -35,6 +35,7 @@ describe('accueil', () => {
               provide: QuoteDeck,
               useValue: {
                 quotes: signal([AI_QUOTES[0], CONTENT.quotes[5], ...CONTENT.quotes.slice(0, 4)]),
+                redraw: vi.fn(),
               },
             },
           ],
@@ -128,5 +129,11 @@ describe('accueil', () => {
     expect(page.querySelector('#horaire')?.textContent).toContain(
       'Amener de la nourriture pour le potluck',
     );
+  });
+
+  it('permet de demander une nouvelle rotation depuis la pastille du haut', () => {
+    const button = page.querySelector<HTMLButtonElement>('.quote-refresh')!;
+    button.click();
+    expect(fixture.debugElement.injector.get(QuoteDeck).redraw).toHaveBeenCalledTimes(1);
   });
 });

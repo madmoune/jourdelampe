@@ -9,6 +9,7 @@ export type IconName =
   | 'pin'
   | 'plus'
   | 'check'
+  | 'refresh'
   | 'menu'
   | 'close'
   | 'spark'
@@ -24,6 +25,7 @@ const PATHS: Record<IconName, string> = {
   pin: 'M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0ZM15 10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z',
   plus: 'M12 5v14M5 12h14',
   check: 'm5 12 4 4L19 6',
+  refresh: 'M20 11a8 8 0 1 0 2 5.3M20 5v6h-6',
   menu: 'M4 7h16M4 12h16M4 17h16',
   close: 'm6 6 12 12M6 18 18 6',
   spark: 'm12 2 2.8 7.2L22 12l-7.2 2.8L12 22l-2.8-7.2L2 12l7.2-2.8L12 2Z',

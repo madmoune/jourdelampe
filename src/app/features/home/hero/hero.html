@@ -33,9 +33,20 @@
         height="700"
         fetchpriority="high"
       />
-      @if (quotes()[0]; as quote) {
-        <app-quote-badge class="art-sticker" [quote]="quote" />
-      }
+      <div class="art-quote-area">
+        @if (quotes()[0]; as quote) {
+          <app-quote-badge class="art-sticker" [quote]="quote" />
+        }
+        <button
+          class="quote-refresh"
+          type="button"
+          aria-label="Charger une nouvelle citation"
+          (click)="redrawQuotes()"
+        >
+          <app-icon name="refresh" />
+          <span>Nouvelle citation</span>
+        </button>
+      </div>
     </div>
   </div>
 </section>

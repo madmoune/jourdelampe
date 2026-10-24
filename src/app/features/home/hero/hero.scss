@@ -106,14 +106,52 @@ app-lamp-title {
   top: 70px;
   left: 4px;
 }
-.art-sticker {
+.art-quote-area {
   position: absolute;
   right: -5px;
   top: 41px;
   width: 164px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+.art-sticker {
+  position: relative;
+  inset: auto;
+  width: 100%;
   --quote-ring: var(--ink);
   --quote-tilt: 11deg;
   --quote-font-size: 15px;
+}
+.quote-refresh {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  max-width: 100%;
+  padding: 9px 12px;
+  border: 1px solid #f2f0e63d;
+  border-radius: 999px;
+  color: var(--paper);
+  background: #20261fd9;
+  font-size: 11px;
+  font-weight: 650;
+  white-space: nowrap;
+  transition:
+    color 180ms,
+    background 180ms,
+    transform 180ms;
+}
+.quote-refresh app-icon {
+  width: 14px;
+  height: 14px;
+}
+.quote-refresh:hover {
+  color: var(--ink);
+  background: var(--yellow);
+  transform: translateY(-2px);
 }
 
 @media (max-width: 1150px) {
@@ -128,7 +166,7 @@ app-lamp-title {
     height: 420px;
     top: 90px;
   }
-  .art-sticker {
+  .art-quote-area {
     width: 156px;
     top: 45px;
   }
@@ -148,9 +186,16 @@ app-lamp-title {
   .art-orbit {
     display: none;
   }
-  .art-sticker {
+  .art-quote-area {
     width: 148px;
     top: 52px;
+  }
+  .quote-refresh {
+    gap: 6px;
+    padding-inline: 10px;
+    font-size: 10px;
+  }
+  .art-sticker {
     --quote-font-size: 14px;
   }
 }
@@ -192,7 +237,7 @@ app-lamp-title {
     top: -14px;
     left: calc(50% - 230px);
   }
-  .art-sticker {
+  .art-quote-area {
     width: 156px;
     top: 20px;
     right: 5%;
@@ -211,7 +256,7 @@ app-lamp-title {
     left: calc(50% - 180px);
     top: 0;
   }
-  .art-sticker {
+  .art-quote-area {
     right: 0;
     width: 148px;
   }

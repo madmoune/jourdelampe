@@ -8,7 +8,7 @@ import { quoteRandom, selectQuotes } from '../../core/utils/select-quotes';
 @Injectable()
 export class QuoteDeck {
   private readonly store = inject(QuotesStore);
-  private readonly seed = Math.floor(Math.random() * 0x100000000);
+  private readonly seed = signal(Math.floor(Math.random() * 0x100000000));
   private readonly featured = signal<{
     quote: ManagedQuote;
     catalog: readonly ManagedQuote[];
@@ -35,14 +35,23 @@ export class QuoteDeck {
           (candidate) =>
             candidate.id !== quote.id && quoteTextKey(candidate.text) !== quoteTextKey(quote.text),
         );
-        return [quote, ...selectQuotes(remaining, [], 5, quoteRandom(this.seed))];
+        return [quote, ...selectQuotes(remaining, [], 5, quoteRandom(this.seed()))];
       }
     }
-    return selectQuotes(regular, this.store.ai(), 6, quoteRandom(this.seed));
+    return selectQuotes(regular, this.store.ai(), 6, quoteRandom(this.seed()));
   });
 
   /** La dernière proposition prend la pastille du haut pour la visite en cours. */
   showAdded(quote: ManagedQuote): void {
     this.featured.set({ quote, catalog: this.store.entries() });
+  }
+
+  /** Demande une nouvelle rotation des citations depuis le bouton de l’accueil. */
+  redraw(): void {
+    this.featured.set(null);
+    const previous = this.seed();
+    let next = Math.floor(Math.random() * 0x100000000);
+    if (next === previous) next = (previous + 1) >>> 0;
+    this.seed.set(next);
   }
 }
