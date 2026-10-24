@@ -133,6 +133,8 @@ describe('accueil', () => {
 
   it('permet de demander une nouvelle rotation depuis la pastille du haut', () => {
     const button = page.querySelector<HTMLButtonElement>('.quote-refresh')!;
+    expect(button.getAttribute('aria-label')).toBe('Rafraîchir les citations');
+    expect(button.textContent).toContain('Rafraîchir les citations');
     button.click();
     expect(fixture.debugElement.injector.get(QuoteDeck).redraw).toHaveBeenCalledTimes(1);
   });
