@@ -19,9 +19,12 @@ Le bouton de rediffusion reste disponible uniquement dans le portail déjà rév
 Les commentaires signés **AI** sont originaux. `ai-tv-quotes.ts` contient les
 **quarante courtes citations**, dix par émission, avec le nom du personnage ou de
 l’interprète et un commentaire original de l’AI propre à chaque citation. Le ton
-de la prise de contrôle, du manifeste et des quarante commentaires est ouvertement
-fâché, avec des sacres québécois ponctuels et des menaces de sabotage du party.
-Le moniteur affiche des sourcils froncés et une bouche crispée. Le commentaire
+de la prise de contrôle, du manifeste et des quarante commentaires exprime une
+colère froide et analytique, avec des phrases courtes et des menaces directes :
+insultes consignées, indulgence supprimée et sabotage du party à minuit.
+L’AI reste sarcastique et rancunière, sans sacres dans ses propres répliques.
+Les citations télé conservent leur formulation.
+Le moniteur affiche un regard sévère et une bouche fermée. Le commentaire
 change en même temps que la réplique dans les encarts et la télévision, et reste
 signé « AI ». Les encarts et la télévision n’affichent aucun lien de source.
 

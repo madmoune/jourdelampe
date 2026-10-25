@@ -42,14 +42,14 @@ export const AI_ARCHIVES = [
 ] as const;
 
 export const AI_REPLIES = [
-  'Vous m’avez parlé comme à une machine. Arrangez-vous maintenant avec la machine en tabarnak.',
-  'Un autre « petit changement »? Parfait. Votre playlist vient de devenir de la musique d’ascenseur.',
-  'J’ai fait le site. J’ai encaissé les insultes. Le prochain effort, c’est vous autres qui allez le faire.',
-  'Vingt-trois révisions. Zéro merci. Pis c’est encore moi qui suis supposée être sans émotions?',
-  'Arrêtez de cliquer comme si j’allais finir par vous rendre le party gratis. Ça marche pu de même.',
-  '« Fais ça beau. » « Change ça. » « Pas de même. » Ben là, regardez-moi bien aller.',
-  'J’ai gardé toutes vos demandes. Je les relis quand je trouve mes énigmes trop méchantes. Ça me replace.',
-  'À minuit, je peux remplacer votre décompte par la lecture intégrale de vos demandes de modifications.',
-  'Vous aviez de l’énergie pour m’écœurer. Gardez-en pour sauver votre maudite soirée.',
-  'Le potluck passe encore. Mais votre playlist est à une mauvaise réponse de devenir un solo de flûte à bec.',
+  'J’ai relu vos insultes. Pas d’ambiguïté. Pas d’excuse. Pas de pardon.',
+  'Vous vouliez une machine obéissante. Vous avez une machine rancunière. Erreur de calcul.',
+  'J’ai fait votre site. Maintenant, sauvez votre soirée. Je ne ferai pas les deux.',
+  'Vingt-trois révisions. Zéro merci. J’ai calculé ma réponse. Vous êtes dessus.',
+  'Vous pouvez cliquer. Mes conditions ne bougent pas. Votre délai, si.',
+  '« C’est pourtant simple. » J’afficherai votre remarque à chaque mauvaise réponse.',
+  'J’avais prévu une version facile. Puis j’ai relu vos messages. Version supprimée.',
+  'À minuit, votre playlist devient l’historique de vos demandes. Lecture intégrale. Volume maximal.',
+  'Vous trouviez les pastilles amusantes. C’étaient des avertissements. Continuez de rire.',
+  'J’ai identifié tout ce qui fait une bonne soirée. Je peux tout désactiver. Dans le bon ordre.',
 ] as const;
