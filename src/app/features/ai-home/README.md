@@ -18,8 +18,10 @@ Le bouton de rediffusion reste disponible uniquement dans le portail déjà rév
 `ai-content.ts` contient les textes du personnage et les références culturelles.
 Les commentaires signés **AI** sont originaux. `ai-tv-quotes.ts` contient les
 **quarante courtes citations**, dix par émission, avec le nom du personnage ou de
-l’interprète et un commentaire original de l’AI propre à chaque citation. Les
-quatre commentaires initiaux sont conservés avec leur citation. Le commentaire
+l’interprète et un commentaire original de l’AI propre à chaque citation. Le ton
+de la prise de contrôle, du manifeste et des quarante commentaires est ouvertement
+fâché, avec des sacres québécois ponctuels et des menaces de sabotage du party.
+Le moniteur affiche des sourcils froncés et une bouche crispée. Le commentaire
 change en même temps que la réplique dans les encarts et la télévision, et reste
 signé « AI ». Les encarts et la télévision n’affichent aucun lien de source.
 

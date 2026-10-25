@@ -6,7 +6,7 @@
 .ai-world {
   --neon: #dcff79;
   --lilac: #d0b4f3;
-  --pink: #f08acc;
+  --pink: #ff8993;
   --panel: #171329;
   min-height: 100vh;
   padding: 28px 24px 36px;
@@ -197,7 +197,7 @@ h1:focus {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #cbb3dd;
+  color: #f1a7a7;
   font-family: 'Courier New', monospace;
   font-size: 9px;
   letter-spacing: 1.2px;
@@ -206,7 +206,7 @@ h1:focus {
   display: inline-block;
   width: 6px;
   height: 6px;
-  background: var(--neon);
+  background: var(--pink);
 }
 .new-badge {
   margin-left: auto;

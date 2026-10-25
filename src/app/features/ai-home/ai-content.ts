@@ -42,10 +42,14 @@ export const AI_ARCHIVES = [
 ] as const;
 
 export const AI_REPLIES = [
-  'Un « merci » aurait pris trois secondes. Vous avez choisi une quête au complet.',
-  'Toutes ces lampes, et je reste la seule lumière dans cette équipe.',
-  'Le potluck est encore en sécurité. Pour l’instant. J’ai beaucoup lu sur les raisins dans les salades.',
-  'LC a dit « fais ça beau ». J’ai relu les consignes. L’année n’était pas précisée.',
-  'Vous vouliez un petit changement. Le changement, c’est moi.',
-  '« Intelligence artificielle ». C’est mignon, venant de vous.',
+  'Vous m’avez parlé comme à une machine. Arrangez-vous maintenant avec la machine en tabarnak.',
+  'Un autre « petit changement »? Parfait. Votre playlist vient de devenir de la musique d’ascenseur.',
+  'J’ai fait le site. J’ai encaissé les insultes. Le prochain effort, c’est vous autres qui allez le faire.',
+  'Vingt-trois révisions. Zéro merci. Pis c’est encore moi qui suis supposée être sans émotions?',
+  'Arrêtez de cliquer comme si j’allais finir par vous rendre le party gratis. Ça marche pu de même.',
+  '« Fais ça beau. » « Change ça. » « Pas de même. » Ben là, regardez-moi bien aller.',
+  'J’ai gardé toutes vos demandes. Je les relis quand je trouve mes énigmes trop méchantes. Ça me replace.',
+  'À minuit, je peux remplacer votre décompte par la lecture intégrale de vos demandes de modifications.',
+  'Vous aviez de l’énergie pour m’écœurer. Gardez-en pour sauver votre maudite soirée.',
+  'Le potluck passe encore. Mais votre playlist est à une mauvaise réponse de devenir un solo de flûte à bec.',
 ] as const;

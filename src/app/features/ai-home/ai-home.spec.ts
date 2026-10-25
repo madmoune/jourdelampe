@@ -96,7 +96,7 @@ describe('prise de contrôle de l’AI', () => {
 
     toggleLetter(12);
     expect(TestBed.inject(TitleLights).pattern()).toBe('1111111100000');
-    expect(page.textContent).toContain('Cette fois, c’est la mienne.');
+    expect(page.textContent).toContain('Là, c’est moi qui décide.');
     expect(page.querySelector('.original-site')?.hasAttribute('inert')).toBe(true);
     vi.advanceTimersByTime(3600);
     fixture.detectChanges();
