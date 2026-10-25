@@ -1,0 +1,43 @@
+<div class="archive-section-heading">
+  <h2 id="archives-title">✧ J’AI AUSSI PIRATÉ VOTRE NOSTALGIE. ✧</h2>
+  <div class="rotation-controls">
+    <span>{{ rotation.autoPlaying() ? 'ROTATION · 12 S' : 'ROTATION EN PAUSE' }}</span>
+    <button type="button" [attr.aria-pressed]="paused()" (click)="pauseToggle.emit()">
+      {{ paused() ? '▶ Reprendre' : 'Ⅱ Pause' }}
+    </button>
+  </div>
+</div>
+<div class="archive-grid">
+  @for (archive of archives(); track archive.title) {
+    <article class="archive-card">
+      <div class="archive-image">
+        <img
+          [src]="'images/ai/' + archive.image"
+          [alt]="archive.alt"
+          [style.object-position]="archive.imagePosition"
+          width="300"
+          height="180"
+          loading="lazy"
+        /><span>ARCHIVE_0{{ $index + 1 }}</span>
+      </div>
+      <div class="archive-copy">
+        <h3>{{ archive.title }}</h3>
+        <div class="archive-quotation">
+          <blockquote>« {{ archive.quote.text }} »</blockquote>
+          <cite>— {{ archive.quote.author }}</cite>
+        </div>
+        <p class="archive-comment">{{ archive.quote.comment }} <b>— AI</b></p>
+        <div class="quote-controls">
+          <span>{{ archive.quoteNumber }} / {{ archive.quotes.length }}</span>
+          <button
+            type="button"
+            [attr.aria-label]="'Citation suivante — ' + archive.title"
+            (click)="rotation.advance($index)"
+          >
+            Autre citation ↻
+          </button>
+        </div>
+      </div>
+    </article>
+  }
+</div>

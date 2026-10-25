@@ -10,7 +10,7 @@ export const routes: Routes = [
   {
     path: '',
     title: 'Le Jour de Lampe — 2027',
-    loadComponent: () => import('./features/home/home').then((module) => module.Home),
+    loadComponent: () => import('./features/ai-home/ai-home').then((module) => module.AiHome),
   },
   { path: '**', redirectTo: '' },
 ];

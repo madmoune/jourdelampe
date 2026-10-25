@@ -1,0 +1,25 @@
+.retro-window {
+  border: 1px solid;
+  border-color: #776989 #302638 #302638 #776989;
+  background: var(--panel);
+  box-shadow: 2px 2px 0 #06050b;
+  min-width: 0;
+  scroll-margin-top: 20px;
+}
+.window-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 29px;
+  margin: 0;
+  padding: 6px 9px;
+  background: #392c4c;
+  border-bottom: 1px solid #080610;
+  color: #e6d9f6;
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  line-height: 1.4;
+  font-weight: bold;
+  letter-spacing: 0.6px;
+}

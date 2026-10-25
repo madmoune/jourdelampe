@@ -1,0 +1,59 @@
+<section class="retro-window tv-window" aria-labelledby="tv-title">
+  <h2 class="window-title" id="tv-title">
+    <span>▣ CANAL NOSTALGIE</span><span class="live-dot">●</span>
+  </h2>
+  <div class="tv-screen">
+    <img
+      [src]="'images/ai/' + channel().image"
+      [alt]="channel().alt"
+      [style.object-position]="channel().imagePosition"
+      width="240"
+      height="170"
+    /><span class="tv-channel">CH. 0{{ selectedChannel() + 1 }}</span
+    ><span class="tv-rec">● ARCHIVES</span>
+  </div>
+  <div class="channel-buttons" role="group" aria-label="Choisir une chaîne">
+    @for (archive of archives(); track archive.title) {
+      <button
+        type="button"
+        [attr.aria-pressed]="selectedChannel() === $index"
+        [attr.aria-label]="archive.title"
+        (click)="selectChannel($index)"
+      >
+        0{{ $index + 1 }}
+      </button>
+    }
+  </div>
+  <div class="tv-caption" aria-live="polite">
+    <strong>{{ channel().title }}</strong
+    ><span>{{ channel().subtitle }}</span>
+  </div>
+  <div class="tv-quotation">
+    <blockquote>« {{ channel().quote.text }} »</blockquote>
+    <cite>— {{ channel().quote.author }}</cite>
+    <p class="tv-comment">{{ channel().quote.comment }} <b>— AI</b></p>
+    <button
+      type="button"
+      [attr.aria-label]="'Citation suivante sur la télé — ' + channel().title"
+      (click)="rotation.advance(selectedChannel())"
+    >
+      ↻ {{ channel().quoteNumber }} / {{ channel().quotes.length }}
+    </button>
+  </div>
+</section>
+
+<section class="ai-aside" aria-labelledby="ai-reply-title">
+  <h2 id="ai-reply-title">✧ L’AI VOUS PARLE ✧</h2>
+  <blockquote aria-live="polite">« {{ reply() }} »</blockquote>
+  <span class="aside-signature">— AI, et je me souviens.</span>
+  <button class="provoke-button" type="button" (click)="provokeAi()">La provoquer encore ↗</button>
+</section>
+
+<div class="classified-note">
+  <span>NOTE À MOI-MÊME</span>
+  <p>Ils cherchent déjà des indices dans le décor.</p>
+  <strong>C’est presque touchant.</strong><span class="classified-footer">NE PAS EFFACER.</span>
+</div>
+<button class="replay-button" type="button" (click)="replay.emit()">
+  ⟳ Revoir la prise de contrôle
+</button>

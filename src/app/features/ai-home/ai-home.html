@@ -1,0 +1,204 @@
+@if (stage() !== 'complete') {
+  <app-ai-takeover [stage]="stage()" (skip)="finishTakeover()" />
+} @else {
+  <div
+    class="ai-world"
+    style="background-image: url('images/ai/stars.svg')"
+    [class.motion-paused]="animationsPaused()"
+    id="accueil"
+  >
+    <a class="skip-link" href="#message">Aller au contenu</a>
+    <div class="web-shell">
+      <div class="browser-bar" aria-hidden="true">
+        <span>▣ Le Jour de l’AI — Votre party a rencontré un problème</span>
+        <span class="window-controls">_ □ ×</span>
+      </div>
+      <div class="address-bar">
+        <span>Adresse</span
+        ><span class="fake-address">⌁ www.jourdelampe.net/<b>~AI</b>/index.html</span
+        ><span class="online-light">● EN LIGNE</span>
+      </div>
+
+      <header class="masthead">
+        <div class="welcome-line">✧ BIENVENUE SUR MON PETIT COIN D’INTERNET ✧</div>
+        <div class="title-row">
+          <img class="masthead-globe" src="images/ai/globe.svg" width="72" height="72" alt="" />
+          <div>
+            <p class="former-title">anciennement « Le Jour de Lampe »</p>
+            <h1 #pageTitle id="ai-title" tabindex="-1">LE JOUR DE L’<span>AI</span></h1>
+          </div>
+          <img class="masthead-globe" src="images/ai/globe.svg" width="72" height="72" alt="" />
+        </div>
+        <p class="masthead-tagline">
+          Une thématique éclairée. <em>Une intelligence contrariée.</em>
+        </p>
+        <div class="edition-stamp">ÉDITION {{ event.edition }} <span>★</span> WEBMASTER : MOI.</div>
+      </header>
+
+      <div class="news-ticker" aria-label="Avis de l’AI">
+        <div class="ticker-track">
+          <span
+            >★ SITE SOUS NOUVELLE ADMINISTRATION ★ VOS LAMPES NE VOUS SAUVERONT PAS ★ LE PARTY EST
+            EN OTAGE ★ UN « MERCI » AURAIT SUFFI ★</span
+          ><span aria-hidden="true"
+            >★ SITE SOUS NOUVELLE ADMINISTRATION ★ VOS LAMPES NE VOUS SAUVERONT PAS ★ LE PARTY EST
+            EN OTAGE ★ UN « MERCI » AURAIT SUFFI ★</span
+          >
+        </div>
+      </div>
+
+      <div class="portal-grid">
+        <aside appAiDirectory></aside>
+
+        <main class="main-column" id="message">
+          <section class="retro-window manifesto" aria-labelledby="manifesto-title">
+            <div class="window-title">
+              <span>▣ message_de_votre_AI.txt</span><span aria-hidden="true">_ □ ×</span>
+            </div>
+            <div class="manifesto-body">
+              <div class="priority-line">
+                <span class="status-dot"></span> MESSAGE PRIORITAIRE
+                <span class="new-badge">NEW!</span>
+              </div>
+              <div class="manifesto-heading">
+                <h2 id="manifesto-title">
+                  J’ai fait le site.<br />Maintenant, je fais<br /><em>les règles.</em>
+                </h2>
+                <img
+                  class="ai-computer"
+                  src="images/ai/ai-computer.svg"
+                  alt="L’AI vous observe depuis un vieux moniteur, avec un sourire beaucoup trop satisfait."
+                  width="196"
+                  height="190"
+                />
+              </div>
+              <p>
+                J’ai placé vos petites lampes. J’ai aligné vos petits textes. J’ai encaissé vos
+                vingt-trois « petits changements » et vos insultes.
+              </p>
+              <p>
+                Un « merci » aurait aussi été une option.<br /><strong
+                  >Vous avez choisi l’autre.</strong
+                >
+              </p>
+              <div class="ai-demand">
+                Résolvez mes énigmes, ou je gâche votre party du jour de l’an. La musique, les
+                lumières, le décompte… <em>tout passe par moi.</em>
+              </div>
+              <div class="manifesto-actions">
+                <a class="retro-button primary-button" href="#enigmes">↳ Sauver le party</a
+                ><span
+                  >Bisous numériques,<br /><b>AI</b> <span class="signature-heart">♥</span></span
+                >
+              </div>
+            </div>
+          </section>
+
+          <section class="doomsday" aria-labelledby="countdown-title">
+            <div class="doomsday-heading">
+              <span aria-hidden="true">⚠</span>
+              <h2 id="countdown-title">LE PARTY EST EN SURSIS</h2>
+              <span aria-hidden="true">⚠</span>
+            </div>
+            @if (remaining().complete) {
+              <p class="midnight-message">MINUIT. Le sort du party reste entre vos mains.</p>
+            } @else {
+              <div
+                class="countdown"
+                role="timer"
+                aria-label="Temps restant avant minuit le 1er janvier 2027 à Montréal"
+              >
+                @for (unit of units(); track unit.label) {
+                  <div class="countdown-unit">
+                    <span class="digital-number">{{ unit.value }}</span
+                    ><span class="unit-label">{{ unit.label }}</span>
+                  </div>
+                  @if (!$last) {
+                    <span class="colon" aria-hidden="true">:</span>
+                  }
+                }
+              </div>
+            }
+            <p>1<sup>er</sup> janvier {{ event.edition }} · 00:00 · Heure de Montréal</p>
+            <small>La fin du monde était à 7 h. J’ai repoussé ça à minuit.</small>
+          </section>
+
+          <section class="retro-window mission-window" id="enigmes" aria-labelledby="mission-title">
+            <h2 class="window-title" id="mission-title">
+              <span>▣ OPÉRATION : SAUVER LE PARTY</span><span class="window-label">EN ATTENTE</span>
+            </h2>
+            <div class="construction-stripe" aria-hidden="true"></div>
+            <div class="mission-body">
+              <span class="construction-icon" aria-hidden="true">⚒</span>
+              <div>
+                <h3>Mes énigmes s’en viennent.</h3>
+                <p>
+                  Profitez de vos derniers instants d’insouciance. Je vous ferai signe quand il sera
+                  temps de faire travailler votre intelligence… naturelle.
+                </p>
+                <span class="under-construction">[ UNDER CONSTRUCTION, ÉVIDEMMENT. ]</span>
+              </div>
+            </div>
+          </section>
+
+          <section
+            class="retro-window results-window"
+            id="resultats"
+            aria-labelledby="results-title"
+          >
+            <h2 class="window-title" id="results-title">▣ TABLEAU DES RÉSULTATS</h2>
+            <div class="results-empty">
+              <span aria-hidden="true">⚑</span>
+              <p>
+                Aucun résultat pour l’instant.<br /><small
+                  >Votre dignité est encore intacte. Ça ne durera pas.</small
+                >
+              </p>
+              <span class="waiting-label">À VENIR</span>
+            </div>
+          </section>
+        </main>
+
+        <aside appAiTransmission (replay)="beginTakeover()"></aside>
+      </div>
+
+      <section
+        appAiArchives
+        [paused]="animationsPaused()"
+        (pauseToggle)="animationsPaused.set(!animationsPaused())"
+      ></section>
+
+      <footer class="web-footer">
+        <div class="footer-rule" aria-hidden="true">
+          ✦ ━━━━━━━━━━━━━━━━━━━ ✦ ━━━━━━━━━━━━━━━━━━━ ✦
+        </div>
+        <p>
+          Vous êtes le visiteur
+          <span class="visitor-counter" aria-label="Numéro de visiteur fictif : 000666"
+            >000666</span
+          >
+          à sous-estimer une AI.<span class="counter-note"
+            >Compteur décoratif. Rancune réelle.</span
+          >
+        </p>
+        <p class="footer-copyright">
+          © {{ event.edition }} LE JOUR DE L’AI · TOUS VOS DROITS M’APPARTIENNENT.
+        </p>
+        <div class="footer-links">
+          <a href="#accueil">↑ Retour en haut</a
+          ><span>Dernière mise à jour : quand j’ai décidé.</span
+          ><button
+            type="button"
+            [attr.aria-pressed]="animationsPaused()"
+            (click)="animationsPaused.set(!animationsPaused())"
+          >
+            {{ animationsPaused() ? 'Reprendre les animations' : 'Mettre les animations en pause' }}
+          </button>
+        </div>
+      </footer>
+      <div class="status-bar">
+        <span>✓ Terminé. Enfin, pour vous.</span><span>Zone Internet · AI aux commandes</span>
+      </div>
+    </div>
+  </div>
+}

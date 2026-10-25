@@ -28,12 +28,16 @@ export const TITLE_ROWS = [
   ],
 ] as const;
 
-/** État partagé du titre, réservé à la future logique du secret. */
+/** État partagé des treize ampoules et condition de la prise de contrôle. */
 @Injectable({ providedIn: 'root' })
 export class TitleLights {
   private readonly state = signal<readonly boolean[]>(TITLE_ROWS.flat(2).map(() => true));
   readonly lights = this.state.asReadonly();
-  // Ordre de lecture : LE JOUR / DE LAMPE. Aucune combinaison secrète n'est définie.
+  // Seules les cinq positions du mot LAMPE participent au déclenchement.
+  readonly lampWordOff = computed(() =>
+    TITLE_ROWS[1][1].every((letter) => !this.lights()[letter.id]),
+  );
+  // Ordre de lecture : LE JOUR / DE LAMPE.
   readonly pattern = computed(() =>
     this.lights()
       .map((on) => (on ? '1' : '0'))

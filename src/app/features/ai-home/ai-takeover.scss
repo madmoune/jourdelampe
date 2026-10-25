@@ -1,0 +1,121 @@
+.original-site.corrupted {
+  height: 100dvh;
+  overflow: hidden;
+  pointer-events: none;
+  filter: grayscale(1) contrast(1.2);
+  animation: corrupt 3.6s steps(1) forwards;
+}
+.takeover {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: none;
+}
+.takeover.intruding {
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #0b0714e8;
+}
+.takeover-terminal {
+  color: #d8ff9c;
+  width: min(610px, 100%);
+  padding: 34px;
+  background: #0d1110;
+  border: 1px solid #70865a;
+  box-shadow: 8px 8px 0 #0008;
+  font-family: 'Courier New', monospace;
+  animation: terminal-in 300ms ease-out;
+}
+.terminal-kicker {
+  color: #ef9ac4;
+  font-size: 12px;
+  letter-spacing: 3px;
+}
+.takeover-terminal p {
+  font-size: clamp(13px, 2.5vw, 20px);
+  margin: 24px 0;
+}
+.takeover-terminal strong {
+  display: block;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.terminal-signature {
+  display: block;
+  font-size: 10px;
+  color: #95a389;
+  margin-top: 19px;
+}
+.takeover-progress {
+  height: 13px;
+  border: 1px solid #506744;
+  padding: 2px;
+  margin: 30px 0 20px;
+}
+.takeover-progress > span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: #d8ff9c;
+  animation: takeover-load 3.4s steps(15) forwards;
+}
+.skip-intro {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  background: #191123;
+  color: #e4d3ed;
+  border: 1px solid #8b749f;
+  padding: 12px 18px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  pointer-events: auto;
+  box-shadow: 3px 3px 0 #0005;
+}
+@keyframes takeover-load {
+  to {
+    width: 100%;
+  }
+}
+@keyframes terminal-in {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes corrupt {
+  0% {
+    transform: translateX(0);
+  }
+  5% {
+    transform: translateX(6px);
+  }
+  8% {
+    transform: translateX(-3px);
+  }
+  12%,
+  100% {
+    transform: translateX(0);
+  }
+}
+@media (max-width: 620px) {
+  .takeover-terminal {
+    padding: 24px;
+  }
+  .terminal-kicker {
+    font-size: 10px;
+    letter-spacing: 2px;
+  }
+  .takeover-terminal strong {
+    font-size: 11px;
+  }
+  .skip-intro {
+    right: 15px;
+    bottom: 15px;
+  }
+}

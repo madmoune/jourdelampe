@@ -1,6 +1,7 @@
-# Le Jour de Lampe
+# Le Jour de Lampe / Le Jour de l’AI
 
-Le site du Jour de Lampe, les 30 et 31 décembre.
+Le site du Jour de Lampe, les 30 et 31 décembre. Son accueil lumineux cache une
+prise de contrôle par une AI rancunière et un portail inspiré de GeoCities.
 
 Projet **Angular 22**, composants standalone, TypeScript strict, SCSS, signals et
 route d'accueil chargée à la demande. Les polices et illustrations sont locales.
@@ -43,8 +44,11 @@ source de Pages doit être **GitHub Actions**.
 - `src/app/core/config/event.config.ts` : date, édition, lieu et heure.
 - `src/app/core/config/content.config.ts` : phrases, description, programme et citations initiales.
 - `src/app/core/config/ai-quotes.config.ts` : les dix répliques initiales du personnage AI.
+- `src/app/features/ai-home/ai-content.ts` : les répliques originales et les archives télé du Jour de l’AI.
+- `src/app/features/ai-home/ai-tv-quotes.ts` : dix courtes citations pour chacune des quatre émissions.
+- `src/app/features/ai-home/` : le nouvel accueil GeoCities et la prise de contrôle animée.
 - `/maintenance-citations` : modifier les citations réellement enregistrées dans Firebase.
-- `src/app/features/home/` : contenu et mise en page de l'accueil.
+- `src/app/features/home/` : l’accueil original et ses ampoules interactives.
 - `src/styles.scss` : palette et styles partagés.
 - `public/images/` : illustrations SVG originales, modifiables.
 - `src/index.html` : description et métadonnées de partage.
@@ -53,6 +57,44 @@ Le programme couvre les **30 et 31 décembre 2026** pour l'édition 2027.
 Aucune heure de début n'est précisée. Le compte à rebours vise **minuit le 1er janvier
 2027 à Montréal/Toronto** et fonctionne aussi pour les visiteurs dans un autre
 fuseau.
+
+## Le Jour de l’AI
+
+La route `/` affiche l’accueil original, entièrement interactif. La prise de
+contrôle démarre uniquement lorsque les cinq ampoules du mot **LAMPE** sont
+éteintes en même temps. L’ordre des clics et l’état des huit autres lettres ne
+comptent pas. Aucun indice ni bouton d’accès à l’AI n’est ajouté à l’accueil :
+l’énigme qui indique cette manipulation est prévue à l’extérieur du site.
+
+Un terminal interrompt alors l’invitation pendant 3,6 secondes avant d’afficher
+le portail de l’AI. Le bouton pour passer l’animation n’apparaît qu’après le
+déclenchement. L’AI permet ensuite de rejouer la prise de contrôle. Avec la
+réduction des animations, la même combinaison révèle directement le portail.
+Il n’y a aucun accès mémorisé dans `sessionStorage`; un rechargement complet
+rallume les ampoules et revient à l’accueil original. Le titre de l’onglet et
+les métadonnées de partage présentent le Jour de Lampe avant la révélation.
+
+L’AI reprend le ton des pastilles originales : elle se venge des insultes et des
+changements à répétition en menaçant de gâcher le party. Le portail comprend un
+manifeste, un vrai compte à rebours, une télévision à quatre chaînes, des répliques
+à faire défiler et des archives illustrées des Simpsons québécois, de Radio Enfer,
+de Dans une galaxie près de chez vous et de La fin du monde est à 7 heures.
+
+Les sections **Énigmes** et **Résultats** affichent uniquement leur état d’attente.
+Aucun jeu, classement, formulaire de réponse ou enregistrement de progression
+n’est implémenté. Le compteur de visiteurs est explicitement décoratif. La
+maintenance Firebase garde sa route et son comportement existants.
+
+Les images sont locales, redimensionnées pour le Web et accompagnées de leurs
+sources dans `src/app/features/ai-home/README.md`. Les citations télé et les textes
+originaux de l’AI sont attribués séparément. Aucun son ne démarre automatiquement.
+Le bandeau et les globes peuvent être mis en pause depuis le pied de page.
+Les quarante citations télé tournent toutes les douze secondes dans les quatre
+encarts et dans la chaîne sélectionnée de la télévision. Chaque encart et la télé
+ont un bouton pour avancer sans attendre. La pause des archives et celle du pied
+de page arrêtent ensemble les animations et les citations. Le défilement devient
+manuel avec la réduction des animations et se suspend dans un onglet masqué.
+Les encarts affichent le personnage et le numéro de citation, sans liens externes.
 
 ## Firebase Realtime Database
 
@@ -190,7 +232,8 @@ Le service `TitleLights` dans `src/app/features/home/lamp-title/` expose les ét
 en lecture seule et leur `pattern` binaire, dans l'ordre `LE JOUR / DE LAMPE`.
 Chaque lettre a une position unique, même si elle apparaît plusieurs fois.
 L'état reste en mémoire pendant la visite et se réinitialise au rechargement.
-Aucune combinaison ni révélation du secret n'est encore définie.
+`lampWordOff` détecte l’extinction simultanée des cinq ampoules de **LAMPE**
+et déclenche la prise de contrôle, sans tenir compte des huit autres lettres.
 
 ## Déjà fonctionnel
 

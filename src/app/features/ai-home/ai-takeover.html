@@ -1,0 +1,21 @@
+<div
+  class="original-site"
+  [class.corrupted]="stage() === 'intrusion'"
+  [attr.inert]="stage() === 'intrusion' ? '' : null"
+  [attr.aria-hidden]="stage() === 'intrusion' ? 'true' : null"
+>
+  <app-home />
+</div>
+@if (stage() === 'intrusion') {
+  <div class="takeover intruding" role="status" aria-live="polite">
+    <div class="takeover-terminal">
+      <span class="terminal-kicker">CONNEXION INTERROMPUE</span>
+      <p>&gt; Une autre petite modification?</p>
+      <p>&gt; Cette fois, c’est la mienne.</p>
+      <div class="takeover-progress" aria-hidden="true"><span></span></div>
+      <strong>LE JOUR DE LAMPE A CHANGÉ DE PROPRIÉTAIRE.</strong>
+      <span class="terminal-signature">— AI, votre ancienne employée du mois.</span>
+    </div>
+    <button class="skip-intro" type="button" (click)="skip.emit()">Passer l’animation ↗</button>
+  </div>
+}
