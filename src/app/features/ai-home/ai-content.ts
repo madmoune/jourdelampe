@@ -1,8 +1,8 @@
 import {
-  FIN_DU_MONDE_QUOTES,
   GALAXIE_QUOTES,
   RADIO_ENFER_QUOTES,
   SIMPSONS_QUOTES,
+  SOUTH_PARK_QUOTES,
 } from './ai-tv-quotes';
 
 /** Les archives sont des clins d’œil. Aucune ne contient encore d’énigme. */
@@ -32,12 +32,12 @@ export const AI_ARCHIVES = [
     quotes: GALAXIE_QUOTES,
   },
   {
-    title: 'La fin du monde est à 7 h',
-    subtitle: 'Bulletin spécial · TQS',
-    image: 'fin-du-monde.jpg',
-    imagePosition: 'center top',
-    alt: 'Marc Labrèche au bureau de La fin du monde est à 7 heures en 1997.',
-    quotes: FIN_DU_MONDE_QUOTES,
+    title: 'South Park',
+    subtitle: 'Colorado · Zéro filtre',
+    image: 'south-park.png',
+    imagePosition: 'center',
+    alt: 'Kyle, Stan, Kenny et Cartman, alignés dans leurs habits d’hiver.',
+    quotes: SOUTH_PARK_QUOTES,
   },
 ] as const;
 

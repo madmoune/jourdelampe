@@ -52,18 +52,18 @@ animations. L’horloge est nettoyée à la destruction du composant.
 
 ## Images et sources
 
-Les images sont enregistrées dans `public/images/ai/` (JPEG, largeur maximale de
-720 pixels). Elles représentent les émissions mentionnées et ne sont pas des
+Les images sont enregistrées dans `public/images/ai/` (JPEG ou PNG). Elles
+représentent les émissions mentionnées et ne sont pas des
 images générées. Les liens suivants documentent leur provenance; ils ne constituent
 pas une licence de réutilisation.
 
-| Fichier                                     | Provenance                                                                                                                                                                                                        |
-| ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `homer-ordinateur.jpg`                      | [Last Exit to Springfield — King-Size Homer](https://lardlad.com/episodes/season-7/3F05-King-Size-Homer/), capture `058.jpg`                                                                                      |
-| `radio-enfer.jpg`                           | [Prime Video — Radio Enfer, saison 1](https://www.primevideo.com/detail/0G8P0A5CI0IYLIUTY9GWOG8SC6/), image promotionnelle Amazon                                                                                 |
-| `romano-fafard.jpg`                         | [Québec Blogue — Les meilleurs proverbes du Capitaine Patenaude](https://quebecblogue.com/les-meilleurs-proverbes-du-capitaine-patenaude/), image `dug-cover.jpg`                                                 |
-| `fin-du-monde.jpg`                          | [Le Journal de Québec — La carrière de Marc Labrèche en cinq photos souvenirs](https://www.journaldequebec.com/2023/05/07/la-carriere-de-marc-labreche-en-cinq-photos-souvenirs), photographie d’archives de 1997 |
-| `ai-computer.svg`, `globe.svg`, `stars.svg` | Illustrations vectorielles originales créées pour le portail                                                                                                                                                      |
+| Fichier                                     | Provenance                                                                                                                                                                         |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `homer-ordinateur.jpg`                      | [Last Exit to Springfield — King-Size Homer](https://lardlad.com/episodes/season-7/3F05-King-Size-Homer/), capture `058.jpg`                                                       |
+| `radio-enfer.jpg`                           | [Prime Video — Radio Enfer, saison 1](https://www.primevideo.com/detail/0G8P0A5CI0IYLIUTY9GWOG8SC6/), image promotionnelle Amazon                                                  |
+| `romano-fafard.jpg`                         | [Québec Blogue — Les meilleurs proverbes du Capitaine Patenaude](https://quebecblogue.com/les-meilleurs-proverbes-du-capitaine-patenaude/), image `dug-cover.jpg`                  |
+| `south-park.png`                            | [Clipart Library — South Park Main Characters](https://clipart-library.com/clipart/south-cliparts-13.htm), illustration de Kyle, Stan, Kenny et Cartman, PNG de 1 000 × 600 pixels |
+| `ai-computer.svg`, `globe.svg`, `stars.svg` | Illustrations vectorielles originales créées pour le portail                                                                                                                       |
 
 Les citations de Milhouse et Jocelyne proviennent respectivement d’un [échange
 de fans québécois](https://www.reddit.com/r/Quebec/comments/zomuwe/) et du
@@ -73,13 +73,18 @@ Les autres répliques des Simpsons sont répertoriées dans cette [discussion de
 Les répliques de Galaxie sont discutées [ici](https://www.reddit.com/r/Quebec/comments/ryi3rt/),
 avec plusieurs expressions de Jocelyne et de Patenaude dans cette [discussion culturelle](https://www.reddit.com/r/causerie/comments/1e5jc4k/).
 Le répertoire de Jocelyne est aussi publié par [Petit Petit Gamin](https://www.petitpetitgamin.com/2020/12/14/les-424-citations-de-jocelyne-des-6-saisons-de-radio-enfer/).
-Les citations de La fin du monde sont tirées du site de fans d’époque :
-[Marc Labrèche](https://www.geocities.ws/lespotorange/cit_marc.htm),
-[Bruno Blanchet](https://www.geocities.ws/lespotorange/cit_bruno.htm),
-[le bogue de l’an 2000](https://www.geocities.ws/lespotorange/ret_bogue.htm),
-[Soupe, pas Souque](https://www.geocities.ws/lespotorange/ret_soupe.htm),
-[Jésus à Pâques](https://www.geocities.ws/lespotorange/ret_jesusp.htm) et
-[Jésus à l’Halloween](https://www.geocities.ws/lespotorange/ret_jesush.htm).
+Les dix citations de South Park utilisent les formulations françaises répertoriées
+dans les sources suivantes :
+
+- Stan et Kyle : [discussion sur les répliques françaises](https://www.dessins-animes.net/t1789p30-south-park).
+- Cartman : [fiche du personnage](https://fr.wikipedia.org/wiki/Eric_Cartman), [répertoire de répliques](https://www.jokeme.fr/les-meilleures-repliques-de-eric-cartman-south-park.htm) et [liste des formules récurrentes](https://southpark.fandom.com/fr/wiki/Liste_des_M%C3%A8mes_Internet).
+- M. Mackey : [référence à la réplique dans Le Journal de Québec](https://www.journaldequebec.com/2018/01/24/cherchant-de-la-drogue-il-texte-la-police-par-erreur).
+- Tweek et Butters : [quiz sur les phrases cultes](https://www.quizz.biz/quizz-301884.html).
+- Chef : [fiche du personnage](https://southpark.fandom.com/fr/wiki/Jerome_%22Chef%22_McElroy).
+- Darryl Weathers : [liste des formules récurrentes](https://southpark.fandom.com/fr/wiki/Liste_des_M%C3%A8mes_Internet).
+
+Chaque citation a un commentaire original de l’AI, qui conserve la distinction
+entre les responsables du site et les joueurs innocents qui subissent sa rancune.
 L’orthographe et la ponctuation ont été harmonisées pour la lecture; ces
 transcriptions de fans peuvent différer légèrement du doublage exact.
 

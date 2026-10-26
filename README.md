@@ -81,7 +81,7 @@ soirée. Ses répliques personnalisées reconnaissent leur innocence sans les
 épargner. Le portail comprend un
 manifeste, un vrai compte à rebours, une télévision à quatre chaînes, des répliques
 à faire défiler et des archives illustrées des Simpsons québécois, de Radio Enfer,
-de Dans une galaxie près de chez vous et de La fin du monde est à 7 heures.
+de Dans une galaxie près de chez vous et de South Park.
 
 Les sections **Énigmes** et **Résultats** suivent le catalogue enregistré dans
 Firebase. Le nom est obligatoire pour afficher les jeux et répondre; il se

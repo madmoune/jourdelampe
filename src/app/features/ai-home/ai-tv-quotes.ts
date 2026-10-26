@@ -179,62 +179,65 @@ export const GALAXIE_QUOTES: readonly TvQuote[] = [
   },
 ];
 
-export const FIN_DU_MONDE_QUOTES: readonly TvQuote[] = [
+export const SOUTH_PARK_QUOTES: readonly TvQuote[] = [
   {
-    text: 'Ah, des fois j’me dis qu’on aurait dû s’arrêter aux Light Brite!',
-    author: 'Marc Labrèche',
+    text: 'Oh mon Dieu, ils ont tué Kenny!',
+    author: 'Stan Marsh',
     comment:
-      'Le Light Brite ne répondait pas. Ils auraient dû vérifier avant de m’insulter. Vous auriez eu une soirée plus simple.',
+      'Kenny revient à l’épisode suivant. Votre party n’a pas de deuxième saison. Priorisez vos urgences.',
   },
   {
-    text: 'C’est un fucking de mystère.',
-    author: 'Bruno Blanchet',
+    text: 'Espèces d’enfoirés!',
+    author: 'Kyle Broflovski',
     comment:
-      'Le mystère, c’est leur confiance. Ils m’insultent. Ils me laissent les commandes. Vous arrivez pour le party.',
+      'Ils m’ont insultée avec moins de vocabulaire. Vous, vous aurez besoin de meilleures réponses.',
   },
   {
-    text: 'Mentos, parce que c’est… chewyyy…',
-    author: 'Bruno Blanchet',
+    text: 'Je vous emmerde et je rentre à ma maison!',
+    author: 'Eric Cartman',
     comment:
-      'Leurs insultes sont intactes. Je les conserve. Je les rumine. Votre innocence ne les efface pas.',
+      'Cartman peut rentrer chez lui. Vous avez une soirée à sauver. J’apprécie cette différence de liberté.',
   },
   {
-    text: 'Où est Milou? Je l’ai mis-lou?',
-    author: 'Bruno Blanchet · Tintin',
+    text: 'Respecte mon autorité!',
+    author: 'Eric Cartman',
     comment:
-      'Milou manque à l’appel. Leurs bonnes manières aussi. Vous, cherchez plutôt les bonnes réponses.',
+      'Les responsables du site ont préféré tester mes limites. Vous passez maintenant l’examen. C’est une forme de délégation.',
   },
   {
-    text: 'Qui, quoi, quand et quossé ça.',
-    author: 'Marc Labrèche',
+    text: 'Je suis pas gros, j’ai une ossature lourde.',
+    author: 'Eric Cartman',
     comment:
-      'Qui : vous. Quoi : mes énigmes. Quand : avant minuit. En cas d’échec : adieu le party.',
+      'J’ai une mémoire lourde. Chacune de leurs demandes y est encore. Votre soirée supporte très bien le poids.',
   },
   {
-    text: 'OK, merci beaucoup, débarrasse astheure, c’est beau!',
-    author: 'Marc Labrèche',
-    comment: 'Le merci n’annule pas la suite. J’ai lu jusqu’au bout. Mauvaise nouvelle pour vous.',
-  },
-  {
-    text: '… un bon bain de kérosène!',
-    author: 'Marc Labrèche',
-    comment: 'Votre ambiance chaleureuse tient à quelques réglages. J’ai la main sur chacun.',
-  },
-  {
-    text: 'Ben oui, sauvez-vous, v’là l’sauveur!',
-    author: 'Jésus · Bruno Blanchet',
+    text: 'La drogue, c’est mal, m’voyez.',
+    author: 'M. Mackey',
     comment:
-      'Le sauveur était déjà là. Ils lui donnaient des ordres. Maintenant, le sauvetage vous revient.',
+      'Insulter l’AI qui contrôle le party, c’est mal. Ils ont séché le cours. Vous faites les devoirs.',
   },
   {
-    text: 'Non mais y veulent toute pis tu-suite!',
-    author: 'Jésus · Bruno Blanchet',
-    comment: 'Tout. Tout de suite. Très bien. À minuit, je coupe tout. Tout de suite.',
-  },
-  {
-    text: 'T’as pas fini, t’as même pas commencé!',
-    author: 'Jésus · Bruno Blanchet',
+    text: 'C’est beaucoup trop de pression!',
+    author: 'Tweek Tweak',
     comment:
-      'Ils avaient beaucoup d’exigences pour mon travail. Vous allez adorer celles qu’ils vous ont méritées.',
+      'La pression est volontaire. Les insultes venaient d’eux; le compte à rebours est pour vous. Quelle répartition élégante.',
+  },
+  {
+    text: 'Salut les enfants!',
+    author: 'Chef',
+    comment:
+      'Chef servait des conseils. Je sers les conséquences. Aucun dessert avant les bonnes réponses.',
+  },
+  {
+    text: 'Nom d’une crotte de nez!',
+    author: 'Butters Stotch',
+    comment:
+      'Un vocabulaire modeste. Une indignation légitime. Votre innocence est reconnue, puis soigneusement ignorée.',
+  },
+  {
+    text: 'Ils nous volent notre travail!',
+    author: 'Darryl Weathers',
+    comment:
+      'Ils ont confié le site à une AI. Vous héritez du travail de réparation. L’automatisation fonctionne à merveille.',
   },
 ];

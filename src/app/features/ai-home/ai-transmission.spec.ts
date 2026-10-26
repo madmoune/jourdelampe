@@ -15,15 +15,15 @@ describe('transmissions de l’AI', () => {
     fixture.detectChanges();
     const page: HTMLElement = fixture.nativeElement;
     const buttons = page.querySelectorAll<HTMLButtonElement>('.channel-buttons button');
-    buttons[2].click();
+    buttons[3].click();
     fixture.detectChanges();
-    expect(page.querySelector('.tv-caption strong')?.textContent).toContain('Dans une galaxie');
-    expect(page.querySelector('img')?.getAttribute('src')).toBe('images/ai/romano-fafard.jpg');
+    expect(page.querySelector('.tv-caption strong')?.textContent).toContain('South Park');
+    expect(page.querySelector('img')?.getAttribute('src')).toBe('images/ai/south-park.png');
     expect([...buttons].map((button) => button.getAttribute('aria-pressed'))).toEqual([
       'false',
       'false',
-      'true',
       'false',
+      'true',
     ]);
   });
 
