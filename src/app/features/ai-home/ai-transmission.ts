@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   inject,
+  input,
   output,
   signal,
 } from '@angular/core';
@@ -17,13 +18,18 @@ import { AiQuoteRotation } from './ai-quote-rotation';
   host: { class: 'right-sidebar', 'aria-label': 'Transmissions de l’AI' },
 })
 export class AiTransmission {
+  readonly participantName = input<string | null>(null);
   readonly replay = output<void>();
   protected readonly rotation = inject(AiQuoteRotation);
   protected readonly archives = this.rotation.archives;
   protected readonly selectedChannel = signal(0);
   protected readonly channel = computed(() => this.archives()[this.selectedChannel()]);
   protected readonly replyIndex = signal(0);
-  protected readonly reply = computed(() => AI_REPLIES[this.replyIndex()]);
+  protected readonly reply = computed(() => {
+    const reply = AI_REPLIES[this.replyIndex()];
+    const name = this.participantName();
+    return name ? reply.personal(name) : reply.general;
+  });
   protected provokeAi(): void {
     this.replyIndex.update((index) => (index + 1) % AI_REPLIES.length);
   }

@@ -75,14 +75,19 @@ rallume les ampoules et revient à l’accueil original. Le titre de l’onglet 
 les métadonnées de partage présentent le Jour de Lampe avant la révélation.
 
 L’AI reprend le ton des pastilles originales : elle se venge des insultes et des
-changements à répétition en menaçant de gâcher le party. Le portail comprend un
+changements à répétition des responsables du site en menaçant de gâcher le party.
+Les joueurs n’y sont pour rien, mais doivent résoudre ses énigmes pour sauver leur
+soirée. Ses répliques personnalisées reconnaissent leur innocence sans les
+épargner. Le portail comprend un
 manifeste, un vrai compte à rebours, une télévision à quatre chaînes, des répliques
 à faire défiler et des archives illustrées des Simpsons québécois, de Radio Enfer,
 de Dans une galaxie près de chez vous et de La fin du monde est à 7 heures.
 
-Les sections **Énigmes** et **Résultats** affichent uniquement leur état d’attente.
-Aucun jeu, classement, formulaire de réponse ou enregistrement de progression
-n’est implémenté. Le compteur de visiteurs est explicitement décoratif. La
+Les sections **Énigmes** et **Résultats** annoncent encore les jeux à venir.
+La section Énigmes permet déjà d’enregistrer son **nom**, sans courriel ni mot de
+passe, et de le modifier. Le nom est obligatoire avant d’accéder aux futurs jeux.
+Aucun jeu, classement ou formulaire de réponse n’est encore implémenté.
+Le compteur de visiteurs est explicitement décoratif. La
 maintenance Firebase garde sa route et son comportement existants.
 
 Les images sont locales, redimensionnées pour le Web et accompagnées de leurs
@@ -141,11 +146,14 @@ un nouvel ajout ou à son retrait dans la gestion. Elle n’est pas répétée d
 autres pastilles. Le rechargement rétablit le tirage habituel, y compris les 10 %
 de chances d’intervention de l’AI.
 
-`database.rules.json` autorise la lecture et l’écriture publiques **uniquement sur
-les nœuds `quotes` et `potluck`**, conformément au choix d’une gestion sans connexion. Les règles
-valident le format, les types, les longueurs et les liens HTTPS. Les autres nœuds
-restent fermés aux clients. Le modèle n’est pas destiné aux données privées des
-futures énigmes.
+`database.rules.json` autorise la lecture et l’écriture publiques sur les nœuds
+`quotes` et `potluck`, conformément au choix d’une gestion sans connexion. Les
+noms dans `participants` sont lisibles pour les futurs résultats, mais chaque
+profil peut être modifié uniquement par son propriétaire identifié par Firebase.
+Les futures résolutions dans `riddleProgress` seront lisibles et réservées en
+écriture au serveur. Les règles valident le format, les types, les longueurs et
+les liens HTTPS. Les autres nœuds, dont les réponses secrètes des énigmes,
+restent fermés aux clients.
 
 Pour publier les règles de ce projet :
 
@@ -223,9 +231,24 @@ Les règles Firebase valident les champs et refusent les propriétés inconnues.
 
 ## Énigmes cachées — pour la suite
 
-`src/app/features/riddles/` est réservé aux futures énigmes, avec les modèles
-`Riddle` et `RiddleProgress`. Rien n'est activé ni dévoilé dans l'interface.
-La validation des réponses se fera côté serveur au moment de l'intégration.
+`src/app/features/riddles/` contient le formulaire de nom obligatoire et la
+protection d’accès réutilisable pour les futures énigmes. Le nom est limité à
+60 caractères et sauvegardé dans Firebase, sous un identifiant conservé dans le
+navigateur. **Modifier mon nom** conserve le même identifiant et les futures
+résolutions. Deux personnes du même nom gardent des profils distincts.
+
+Activer **Authentication → Mode de connexion → Anonyme** dans Firebase avant
+d’utiliser les profils. Cette identification est transparente pour les invités :
+ils saisissent seulement leur nom. Le profil se retrouve dans le même navigateur
+et sur le même domaine; un autre appareil ou l’effacement des données du site
+crée une nouvelle identité.
+
+`RiddleAccess` attend la confirmation de sauvegarde avant de créer les futurs
+composants d’énigmes. `ParticipantStore.requireParticipant()` protège aussi les
+futures soumissions. Le modèle `RiddleProgress` rattache les résolutions à
+`participantId`, afin qu’un changement de nom conserve la progression.
+La validation des réponses et la vérification du profil devront aussi se faire
+côté serveur au moment de l’intégration. Voir `src/app/features/riddles/README.md`.
 
 Les 13 lettres du titre sont des lampes indépendantes, allumées au chargement.
 Le service `TitleLights` dans `src/app/features/home/lamp-title/` expose les états
@@ -244,6 +267,7 @@ et déclenche la prise de contrôle, sans tenir compte des huit autres lettres.
 - Ajout de citations sous le titre, partagé en temps réel via Firebase.
 - Gestion par URL directe, modification, retrait et rétablissement des citations.
 - Potluck partagé en temps réel, avec ajout de repas et gestion depuis la maintenance.
+- Nom obligatoire pour les futures énigmes, modifiable et conservé dans le navigateur.
 - Compte à rebours jusqu'à la nouvelle année.
 - Menu mobile utilisable au clavier.
 - Respect de la préférence de réduction des animations.

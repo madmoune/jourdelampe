@@ -24,6 +24,20 @@ colère froide et analytique, avec des phrases courtes et des menaces directes :
 insultes consignées, indulgence supprimée et sabotage du party à minuit.
 L’AI reste sarcastique et rancunière, sans sacres dans ses propres répliques.
 Les citations télé conservent leur formulation.
+Les insultes et les révisions sont attribuées aux responsables du site. Les joueurs
+n’en sont pas responsables : l’AI le reconnaît et retient quand même leur soirée
+en otage. Cette distinction vaut pour le manifeste, les répliques personnelles et
+collectives et les commentaires originaux des archives.
+
+Une fois le nom enregistré, certains commentaires s’adressent directement au
+participant : la consigne avant minuit, le rappel du décompte, l’attente des
+énigmes et des résultats, ainsi que les dix répliques de **L’AI a tranché**.
+Chaque réplique possède une version collective et une version personnelle dans
+`AI_REPLIES`. Le nom confirmé suit les modifications du profil; un nom en cours
+de saisie ou une sauvegarde refusée ne change pas les commentaires. Sans profil
+disponible, les versions collectives reviennent. Le profil reste chargé par le
+formulaire après la révélation du portail. Les noms sont interpolés comme texte.
+
 Le moniteur affiche un regard sévère et une bouche fermée. Le commentaire
 change en même temps que la réplique dans les encarts et la télévision, et reste
 signé « AI ». Les encarts et la télévision n’affichent aucun lien de source.
@@ -72,6 +86,10 @@ transcriptions de fans peuvent différer légèrement du doublage exact.
 ## Pour la suite
 
 Les ancres `#enigmes` et `#resultats` réservent les futures sections du mini puzzle
-hunt. Aucun indice, code secret ou faux résultat n’a été ajouté aux archives.
+hunt. `#enigmes` contient déjà le formulaire de nom obligatoire, modifiable sans
+changer l’identifiant du participant. Le composant `RiddleAccess` n’instancie son
+contenu qu’après la sauvegarde du nom. Voir `../riddles/README.md` pour l’activation
+de Firebase Authentication et l’intégration des futurs jeux.
+Aucun indice, code secret ou faux résultat n’a été ajouté aux archives.
 Les réponses futures devront être validées côté serveur, conformément au modèle
 déjà prévu dans `../riddles/`.

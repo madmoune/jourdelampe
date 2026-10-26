@@ -1,0 +1,124 @@
+:host {
+  display: block;
+}
+
+.player-profile {
+  margin: 0 20px 20px;
+  padding: 16px;
+  border: 1px solid #6b5b83;
+  background: #100c23;
+  font-size: 12px;
+}
+
+h3 {
+  margin: 0 0 8px;
+  color: #dcff79;
+  font-size: 15px;
+}
+
+p {
+  margin: 0 0 12px;
+  color: #c9bad8;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #e6d9f6;
+  font-weight: bold;
+}
+
+.name-controls,
+.profile-summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+input {
+  flex: 1 1 160px;
+  min-width: 0;
+  width: 100%;
+  padding: 10px;
+  border: 2px solid;
+  border-color: #675775 #d9cce7 #d9cce7 #675775;
+  border-radius: 0;
+  background: #f3eef7;
+  color: #221a2e;
+  font: inherit;
+  font-size: 16px;
+}
+
+button {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 2px solid;
+  border-color: #f2ffc0 #6b7b43 #6b7b43 #f2ffc0;
+  background: #d5ed8b;
+  color: #202a12;
+  font: inherit;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover:enabled {
+  background: #e4ffa2;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+input:focus-visible,
+button:focus-visible,
+.profile-summary:focus-visible {
+  outline: 2px solid #dcff79;
+  outline-offset: 3px;
+}
+
+.text-button {
+  border: 0;
+  padding: 8px 0;
+  background: transparent;
+  color: #d0b4f3;
+  text-decoration: underline;
+}
+
+.text-button:hover:enabled {
+  background: transparent;
+  color: #eee3ff;
+}
+
+.profile-summary {
+  justify-content: space-between;
+}
+
+.profile-summary p {
+  flex: 1 1 180px;
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+strong {
+  color: #dcff79;
+}
+
+.access-note {
+  margin: 10px 0 0;
+  font-size: 11px;
+}
+
+.feedback {
+  margin: 12px 0 0;
+}
+
+.error {
+  color: #ffacb4;
+}
+
+.success {
+  color: #dcff79;
+}

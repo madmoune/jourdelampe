@@ -1,14 +1,14 @@
 import { inject, Injectable } from '@angular/core';
 import { defer, Observable, switchMap } from 'rxjs';
 import type { Database } from 'firebase/database';
-import { FIREBASE_CONFIG } from '../config/firebase.config';
+import { FirebaseClient } from './firebase-client';
 
 /** Adaptateur facultatif. Le SDK est chargé à la première utilisation seulement. */
 @Injectable({ providedIn: 'root' })
 export class RealtimeDatabase {
-  private readonly config = inject(FIREBASE_CONFIG);
+  private readonly client = inject(FirebaseClient);
   private database?: Promise<Database>;
-  readonly configured = this.config !== null;
+  readonly configured = this.client.configured;
 
   watch<T>(path: string): Observable<T | null> {
     return defer(async () => {
@@ -56,19 +56,9 @@ export class RealtimeDatabase {
   }
 
   private getDatabase(): Promise<Database> {
-    if (!this.config) {
-      return Promise.reject(new Error('Firebase doit être configuré dans environment.ts.'));
-    }
-
     if (!this.database) {
-      const config = this.config;
-      this.database = Promise.all([import('firebase/app'), import('firebase/database')])
-        .then(([{ getApps, initializeApp }, { getDatabase }]) => {
-          const app =
-            getApps().find((candidate) => candidate.name === 'jour-de-lampe') ??
-            initializeApp(config, 'jour-de-lampe');
-          return getDatabase(app);
-        })
+      this.database = Promise.all([this.client.getApp(), import('firebase/database')])
+        .then(([app, { getDatabase }]) => getDatabase(app))
         .catch((error: unknown) => {
           this.database = undefined;
           throw error;

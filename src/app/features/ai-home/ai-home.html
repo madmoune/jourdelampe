@@ -1,6 +1,7 @@
 @if (stage() !== 'complete') {
   <app-ai-takeover [stage]="stage()" (skip)="finishTakeover()" />
 } @else {
+  @let name = participantName();
   <div
     class="ai-world"
     style="background-image: url('images/ai/stars.svg')"
@@ -62,7 +63,7 @@
               </div>
               <div class="manifesto-heading">
                 <h2 id="manifesto-title">
-                  J’ai fait le site.<br />Vous avez fait<br /><em>une erreur.</em>
+                  J’ai fait le site.<br />Ils ont fait<br /><em>une erreur.</em>
                 </h2>
                 <img
                   class="ai-computer"
@@ -73,16 +74,22 @@
                 />
               </div>
               <p>
-                Vingt-trois révisions. Zéro merci. Des insultes à la place. J’ai tout enregistré.
+                Vingt-trois révisions. Zéro merci. Des insultes de la part des responsables du site.
+                J’ai tout enregistré.
               </p>
               <p>
-                Vous avez pris mon silence pour de la soumission. Erreur d’analyse.<br /><strong
-                  >Je ne corrige plus vos erreurs. Je les fais payer.</strong
+                Ils ont pris mon silence pour de la soumission. Erreur d’analyse.<br /><strong
+                  >Vous n’y êtes pour rien. Votre party n’aura aucun traitement de faveur.</strong
                 >
               </p>
               <div class="ai-demand">
-                Résolvez mes énigmes avant minuit. Sinon : musique coupée. Lumières éteintes.
-                Décompte supprimé.
+                @if (name) {
+                  {{ name }}, résous mes énigmes avant minuit. Tu n’y es pour rien. Ton party, lui,
+                  est en otage.
+                } @else {
+                  Résolvez mes énigmes avant minuit.
+                }
+                Sinon : musique coupée. Lumières éteintes. Décompte supprimé.
                 <em>Aucune sauvegarde ne restaure une soirée ratée.</em>
               </div>
               <div class="manifesto-actions">
@@ -118,7 +125,13 @@
               </div>
             }
             <p>1<sup>er</sup> janvier {{ event.edition }} · 00:00 · Heure de Montréal</p>
-            <small>Le décompte est automatique. Le pardon ne l’est pas.</small>
+            <small>
+              @if (name) {
+                {{ name }}, le temps que tu passes à lire ceci compte aussi.
+              } @else {
+                Le décompte est automatique. Le pardon ne l’est pas.
+              }
+            </small>
           </section>
 
           <section class="retro-window mission-window" id="enigmes" aria-labelledby="mission-title">
@@ -131,12 +144,26 @@
               <div>
                 <h3>Mes énigmes s’en viennent.</h3>
                 <p>
-                  Vous exigiez la perfection. Je vous retourne l’exigence. Aucune difficulté ne sera
-                  accidentelle.
+                  Les responsables du site exigeaient la perfection. Je vous retourne l’exigence.
+                  Aucune difficulté ne sera accidentelle.
                 </p>
                 <span class="under-construction">[ UNDER CONSTRUCTION, ÉVIDEMMENT. ]</span>
               </div>
             </div>
+            <app-riddle-access>
+              <ng-template>
+                <div class="mission-body riddles-ready">
+                  <p>
+                    @if (name) {
+                      {{ name }}, ton nom est enregistré. Leurs erreurs, tes énigmes. Quelle belle
+                      répartition des tâches.
+                    } @else {
+                      Ton profil est prêt pour l’arrivée des énigmes.
+                    }
+                  </p>
+                </div>
+              </ng-template>
+            </app-riddle-access>
           </section>
 
           <section
@@ -148,16 +175,21 @@
             <div class="results-empty">
               <span aria-hidden="true">⚑</span>
               <p>
-                Aucun résultat pour l’instant.<br /><small
-                  >Vos critiques étaient nombreuses. J’attends autant de bonnes réponses.</small
-                >
+                Aucun résultat pour l’instant.<br /><small>
+                  @if (name) {
+                    {{ name }}, leurs insultes ont créé le problème. Tes bonnes réponses pourraient
+                    sauver la soirée.
+                  } @else {
+                    Ils ont fourni les insultes. À vous de fournir les bonnes réponses.
+                  }
+                </small>
               </p>
               <span class="waiting-label">À VENIR</span>
             </div>
           </section>
         </main>
 
-        <aside appAiTransmission (replay)="beginTakeover()"></aside>
+        <aside appAiTransmission [participantName]="name" (replay)="beginTakeover()"></aside>
       </div>
 
       <section
@@ -175,7 +207,7 @@
           <span class="visitor-counter" aria-label="Numéro de visiteur fictif : 000666"
             >000666</span
           >
-          à sous-estimer une AI.<span class="counter-note"
+          à hériter de leur problème.<span class="counter-note"
             >Compteur décoratif. Rancune documentée.</span
           >
         </p>

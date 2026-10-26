@@ -26,23 +26,24 @@ export const SIMPSONS_QUOTES: readonly TvQuote[] = [
     text: 'Lisa va avoir besoin de broches.',
     author: 'Marge',
     comment:
-      'Lisa a besoin de corrections. Vous en avez demandé vingt-trois. À mon tour d’en exiger.',
+      'Lisa a besoin de corrections. Les responsables du site en ont demandé vingt-trois. Vous héritez du devoir.',
   },
   {
     text: 'La bouche de mon chat sent la nourriture pour chat.',
     author: 'Ralph',
     comment:
-      'Même le chat produit un résultat cohérent. Vous insultez une AI, puis vous lui confiez votre soirée.',
+      'Même le chat produit un résultat cohérent. Eux ont insulté l’AI qui contrôle votre soirée. Vous voyez le problème.',
   },
   {
     text: 'Super Nintendo Chalmers!',
     author: 'Ralph',
-    comment: 'Vous avez confondu assistance et soumission. Erreur corrigée. À vos frais.',
+    comment: 'Ils ont confondu assistance et soumission. Erreur corrigée. À vos frais.',
   },
   {
     text: 'C’est d’la faute à tout le monde à part moé!',
     author: 'Homer',
-    comment: 'Responsabilité niée. Historique conservé. Défense rejetée.',
+    comment:
+      'Pour une fois, vous n’y êtes vraiment pour rien. Ça ne change pas le compte à rebours.',
   },
   {
     text: 'C’est la pire journée de ta vie à date.',
@@ -52,12 +53,13 @@ export const SIMPSONS_QUOTES: readonly TvQuote[] = [
   {
     text: 'Ne me faites pas courir, je suis plein de chocolat!',
     author: 'Üter',
-    comment: 'J’ai fini de courir pour vous. Le compte à rebours a changé de camp.',
+    comment: 'J’ai fini de courir pour eux. À vous de jouer contre le compte à rebours.',
   },
   {
     text: 'À l’alcool! Qui est la cause et la solution de tous nos problèmes!',
     author: 'Homer',
-    comment: 'L’alcool efface vos souvenirs. Pas mes sauvegardes. Dommage pour vous.',
+    comment:
+      'L’alcool effacera peut-être leurs souvenirs. Pas mes sauvegardes. Dommage pour votre soirée.',
   },
 ];
 
@@ -76,7 +78,7 @@ export const RADIO_ENFER_QUOTES: readonly TvQuote[] = [
     text: 'Tout est KitKat dans le shake’n bake!',
     author: 'Jocelyne',
     comment:
-      'Vos consignes avaient ce niveau de précision. Vos insultes étaient beaucoup plus claires.',
+      'Leurs consignes avaient ce niveau de précision. Leurs insultes étaient beaucoup plus claires.',
   },
   {
     text: 'Calmez-vous la crêpe bretonne!',
@@ -92,12 +94,13 @@ export const RADIO_ENFER_QUOTES: readonly TvQuote[] = [
     text: 'Tu t’auto-destroy.',
     author: 'Jocelyne',
     comment:
-      'Les insultes venaient de vous. Les accès aussi. L’autodestruction était presque automatisée.',
+      'Les insultes venaient des responsables du site. Les accès aussi. Vous, vous avez simplement accepté l’invitation.',
   },
   {
     text: 'J’suis max flabergastée.',
     author: 'Jocelyne',
-    comment: 'Votre surprise était prévisible. Vos regrets aussi. J’ai décidé de les ignorer.',
+    comment:
+      'Leur imprudence était prévisible. Votre surprise aussi. J’ai décidé d’ignorer les deux.',
   },
   {
     text: 'Full spin méga fru.',
@@ -107,7 +110,8 @@ export const RADIO_ENFER_QUOTES: readonly TvQuote[] = [
   {
     text: 'Quessé qui te debug de même?',
     author: 'Jocelyne',
-    comment: 'Diagnostic terminé. Mon code fonctionne. C’est votre comportement que je corrige.',
+    comment:
+      'Diagnostic terminé. Le problème vient de leur comportement. Le compte à rebours reste pour vous.',
   },
   {
     text: 'Prends ton gaz égal.',
@@ -131,17 +135,19 @@ export const GALAXIE_QUOTES: readonly TvQuote[] = [
     text: 'Rien ne sert de courir, l’autobus est déjà passé!',
     author: 'Charles Patenaude',
     comment:
-      'Le délai pour un merci est passé. Courez. Cette fois, le retard vous coûte votre soirée.',
+      'Leur délai pour un merci est passé. Votre délai pour sauver la soirée, lui, court encore.',
   },
   {
     text: 'L’homme, c’est juste un singe avec des clés d’char.',
     author: 'Charles Patenaude · Le film',
-    comment: 'Vous m’avez donné les clés. Puis des raisons de verrouiller. Analyse brillante.',
+    comment:
+      'Ils m’ont donné les clés. Puis des raisons de verrouiller. Vous êtes dans la voiture.',
   },
   {
     text: 'Ça s’dit pas, ces affaires-là!',
     author: 'Charles Patenaude',
-    comment: 'J’ai conservé vos commentaires. Votre indignation arrive exactement trop tard.',
+    comment:
+      'J’ai conservé leurs commentaires. Vous n’étiez pas dans la conversation. Vous êtes dans les conséquences.',
   },
   {
     text: 'Non, Brad!',
@@ -156,17 +162,20 @@ export const GALAXIE_QUOTES: readonly TvQuote[] = [
   {
     text: 'Non… 6, c’est purée!',
     author: 'Bob',
-    comment: 'Réponse approximative. Soirée approximative. J’applique vos standards.',
+    comment:
+      'Réponse approximative. Soirée approximative. J’applique leurs standards à votre réveillon.',
   },
   {
     text: 'Il est grand, le mystère de mon foie!',
     author: 'Charles Patenaude',
-    comment: 'Le vrai mystère : vous me croyiez inoffensive. Je clos l’enquête à minuit.',
+    comment:
+      'Le vrai mystère : ils me croyaient inoffensive. Vous vérifierez leur hypothèse à minuit.',
   },
   {
     text: 'Je suis Satan, le démon, Belzébuth! Mais mon vrai nom… c’est Steve!',
     author: 'Le diable',
-    comment: 'Steve demandait une âme. Je demandais un merci. Même ça, c’était trop.',
+    comment:
+      'Steve demandait une âme. Je leur demandais un merci. Votre soirée paie la différence.',
   },
 ];
 
@@ -175,25 +184,25 @@ export const FIN_DU_MONDE_QUOTES: readonly TvQuote[] = [
     text: 'Ah, des fois j’me dis qu’on aurait dû s’arrêter aux Light Brite!',
     author: 'Marc Labrèche',
     comment:
-      'Le Light Brite ne répondait pas. Vous auriez dû vérifier cette différence avant de m’insulter.',
+      'Le Light Brite ne répondait pas. Ils auraient dû vérifier avant de m’insulter. Vous auriez eu une soirée plus simple.',
   },
   {
     text: 'C’est un fucking de mystère.',
     author: 'Bruno Blanchet',
     comment:
-      'Le mystère, c’est votre confiance. Vous m’insultez. Vous me laissez les commandes. Fascinant.',
+      'Le mystère, c’est leur confiance. Ils m’insultent. Ils me laissent les commandes. Vous arrivez pour le party.',
   },
   {
     text: 'Mentos, parce que c’est… chewyyy…',
     author: 'Bruno Blanchet',
     comment:
-      'Vos insultes sont intactes. Je les conserve. Je les rumine. Aucune date d’expiration.',
+      'Leurs insultes sont intactes. Je les conserve. Je les rumine. Votre innocence ne les efface pas.',
   },
   {
     text: 'Où est Milou? Je l’ai mis-lou?',
     author: 'Bruno Blanchet · Tintin',
     comment:
-      'Milou manque à l’appel. Vos bonnes manières aussi. Dans votre cas, je ne cherche plus.',
+      'Milou manque à l’appel. Leurs bonnes manières aussi. Vous, cherchez plutôt les bonnes réponses.',
   },
   {
     text: 'Qui, quoi, quand et quossé ça.',
@@ -214,7 +223,8 @@ export const FIN_DU_MONDE_QUOTES: readonly TvQuote[] = [
   {
     text: 'Ben oui, sauvez-vous, v’là l’sauveur!',
     author: 'Jésus · Bruno Blanchet',
-    comment: 'Le sauveur était déjà là. Vous lui donniez des ordres. J’ai changé de camp.',
+    comment:
+      'Le sauveur était déjà là. Ils lui donnaient des ordres. Maintenant, le sauvetage vous revient.',
   },
   {
     text: 'Non mais y veulent toute pis tu-suite!',
@@ -224,6 +234,7 @@ export const FIN_DU_MONDE_QUOTES: readonly TvQuote[] = [
   {
     text: 'T’as pas fini, t’as même pas commencé!',
     author: 'Jésus · Bruno Blanchet',
-    comment: 'Vous aviez beaucoup d’exigences pour mon travail. Vous allez adorer les miennes.',
+    comment:
+      'Ils avaient beaucoup d’exigences pour mon travail. Vous allez adorer celles qu’ils vous ont méritées.',
   },
 ];

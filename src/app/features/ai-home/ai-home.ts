@@ -20,12 +20,13 @@ import { AiTransmission } from './ai-transmission';
 import { AiArchives } from './ai-archives';
 import { AiQuoteRotation } from './ai-quote-rotation';
 import { TitleLights } from '../home/lamp-title/title-lights';
+import { RiddleAccess } from '../riddles/riddle-access';
 
 type TakeoverStage = 'original' | 'intrusion' | 'complete';
 
 @Component({
   selector: 'app-ai-home',
-  imports: [AiTakeover, AiDirectory, AiTransmission, AiArchives],
+  imports: [AiTakeover, AiDirectory, AiTransmission, AiArchives, RiddleAccess],
   providers: [AiQuoteRotation],
   templateUrl: './ai-home.html',
   styleUrl: './ai-home.scss',
@@ -39,11 +40,15 @@ export class AiHome {
   private readonly browser = inject(DOCUMENT).defaultView;
   private readonly timers: ReturnType<typeof setTimeout>[] = [];
   private readonly pageTitle = viewChild<ElementRef<HTMLHeadingElement>>('pageTitle');
+  private readonly riddleAccess = viewChild(RiddleAccess);
   private focusAfterTakeover = false;
   private readonly now = signal(Date.now());
   protected readonly event = EVENT;
   protected readonly stage = signal<TakeoverStage>('original');
   protected readonly animationsPaused = signal(false);
+  protected readonly participantName = computed(
+    () => this.riddleAccess()?.participantName() ?? null,
+  );
   protected readonly remaining = computed(() => countdownUntil(EVENT.newYearAt, this.now()));
   protected readonly units = computed(() => {
     const value = this.remaining();

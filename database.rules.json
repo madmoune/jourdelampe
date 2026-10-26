@@ -68,6 +68,26 @@
         }
       }
     },
+    "participants": {
+      ".read": true,
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid && newData.exists()",
+        ".validate": "newData.hasChildren(['name', 'updatedAt'])",
+        "name": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 60 && newData.val().matches(/^[^ ]+( [^ ]+)*$/) && !newData.val().contains('\\t') && !newData.val().contains('\\r') && !newData.val().contains('\\n')"
+        },
+        "updatedAt": {
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "riddleProgress": {
+      ".read": true,
+      ".write": false
+    },
     "potluck": {
       ".read": true,
       ".write": true,

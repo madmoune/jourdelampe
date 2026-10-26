@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { Home } from '../home/home';
@@ -6,6 +6,8 @@ import { LampTitle } from '../home/lamp-title/lamp-title';
 import { TitleLights } from '../home/lamp-title/title-lights';
 import { AiHome } from './ai-home';
 import { AiTakeover } from './ai-takeover';
+import { ParticipantStore } from '../riddles/participant-store';
+import { Participant } from '../riddles/participant';
 
 @Component({
   selector: 'app-home',
@@ -18,19 +20,37 @@ describe('prise de contrôle de l’AI', () => {
   let fixture: ComponentFixture<AiHome>;
   let page: HTMLElement;
   let reducedMotion: boolean;
+  let participant: WritableSignal<Participant | null>;
+  let accessReady: WritableSignal<boolean>;
   const obsoleteStorageKey = 'jour-de-l-ai:takeover-seen';
 
   beforeEach(async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-12-31T23:59:58-05:00'));
     reducedMotion = false;
+    participant = signal<Participant | null>(null);
+    accessReady = signal(false);
     vi.stubGlobal(
       'matchMedia',
       vi.fn(() => ({ matches: reducedMotion })),
     );
     vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
     window.sessionStorage.removeItem(obsoleteStorageKey);
-    await TestBed.configureTestingModule({ imports: [AiHome] })
+    await TestBed.configureTestingModule({
+      imports: [AiHome],
+      providers: [
+        {
+          provide: ParticipantStore,
+          useValue: {
+            participant,
+            loading: signal(false),
+            saving: signal(false),
+            error: signal(''),
+            canSolve: accessReady,
+          },
+        },
+      ],
+    })
       .overrideComponent(AiTakeover, {
         remove: { imports: [Home] },
         add: { imports: [OriginalHomeStub] },
@@ -184,7 +204,9 @@ describe('prise de contrôle de l’AI', () => {
     expect(page.querySelector('#resultats')?.textContent).toContain(
       'Aucun résultat pour l’instant.',
     );
-    expect(page.querySelector('form')).toBeNull();
+    expect(page.querySelector('app-riddle-access form')).not.toBeNull();
+    expect(page.querySelector('input[name="playerName"]')).not.toBeNull();
+    expect(page.querySelector('.riddles-ready')).toBeNull();
     for (const link of page.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')) {
       expect(page.querySelector(link.getAttribute('href')!)).not.toBeNull();
     }
@@ -195,5 +217,54 @@ describe('prise de contrôle de l’AI', () => {
     fixture.detectChanges();
     expect(pause.getAttribute('aria-pressed')).toBe('true');
     expect(page.querySelector('.ai-world')?.classList.contains('motion-paused')).toBe(true);
+  });
+
+  it('s’adresse au profil déjà enregistré seulement après la révélation du portail', () => {
+    participant.set({ id: 'player', name: 'Chloé Martin', updatedAt: 1 });
+    accessReady.set(true);
+    createPage();
+    expect(page.textContent).not.toContain('Chloé Martin');
+    revealAi();
+    expect(page.querySelector('.ai-demand')?.textContent).toContain(
+      'Chloé Martin, résous mes énigmes avant minuit.',
+    );
+    expect(page.querySelector('.doomsday > small')?.textContent).toContain(
+      'Chloé Martin, le temps que tu passes à lire ceci compte aussi.',
+    );
+    expect(page.querySelector('.ai-aside blockquote')?.textContent).toContain(
+      'Chloé Martin, tu ne m’as pas insultée.',
+    );
+  });
+
+  it('personnalise avec le nom confirmé, suit ses changements et revient au texte collectif sans profil', () => {
+    createPage();
+    revealAi();
+    participant.set({ id: 'player', name: 'Chloé Martin', updatedAt: 1 });
+    fixture.detectChanges();
+    expect(page.querySelector('.ai-demand')?.textContent).toContain('Résolvez mes énigmes');
+    expect(page.querySelector('.ai-aside blockquote')?.textContent).not.toContain('Chloé Martin');
+    accessReady.set(true);
+    fixture.detectChanges();
+    for (const selector of [
+      '.ai-demand',
+      '.doomsday > small',
+      '.riddles-ready',
+      '.results-empty small',
+      '.ai-aside blockquote',
+    ]) {
+      expect(page.querySelector(selector)?.textContent).toContain('Chloé Martin');
+    }
+    participant.set({ id: 'player', name: 'Ariane Roy', updatedAt: 2 });
+    fixture.detectChanges();
+    expect(page.querySelector('.ai-demand')?.textContent).toContain('Ariane Roy');
+    expect(page.querySelector('.ai-aside blockquote')?.textContent).toContain('Ariane Roy');
+    expect(page.textContent).not.toContain('Chloé Martin');
+    accessReady.set(false);
+    fixture.detectChanges();
+    expect(page.querySelector('.ai-demand')?.textContent).toContain('Résolvez mes énigmes');
+    expect(page.querySelector('.doomsday > small')?.textContent).toContain(
+      'Le décompte est automatique. Le pardon ne l’est pas.',
+    );
+    expect(page.querySelector('.ai-aside blockquote')?.textContent).not.toContain('Ariane Roy');
   });
 });

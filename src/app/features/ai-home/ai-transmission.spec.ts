@@ -40,4 +40,35 @@ describe('transmissions de l’AI', () => {
     page.querySelector<HTMLButtonElement>('.replay-button')!.click();
     expect(replay).toHaveBeenCalledOnce();
   });
+
+  it('personnalise ses dix répliques et suit le nom sans réinitialiser la réplique choisie', () => {
+    const fixture = TestBed.createComponent(AiTransmission);
+    fixture.componentRef.setInput('participantName', 'Chloé Martin');
+    fixture.detectChanges();
+    const page: HTMLElement = fixture.nativeElement;
+    const televisionQuote = page.querySelector('.tv-quotation blockquote')!.textContent;
+    const replies = new Set<string>();
+    for (let index = 0; index < 10; index++) {
+      const text = page.querySelector('.ai-aside blockquote')!.textContent!;
+      expect(text).toContain('Chloé Martin');
+      replies.add(text);
+      page.querySelector<HTMLButtonElement>('.provoke-button')!.click();
+      fixture.detectChanges();
+    }
+    expect(replies.size).toBe(10);
+    page.querySelector<HTMLButtonElement>('.provoke-button')!.click();
+    fixture.detectChanges();
+    fixture.componentRef.setInput('participantName', 'Ariane Roy');
+    fixture.detectChanges();
+    expect(page.querySelector('.ai-aside blockquote')!.textContent).toContain(
+      'Ariane Roy, les responsables du site ont choisi les insultes.',
+    );
+    expect(page.querySelector('.tv-quotation blockquote')!.textContent).toBe(televisionQuote);
+    fixture.componentRef.setInput('participantName', null);
+    fixture.detectChanges();
+    expect(page.querySelector('.ai-aside blockquote')!.textContent).toContain(
+      'Les responsables du site voulaient une machine obéissante.',
+    );
+    expect(page.querySelector('.ai-aside blockquote')!.textContent).not.toContain('Ariane Roy');
+  });
 });

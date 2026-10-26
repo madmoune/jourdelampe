@@ -1,0 +1,63 @@
+<section class="player-profile" aria-label="Ton profil pour les énigmes">
+  @if (store.loading()) {
+    <p role="status">Chargement de ton profil…</p>
+  } @else if (store.error()) {
+    <p class="feedback error" role="alert">{{ store.error() }}</p>
+    <button type="button" (click)="store.retry()">Réessayer la connexion</button>
+  } @else if (!store.participant() || editing()) {
+    <h3>{{ store.participant() ? 'Changer ton nom' : 'Avant de jouer, présente-toi.' }}</h3>
+    <p id="player-name-help">
+      Entre ton nom pour accéder aux énigmes. Tu pourras le modifier sans perdre tes énigmes
+      résolues.
+    </p>
+    <form (ngSubmit)="submit()" [attr.aria-busy]="store.saving()">
+      <label for="player-name">Ton nom</label>
+      <div class="name-controls">
+        <input
+          #nameInput
+          id="player-name"
+          name="playerName"
+          type="text"
+          autocomplete="name"
+          placeholder="Ex. : Alex"
+          [maxlength]="nameMaxLength"
+          [ngModel]="name()"
+          (ngModelChange)="name.set($event); error.set('')"
+          [disabled]="store.saving()"
+          [attr.aria-invalid]="error() ? 'true' : null"
+          aria-describedby="player-name-help player-feedback"
+          required
+        />
+        <button type="submit" [disabled]="store.saving() || !name().trim()">
+          {{ store.saving() ? 'Enregistrement…' : 'Enregistrer mon nom' }}
+        </button>
+      </div>
+      @if (store.participant()) {
+        <button class="text-button" type="button" (click)="cancel()" [disabled]="store.saving()">
+          Annuler
+        </button>
+      } @else {
+        <p class="access-note">Un nom enregistré est obligatoire pour répondre aux énigmes.</p>
+      }
+    </form>
+  } @else {
+    <div class="profile-summary" #profileSummary tabindex="-1">
+      <p>
+        Tu joues sous le nom <strong>{{ store.participant()!.name }}</strong>
+      </p>
+      <button class="text-button" type="button" (click)="edit()">Modifier mon nom</button>
+    </div>
+    <p class="access-note">Ton profil est conservé dans ce navigateur.</p>
+  }
+  <div id="player-feedback" aria-live="polite" aria-atomic="true">
+    @if (error()) {
+      <p class="feedback error" role="alert">{{ error() }}</p>
+    }
+    @if (message()) {
+      <p class="feedback success">{{ message() }}</p>
+    }
+  </div>
+</section>
+@if (store.canSolve()) {
+  <ng-container [ngTemplateOutlet]="content()" />
+}

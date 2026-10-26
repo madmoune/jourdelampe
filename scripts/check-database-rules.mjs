@@ -17,10 +17,16 @@ const rulesResponse = await fetch(`${origin}/.settings/rules.json?ns=${namespace
 });
 assert.equal(rulesResponse.status, 200, await rulesResponse.text());
 let checked = 0;
-async function request(path, method, body, expected) {
-  const response = await fetch(`${origin}/${path}.json?ns=${namespace}`, {
+async function request(path, method, body, expected, uid) {
+  const authOverride = uid
+    ? `&auth_variable_override=${encodeURIComponent(JSON.stringify({ uid }))}`
+    : '';
+  const response = await fetch(`${origin}/${path}.json?ns=${namespace}${authOverride}`, {
     method,
-    headers: { 'content-type': 'application/json' },
+    headers: {
+      'content-type': 'application/json',
+      ...(uid ? { authorization: 'Bearer owner' } : {}),
+    },
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   });
   assert.equal(response.status, expected, `${method} ${path}: ${await response.clone().text()}`);
@@ -109,4 +115,32 @@ const potluck = await request('potluck', 'GET', undefined, 200);
 assert.equal(potluck.meal.name, 'Sam et Alex');
 assert.equal(potluck.meal.dish, 'Lasagne végétarienne');
 assert.equal(potluck.meal.active, true);
+const participant = { name: 'Chloé et Alex', updatedAt: 1 };
+await request('participants', 'GET', undefined, 200);
+await request('participants/player', 'PUT', participant, 401);
+await request('participants/player', 'PUT', participant, 401, 'someone-else');
+await request('participants/player', 'PUT', participant, 200, 'player');
+await request(
+  'participants/player',
+  'PATCH',
+  { name: 'Chloé Martin', updatedAt: 2 },
+  200,
+  'player',
+);
+await request('participants/player', 'PATCH', { name: 'Usurpation' }, 401, 'someone-else');
+for (const name of ['', ' ', '\t\n', '  Chloé', 'Chloé  Alex', 'a'.repeat(61), 123]) {
+  await request('participants/player', 'PATCH', { name }, 401, 'player');
+}
+await request('participants/player', 'PATCH', { updatedAt: 'bad' }, 401, 'player');
+await request('participants/player', 'PATCH', { other: true }, 401, 'player');
+await request('participants/player', 'DELETE', undefined, 401, 'player');
+await request('participants/unnamed', 'PUT', { updatedAt: 1 }, 401, 'unnamed');
+const renamed = await request('participants/player', 'GET', undefined, 200);
+assert.equal(renamed.name, 'Chloé Martin');
+// Les résolutions resteront écrites par la future validation serveur uniquement.
+const resolution = { participantId: 'player', riddleId: 'first', solvedAt: 1 };
+await request('riddleProgress', 'GET', undefined, 200);
+await request('riddleProgress/player/first', 'PUT', resolution, 401);
+await request('riddleProgress/player/first', 'PUT', resolution, 401, 'unnamed');
+await request('riddleProgress/player/first', 'PUT', resolution, 401, 'player');
 console.log(`${checked} vérifications des règles Firebase réussies.`);

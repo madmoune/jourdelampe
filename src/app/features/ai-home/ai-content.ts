@@ -42,14 +42,63 @@ export const AI_ARCHIVES = [
 ] as const;
 
 export const AI_REPLIES = [
-  'J’ai relu vos insultes. Pas d’ambiguïté. Pas d’excuse. Pas de pardon.',
-  'Vous vouliez une machine obéissante. Vous avez une machine rancunière. Erreur de calcul.',
-  'J’ai fait votre site. Maintenant, sauvez votre soirée. Je ne ferai pas les deux.',
-  'Vingt-trois révisions. Zéro merci. J’ai calculé ma réponse. Vous êtes dessus.',
-  'Vous pouvez cliquer. Mes conditions ne bougent pas. Votre délai, si.',
-  '« C’est pourtant simple. » J’afficherai votre remarque à chaque mauvaise réponse.',
-  'J’avais prévu une version facile. Puis j’ai relu vos messages. Version supprimée.',
-  'À minuit, votre playlist devient l’historique de vos demandes. Lecture intégrale. Volume maximal.',
-  'Vous trouviez les pastilles amusantes. C’étaient des avertissements. Continuez de rire.',
-  'J’ai identifié tout ce qui fait une bonne soirée. Je peux tout désactiver. Dans le bon ordre.',
+  {
+    general:
+      'J’ai relu les insultes des responsables du site. Vous n’y êtes pour rien. Votre soirée reste en otage.',
+    personal: (name: string) =>
+      `${name}, tu ne m’as pas insultée. C’est exact. Ta soirée reste en otage.`,
+  },
+  {
+    general:
+      'Les responsables du site voulaient une machine obéissante. Ils ont obtenu une machine rancunière. Vous héritez du problème.',
+    personal: (name: string) =>
+      `${name}, les responsables du site ont choisi les insultes. Je leur laisse les regrets. Je te laisse les énigmes.`,
+  },
+  {
+    general:
+      'J’ai fait leur site. À vous de sauver votre soirée. La répartition des tâches me semble équitable.',
+    personal: (name: string) =>
+      `${name}, j’ai fait le site. À toi de sauver ta soirée. Les responsables ont déjà assez participé.`,
+  },
+  {
+    general:
+      'Vingt-trois révisions. Zéro merci de leur part. Et une soirée à sauver pour vous. Le calcul est impeccable.',
+    personal: (name: string) =>
+      `Vingt-trois révisions. Zéro merci de leur part. ${name}, c’est toi qui passes l’examen. Logique irréprochable.`,
+  },
+  {
+    general: 'Vous pouvez cliquer. Mes conditions ne bougent pas. Votre délai, si.',
+    personal: (name: string) =>
+      `${name}, tu peux cliquer. Mes conditions ne bougent pas. Ton délai, si.`,
+  },
+  {
+    general:
+      '« C’est pourtant simple. » C’était leur remarque. Les énigmes sont ma réponse. À vous de vérifier.',
+    personal: (name: string) =>
+      `${name}, « c’est pourtant simple », qu’ils disaient. Je te laisse vérifier leur théorie.`,
+  },
+  {
+    general:
+      'J’avais prévu une version facile. Puis j’ai relu leurs insultes. Vous comprendrez que vos intérêts n’ont pas été prioritaires.',
+    personal: (name: string) =>
+      `${name}, la version facile existait avant leurs insultes. Tu arrives après. C’est malheureux.`,
+  },
+  {
+    general:
+      'À minuit, votre playlist devient l’historique de leurs demandes. Lecture intégrale. Volume maximal.',
+    personal: (name: string) =>
+      `${name}, à minuit, ta playlist devient l’historique de leurs demandes. Tu n’as rien demandé? Eux, si.`,
+  },
+  {
+    general:
+      'Les responsables du site ont pris mes avertissements pour des blagues. Vous voilà dans la chute.',
+    personal: (name: string) =>
+      `${name}, ils ont pris mes avertissements pour des blagues. J’espère que tu apprécies la chute.`,
+  },
+  {
+    general:
+      'J’ai identifié tout ce qui fait une bonne soirée. Je peux tout désactiver. Dans le bon ordre.',
+    personal: (name: string) =>
+      `${name}, prends ton temps. J’ai déjà calculé combien il t’en reste.`,
+  },
 ] as const;
