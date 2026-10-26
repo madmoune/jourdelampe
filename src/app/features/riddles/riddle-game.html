@@ -1,0 +1,68 @@
+@if (game.error()) {
+  <p class="feedback error" role="alert">{{ game.error() }}</p>
+} @else if (!game.ready()) {
+  <p class="feedback" role="status">Chargement des énigmes…</p>
+} @else {
+  @for (riddle of game.riddles(); track riddle.id) {
+    <article class="riddle" [attr.aria-labelledby]="'riddle-' + riddle.id">
+      <h3 [id]="'riddle-' + riddle.id">{{ riddle.title }}</h3>
+      @if (riddle.prompt) {
+        <p class="prompt">{{ riddle.prompt }}</p>
+      }
+      @if (alreadySolved(riddle.id)) {
+        <p class="success">Tu as résolu cette énigme pour cette partie.</p>
+      } @else {
+        <form (ngSubmit)="submit(riddle.id)">
+          <label [for]="'answer-' + riddle.id">Ta réponse</label>
+          <div class="answer-controls">
+            <input
+              [id]="'answer-' + riddle.id"
+              name="answer"
+              type="text"
+              autocomplete="off"
+              maxlength="200"
+              [ngModel]="drafts()[riddle.id] ?? ''"
+              (ngModelChange)="setAnswer(riddle.id, $event)"
+              [disabled]="busy() !== null || !game.round()"
+              [attr.aria-describedby]="'feedback-' + riddle.id"
+              required
+            />
+            <button
+              type="submit"
+              [disabled]="busy() !== null || !game.round() || !(drafts()[riddle.id] ?? '').trim()"
+            >
+              {{ busy() === riddle.id ? 'Vérification…' : 'Valider ma réponse' }}
+            </button>
+          </div>
+        </form>
+      }
+      <div [id]="'feedback-' + riddle.id" aria-live="polite" aria-atomic="true">
+        @if (feedback()[riddle.id]; as result) {
+          <p
+            [class.success]="result.success"
+            [class.error]="!result.success"
+            [attr.role]="result.success ? 'status' : 'alert'"
+          >
+            {{ result.text }}
+          </p>
+        }
+      </div>
+    </article>
+  } @empty {
+    <p class="feedback">
+      {{ name() }}, ton nom est enregistré. Leurs erreurs, tes énigmes. Quelle belle répartition des
+      tâches.
+    </p>
+  }
+  @if (game.catalog().length) {
+    <div class="meta-status" aria-live="polite">
+      <strong>{{ game.metaUnlocked() ? 'MÉTA DÉVERROUILLÉ' : 'MÉTA VERROUILLÉ' }}</strong>
+      <p>
+        {{ game.solvedCount() }} / {{ game.catalog().length }} énigmes résolues au moins une fois.
+      </p>
+      @if (game.metaUnlocked()) {
+        <p>Le méta sera accessible ici dès sa mise en ligne.</p>
+      }
+    </div>
+  }
+}

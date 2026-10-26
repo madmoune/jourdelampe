@@ -34,6 +34,13 @@ export class AnonymousSession {
     return (auth.currentUser ?? (await signInAnonymously(auth)).user).uid;
   }
 
+  async token(): Promise<string> {
+    const auth = await this.getAuth();
+    await auth.authStateReady();
+    if (!auth.currentUser) throw new Error('Enregistre ton nom avant de répondre.');
+    return auth.currentUser.getIdToken();
+  }
+
   private getAuth(): Promise<Auth> {
     if (!this.auth) {
       this.auth = Promise.all([this.client.getApp(), import('firebase/auth')])

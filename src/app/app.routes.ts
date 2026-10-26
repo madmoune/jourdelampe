@@ -2,6 +2,12 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
+    path: 'gestion-enigmes',
+    title: 'Tableau de bord des énigmes — Le Jour de Lampe',
+    loadComponent: () =>
+      import('./features/game-dashboard/game-dashboard').then((module) => module.GameDashboard),
+  },
+  {
     path: 'maintenance-citations',
     title: 'Gestion — Le Jour de Lampe',
     loadComponent: () =>

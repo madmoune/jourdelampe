@@ -1,0 +1,76 @@
+:host {
+  display: block;
+}
+.riddle,
+.meta-status {
+  margin: 0 20px 20px;
+  padding: 16px;
+  border: 1px solid #6b5b83;
+  background: #100c23;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+h3 {
+  margin: 0 0 12px;
+  font-family: Georgia, serif;
+  font-size: 20px;
+  font-weight: normal;
+  color: #e5d8b5;
+}
+.prompt {
+  white-space: pre-wrap;
+  color: #e4dcee;
+  line-height: 1.8;
+}
+label {
+  display: block;
+  font-weight: bold;
+  margin: 14px 0 6px;
+}
+.answer-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+input {
+  flex: 1 1 170px;
+  min-width: 0;
+  padding: 10px;
+  font: inherit;
+  font-size: 16px;
+  background: #f3eef7;
+  color: #221a2e;
+  border: 2px inset #d9cce7;
+  border-radius: 0;
+}
+button {
+  min-height: 44px;
+  padding: 9px 12px;
+  border: 2px outset #d5ed8b;
+  background: #d5ed8b;
+  color: #202a12;
+  font: inherit;
+  font-weight: bold;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.feedback {
+  margin: 0 20px 20px;
+  color: #c9bad8;
+  font-size: 11px;
+}
+.error {
+  color: #ffacb4;
+}
+.success,
+.meta-status strong {
+  color: #dcff79;
+}
+input:focus-visible,
+button:focus-visible {
+  outline: 2px solid #dcff79;
+  outline-offset: 3px;
+}

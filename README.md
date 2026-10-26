@@ -83,10 +83,11 @@ manifeste, un vrai compte à rebours, une télévision à quatre chaînes, des r
 à faire défiler et des archives illustrées des Simpsons québécois, de Radio Enfer,
 de Dans une galaxie près de chez vous et de La fin du monde est à 7 heures.
 
-Les sections **Énigmes** et **Résultats** annoncent encore les jeux à venir.
-La section Énigmes permet déjà d’enregistrer son **nom**, sans courriel ni mot de
-passe, et de le modifier. Le nom est obligatoire avant d’accéder aux futurs jeux.
-Aucun jeu, classement ou formulaire de réponse n’est encore implémenté.
+Les sections **Énigmes** et **Résultats** suivent le catalogue enregistré dans
+Firebase. Le nom est obligatoire pour afficher les jeux et répondre; il se
+modifie sans courriel ni mot de passe. Chaque bonne réponse est vérifiée par
+les règles Firebase et enregistre le nom, l’heure du serveur et l’énigme.
+Le catalogue démarre vide, sans énigme ni résultat d’exemple.
 Le compteur de visiteurs est explicitement décoratif. La
 maintenance Firebase garde sa route et son comportement existants.
 
@@ -150,10 +151,11 @@ de chances d’intervention de l’AI.
 `quotes` et `potluck`, conformément au choix d’une gestion sans connexion. Les
 noms dans `participants` sont lisibles pour les futurs résultats, mais chaque
 profil peut être modifié uniquement par son propriétaire identifié par Firebase.
-Les futures résolutions dans `riddleProgress` seront lisibles et réservées en
-écriture au serveur. Les règles valident le format, les types, les longueurs et
-les liens HTTPS. Les autres nœuds, dont les réponses secrètes des énigmes,
-restent fermés aux clients.
+Le catalogue et les résolutions du jeu sont dans `game/catalog` et `game/solves`.
+Les réponses dans `riddleSecrets` et les preuves dans `game/proofs` sont réservées
+au rôle de gestion `gameAdmin`. Les règles valident les réponses, le nom du profil,
+la partie en cours et l’horodatage serveur avant toute résolution. Les autres
+nœuds restent fermés aux clients.
 
 Pour publier les règles de ce projet :
 
@@ -229,10 +231,25 @@ plat, modifier les deux champs, retirer un repas et le rétablir. L’accès res
 direct par URL, sans connexion et sans lien vers la maintenance depuis l’accueil.
 Les règles Firebase valident les champs et refusent les propriétés inconnues.
 
-## Énigmes cachées — pour la suite
+## Énigmes et tableau de bord
 
-`src/app/features/riddles/` contient le formulaire de nom obligatoire et la
-protection d’accès réutilisable pour les futures énigmes. Le nom est limité à
+Accès direct : `/gestion-enigmes`, sans lien dans le site public. Le mot de passe
+est vérifié par Firebase Authentication avec un compte de gestion distinct des
+joueurs. Il ne figure pas dans le code public. La page affiche les noms et réponses
+des énigmes, leur état, toutes les personnes qui les ont résolues et leurs heures
+de réussite à Montréal. Les énigmes sont intégrées manuellement; le tableau de bord
+sert uniquement au suivi et à la remise à zéro.
+
+Le bouton **Réinitialiser le jeu** demande deux confirmations, dont la saisie de
+`RÉINITIALISER`. Il efface les résolutions de la partie, remet les énigmes à non
+résolues et verrouille le méta, en conservant les énigmes, réponses et profils.
+
+Le méta se déverrouille quand chaque énigme a été résolue au moins une fois par
+n’importe quel joueur. Un catalogue vide reste verrouillé. Le contenu de la
+première énigme et celui du méta restent à ajouter dans le catalogue.
+
+`src/app/features/riddles/` contient le formulaire de nom obligatoire, le jeu, ses
+résultats et sa progression commune. Le nom est limité à
 60 caractères et sauvegardé dans Firebase, sous un identifiant conservé dans le
 navigateur. **Modifier mon nom** conserve le même identifiant et les futures
 résolutions. Deux personnes du même nom gardent des profils distincts.
@@ -243,12 +260,13 @@ ils saisissent seulement leur nom. Le profil se retrouve dans le même navigateu
 et sur le même domaine; un autre appareil ou l’effacement des données du site
 crée une nouvelle identité.
 
-`RiddleAccess` attend la confirmation de sauvegarde avant de créer les futurs
+`RiddleAccess` attend la confirmation de sauvegarde avant de créer les
 composants d’énigmes. `ParticipantStore.requireParticipant()` protège aussi les
-futures soumissions. Le modèle `RiddleProgress` rattache les résolutions à
+soumissions. Le modèle `RiddleProgress` rattache les résolutions à
 `participantId`, afin qu’un changement de nom conserve la progression.
-La validation des réponses et la vérification du profil devront aussi se faire
-côté serveur au moment de l’intégration. Voir `src/app/features/riddles/README.md`.
+La validation des réponses et la vérification du profil se font aussi côté serveur
+avec les règles Firebase. Chaque résolution garde le nom au moment de la réussite.
+Voir `src/app/features/riddles/README.md`.
 
 Les 13 lettres du titre sont des lampes indépendantes, allumées au chargement.
 Le service `TitleLights` dans `src/app/features/home/lamp-title/` expose les états

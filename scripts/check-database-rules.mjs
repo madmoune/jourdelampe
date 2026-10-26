@@ -19,7 +19,7 @@ assert.equal(rulesResponse.status, 200, await rulesResponse.text());
 let checked = 0;
 async function request(path, method, body, expected, uid) {
   const authOverride = uid
-    ? `&auth_variable_override=${encodeURIComponent(JSON.stringify({ uid }))}`
+    ? `&auth_variable_override=${encodeURIComponent(JSON.stringify(typeof uid === 'string' ? { uid } : uid))}`
     : '';
   const response = await fetch(`${origin}/${path}.json?ns=${namespace}${authOverride}`, {
     method,
@@ -143,4 +143,110 @@ await request('riddleProgress', 'GET', undefined, 200);
 await request('riddleProgress/player/first', 'PUT', resolution, 401);
 await request('riddleProgress/player/first', 'PUT', resolution, 401, 'unnamed');
 await request('riddleProgress/player/first', 'PUT', resolution, 401, 'player');
+const admin = { uid: 'game-admin', token: { gameAdmin: true } };
+const serverTime = { '.sv': 'timestamp' };
+await request(
+  '',
+  'PATCH',
+  {
+    'game/round': { id: 'round-one', resetAt: serverTime },
+    'game/catalog/first': { title: 'Première énigme', prompt: 'Un énoncé.', order: 0 },
+    'game/catalog/second': { title: 'Deuxième énigme', prompt: '', order: 1 },
+    'riddleSecrets/first': { answer: 'Lampe', normalizedAnswer: 'LAMPE' },
+    'riddleSecrets/second': { answer: 'Party', normalizedAnswer: 'PARTY' },
+  },
+  200,
+  admin,
+);
+await request('game', 'GET', undefined, 401);
+await request('game/catalog', 'GET', undefined, 200);
+await request('game/round', 'GET', undefined, 200);
+await request('riddleSecrets', 'GET', undefined, 401);
+await request('riddleSecrets/first/answer', 'GET', undefined, 401, 'player');
+await request('game/proofs', 'GET', undefined, 401, 'player');
+await request('riddleSecrets', 'GET', undefined, 200, admin);
+await request('game/catalog/forged', 'PUT', { title: 'Faux', prompt: '', order: 9 }, 401, 'player');
+function submission(
+  uid,
+  answer = 'LAMPE',
+  roundId = 'round-one',
+  name = 'Chloé Martin',
+  solvedAt = serverTime,
+) {
+  return {
+    [`solves/first/${uid}`]: {
+      participantId: uid,
+      participantName: name,
+      riddleId: 'first',
+      riddleTitle: 'Première énigme',
+      roundId,
+      solvedAt,
+    },
+    [`proofs/${uid}/first`]: { answer, roundId },
+  };
+}
+await request('game', 'PATCH', submission('player'), 401);
+await request('game', 'PATCH', submission('unnamed'), 401, 'unnamed');
+await request('game', 'PATCH', submission('player', 'FAUX'), 401, 'player');
+assert.equal(await request('game/solves', 'GET', undefined, 200), null);
+await request(
+  'game',
+  'PATCH',
+  submission('player', 'LAMPE', 'round-one', 'Nom usurpé'),
+  401,
+  'player',
+);
+await request(
+  'game',
+  'PATCH',
+  submission('player', 'LAMPE', 'round-one', 'Chloé Martin', 1),
+  401,
+  'player',
+);
+await request(
+  'game/proofs/player/first',
+  'PUT',
+  { answer: 'LAMPE', roundId: 'round-one' },
+  401,
+  'player',
+);
+await request(
+  'game/solves/first/player',
+  'PUT',
+  submission('player')['solves/first/player'],
+  401,
+  'player',
+);
+await request('game', 'PATCH', submission('player'), 200, 'player');
+await request('game', 'PATCH', submission('player'), 401, 'player');
+await request('game/solves/first/player', 'DELETE', undefined, 401, 'player');
+await request(
+  'participants/other-player',
+  'PUT',
+  { name: 'Ariane Roy', updatedAt: 1 },
+  200,
+  'other-player',
+);
+await request(
+  'game',
+  'PATCH',
+  submission('other-player', 'LAMPE', 'round-one', 'Ariane Roy'),
+  200,
+  'other-player',
+);
+const sharedSolves = await request('game/solves/first', 'GET', undefined, 200);
+assert.equal(Object.keys(sharedSolves).length, 2);
+assert.equal(sharedSolves.player.participantName, 'Chloé Martin');
+assert.ok(sharedSolves.player.solvedAt > Date.now() - 60_000);
+assert.equal(sharedSolves.player.answer, undefined);
+await request('game/proofs/player/first/answer', 'GET', undefined, 401, 'player');
+const reset = { round: { id: 'round-two', resetAt: serverTime }, solves: null, proofs: null };
+await request('game', 'PATCH', reset, 401, 'player');
+await request('game', 'PATCH', reset, 200, admin);
+assert.equal(await request('game/solves', 'GET', undefined, 200), null);
+assert.equal(await request('game/proofs', 'GET', undefined, 200, admin), null);
+await request('game', 'PATCH', submission('player'), 401, 'player');
+await request('game', 'PATCH', submission('player', 'LAMPE', 'round-two'), 200, 'player');
+assert.equal((await request('participants/player', 'GET', undefined, 200)).name, 'Chloé Martin');
+assert.equal((await request('riddleSecrets/first', 'GET', undefined, 200, admin)).answer, 'Lampe');
 console.log(`${checked} vérifications des règles Firebase réussies.`);

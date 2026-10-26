@@ -1,0 +1,162 @@
+<header>
+  <div class="container header-content">
+    <a routerLink="/">← Le Jour de Lampe</a>
+    @if (store.session.authorized()) {
+      <button type="button" class="secondary" (click)="logout()" [disabled]="busy()">
+        Se déconnecter
+      </button>
+    }
+  </div>
+</header>
+<main class="container">
+  <p class="eyebrow">Gestion du jeu</p>
+  <h1>Tableau de bord des énigmes</h1>
+  @if (!store.session.authorized()) {
+    <section class="panel login-panel" aria-labelledby="login-title">
+      <h2 id="login-title">Accès protégé</h2>
+      <p>Entre le mot de passe pour consulter les réponses et gérer la partie.</p>
+      <form (ngSubmit)="login()">
+        <label for="game-password">Mot de passe</label>
+        <input
+          id="game-password"
+          name="password"
+          type="password"
+          autocomplete="current-password"
+          [ngModel]="password()"
+          (ngModelChange)="password.set($event); error.set('')"
+          [disabled]="busy()"
+          required
+        />
+        <button type="submit" [disabled]="busy() || !password()">
+          {{ busy() ? 'Connexion…' : 'Ouvrir le tableau de bord' }}
+        </button>
+      </form>
+    </section>
+  } @else {
+    <div class="summary" aria-live="polite">
+      <div class="panel">
+        <strong>{{ store.game.solvedCount() }} / {{ store.game.catalog().length }}</strong
+        ><span>énigmes résolues au moins une fois</span>
+      </div>
+      <div class="panel" [class.unlocked]="store.game.metaUnlocked()">
+        <strong>{{ store.game.metaUnlocked() ? 'Méta déverrouillé' : 'Méta verrouillé' }}</strong
+        ><span>Chaque énigme doit avoir au moins une résolution.</span>
+      </div>
+    </div>
+    @if (store.game.error() || store.error()) {
+      <p class="error" role="alert">{{ store.game.error() || store.error() }}</p>
+    }
+    @if (!store.game.ready() || store.loading()) {
+      <p role="status">Chargement des énigmes et des résolutions…</p>
+    } @else {
+      <section aria-labelledby="riddles-heading">
+        <h2 id="riddles-heading">État des énigmes</h2>
+        <p>
+          Les heures de résolution sont affichées à l’heure de Montréal. Le nom enregistré est celui
+          utilisé lors de la réussite.
+        </p>
+        <div class="riddle-list">
+          @for (riddle of store.game.riddles(); track riddle.id) {
+            <article class="panel riddle-card" [class.solved]="riddle.solutions.length > 0">
+              <div class="card-heading">
+                <h3>{{ riddle.title }}</h3>
+                <span class="badge">{{ riddle.solutions.length ? 'Résolue' : 'Non résolue' }}</span>
+              </div>
+              <p class="secret-answer">
+                <span>Réponse</span
+                ><strong>{{ store.secrets()[riddle.id]?.answer ?? 'Réponse indisponible' }}</strong>
+              </p>
+              @if (riddle.solutions.length) {
+                <ul class="solutions">
+                  @for (solution of riddle.solutions; track solution.participantId) {
+                    <li>
+                      <strong>{{ solution.participantName }}</strong
+                      ><time [attr.datetime]="solution.solvedAt | gameTime: true">{{
+                        solution.solvedAt | gameTime
+                      }}</time>
+                    </li>
+                  }
+                </ul>
+              } @else {
+                <p class="muted">Personne n’a encore résolu cette énigme.</p>
+              }
+            </article>
+          } @empty {
+            <p class="panel">Aucune énigme configurée pour le moment.</p>
+          }
+        </div>
+      </section>
+      <section class="panel reset-section" aria-labelledby="reset-title">
+        <h2 id="reset-title">Réinitialiser le jeu</h2>
+        <p>
+          Remet toutes les énigmes à non résolues et verrouille le méta. Les énigmes, leurs réponses
+          et les noms des participants sont conservés.
+        </p>
+        @if (!resetStep()) {
+          <button type="button" class="danger" (click)="startReset()" [disabled]="busy()">
+            Réinitialiser le jeu
+          </button>
+        } @else {
+          <section
+            #resetPanel
+            tabindex="-1"
+            class="reset-confirmation"
+            aria-labelledby="confirmation-title"
+          >
+            @if (resetStep() === 1) {
+              <h3 id="confirmation-title">Confirmation 1 sur 2</h3>
+              <p>Veux-tu effacer toutes les résolutions de la partie en cours?</p>
+              <div class="actions">
+                <button type="button" class="danger" (click)="resetStep.set(2)">
+                  Oui, continuer</button
+                ><button type="button" class="secondary" (click)="cancelReset()">Annuler</button>
+              </div>
+            } @else {
+              <h3 id="confirmation-title">Confirmation 2 sur 2</h3>
+              <p>
+                Cette action effacera les noms et les heures dans l’historique des résolutions de
+                cette partie.
+              </p>
+              <form (ngSubmit)="confirmReset()">
+                <label for="reset-word">Tape RÉINITIALISER pour confirmer.</label>
+                <input
+                  id="reset-word"
+                  name="resetWord"
+                  type="text"
+                  autocomplete="off"
+                  [ngModel]="resetText()"
+                  (ngModelChange)="resetText.set($event)"
+                  [disabled]="busy()"
+                />
+                <div class="actions">
+                  <button
+                    type="submit"
+                    class="danger"
+                    [disabled]="busy() || resetText().trim() !== 'RÉINITIALISER'"
+                  >
+                    {{ busy() ? 'Réinitialisation…' : 'Confirmer la réinitialisation' }}</button
+                  ><button
+                    type="button"
+                    class="secondary"
+                    (click)="cancelReset()"
+                    [disabled]="busy()"
+                  >
+                    Annuler
+                  </button>
+                </div>
+              </form>
+            }
+          </section>
+        }
+      </section>
+    }
+  }
+  <div class="feedback" aria-live="polite" aria-atomic="true">
+    @if (message()) {
+      <p class="success" role="status">{{ message() }}</p>
+    }
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+  </div>
+</main>

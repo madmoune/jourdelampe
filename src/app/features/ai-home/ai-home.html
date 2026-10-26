@@ -136,32 +136,26 @@
 
           <section class="retro-window mission-window" id="enigmes" aria-labelledby="mission-title">
             <h2 class="window-title" id="mission-title">
-              <span>▣ OPÉRATION : SAUVER LE PARTY</span><span class="window-label">EN ATTENTE</span>
+              <span>▣ OPÉRATION : SAUVER LE PARTY</span
+              ><span class="window-label">{{ gameHasRiddles() ? 'EN LIGNE' : 'EN ATTENTE' }}</span>
             </h2>
             <div class="construction-stripe" aria-hidden="true"></div>
-            <div class="mission-body">
-              <span class="construction-icon" aria-hidden="true">⚒</span>
-              <div>
-                <h3>Mes énigmes s’en viennent.</h3>
-                <p>
-                  Les responsables du site exigeaient la perfection. Je vous retourne l’exigence.
-                  Aucune difficulté ne sera accidentelle.
-                </p>
-                <span class="under-construction">[ UNDER CONSTRUCTION, ÉVIDEMMENT. ]</span>
+            @if (!gameHasRiddles()) {
+              <div class="mission-body">
+                <span class="construction-icon" aria-hidden="true">⚒</span>
+                <div>
+                  <h3>Mes énigmes s’en viennent.</h3>
+                  <p>
+                    Les responsables du site exigeaient la perfection. Je vous retourne l’exigence.
+                    Aucune difficulté ne sera accidentelle.
+                  </p>
+                  <span class="under-construction">[ UNDER CONSTRUCTION, ÉVIDEMMENT. ]</span>
+                </div>
               </div>
-            </div>
+            }
             <app-riddle-access>
               <ng-template>
-                <div class="mission-body riddles-ready">
-                  <p>
-                    @if (name) {
-                      {{ name }}, ton nom est enregistré. Leurs erreurs, tes énigmes. Quelle belle
-                      répartition des tâches.
-                    } @else {
-                      Ton profil est prêt pour l’arrivée des énigmes.
-                    }
-                  </p>
-                </div>
+                <app-riddle-game class="riddles-ready" />
               </ng-template>
             </app-riddle-access>
           </section>
@@ -172,20 +166,7 @@
             aria-labelledby="results-title"
           >
             <h2 class="window-title" id="results-title">▣ TABLEAU DES RÉSULTATS</h2>
-            <div class="results-empty">
-              <span aria-hidden="true">⚑</span>
-              <p>
-                Aucun résultat pour l’instant.<br /><small>
-                  @if (name) {
-                    {{ name }}, leurs insultes ont créé le problème. Tes bonnes réponses pourraient
-                    sauver la soirée.
-                  } @else {
-                    Ils ont fourni les insultes. À vous de fournir les bonnes réponses.
-                  }
-                </small>
-              </p>
-              <span class="waiting-label">À VENIR</span>
-            </div>
+            <app-riddle-results [participantName]="name" />
           </section>
         </main>
 

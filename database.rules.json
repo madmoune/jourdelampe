@@ -113,6 +113,107 @@
           ".validate": false
         }
       }
+    },
+    "game": {
+      ".read": "auth != null && auth.token.gameAdmin === true",
+      ".write": "auth != null && auth.token.gameAdmin === true",
+      "catalog": {
+        ".read": true,
+        "$riddle": {
+          ".validate": "$riddle.matches(/^[A-Za-z0-9_-]{1,128}$/) && newData.hasChildren(['title', 'prompt', 'order'])",
+          "title": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 100 && newData.val().matches(/.*[^ ].*/)"
+          },
+          "prompt": {
+            ".validate": "newData.isString() && newData.val().length <= 10000"
+          },
+          "order": {
+            ".validate": "newData.isNumber() && newData.val() >= 0"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      },
+      "round": {
+        ".read": true,
+        ".validate": "newData.hasChildren(['id', 'resetAt'])",
+        "id": {
+          ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9_-]{1,128}$/)"
+        },
+        "resetAt": {
+          ".validate": "newData.isNumber() && newData.val() === now"
+        },
+        "$other": {
+          ".validate": false
+        }
+      },
+      "solves": {
+        ".read": true,
+        "$riddle": {
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid && !data.exists() && newData.exists() && root.child('game/catalog/' + $riddle).exists() && root.child('participants/' + auth.uid + '/name').isString() && root.child('participants/' + auth.uid + '/name').val().length > 0 && newData.child('roundId').val() === root.child('game/round/id').val()",
+            ".validate": "newData.hasChildren(['participantId', 'participantName', 'riddleId', 'riddleTitle', 'roundId', 'solvedAt']) && newData.parent().parent().parent().child('proofs/' + auth.uid + '/' + $riddle).child('answer').isString() && newData.parent().parent().parent().child('proofs/' + auth.uid + '/' + $riddle).child('answer').val() === root.child('riddleSecrets/' + $riddle + '/normalizedAnswer').val() && newData.parent().parent().parent().child('proofs/' + auth.uid + '/' + $riddle).child('roundId').val() === newData.child('roundId').val()",
+            "participantId": {
+              ".validate": "newData.val() === $uid"
+            },
+            "participantName": {
+              ".validate": "newData.isString() && newData.val() === root.child('participants/' + $uid + '/name').val()"
+            },
+            "riddleId": {
+              ".validate": "newData.val() === $riddle"
+            },
+            "riddleTitle": {
+              ".validate": "newData.val() === root.child('game/catalog/' + $riddle + '/title').val()"
+            },
+            "roundId": {
+              ".validate": "newData.val() === root.child('game/round/id').val()"
+            },
+            "solvedAt": {
+              ".validate": "newData.isNumber() && newData.val() === now"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        }
+      },
+      "proofs": {
+        "$uid": {
+          "$riddle": {
+            ".write": "auth != null && auth.uid === $uid && !data.exists() && newData.exists() && newData.child('roundId').val() === root.child('game/round/id').val()",
+            ".validate": "newData.hasChildren(['answer', 'roundId']) && newData.child('answer').isString() && newData.child('answer').val() === root.child('riddleSecrets/' + $riddle + '/normalizedAnswer').val() && newData.parent().parent().parent().child('solves/' + $riddle + '/' + auth.uid).child('participantId').val() === auth.uid && newData.parent().parent().parent().child('solves/' + $riddle + '/' + auth.uid).child('roundId').val() === newData.child('roundId').val()",
+            "answer": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 200"
+            },
+            "roundId": {
+              ".validate": "newData.val() === root.child('game/round/id').val()"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        }
+      },
+      "$other": {
+        ".validate": false
+      }
+    },
+    "riddleSecrets": {
+      ".read": "auth != null && auth.token.gameAdmin === true",
+      ".write": "auth != null && auth.token.gameAdmin === true",
+      "$riddle": {
+        ".validate": "$riddle.matches(/^[A-Za-z0-9_-]{1,128}$/) && newData.hasChildren(['answer', 'normalizedAnswer'])",
+        "answer": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 200"
+        },
+        "normalizedAnswer": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 200 && newData.val().matches(/^[A-Z0-9]+$/)"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
     }
   }
 }

@@ -85,11 +85,11 @@ transcriptions de fans peuvent différer légèrement du doublage exact.
 
 ## Pour la suite
 
-Les ancres `#enigmes` et `#resultats` réservent les futures sections du mini puzzle
-hunt. `#enigmes` contient déjà le formulaire de nom obligatoire, modifiable sans
+Les ancres `#enigmes` et `#resultats` affichent les énigmes et résolutions du
+catalogue Firebase. `#enigmes` contient le formulaire de nom obligatoire, modifiable sans
 changer l’identifiant du participant. Le composant `RiddleAccess` n’instancie son
 contenu qu’après la sauvegarde du nom. Voir `../riddles/README.md` pour l’activation
-de Firebase Authentication et l’intégration des futurs jeux.
+de Firebase Authentication, le tableau de bord `/gestion-enigmes` et la validation
+des réponses côté serveur. Le catalogue vide conserve les textes d’attente.
 Aucun indice, code secret ou faux résultat n’a été ajouté aux archives.
-Les réponses futures devront être validées côté serveur, conformément au modèle
-déjà prévu dans `../riddles/`.
+Les réponses attendues ne sont jamais incluses dans le catalogue public.

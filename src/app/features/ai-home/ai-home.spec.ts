@@ -8,6 +8,8 @@ import { AiHome } from './ai-home';
 import { AiTakeover } from './ai-takeover';
 import { ParticipantStore } from '../riddles/participant-store';
 import { Participant } from '../riddles/participant';
+import { GameStore } from '../riddles/game-store';
+import { RiddleSubmissions } from '../riddles/riddle-submissions';
 
 @Component({
   selector: 'app-home',
@@ -39,6 +41,19 @@ describe('prise de contrôle de l’AI', () => {
     await TestBed.configureTestingModule({
       imports: [AiHome],
       providers: [
+        {
+          provide: GameStore,
+          useValue: {
+            catalog: signal([]),
+            riddles: signal([]),
+            ready: signal(true),
+            error: signal(''),
+            solvedCount: signal(0),
+            metaUnlocked: signal(false),
+            round: signal(null),
+          },
+        },
+        { provide: RiddleSubmissions, useValue: { submit: vi.fn() } },
         {
           provide: ParticipantStore,
           useValue: {

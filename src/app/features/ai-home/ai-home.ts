@@ -21,12 +21,22 @@ import { AiArchives } from './ai-archives';
 import { AiQuoteRotation } from './ai-quote-rotation';
 import { TitleLights } from '../home/lamp-title/title-lights';
 import { RiddleAccess } from '../riddles/riddle-access';
+import { RiddleGame } from '../riddles/riddle-game';
+import { RiddleResults } from '../riddles/riddle-results';
 
 type TakeoverStage = 'original' | 'intrusion' | 'complete';
 
 @Component({
   selector: 'app-ai-home',
-  imports: [AiTakeover, AiDirectory, AiTransmission, AiArchives, RiddleAccess],
+  imports: [
+    AiTakeover,
+    AiDirectory,
+    AiTransmission,
+    AiArchives,
+    RiddleAccess,
+    RiddleGame,
+    RiddleResults,
+  ],
   providers: [AiQuoteRotation],
   templateUrl: './ai-home.html',
   styleUrl: './ai-home.scss',
@@ -41,6 +51,7 @@ export class AiHome {
   private readonly timers: ReturnType<typeof setTimeout>[] = [];
   private readonly pageTitle = viewChild<ElementRef<HTMLHeadingElement>>('pageTitle');
   private readonly riddleAccess = viewChild(RiddleAccess);
+  private readonly riddleResults = viewChild(RiddleResults);
   private focusAfterTakeover = false;
   private readonly now = signal(Date.now());
   protected readonly event = EVENT;
@@ -49,6 +60,7 @@ export class AiHome {
   protected readonly participantName = computed(
     () => this.riddleAccess()?.participantName() ?? null,
   );
+  protected readonly gameHasRiddles = computed(() => this.riddleResults()?.hasRiddles() ?? false);
   protected readonly remaining = computed(() => countdownUntil(EVENT.newYearAt, this.now()));
   protected readonly units = computed(() => {
     const value = this.remaining();
