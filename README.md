@@ -184,6 +184,9 @@ de la rotation et la rétablir. Le retrait conserve l’enregistrement (`active:
 ce qui permet d’annuler l’action. Les répliques de l’AI gardent leur signature et
 leur rôle dans le tirage à 10 %.
 
+Chaque retrait demande une confirmation qui affiche la citation ou le nom et le
+repas du potluck. Annuler ne modifie rien. Le rétablissement reste direct.
+
 Les données des invités sont stockées dans `quotes/items`, les répliques de l’AI
 dans `quotes/ai`. Le formulaire public ajoute uniquement dans `quotes/items`.
 Les règles refusent une réplique AI placée dans le catalogue des invités, ainsi

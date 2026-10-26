@@ -1,3 +1,4 @@
+import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import type { PotluckEntry } from '../../../core/models/potluck-entry';
@@ -13,6 +14,7 @@ import { Icon } from '../../../shared/icon/icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PotluckManagement {
+  private readonly browser = inject(DOCUMENT).defaultView;
   protected readonly store = inject(PotluckStore);
   protected readonly nameMaxLength = POTLUCK_NAME_MAX_LENGTH;
   protected readonly dishMaxLength = POTLUCK_DISH_MAX_LENGTH;
@@ -52,6 +54,14 @@ export class PotluckManagement {
   }
 
   protected async toggle(entry: PotluckEntry): Promise<void> {
+    if (this.busy()) return;
+    if (
+      entry.active &&
+      !this.browser?.confirm(
+        `Retirer du potluck le repas « ${entry.dish} » de ${entry.name}?\n\nTu pourras le rétablir depuis l’onglet Retirés.`,
+      )
+    )
+      return;
     await this.perform(entry, async () => {
       await this.store.setActive(entry, !entry.active);
       if (this.editing() === entry.id) this.editing.set(null);

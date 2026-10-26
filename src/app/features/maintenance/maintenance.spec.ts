@@ -47,3 +47,67 @@ describe('catalogues distincts dans la gestion', () => {
     expect(page.querySelector('.tabs button')?.getAttribute('aria-pressed')).toBe('true');
   });
 });
+
+describe('confirmation du retrait des citations', () => {
+  afterEach(() => vi.restoreAllMocks());
+
+  async function setup(kind: 'regular' | 'ai', active = true) {
+    const quote = parseQuoteCatalog(initialQuoteCatalog()).find((item) => item.kind === kind)!;
+    const entry = { ...quote, active };
+    const setActive = vi.fn().mockResolvedValue(undefined);
+    await TestBed.configureTestingModule({
+      imports: [Maintenance],
+      providers: [
+        provideRouter([]),
+        {
+          provide: QuotesStore,
+          useValue: {
+            entries: signal([entry]),
+            ready: signal(true),
+            loading: signal(false),
+            error: signal(''),
+            setActive,
+          },
+        },
+        { provide: PotluckStore, useValue: { active: signal([]) } },
+      ],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(Maintenance);
+    fixture.detectChanges();
+    const page = fixture.nativeElement as HTMLElement;
+    if (kind === 'ai') {
+      page.querySelectorAll<HTMLButtonElement>('.catalog-switch button')[1].click();
+      fixture.detectChanges();
+    }
+    return { fixture, page, entry, setActive };
+  }
+
+  it.each(['regular', 'ai'] as const)(
+    'demande une confirmation pour %s et n’écrit rien si elle est annulée',
+    async (kind) => {
+      const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+      const { fixture, page, entry, setActive } = await setup(kind);
+      page.querySelector<HTMLButtonElement>('.quote-card .remove')!.click();
+      await fixture.whenStable();
+      expect(confirm).toHaveBeenCalledWith(expect.stringContaining(entry.text));
+      expect(setActive).not.toHaveBeenCalled();
+      expect(page.querySelectorAll('.quote-card')).toHaveLength(1);
+      confirm.mockReturnValue(true);
+      page.querySelector<HTMLButtonElement>('.quote-card .remove')!.click();
+      await fixture.whenStable();
+      expect(setActive).toHaveBeenCalledExactlyOnceWith(entry, false);
+      expect(page.textContent).toContain('Citation retirée de la rotation.');
+    },
+  );
+
+  it('rétablit une citation retirée sans demander de confirmation de retrait', async () => {
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const { fixture, page, entry, setActive } = await setup('regular', false);
+    page.querySelectorAll<HTMLButtonElement>('.tabs button')[1].click();
+    fixture.detectChanges();
+    page.querySelectorAll<HTMLButtonElement>('.quote-card .actions button')[1].click();
+    await fixture.whenStable();
+    expect(confirm).not.toHaveBeenCalled();
+    expect(setActive).toHaveBeenCalledExactlyOnceWith(entry, true);
+  });
+});

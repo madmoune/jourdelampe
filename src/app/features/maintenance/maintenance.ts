@@ -1,3 +1,4 @@
+import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -16,6 +17,7 @@ import { PotluckManagement } from './potluck-management/potluck-management';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Maintenance {
+  private readonly browser = inject(DOCUMENT).defaultView;
   protected readonly store = inject(QuotesStore);
   protected readonly potluck = inject(PotluckStore);
   protected readonly maxLength = QUOTE_MAX_LENGTH;
@@ -82,6 +84,14 @@ export class Maintenance {
   }
 
   protected async toggle(quote: ManagedQuote): Promise<void> {
+    if (this.busy()) return;
+    if (
+      quote.active &&
+      !this.browser?.confirm(
+        `Retirer cette citation de la rotation?\n\n« ${quote.text} »\n\nTu pourras la rétablir depuis l’onglet Retirées.`,
+      )
+    )
+      return;
     await this.perform(quote, async () => {
       await this.store.setActive(quote, !quote.active);
       if (this.editing() === this.quoteKey(quote)) this.editing.set(null);
