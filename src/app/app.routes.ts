@@ -2,6 +2,11 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
+    path: 'enigmes/zebra',
+    title: 'Zebra — Le Jour de l’AI',
+    loadComponent: () => import('./features/zebra/zebra-page').then((module) => module.ZebraPage),
+  },
+  {
     path: 'gestion-enigmes',
     title: 'Tableau de bord des énigmes — Le Jour de Lampe',
     loadComponent: () =>

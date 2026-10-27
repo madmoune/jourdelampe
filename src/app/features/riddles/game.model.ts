@@ -3,6 +3,8 @@ export interface GameRiddle {
   readonly title: string;
   readonly prompt: string;
   readonly order: number;
+  readonly answerReady?: boolean;
+  readonly gridReady?: boolean;
 }
 
 export interface RiddleSolution {
@@ -22,6 +24,7 @@ export interface GameRound {
 export interface RiddleSecret {
   readonly answer: string;
   readonly normalizedAnswer: string;
+  readonly gridAnswer?: string;
 }
 
 export type GameSolutions = Record<string, Record<string, RiddleSolution>>;
@@ -60,10 +63,21 @@ export function parseCatalog(value: unknown): readonly GameRiddle[] {
         typeof riddle['title'] !== 'string' ||
         !riddle['title'].trim() ||
         typeof riddle['prompt'] !== 'string' ||
-        !finite(riddle['order'])
+        !finite(riddle['order']) ||
+        (riddle['answerReady'] !== undefined && typeof riddle['answerReady'] !== 'boolean') ||
+        (riddle['gridReady'] !== undefined && typeof riddle['gridReady'] !== 'boolean')
       )
         throw new Error('Énigme invalide.');
-      return { id, title: riddle['title'], prompt: riddle['prompt'], order: riddle['order'] };
+      return {
+        id,
+        title: riddle['title'],
+        prompt: riddle['prompt'],
+        order: riddle['order'],
+        ...(riddle['answerReady'] === undefined
+          ? {}
+          : { answerReady: riddle['answerReady'] as boolean }),
+        ...(riddle['gridReady'] === undefined ? {} : { gridReady: riddle['gridReady'] as boolean }),
+      };
     })
     .sort((a, b) => a.order - b.order || a.id.localeCompare(b.id));
 }
@@ -113,7 +127,11 @@ export function parseSecrets(value: unknown): Record<string, RiddleSecret> {
       typeof secret['normalizedAnswer'] !== 'string'
     )
       throw new Error('Réponse invalide.');
-    result[id] = { answer: secret['answer'], normalizedAnswer: secret['normalizedAnswer'] };
+    result[id] = {
+      answer: secret['answer'],
+      normalizedAnswer: secret['normalizedAnswer'],
+      ...(typeof secret['gridAnswer'] === 'string' ? { gridAnswer: secret['gridAnswer'] } : {}),
+    };
   }
   return result;
 }

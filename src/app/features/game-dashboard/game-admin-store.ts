@@ -70,6 +70,7 @@ export class GameAdminStore {
         round: { id: crypto.randomUUID(), resetAt: { '.sv': 'timestamp' } },
         solves: null,
         proofs: null,
+        attempts: null,
       },
       await this.session.token(),
     );

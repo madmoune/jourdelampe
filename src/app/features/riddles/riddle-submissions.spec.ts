@@ -6,7 +6,7 @@ import { GameStore } from './game-store';
 import { ParticipantStore } from './participant-store';
 import { RiddleSubmissions } from './riddle-submissions';
 
-describe('soumission et enregistrement des réponses', () => {
+describe('validation et historique des réponses', () => {
   let update: ReturnType<typeof vi.fn>;
   let requireParticipant: ReturnType<typeof vi.fn>;
   let submissions: RiddleSubmissions;
@@ -23,43 +23,84 @@ describe('soumission et enregistrement des réponses', () => {
           useValue: {
             ready: signal(true),
             round: signal({ id: 'one', resetAt: 1 }),
-            riddles: signal([{ id: 'a', title: 'La lampe', solutions: [] }]),
+            riddles: signal([
+              { id: 'a', title: 'La lampe', gridReady: true, answerReady: false, solutions: [] },
+            ]),
           },
         },
       ],
     });
     submissions = TestBed.inject(RiddleSubmissions);
   });
-
-  it('envoie la preuve privée et le nom de la résolution dans une même écriture avec l’heure serveur', async () => {
-    await submissions.submit('a', '  é-clair! ');
-    expect(update).toHaveBeenCalledWith(
-      'game',
-      {
-        'solves/a/alice': {
-          participantId: 'alice',
-          participantName: 'Alice Roy',
-          riddleId: 'a',
-          riddleTitle: 'La lampe',
-          roundId: 'one',
-          solvedAt: { '.sv': 'timestamp' },
-        },
-        'proofs/alice/a': { answer: 'ECLAIR', roundId: 'one' },
-      },
-      'test-token',
+  it('enregistre la bonne réponse, sa preuve et la résolution atomiquement avec l’heure serveur', async () => {
+    update.mockRejectedValueOnce(new DatabaseWriteError(401));
+    expect(await submissions.submit('a', '  é-clair! ')).toBe(true);
+    expect(update).toHaveBeenCalledTimes(2);
+    const [path, patch, token] = update.mock.calls[1];
+    expect(path).toBe('game');
+    expect(token).toBe('test-token');
+    expect(patch['solves/a/alice']).toEqual({
+      participantId: 'alice',
+      participantName: 'Alice Roy',
+      riddleId: 'a',
+      riddleTitle: 'La lampe',
+      roundId: 'one',
+      solvedAt: { '.sv': 'timestamp' },
+    });
+    expect(patch['proofs/alice/a']).toEqual({ answer: 'ECLAIR', roundId: 'one' });
+    expect(Object.entries(patch).find(([key]) => key.startsWith('attempts/'))?.[1]).toEqual({
+      answer: 'é-clair!',
+      normalizedAnswer: 'ECLAIR',
+      correct: true,
+      kind: 'answer',
+      participantName: 'Alice Roy',
+      roundId: 'one',
+      submittedAt: { '.sv': 'timestamp' },
+    });
+    const attemptPath = Object.keys(patch).find((key) => key.startsWith('attempts/'))!;
+    expect(update.mock.calls[0][1]).toEqual({
+      [attemptPath]: { ...patch[attemptPath], correct: false },
+    });
+  });
+  it('valide et enregistre une mauvaise réponse en un seul appel, sans tentative de résolution', async () => {
+    expect(await submissions.submit('a', 'Faux')).toBe(false);
+    expect(update).toHaveBeenCalledTimes(1);
+    const patch = update.mock.calls[0][1];
+    expect(Object.keys(patch)).toHaveLength(1);
+    expect(Object.values(patch)[0]).toEqual(
+      expect.objectContaining({ answer: 'Faux', correct: false, kind: 'answer' }),
     );
   });
-
+  it('ne confond pas une panne réseau ou un refus d’accès avec une réponse incorrecte', async () => {
+    update.mockRejectedValue(new DatabaseWriteError(503));
+    await expect(submissions.submit('a', 'Réponse')).rejects.toThrow('n’a pas pu être vérifiée');
+    expect(update).toHaveBeenCalledTimes(1);
+    update.mockReset().mockRejectedValue(new DatabaseWriteError(401));
+    await expect(submissions.submit('a', 'Réponse')).rejects.toThrow('n’a pas pu être vérifiée');
+    expect(update).toHaveBeenCalledTimes(2);
+  });
+  it('vérifie une grille sans créer de résolution ni de preuve de réponse finale', async () => {
+    update.mockRejectedValueOnce(new DatabaseWriteError(403));
+    expect(await submissions.checkGrid('a', '123412341234123412341234')).toBe(true);
+    expect(update).toHaveBeenCalledTimes(2);
+    const patch = update.mock.calls[1][1];
+    expect(Object.keys(patch)).toHaveLength(1);
+    expect(Object.values(patch)[0]).toEqual(
+      expect.objectContaining({ kind: 'grid', correct: true }),
+    );
+  });
+  it('enregistre une grille incorrecte en un seul appel', async () => {
+    expect(await submissions.checkGrid('a', '123412341234123412341234')).toBe(false);
+    expect(update).toHaveBeenCalledTimes(1);
+    expect(Object.values(update.mock.calls[0][1])[0]).toEqual(
+      expect.objectContaining({ kind: 'grid', correct: false }),
+    );
+  });
   it('refuse une soumission sans nom avant toute écriture', async () => {
     requireParticipant.mockImplementation(() => {
       throw new Error('Nom requis');
     });
     await expect(submissions.submit('a', 'lampe')).rejects.toThrow('Nom requis');
     expect(update).not.toHaveBeenCalled();
-  });
-
-  it('ne confirme aucune résolution lorsque Firebase refuse la réponse', async () => {
-    update.mockRejectedValue(new DatabaseWriteError(401));
-    await expect(submissions.submit('a', 'fausse réponse')).rejects.toThrow('n’a pas été validée');
   });
 });

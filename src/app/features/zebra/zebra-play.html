@@ -1,0 +1,45 @@
+<div class="play-content">
+  <section class="clues" aria-labelledby="clues-title">
+    <div>
+      <span class="file-label">01 / LES ÉNONCÉS</span>
+      <h2 id="clues-title">Le dossier est encore scellé.</h2>
+      <p>Les énoncés seront ajoutés ici. Tu peux déjà explorer la grille en attendant.</p>
+    </div>
+    <span class="stamp">À VENIR</span>
+  </section>
+  <section class="resolution" aria-labelledby="grid-title">
+    <span class="file-label">02 / LA GRILLE</span>
+    <h2 id="grid-title">Croise les informations.</h2>
+    <p class="intro">
+      {{ name() }}, les responsables du site ont confondu vitesse et compétence. Tu as le droit de
+      prendre le temps de réfléchir.
+    </p>
+    <app-zebra-grid [storageKey]="storageKey()" (completed)="gridState.set($event)" />
+    <div class="grid-status" aria-live="polite" aria-atomic="true">
+      @if (!gridCode()) {
+        <p>Complète les 24 associations pour obtenir une indication sur ta grille.</p>
+      } @else if (riddle()?.gridReady !== true) {
+        <p>Grille complète. Sa vérification sera disponible quand les énoncés seront en ligne.</p>
+      } @else if (checking()) {
+        <p>Vérification de la grille…</p>
+      } @else if (currentVerdict(); as result) {
+        @if (result.error) {
+          <p class="error">{{ result.error }}</p>
+          <button type="button" (click)="retryGrid()">Réessayer</button>
+        } @else if (result.correct) {
+          <p class="success">✓ Ta grille est correcte. À toi d’en extraire la réponse finale.</p>
+        } @else {
+          <p class="error">× Ta grille contient au moins une erreur. Revois tes associations.</p>
+        }
+      }
+    </div>
+  </section>
+  @if (game.error()) {
+    <p class="error" role="alert">{{ game.error() }}</p>
+  }
+  <section class="final-answer">
+    <span class="file-label">03 / L’EXTRACTION</span>
+    <p class="intro">Tu peux proposer le mot ou le code final sans compléter la grille.</p>
+    <app-riddle-answer [riddleId]="riddleId" />
+  </section>
+</div>

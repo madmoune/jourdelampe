@@ -23,6 +23,7 @@ import { TitleLights } from '../home/lamp-title/title-lights';
 import { RiddleAccess } from '../riddles/riddle-access';
 import { RiddleGame } from '../riddles/riddle-game';
 import { RiddleResults } from '../riddles/riddle-results';
+import { AiPortalState } from './ai-portal-state';
 
 type TakeoverStage = 'original' | 'intrusion' | 'complete';
 
@@ -43,6 +44,7 @@ type TakeoverStage = 'original' | 'intrusion' | 'complete';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AiHome {
+  private readonly portal = inject(AiPortalState);
   private readonly quoteRotation = inject(AiQuoteRotation);
   private readonly titleLights = inject(TitleLights);
   private readonly title = inject(Title);
@@ -55,7 +57,9 @@ export class AiHome {
   private focusAfterTakeover = false;
   private readonly now = signal(Date.now());
   protected readonly event = EVENT;
-  protected readonly stage = signal<TakeoverStage>('original');
+  protected readonly stage = signal<TakeoverStage>(
+    this.portal.revealed() ? 'complete' : 'original',
+  );
   protected readonly animationsPaused = signal(false);
   protected readonly participantName = computed(
     () => this.riddleAccess()?.participantName() ?? null,
@@ -118,6 +122,7 @@ export class AiHome {
   protected finishTakeover(): void {
     if (this.stage() !== 'intrusion') return;
     this.clearTakeoverTimers();
+    this.portal.revealed.set(true);
     this.stage.set('complete');
   }
 

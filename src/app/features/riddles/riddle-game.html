@@ -9,44 +9,11 @@
       @if (riddle.prompt) {
         <p class="prompt">{{ riddle.prompt }}</p>
       }
-      @if (alreadySolved(riddle.id)) {
-        <p class="success">Tu as résolu cette énigme pour cette partie.</p>
+      @if (pages[riddle.id]; as page) {
+        <a class="puzzle-link" [routerLink]="page">Ouvrir l’énigme →</a>
       } @else {
-        <form (ngSubmit)="submit(riddle.id)">
-          <label [for]="'answer-' + riddle.id">Ta réponse</label>
-          <div class="answer-controls">
-            <input
-              [id]="'answer-' + riddle.id"
-              name="answer"
-              type="text"
-              autocomplete="off"
-              maxlength="200"
-              [ngModel]="drafts()[riddle.id] ?? ''"
-              (ngModelChange)="setAnswer(riddle.id, $event)"
-              [disabled]="busy() !== null || !game.round()"
-              [attr.aria-describedby]="'feedback-' + riddle.id"
-              required
-            />
-            <button
-              type="submit"
-              [disabled]="busy() !== null || !game.round() || !(drafts()[riddle.id] ?? '').trim()"
-            >
-              {{ busy() === riddle.id ? 'Vérification…' : 'Valider ma réponse' }}
-            </button>
-          </div>
-        </form>
+        <app-riddle-answer [riddleId]="riddle.id" />
       }
-      <div [id]="'feedback-' + riddle.id" aria-live="polite" aria-atomic="true">
-        @if (feedback()[riddle.id]; as result) {
-          <p
-            [class.success]="result.success"
-            [class.error]="!result.success"
-            [attr.role]="result.success ? 'status' : 'alert'"
-          >
-            {{ result.text }}
-          </p>
-        }
-      </div>
     </article>
   } @empty {
     <p class="feedback">

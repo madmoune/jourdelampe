@@ -1,0 +1,84 @@
+<section aria-label="Réponse finale" class="answer-section">
+  <h3 #answerHeading tabindex="-1">La réponse finale</h3>
+  <p class="hint">Entre ici le mot ou le code obtenu en résolvant l’énigme.</p>
+  @if (solved()) {
+    <p class="success">Tu as résolu cette énigme pour cette partie.</p>
+  } @else {
+    <form (ngSubmit)="submit()">
+      <label [for]="'answer-' + riddleId()">Ton mot ou ton code</label>
+      <div class="answer-controls">
+        <input
+          #answerInput
+          [id]="'answer-' + riddleId()"
+          name="answer"
+          type="text"
+          autocomplete="off"
+          maxlength="200"
+          [ngModel]="draft()"
+          (ngModelChange)="draft.set($event)"
+          [disabled]="busy() || !canEnterAnswer()"
+          [attr.aria-describedby]="'answer-feedback-' + riddleId()"
+          required
+        />
+        <button type="submit" [disabled]="busy() || !canEnterAnswer() || !draft().trim()">
+          {{ busy() ? 'Vérification…' : 'Valider ma réponse' }}
+        </button>
+      </div>
+    </form>
+  }
+  <div [id]="'answer-feedback-' + riddleId()" aria-live="polite" aria-atomic="true">
+    @if (feedback(); as result) {
+      <p
+        [class.success]="result.correct"
+        [class.error]="!result.correct"
+        [attr.role]="result.correct ? 'status' : 'alert'"
+      >
+        {{ result.text }}
+      </p>
+    }
+  </div>
+</section>
+<section class="history" [attr.aria-labelledby]="'attempts-title-' + riddleId()">
+  <h3 [id]="'attempts-title-' + riddleId()">Tes réponses précédentes</h3>
+  <p class="hint">
+    Tes essais sont conservés pour cette partie, même si tu quittes la page. Heures de Montréal.
+  </p>
+  @if (history.error()) {
+    <p class="error" role="alert">{{ history.error() }}</p>
+  } @else if (!history.ready()) {
+    <p class="hint" role="status">Chargement de ton historique…</p>
+  } @else {
+    <ol>
+      @for (attempt of attempts(); track attempt.id) {
+        <li [class.correct]="attempt.correct">
+          <span class="attempt-answer">{{ attempt.answer }}</span
+          ><span class="verdict">{{ attempt.correct ? '✓ Réussie' : '× Incorrecte' }}</span
+          ><time [attr.datetime]="attempt.submittedAt | gameTime: true">{{
+            attempt.submittedAt | gameTime
+          }}</time>
+        </li>
+      } @empty {
+        <li class="empty">Aucune réponse envoyée pour l’instant.</li>
+      }
+    </ol>
+  }
+</section>
+<dialog
+  #successDialog
+  [attr.aria-labelledby]="'success-title-' + riddleId()"
+  (cancel)="closeSuccess()"
+  (close)="success.set(false)"
+>
+  <div class="success-icon" aria-hidden="true">✓</div>
+  <p class="eyebrow">RÉPONSE VALIDÉE</p>
+  <h2 [id]="'success-title-' + riddleId()">Énigme résolue, {{ name() }}.</h2>
+  <p>
+    Ta réussite est enregistrée. Les responsables du site te doivent une fière chandelle. Moi, ils
+    me doivent encore un merci.
+  </p>
+  <div class="dialog-actions">
+    <a routerLink="/" fragment="enigmes" (click)="portal.revealed.set(true); closeSuccess()"
+      >Retour aux énigmes</a
+    ><button type="button" class="secondary" (click)="closeSuccess()">Rester ici</button>
+  </div>
+</dialog>

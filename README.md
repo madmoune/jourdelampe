@@ -87,7 +87,8 @@ Les sections **Énigmes** et **Résultats** suivent le catalogue enregistré dan
 Firebase. Le nom est obligatoire pour afficher les jeux et répondre; il se
 modifie sans courriel ni mot de passe. Chaque bonne réponse est vérifiée par
 les règles Firebase et enregistre le nom, l’heure du serveur et l’énigme.
-Le catalogue démarre vide, sans énigme ni résultat d’exemple.
+Le premier puzzle Zebra est accessible depuis ce portail; ses énoncés et sa
+solution seront ajoutés ultérieurement. Aucun résultat d’exemple n’est publié.
 Le compteur de visiteurs est explicitement décoratif. La
 maintenance Firebase garde sa route et son comportement existants.
 
@@ -248,8 +249,10 @@ Le bouton **Réinitialiser le jeu** demande deux confirmations, dont la saisie d
 résolues et verrouille le méta, en conservant les énigmes, réponses et profils.
 
 Le méta se déverrouille quand chaque énigme a été résolue au moins une fois par
-n’importe quel joueur. Un catalogue vide reste verrouillé. Le contenu de la
-première énigme et celui du méta restent à ajouter dans le catalogue.
+n’importe quel joueur. Un catalogue vide reste verrouillé. Le contenu du
+méta reste à ajouter. Le premier puzzle Zebra propose une grille cliquable avec
+huit positions, quatre noms, quatre occupations et quatre nourritures.
+Voir `src/app/features/zebra/README.md` pour activer ses énoncés et validations.
 
 `src/app/features/riddles/` contient le formulaire de nom obligatoire, le jeu, ses
 résultats et sa progression commune. Le nom est limité à

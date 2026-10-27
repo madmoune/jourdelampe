@@ -50,13 +50,13 @@ Se connecter à la gestion ne change pas le profil de joueur du même navigateur
 Le tableau affiche le nom de chaque énigme, sa réponse, son état et toutes ses
 résolutions (nom et heure de Montréal, avec les secondes). Les énigmes et leurs
 réponses sont configurées manuellement lors de leur intégration; le tableau de
-bord ne propose ni ajout ni modification. Le catalogue commence vide; aucune
-énigme d’exemple n’est publiée.
+bord ne propose ni ajout ni modification. Le premier puzzle est Zebra,
+sur `/enigmes/zebra`; les énoncés et solutions restent à fournir.
 
 **Réinitialiser le jeu** demande deux confirmations : accepter la première,
 puis taper `RÉINITIALISER` et confirmer la deuxième. Annuler l’une ou l’autre
 n’écrit rien. La remise à zéro change l’identifiant de partie et efface les
-résolutions et les preuves privées en une seule écriture. Elle conserve le
+résolutions, les essais et les preuves privées en une seule écriture. Elle conserve le
 catalogue, les réponses attendues et les profils des participants.
 
 ## Réponses et résolutions
@@ -64,11 +64,13 @@ catalogue, les réponses attendues et les profils des participants.
 ```text
 game/
   round/{id, resetAt}
-  catalog/<riddleId>/{title, prompt, order}
+  catalog/<riddleId>/{title, prompt, order, answerReady?, gridReady?}
   solves/<riddleId>/<participantId>/
     participantId, participantName, riddleId, riddleTitle, roundId, solvedAt
   proofs/<participantId>/<riddleId>/{answer, roundId}
-riddleSecrets/<riddleId>/{answer, normalizedAnswer}
+  attempts/<participantId>/<riddleId>/<attemptId>/
+    kind, answer, normalizedAnswer, correct, participantName, roundId, submittedAt
+riddleSecrets/<riddleId>/{answer, normalizedAnswer, gridAnswer?}
 ```
 
 Le catalogue, la partie en cours et les résolutions sont publics. Les réponses
@@ -82,6 +84,26 @@ comparent cette preuve à la réponse attendue **côté serveur**, exigent le no
 profil authentifié et utilisent l’heure du serveur (`solvedAt`). Une réponse
 incorrecte ne crée ni preuve ni résolution. Les accents, majuscules, espaces et
 ponctuation ne comptent pas; les réponses doivent contenir des lettres ou chiffres.
+
+Chaque réponse finale, correcte ou incorrecte, est conservée dans l’historique
+privé du participant. Le serveur vérifie aussi son verdict. Une bonne réponse
+enregistre l’essai et la résolution atomiquement; une mauvaise réponse enregistre
+seulement l’essai. Une erreur technique conserve la saisie et ne compte pas comme
+une réponse incorrecte. Le popup de succès propose un retour au portail des énigmes.
+Les vérifications partielles de grille (`kind: grid`) ne résolvent pas l’énigme.
+Le bouton et la touche Entrée envoient une réponse même avec une grille vide.
+Sans réponse officielle dans le nœud privé, les essais sont enregistrés comme
+non valides. Ajouter la solution privée active sa reconnaissance immédiatement;
+l’ancien champ public `answerReady` ne sert plus de blocage.
+
+Un essai incorrect est validé et enregistré en un seul appel serveur. Si le serveur
+refuse ce verdict parce que la réponse est correcte, un second appel enregistre
+atomiquement l’essai réussi, la preuve et la résolution. Une panne ou un refus des
+deux verdicts reste une erreur technique, jamais une fausse réussite.
+`RiddleReplies` fait tourner douze commentaires originaux de l’AI, personnalisés
+avec le nom courant, sans répétition dans une série ni entre deux séries successives.
+La rotation avance uniquement après une mauvaise réponse confirmée par le serveur.
+Voir `../zebra/README.md` pour la configuration privée de la première grille.
 
 Une même personne ne peut résoudre qu’une fois la même énigme par partie. Plusieurs
 personnes peuvent résoudre une énigme, et une réinitialisation leur permet toutes

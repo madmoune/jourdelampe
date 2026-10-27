@@ -1,0 +1,128 @@
+:host {
+  display: block;
+}
+.puzzle-world {
+  min-height: 100svh;
+  padding: 28px 18px 60px;
+  background-color: #100c23;
+  color: #ece4f3;
+  font-family: Arial, sans-serif;
+}
+.puzzle-shell {
+  max-width: 1160px;
+  margin: auto;
+  border: 1px solid #78628e;
+  background: #191124f5;
+  box-shadow: 8px 8px 0 #090610;
+}
+header {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 16px 24px;
+  border-bottom: 1px solid #655078;
+  background: #342641;
+}
+header a {
+  color: #e4eabf;
+  font-size: 13px;
+  text-decoration: none;
+  padding: 6px 0;
+}
+header a:hover {
+  text-decoration: underline;
+}
+header span {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: #d1bfdc;
+}
+header b {
+  padding: 0 8px;
+  color: #b4cf76;
+}
+.puzzle-heading {
+  padding: 40px 40px 18px;
+}
+.eyebrow {
+  margin: 0;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: #bed582;
+}
+h1 {
+  font:
+    72px/1 Georgia,
+    serif;
+  margin: 18px 0;
+  color: #f1dfb7;
+  letter-spacing: -0.04em;
+}
+h1 span {
+  display: inline-block;
+  margin-left: 16px;
+  vertical-align: top;
+  color: #9f87b4;
+  font: 16px/1.4 monospace;
+  letter-spacing: 0;
+}
+.puzzle-heading > p:last-child {
+  color: #c2b0d0;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.access-notice {
+  margin: 0 40px 40px;
+  color: #c2b0d0;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.access-notice a {
+  color: #dcff79;
+}
+footer {
+  padding: 22px;
+  border-top: 1px solid #51405f;
+  text-align: center;
+  font: 9px/1.8 monospace;
+  letter-spacing: 0.12em;
+  color: #9f8eaf;
+}
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 20px;
+  background: #dcff79;
+  color: #151024;
+  padding: 12px;
+  z-index: 5;
+}
+.skip-link:focus {
+  top: 12px;
+}
+a:focus-visible {
+  outline: 2px solid #dcff79;
+  outline-offset: 4px;
+}
+@media (max-width: 600px) {
+  .puzzle-world {
+    padding: 10px 8px 28px;
+  }
+  header {
+    padding: 12px 18px;
+  }
+  header span {
+    font-size: 9px;
+  }
+  .puzzle-heading {
+    padding: 30px 22px 12px;
+  }
+  .access-notice {
+    margin: 0 22px 28px;
+  }
+  h1 {
+    font-size: 60px;
+  }
+}

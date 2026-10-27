@@ -89,8 +89,8 @@
       <section class="panel reset-section" aria-labelledby="reset-title">
         <h2 id="reset-title">Réinitialiser le jeu</h2>
         <p>
-          Remet toutes les énigmes à non résolues et verrouille le méta. Les énigmes, leurs réponses
-          et les noms des participants sont conservés.
+          Remet toutes les énigmes à non résolues, efface les essais et verrouille le méta. Les
+          énigmes, leurs réponses et les noms des participants sont conservés.
         </p>
         @if (!resetStep()) {
           <button type="button" class="danger" (click)="startReset()" [disabled]="busy()">
@@ -114,8 +114,8 @@
             } @else {
               <h3 id="confirmation-title">Confirmation 2 sur 2</h3>
               <p>
-                Cette action effacera les noms et les heures dans l’historique des résolutions de
-                cette partie.
+                Cette action effacera les essais, les noms et les heures dans l’historique des
+                résolutions de cette partie.
               </p>
               <form (ngSubmit)="confirmReset()">
                 <label for="reset-word">Tape RÉINITIALISER pour confirmer.</label>

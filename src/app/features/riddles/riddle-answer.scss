@@ -1,0 +1,157 @@
+:host {
+  display: block;
+  color: #ece4f3;
+  font-size: 14px;
+  line-height: 1.65;
+}
+h3 {
+  margin: 0 0 8px;
+  font:
+    24px Georgia,
+    serif;
+  color: #efdfbd;
+}
+.hint {
+  color: #bfb0ce;
+  margin: 8px 0 18px;
+  font-size: 13px;
+}
+label {
+  display: block;
+  font-weight: 700;
+  margin: 14px 0 6px;
+}
+.answer-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+input {
+  flex: 1 1 200px;
+  min-width: 0;
+  padding: 12px;
+  font: inherit;
+  font-size: 16px;
+  background: #f3eef7;
+  color: #221a2e;
+  border: 2px inset #d9cce7;
+  border-radius: 0;
+}
+button,
+.dialog-actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 10px 18px;
+  border: 2px outset #d5ed8b;
+  background: #d5ed8b;
+  color: #202a12;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+}
+button:disabled,
+input:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.error {
+  color: #ffacb4;
+}
+.success {
+  color: #dcff79;
+}
+.history {
+  margin-top: 30px;
+  border-top: 1px solid #51405f;
+  padding-top: 24px;
+}
+.history h3 {
+  font-size: 20px;
+}
+ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+li {
+  display: flex;
+  gap: 8px 18px;
+  flex-wrap: wrap;
+  border-top: 1px solid #3b2e48;
+  padding: 13px 0;
+}
+.attempt-answer {
+  flex: 1 1 160px;
+  overflow-wrap: anywhere;
+  font-weight: 600;
+}
+.verdict {
+  color: #ffacb4;
+  font-size: 12px;
+}
+.correct .verdict {
+  color: #dcff79;
+}
+time {
+  color: #b7a6c6;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.empty {
+  color: #b7a6c6;
+  font-size: 13px;
+}
+dialog {
+  color: #ece4f3;
+  background: #21182e;
+  border: 2px solid #b8d079;
+  padding: 32px;
+  max-width: 500px;
+  width: calc(100% - 32px);
+  box-shadow: 0 20px 90px #0008;
+}
+dialog::backdrop {
+  background: #080411c9;
+  backdrop-filter: blur(4px);
+}
+dialog h2 {
+  color: #efdfbd;
+  font:
+    30px/1.2 Georgia,
+    serif;
+  margin: 14px 0;
+}
+.success-icon {
+  width: 48px;
+  height: 48px;
+  color: #dcff79;
+  border: 1px solid #9dbd5a;
+  background: #344424;
+  font-size: 28px;
+  text-align: center;
+}
+.eyebrow {
+  color: #b8d079;
+  letter-spacing: 0.12em;
+  font-size: 11px;
+}
+.dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+.secondary {
+  background: transparent;
+  color: #e7ddec;
+  border: 1px solid #857292;
+}
+input:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid #dcff79;
+  outline-offset: 3px;
+}

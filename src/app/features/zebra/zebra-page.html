@@ -1,0 +1,36 @@
+<div class="puzzle-world" style="background-image: url('images/ai/stars.svg')">
+  <a class="skip-link" [routerLink]="[]" fragment="puzzle-content">Aller au puzzle</a>
+  <div class="puzzle-shell">
+    <header>
+      <a routerLink="/" fragment="enigmes" (click)="portal.revealed.set(true)"
+        >← Retour aux énigmes</a
+      >
+      <span>LE JOUR DE L’AI <b> / </b> DOSSIER 01</span>
+    </header>
+    <main id="puzzle-content">
+      <div class="puzzle-heading">
+        <p class="eyebrow">OPÉRATION : SAUVER LE PARTY</p>
+        <h1>Zebra<span>01</span></h1>
+        <p>Quatre personnages. Huit positions. Une seule réponse finale.</p>
+      </div>
+      @if (participants.loading()) {
+        <p class="access-notice" role="status">Chargement de l’énigme…</p>
+      } @else if (participants.canSolve()) {
+        <app-zebra-play />
+      } @else {
+        <section class="access-notice" aria-label="Accès à l’énigme">
+          <p>
+            {{
+              participants.error() ||
+                'Entre ton nom dans la page du Jour de l’AI pour accéder à cette énigme.'
+            }}
+          </p>
+          <a routerLink="/" fragment="enigmes" (click)="portal.revealed.set(true)"
+            >Aller au Jour de l’AI</a
+          >
+        </section>
+      }
+    </main>
+    <footer>UNE ÉNIGME DE L’AI · LEURS INSULTES. VOS DÉDUCTIONS.</footer>
+  </div>
+</div>

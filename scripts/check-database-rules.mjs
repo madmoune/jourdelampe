@@ -150,9 +150,18 @@ await request(
   'PATCH',
   {
     'game/round': { id: 'round-one', resetAt: serverTime },
-    'game/catalog/first': { title: 'Première énigme', prompt: 'Un énoncé.', order: 0 },
+    'game/catalog/first': {
+      title: 'Première énigme',
+      prompt: 'Un énoncé.',
+      order: 0,
+      gridReady: true,
+    },
     'game/catalog/second': { title: 'Deuxième énigme', prompt: '', order: 1 },
-    'riddleSecrets/first': { answer: 'Lampe', normalizedAnswer: 'LAMPE' },
+    'riddleSecrets/first': {
+      answer: 'Lampe',
+      normalizedAnswer: 'LAMPE',
+      gridAnswer: '123412341234123412341234',
+    },
     'riddleSecrets/second': { answer: 'Party', normalizedAnswer: 'PARTY' },
   },
   200,
@@ -217,7 +226,184 @@ await request(
   401,
   'player',
 );
-await request('game', 'PATCH', submission('player'), 200, 'player');
+function attempt(answer, correct, kind = 'answer', extra = {}) {
+  return {
+    kind,
+    answer,
+    normalizedAnswer: answer,
+    correct,
+    participantName: 'Chloé Martin',
+    roundId: 'round-one',
+    submittedAt: serverTime,
+    ...extra,
+  };
+}
+await request('game/attempts/player/first/wrong', 'PUT', attempt('FAUX', false), 200, 'player');
+await request(
+  'game/attempts/player/first/forged-success',
+  'PUT',
+  attempt('FAUX', true),
+  401,
+  'player',
+);
+await request(
+  'game/attempts/player/first/forged-failure',
+  'PUT',
+  attempt('LAMPE', false),
+  401,
+  'player',
+);
+await request('game/attempts/player/first/no-proof', 'PUT', attempt('LAMPE', true), 401, 'player');
+await request('game/attempts/player/first/wrong', 'PUT', attempt('AUTRE', false), 401, 'player');
+await request('game/attempts/player/first/deleted', 'PUT', attempt('FAUX', false), 200, 'player');
+await request('game/attempts/player/first/deleted', 'DELETE', undefined, 401, 'player');
+await request(
+  'game/attempts/player/first/other-name',
+  'PUT',
+  attempt('FAUX', false, 'answer', { participantName: 'Nom usurpé' }),
+  401,
+  'player',
+);
+await request(
+  'game/attempts/player/first/other-time',
+  'PUT',
+  attempt('FAUX', false, 'answer', { submittedAt: 1 }),
+  401,
+  'player',
+);
+await request(
+  'game/attempts/player/first/old-round',
+  'PUT',
+  attempt('FAUX', false, 'answer', { roundId: 'old' }),
+  401,
+  'player',
+);
+await request(
+  'game/attempts/player/first/unknown-field',
+  'PUT',
+  attempt('FAUX', false, 'answer', { unknown: true }),
+  401,
+  'player',
+);
+await request('game/attempts/player', 'GET', undefined, 401);
+await request('game/attempts/player', 'GET', undefined, 401, 'other-player');
+await request('game/attempts/player', 'GET', undefined, 200, 'player');
+await request('game/attempts/player', 'GET', undefined, 200, admin);
+await request('game/attempts/unnamed/first/no-name', 'PUT', attempt('FAUX', false), 401, 'unnamed');
+await request(
+  'game/attempts/player/missing/unknown-riddle',
+  'PUT',
+  attempt('FAUX', false),
+  401,
+  'player',
+);
+await request(
+  'game/attempts/player/first/grid-wrong',
+  'PUT',
+  attempt('876587651234876512341234', false, 'grid'),
+  200,
+  'player',
+);
+await request(
+  'game/attempts/player/first/grid-forged',
+  'PUT',
+  attempt('876587651234876512341234', true, 'grid'),
+  401,
+  'player',
+);
+await request(
+  'game/attempts/player/first/grid-right',
+  'PUT',
+  attempt('123412341234123412341234', true, 'grid'),
+  200,
+  'player',
+);
+assert.equal(
+  await request('game/solves', 'GET', undefined, 200),
+  null,
+  'Une grille correcte ne résout pas l’énigme.',
+);
+await request(
+  'game/attempts/player/first/grid-incomplete',
+  'PUT',
+  attempt('1234', false, 'grid'),
+  401,
+  'player',
+);
+await request(
+  'game/catalog/preview',
+  'PUT',
+  { title: 'Aperçu', prompt: '', order: 2, answerReady: false },
+  200,
+  admin,
+);
+await request(
+  'game/attempts/player/preview/no-solution',
+  'PUT',
+  attempt('FAUX', false),
+  200,
+  'player',
+);
+await request(
+  'game/attempts/player/preview/forged-success',
+  'PUT',
+  attempt('FAUX', true),
+  401,
+  'player',
+);
+await request(
+  'riddleSecrets/preview',
+  'PUT',
+  { answer: 'Code', normalizedAnswer: 'CODE' },
+  200,
+  admin,
+);
+await request(
+  'game/attempts/player/preview/false-failure',
+  'PUT',
+  attempt('CODE', false),
+  401,
+  'player',
+);
+await request('game/attempts/player/preview/no-proof', 'PUT', attempt('CODE', true), 401, 'player');
+await request(
+  'game',
+  'PATCH',
+  {
+    'solves/preview/player': {
+      ...submission('player')['solves/first/player'],
+      riddleId: 'preview',
+      riddleTitle: 'Aperçu',
+    },
+    'proofs/player/preview': { answer: 'CODE', roundId: 'round-one' },
+    'attempts/player/preview/accepted': attempt('CODE', true),
+  },
+  200,
+  'player',
+);
+await request('game/catalog/first/answerReady', 'PUT', false, 200, admin);
+await request(
+  'game/attempts/player/first/legacy-ready',
+  'PUT',
+  attempt('FAUX', false),
+  200,
+  'player',
+);
+await request(
+  'game/attempts/player/first/forged-legacy-ready',
+  'PUT',
+  attempt('LAMPE', false),
+  401,
+  'player',
+);
+await request('game/catalog/first/answerReady', 'PUT', true, 200, admin);
+await request(
+  'game',
+  'PATCH',
+  { ...submission('player'), 'attempts/player/first/right': attempt('LAMPE', true) },
+  200,
+  'player',
+);
 await request('game', 'PATCH', submission('player'), 401, 'player');
 await request('game/solves/first/player', 'DELETE', undefined, 401, 'player');
 await request(
@@ -240,11 +426,18 @@ assert.equal(sharedSolves.player.participantName, 'Chloé Martin');
 assert.ok(sharedSolves.player.solvedAt > Date.now() - 60_000);
 assert.equal(sharedSolves.player.answer, undefined);
 await request('game/proofs/player/first/answer', 'GET', undefined, 401, 'player');
-const reset = { round: { id: 'round-two', resetAt: serverTime }, solves: null, proofs: null };
+const reset = {
+  round: { id: 'round-two', resetAt: serverTime },
+  solves: null,
+  proofs: null,
+  attempts: null,
+};
 await request('game', 'PATCH', reset, 401, 'player');
 await request('game', 'PATCH', reset, 200, admin);
 assert.equal(await request('game/solves', 'GET', undefined, 200), null);
 assert.equal(await request('game/proofs', 'GET', undefined, 200, admin), null);
+assert.equal(await request('game/attempts/player', 'GET', undefined, 200, 'player'), null);
+await request('game/attempts/player/first/late', 'PUT', attempt('FAUX', false), 401, 'player');
 await request('game', 'PATCH', submission('player'), 401, 'player');
 await request('game', 'PATCH', submission('player', 'LAMPE', 'round-two'), 200, 'player');
 assert.equal((await request('participants/player', 'GET', undefined, 200)).name, 'Chloé Martin');

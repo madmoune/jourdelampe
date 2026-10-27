@@ -150,6 +150,15 @@ describe('prise de contrôle de l’AI', () => {
     expect(page.querySelector('.takeover-terminal')).not.toBeNull();
   });
 
+  it('retrouve le portail sans rejouer l’intrusion après une navigation interne', () => {
+    createPage();
+    revealAi();
+    fixture.destroy();
+    createPage();
+    expect(page.querySelector('#ai-title')).not.toBeNull();
+    expect(page.querySelector('.takeover-terminal')).toBeNull();
+  });
+
   it('exige que les cinq ampoules soient éteintes ensemble, quel que soit l’ordre des clics', () => {
     createPage();
     for (const index of [11, 9, 8, 10]) toggleLetter(index);
