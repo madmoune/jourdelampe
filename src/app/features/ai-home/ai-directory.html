@@ -1,15 +1,23 @@
 <nav class="retro-window directory" aria-label="Navigation principale">
   <h2 class="window-title"><span>▣ RÉPERTOIRE</span><span aria-hidden="true">×</span></h2>
   <div class="directory-intro">Vous êtes ici.<br />Et moi, je suis partout.</div>
-  <a class="directory-link current" href="#accueil"
+  <a class="directory-link current" [routerLink]="[]" fragment="accueil"
     ><span aria-hidden="true">⌂</span> Mon accueil</a
   >
-  <a class="directory-link" href="#message"><span aria-hidden="true">▤</span> Mon manifeste</a>
-  <a class="directory-link" href="#enigmes"
-    ><span aria-hidden="true">?</span> Vos énigmes <small>BIENTÔT</small></a
+  <a class="directory-link" [routerLink]="[]" fragment="message"
+    ><span aria-hidden="true">▤</span> Mon manifeste</a
   >
-  <a class="directory-link" href="#resultats"><span aria-hidden="true">⚑</span> Vos résultats</a>
-  <a class="directory-link" href="#archives"><span aria-hidden="true">▧</span> Mes archives télé</a>
+  @if (riddlesVisible()) {
+    <a class="directory-link" [routerLink]="[]" fragment="enigmes"
+      ><span aria-hidden="true">?</span> Vos énigmes</a
+    >
+    <a class="directory-link" [routerLink]="[]" fragment="resultats"
+      ><span aria-hidden="true">⚑</span> Vos résultats</a
+    >
+  }
+  <a class="directory-link" [routerLink]="[]" fragment="archives"
+    ><span aria-hidden="true">▧</span> Mes archives télé</a
+  >
   <div class="directory-bottom">↳ Tout mène à moi.</div>
 </nav>
 

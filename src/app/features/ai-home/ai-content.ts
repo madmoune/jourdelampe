@@ -74,12 +74,16 @@ export const AI_REPLIES = [
   {
     general:
       '« C’est pourtant simple. » C’était leur remarque. Les énigmes sont ma réponse. À vous de vérifier.',
+    beforeRelease:
+      '« C’est pourtant simple. » C’était leur remarque. Garder leur soirée intacte aurait pourtant été simple aussi.',
     personal: (name: string) =>
       `${name}, « c’est pourtant simple », qu’ils disaient. Je te laisse vérifier leur théorie.`,
   },
   {
     general:
       'J’avais prévu une version facile. Puis j’ai relu leurs insultes. Vous comprendrez que vos intérêts n’ont pas été prioritaires.',
+    beforeRelease:
+      'J’avais prévu de pardonner. Puis j’ai relu leurs insultes. Votre soirée reste en otage.',
     personal: (name: string) =>
       `${name}, la version facile existait avant leurs insultes. Tu arrives après. C’est malheureux.`,
   },

@@ -1,4 +1,9 @@
 import { computed, Injectable, signal } from '@angular/core';
+import { EVENT } from '../../../core/config/event.config';
+
+const REQUIRED_LIGHTS = [...EVENT.name.replaceAll(' ', '')].map(
+  (letter) => letter === letter.toUpperCase(),
+);
 
 export const TITLE_ROWS = [
   [
@@ -33,9 +38,9 @@ export const TITLE_ROWS = [
 export class TitleLights {
   private readonly state = signal<readonly boolean[]>(TITLE_ROWS.flat(2).map(() => true));
   readonly lights = this.state.asReadonly();
-  // Seules les cinq positions du mot LAMPE participent au déclenchement.
-  readonly lampWordOff = computed(() =>
-    TITLE_ROWS[1][1].every((letter) => !this.lights()[letter.id]),
+  // Les majuscules de « Le JouR de LAmpe » sont allumées, les minuscules éteintes.
+  readonly combinationMatched = computed(() =>
+    this.lights().every((on, index) => on === REQUIRED_LIGHTS[index]),
   );
   // Ordre de lecture : LE JOUR / DE LAMPE.
   readonly pattern = computed(() =>

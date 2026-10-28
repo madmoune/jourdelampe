@@ -1,9 +1,9 @@
 <a class="skip-link" href="#contenu">Aller au contenu</a>
 <header class="header">
   <div class="container header-inner">
-    <a class="brand" href="#" aria-label="Le Jour de Lampe, accueil" (click)="closeMenu()">
+    <a class="brand" href="#" [attr.aria-label]="event.name + ', accueil'" (click)="closeMenu()">
       <span class="brand-mark"><app-icon name="lamp" /></span>
-      <span>LE JOUR<br />DE LAMPE</span>
+      <span>Le JouR<br />de LAmpe</span>
     </a>
     <nav
       class="navigation"
@@ -140,7 +140,7 @@
 <footer class="footer">
   <div class="container footer-main">
     <a class="brand" href="#" aria-label="Retour en haut"
-      ><span class="brand-mark"><app-icon name="lamp" /></span><span>LE JOUR<br />DE LAMPE</span></a
+      ><span class="brand-mark"><app-icon name="lamp" /></span><span>Le JouR<br />de LAmpe</span></a
     >
     @if (quotes()[5]; as quote) {
       <app-quote-badge class="footer-quote" [quote]="quote" shape="pill" />
@@ -148,6 +148,6 @@
     <a class="back-to-top" href="#">Retour en haut <app-icon name="arrow-up-right" /></a>
   </div>
   <div class="container footer-bottom">
-    <span>© {{ event.edition }} LE JOUR DE LAMPE</span>
+    <span>© {{ event.edition }} {{ event.name }}</span>
   </div>
 </footer>

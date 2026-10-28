@@ -5,6 +5,7 @@ import { AiPortalState } from '../ai-home/ai-portal-state';
 import { ParticipantStore } from '../riddles/participant-store';
 import { ZebraPage } from './zebra-page';
 import { ZebraPlay } from './zebra-play';
+import { RIDDLE_PREVIEW } from '../riddles/riddle-release';
 
 @Component({ selector: 'app-zebra-play', template: '<p>Grille Zebra accessible</p>' })
 class ZebraPlayStub {}
@@ -55,6 +56,18 @@ describe('nom géré uniquement dans le portail de l’AI', () => {
     expect(page.querySelector('app-riddle-access')).toBeNull();
     expect(page.textContent).not.toContain('Modifier mon nom');
     expect(page.querySelector('.access-notice')).toBeNull();
+  });
+
+  it('conserve le lien de retour vers l’aperçu avant et après l’enregistrement du nom', async () => {
+    TestBed.overrideProvider(RIDDLE_PREVIEW, { useValue: true });
+    const fixture = TestBed.createComponent(ZebraPage);
+    await fixture.whenStable();
+    const page = fixture.nativeElement as HTMLElement;
+    expect(page.querySelector('.access-notice a')?.getAttribute('href')).toBe('/apercu-ia#enigmes');
+    canSolve.set(true);
+    await fixture.whenStable();
+    expect(page.querySelector('header a')?.getAttribute('href')).toBe('/apercu-ia#enigmes');
+    expect(page.querySelector('app-zebra-play')).not.toBeNull();
   });
 
   it('attend la fin du chargement du profil avant de proposer le retour ou la grille', async () => {

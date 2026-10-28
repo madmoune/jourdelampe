@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { EVENT } from '../../../core/config/event.config';
 import { TITLE_ROWS, TitleLights } from './title-lights';
 
 const GLYPHS: Record<string, string> = {
@@ -21,6 +22,7 @@ const GLYPHS: Record<string, string> = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LampTitle {
+  protected readonly title = EVENT.name;
   protected readonly rows = TITLE_ROWS;
   protected readonly glyphs = GLYPHS;
   protected readonly titleLights = inject(TitleLights);

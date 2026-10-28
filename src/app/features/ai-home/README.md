@@ -6,14 +6,31 @@ transmission, archives et prise de contrôle isolent les parties du portail.
 `_retro-window.scss` contient les deux styles de fenêtres partagés.
 
 Au départ, `AiTakeover` affiche le Jour de Lampe en entier, avec ses liens,
-formulaires et ampoules utilisables. Le signal `TitleLights.lampWordOff` devient
-vrai seulement quand les positions 8 à 12, soit le mot **LAMPE**, sont toutes
-éteintes. Les huit autres positions sont ignorées. Le passage à l’AI attend cette
-condition, indépendamment du temps écoulé ou d’une ancienne valeur de session.
+formulaires et ampoules utilisables. Le signal `TitleLights.combinationMatched`
+devient vrai seulement quand les cinq majuscules de **Le JouR de LAmpe** sont
+allumées et les huit minuscules éteintes : positions 0, 2, 5, 8 et 9 allumées,
+soit `1010010011000` dans l’ordre de lecture. Cette combinaison est déduite du
+nom dans `EVENT.name`. Le passage à l’AI attend cette condition, indépendamment
+du temps écoulé ou d’une ancienne valeur de session.
 La transition dure 3,6 secondes, ou se termine immédiatement avec la réduction
 des animations. L’ancien accueil devient inerte pendant cette transition.
-Aucun indice sur la combinaison n’est ajouté à la page : l’énigme sera externe.
+La casse du nom dans les métadonnées, le titre de l’onglet et les logos textuels
+sert d’indice. Les lettres des ampoules restent dessinées en majuscules.
 Le bouton de rediffusion reste disponible uniquement dans le portail déjà révélé.
+
+Les sections `#enigmes` et `#resultats`, le formulaire de nom, les liens du menu,
+l’appel à résoudre les énigmes et les répliques qui les dévoilent sont masqués
+avant `EVENT.riddlesOpenAt`, soit le 31 décembre 2026 à 17 h à Montréal. Le service
+`RiddleRelease` actualise leur visibilité chaque seconde. Avant cette heure, le
+catalogue et le profil ne sont pas chargés par l’accueil. Les répliques de l’AI
+et les commentaires télé concernés utilisent leurs variantes sans annonce du jeu.
+
+`/apercu-ia` utilise le même `AiHome` en mode `RIDDLE_PREVIEW` : accès direct au
+portail complet, sans attendre ni manipuler les ampoules. Le fournisseur de ce
+mode et l’état du portail sont limités à cette route et à ses jeux enfants,
+dont `/apercu-ia/enigmes/zebra`. Les liens des jeux et de retour conservent le
+mode aperçu. L’aperçu n’est pas lié depuis le site public; il partage les vrais
+profils, énigmes et résultats. La route publique Zebra attend aussi l’ouverture.
 
 `ai-content.ts` contient les textes du personnage et les références culturelles.
 Les commentaires signés **AI** sont originaux. `ai-tv-quotes.ts` contient les

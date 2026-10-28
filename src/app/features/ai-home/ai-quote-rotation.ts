@@ -15,13 +15,22 @@ export class AiQuoteRotation {
   private readonly hidden = signal(this.document.hidden);
   private readonly indexes = signal(AI_ARCHIVES.map(() => 0));
   readonly paused = signal(false);
+  readonly riddlesVisible = signal(true);
   readonly autoPlaying = computed(() => !this.paused() && !this.reducedMotion() && !this.hidden());
   readonly archives = computed(() =>
-    AI_ARCHIVES.map((archive, index) => ({
-      ...archive,
-      quote: archive.quotes[this.indexes()[index]],
-      quoteNumber: this.indexes()[index] + 1,
-    })),
+    AI_ARCHIVES.map((archive, index) => {
+      const quote = archive.quotes[this.indexes()[index]];
+      return {
+        ...archive,
+        quote: {
+          ...quote,
+          comment: this.riddlesVisible()
+            ? quote.comment
+            : (quote.beforeReleaseComment ?? quote.comment),
+        },
+        quoteNumber: this.indexes()[index] + 1,
+      };
+    }),
   );
 
   constructor() {

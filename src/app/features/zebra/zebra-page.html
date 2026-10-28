@@ -2,7 +2,7 @@
   <a class="skip-link" [routerLink]="[]" fragment="puzzle-content">Aller au puzzle</a>
   <div class="puzzle-shell">
     <header>
-      <a routerLink="/" fragment="enigmes" (click)="portal.revealed.set(true)"
+      <a [routerLink]="homePath" fragment="enigmes" (click)="portal.revealed.set(true)"
         >← Retour aux énigmes</a
       >
       <span>LE JOUR DE L’AI <b> / </b> DOSSIER 01</span>
@@ -25,7 +25,7 @@
                 'Entre ton nom dans la page du Jour de l’AI pour accéder à cette énigme.'
             }}
           </p>
-          <a routerLink="/" fragment="enigmes" (click)="portal.revealed.set(true)"
+          <a [routerLink]="homePath" fragment="enigmes" (click)="portal.revealed.set(true)"
             >Aller au Jour de l’AI</a
           >
         </section>

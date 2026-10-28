@@ -4,6 +4,7 @@ import { GameStore } from './game-store';
 import { ParticipantStore } from './participant-store';
 import { RiddleAnswer } from './riddle-answer';
 import { RIDDLE_PAGES } from './riddle-pages';
+import { RIDDLE_PREVIEW, RIDDLE_PREVIEW_PATH } from './riddle-release';
 
 @Component({
   selector: 'app-riddle-game',
@@ -13,6 +14,7 @@ import { RIDDLE_PAGES } from './riddle-pages';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RiddleGame {
+  protected readonly pagePrefix = inject(RIDDLE_PREVIEW) ? RIDDLE_PREVIEW_PATH : '';
   protected readonly game = inject(GameStore);
   private readonly participants = inject(ParticipantStore);
   protected readonly name = computed(() => this.participants.participant()?.name ?? '');

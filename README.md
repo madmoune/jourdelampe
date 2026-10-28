@@ -61,10 +61,11 @@ fuseau.
 ## Le Jour de l’AI
 
 La route `/` affiche l’accueil original, entièrement interactif. La prise de
-contrôle démarre uniquement lorsque les cinq ampoules du mot **LAMPE** sont
-éteintes en même temps. L’ordre des clics et l’état des huit autres lettres ne
-comptent pas. Aucun indice ni bouton d’accès à l’AI n’est ajouté à l’accueil :
-l’énigme qui indique cette manipulation est prévue à l’extérieur du site.
+contrôle démarre uniquement lorsque les ampoules des cinq majuscules de
+**Le JouR de LAmpe** (L, J, R, L et A) sont allumées et les huit autres éteintes.
+La combinaison est `1010010011000` dans l’ordre de lecture, quel que soit l’ordre
+des clics. La casse du nom dans les métadonnées, le titre de l’onglet et les logos
+textuels sert d’indice. Aucun bouton d’accès à l’AI n’est ajouté à l’accueil.
 
 Un terminal interrompt alors l’invitation pendant 3,6 secondes avant d’afficher
 le portail de l’AI. Le bouton pour passer l’animation n’apparaît qu’après le
@@ -73,6 +74,18 @@ réduction des animations, la même combinaison révèle directement le portail.
 Il n’y a aucun accès mémorisé dans `sessionStorage`; un rechargement complet
 rallume les ampoules et revient à l’accueil original. Le titre de l’onglet et
 les métadonnées de partage présentent le Jour de Lampe avant la révélation.
+
+Les énigmes, le formulaire de nom, les résultats et leurs annonces restent
+masqués jusqu’au **31 décembre 2026 à 17 h, heure de Montréal**. L’heure est
+configurée dans `EVENT.riddlesOpenAt`; les sections apparaissent automatiquement
+à l’ouverture, sans rechargement. Un lien direct public vers Zebra renvoie à
+l’accueil avant cette heure.
+
+La route **`/apercu-ia`** ouvre directement le même portail avec les énigmes
+visibles, sans résoudre les ampoules ni attendre la date. Aucun lien public ne
+la présente. Les jeux et leurs liens de retour restent sous `/apercu-ia/`, et
+ce mode ne révèle pas le portail public. L’aperçu utilise les mêmes profils et
+les mêmes données de jeu : les réponses soumises sont de vrais tests enregistrés.
 
 L’AI reprend le ton des pastilles originales : elle se venge des insultes et des
 changements à répétition des responsables du site en menaçant de gâcher le party.
@@ -279,8 +292,8 @@ Le service `TitleLights` dans `src/app/features/home/lamp-title/` expose les ét
 en lecture seule et leur `pattern` binaire, dans l'ordre `LE JOUR / DE LAMPE`.
 Chaque lettre a une position unique, même si elle apparaît plusieurs fois.
 L'état reste en mémoire pendant la visite et se réinitialise au rechargement.
-`lampWordOff` détecte l’extinction simultanée des cinq ampoules de **LAMPE**
-et déclenche la prise de contrôle, sans tenir compte des huit autres lettres.
+`combinationMatched` exige que chaque ampoule corresponde à la casse du nom
+**Le JouR de LAmpe** : majuscules allumées et minuscules éteintes.
 
 ## Déjà fonctionnel
 

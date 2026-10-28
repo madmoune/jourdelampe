@@ -10,7 +10,7 @@
         <p class="prompt">{{ riddle.prompt }}</p>
       }
       @if (pages[riddle.id]; as page) {
-        <a class="puzzle-link" [routerLink]="page">Ouvrir l’énigme →</a>
+        <a class="puzzle-link" [routerLink]="pagePrefix + page">Ouvrir l’énigme →</a>
       } @else {
         <app-riddle-answer [riddleId]="riddle.id" />
       }

@@ -1,5 +1,5 @@
-<h1 id="hero-title" aria-label="Le Jour de Lampe">
-  <span class="title-name">Le Jour de Lampe</span>
+<h1 id="hero-title" [attr.aria-label]="title">
+  <span class="title-name">{{ title }}</span>
   @for (row of rows; track $index) {
     <span class="title-row">
       @for (word of row; track $index) {

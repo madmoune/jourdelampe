@@ -12,6 +12,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
+import { RouterLink } from '@angular/router';
 import { EVENT } from '../../core/config/event.config';
 import { countdownUntil } from '../../core/utils/countdown';
 import { AiTakeover } from './ai-takeover';
@@ -24,12 +25,14 @@ import { RiddleAccess } from '../riddles/riddle-access';
 import { RiddleGame } from '../riddles/riddle-game';
 import { RiddleResults } from '../riddles/riddle-results';
 import { AiPortalState } from './ai-portal-state';
+import { RIDDLE_PREVIEW, RiddleRelease } from '../riddles/riddle-release';
 
 type TakeoverStage = 'original' | 'intrusion' | 'complete';
 
 @Component({
   selector: 'app-ai-home',
   imports: [
+    RouterLink,
     AiTakeover,
     AiDirectory,
     AiTransmission,
@@ -44,6 +47,8 @@ type TakeoverStage = 'original' | 'intrusion' | 'complete';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AiHome {
+  private readonly preview = inject(RIDDLE_PREVIEW);
+  private readonly release = inject(RiddleRelease);
   private readonly portal = inject(AiPortalState);
   private readonly quoteRotation = inject(AiQuoteRotation);
   private readonly titleLights = inject(TitleLights);
@@ -58,8 +63,9 @@ export class AiHome {
   private readonly now = signal(Date.now());
   protected readonly event = EVENT;
   protected readonly stage = signal<TakeoverStage>(
-    this.portal.revealed() ? 'complete' : 'original',
+    this.preview || this.portal.revealed() ? 'complete' : 'original',
   );
+  protected readonly riddlesVisible = computed(() => this.preview || this.release.released());
   protected readonly animationsPaused = signal(false);
   protected readonly participantName = computed(
     () => this.riddleAccess()?.participantName() ?? null,
@@ -78,20 +84,23 @@ export class AiHome {
 
   constructor() {
     effect(() => {
-      if (this.stage() === 'original' && this.titleLights.lampWordOff()) {
+      if (this.stage() === 'original' && this.titleLights.combinationMatched()) {
         this.beginTakeover();
       }
     });
     effect(() => {
       const captured = this.stage() === 'complete';
       this.title.setTitle(
-        captured ? 'Le Jour de l’AI — Votre party est en sursis' : 'Le Jour de Lampe — 2027',
+        captured
+          ? 'Le Jour de l’AI — Votre party est en sursis'
+          : `${EVENT.name} — ${EVENT.edition}`,
       );
       this.meta.updateTag({ name: 'theme-color', content: captured ? '#100c23' : '#181c19' });
     });
     effect(() =>
       this.quoteRotation.paused.set(this.animationsPaused() || this.stage() !== 'complete'),
     );
+    effect(() => this.quoteRotation.riddlesVisible.set(this.riddlesVisible()));
     const timer = setInterval(() => this.now.set(Date.now()), 1000);
     inject(DestroyRef).onDestroy(() => {
       clearInterval(timer);
@@ -107,7 +116,8 @@ export class AiHome {
   }
 
   protected beginTakeover(): void {
-    if (!this.titleLights.lampWordOff() || this.stage() === 'intrusion') return;
+    if ((!this.preview && !this.titleLights.combinationMatched()) || this.stage() === 'intrusion')
+      return;
     this.clearTakeoverTimers();
     this.focusAfterTakeover = true;
     this.stage.set('intrusion');

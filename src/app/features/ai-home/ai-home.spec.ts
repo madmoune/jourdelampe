@@ -1,6 +1,7 @@
 import { Component, signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
 import { Home } from '../home/home';
 import { LampTitle } from '../home/lamp-title/lamp-title';
 import { TitleLights } from '../home/lamp-title/title-lights';
@@ -10,6 +11,8 @@ import { ParticipantStore } from '../riddles/participant-store';
 import { Participant } from '../riddles/participant';
 import { GameStore } from '../riddles/game-store';
 import { RiddleSubmissions } from '../riddles/riddle-submissions';
+import { RIDDLE_PREVIEW } from '../riddles/riddle-release';
+import { AiQuoteRotation } from './ai-quote-rotation';
 
 @Component({
   selector: 'app-home',
@@ -41,6 +44,7 @@ describe('prise de contrôle de l’AI', () => {
     await TestBed.configureTestingModule({
       imports: [AiHome],
       providers: [
+        provideRouter([]),
         {
           provide: GameStore,
           useValue: {
@@ -92,8 +96,8 @@ describe('prise de contrôle de l’AI', () => {
     fixture.detectChanges();
   }
 
-  function switchOffLampWord(): void {
-    for (const index of [8, 9, 10, 11, 12]) toggleLetter(index);
+  function solveLights(): void {
+    for (const index of [1, 3, 4, 6, 7, 10, 11, 12]) toggleLetter(index);
   }
 
   function skipIntro(): void {
@@ -102,7 +106,7 @@ describe('prise de contrôle de l’AI', () => {
   }
 
   function revealAi(): void {
-    switchOffLampWord();
+    solveLights();
     skipIntro();
   }
 
@@ -116,12 +120,12 @@ describe('prise de contrôle de l’AI', () => {
     expect(page.querySelector('.original-site')?.getAttribute('aria-hidden')).toBeNull();
     expect(page.querySelector('.skip-intro')).toBeNull();
     expect(page.querySelector('#ai-title')).toBeNull();
-    expect(TestBed.inject(Title).getTitle()).toBe('Le Jour de Lampe — 2027');
+    expect(TestBed.inject(Title).getTitle()).toBe('Le JouR de LAmpe — 2027');
   });
 
-  it('déclenche l’animation quand les cinq lettres de LAMPE sont éteintes et laisse les autres allumées', () => {
+  it('déclenche l’animation quand seules les majuscules de « Le JouR de LAmpe » sont allumées', () => {
     createPage();
-    for (const index of [8, 9, 10, 11]) {
+    for (const index of [1, 3, 4, 6, 7, 10, 11]) {
       toggleLetter(index);
       expect(page.querySelector('.takeover-terminal')).toBeNull();
     }
@@ -130,7 +134,7 @@ describe('prise de contrôle de l’AI', () => {
     expect(page.querySelector('#ai-title')).toBeNull();
 
     toggleLetter(12);
-    expect(TestBed.inject(TitleLights).pattern()).toBe('1111111100000');
+    expect(TestBed.inject(TitleLights).pattern()).toBe('1010010011000');
     expect(page.textContent).toContain('Là, c’est moi qui décide.');
     expect(page.querySelector('.original-site')?.hasAttribute('inert')).toBe(true);
     vi.advanceTimersByTime(3600);
@@ -141,13 +145,26 @@ describe('prise de contrôle de l’AI', () => {
     expect(window.sessionStorage.getItem(obsoleteStorageKey)).toBeNull();
   });
 
-  it('ignore l’état des huit autres ampoules, y compris leurs lettres L et E', () => {
+  it.each([0, 2, 5, 8, 9])(
+    'exige aussi que la majuscule à la position %i soit allumée',
+    (index) => {
+      createPage();
+      toggleLetter(index);
+      solveLights();
+      expect(page.querySelector('.takeover-terminal')).toBeNull();
+      toggleLetter(index);
+      expect(page.querySelector('.takeover-terminal')).not.toBeNull();
+    },
+  );
+
+  it('ne se déclenche plus avec l’ancienne combinaison du mot LAMPE éteint', () => {
     createPage();
-    for (let index = 0; index < 8; index++) toggleLetter(index);
-    expect(TestBed.inject(TitleLights).pattern()).toBe('0000000011111');
+    for (const index of [8, 9, 10, 11, 12]) toggleLetter(index);
+    expect(TestBed.inject(TitleLights).pattern()).toBe('1111111100000');
+    vi.advanceTimersByTime(5000);
+    fixture.detectChanges();
     expect(page.querySelector('.takeover-terminal')).toBeNull();
-    switchOffLampWord();
-    expect(page.querySelector('.takeover-terminal')).not.toBeNull();
+    expect(page.querySelector('#ai-title')).toBeNull();
   });
 
   it('retrouve le portail sans rejouer l’intrusion après une navigation interne', () => {
@@ -159,13 +176,13 @@ describe('prise de contrôle de l’AI', () => {
     expect(page.querySelector('.takeover-terminal')).toBeNull();
   });
 
-  it('exige que les cinq ampoules soient éteintes ensemble, quel que soit l’ordre des clics', () => {
+  it('exige aussi que toutes les minuscules soient éteintes, quel que soit l’ordre des clics', () => {
     createPage();
-    for (const index of [11, 9, 8, 10]) toggleLetter(index);
-    toggleLetter(8);
-    toggleLetter(12);
+    for (const index of [11, 7, 1, 10, 4, 12, 6]) toggleLetter(index);
+    toggleLetter(1);
+    toggleLetter(3);
     expect(page.querySelector('.takeover-terminal')).toBeNull();
-    toggleLetter(8);
+    toggleLetter(1);
     expect(page.querySelector('.takeover-terminal')).not.toBeNull();
   });
 
@@ -187,7 +204,7 @@ describe('prise de contrôle de l’AI', () => {
     createPage();
     expect(page.querySelector('.original-site')).not.toBeNull();
     expect(page.querySelector('#ai-title')).toBeNull();
-    switchOffLampWord();
+    solveLights();
     expect(page.querySelector('.original-site')).toBeNull();
     expect(page.querySelector('.takeover-terminal')).toBeNull();
     expect(page.querySelector('#ai-title')).not.toBeNull();
@@ -231,8 +248,8 @@ describe('prise de contrôle de l’AI', () => {
     expect(page.querySelector('app-riddle-access form')).not.toBeNull();
     expect(page.querySelector('input[name="playerName"]')).not.toBeNull();
     expect(page.querySelector('.riddles-ready')).toBeNull();
-    for (const link of page.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')) {
-      expect(page.querySelector(link.getAttribute('href')!)).not.toBeNull();
+    for (const link of page.querySelectorAll<HTMLAnchorElement>('a[href*="#"]')) {
+      expect(page.querySelector(link.hash)).not.toBeNull();
     }
     const pause = [...page.querySelectorAll<HTMLButtonElement>('button')].find((button) =>
       button.textContent?.includes('Mettre les animations en pause'),
@@ -241,6 +258,64 @@ describe('prise de contrôle de l’AI', () => {
     fixture.detectChanges();
     expect(pause.getAttribute('aria-pressed')).toBe('true');
     expect(page.querySelector('.ai-world')?.classList.contains('motion-paused')).toBe(true);
+  });
+
+  it('cache les énigmes, le profil, les résultats et leurs annonces avant le 31 décembre à 17 h', () => {
+    vi.setSystemTime(new Date('2026-12-31T16:59:00-05:00'));
+    TestBed.overrideProvider(GameStore, {
+      useFactory: () => {
+        throw new Error('Le catalogue ne doit pas être chargé avant l’ouverture.');
+      },
+    });
+    createPage();
+    revealAi();
+    expect(page.querySelector('#ai-title')).not.toBeNull();
+    expect(page.querySelector('#enigmes')).toBeNull();
+    expect(page.querySelector('#resultats')).toBeNull();
+    expect(page.querySelector('app-riddle-access')).toBeNull();
+    expect(page.querySelector('a[href$="#enigmes"]')).toBeNull();
+    expect(page.querySelector('a[href$="#resultats"]')).toBeNull();
+    const rotation = fixture.debugElement.injector.get(AiQuoteRotation);
+    for (let index = 0; index < 10; index++) {
+      expect(page.textContent).not.toMatch(
+        /énigm|résou|résol|bonnes réponses|meilleures réponses|examen|du devoir|les devoirs/i,
+      );
+      page.querySelector<HTMLButtonElement>('.provoke-button')!.click();
+      rotation.advance();
+      fixture.detectChanges();
+    }
+  });
+
+  it('révèle automatiquement les sections à 17 h à Montréal sans recharger la page', () => {
+    vi.setSystemTime(new Date('2026-12-31T16:59:59-05:00'));
+    reducedMotion = true;
+    createPage();
+    solveLights();
+    expect(page.querySelector('#enigmes')).toBeNull();
+    expect(page.querySelector('#resultats')).toBeNull();
+    vi.advanceTimersByTime(1000);
+    fixture.detectChanges();
+    expect(page.querySelector('#enigmes')).not.toBeNull();
+    expect(page.querySelector('#resultats')).not.toBeNull();
+    expect(page.querySelector('a[href$="#enigmes"]')).not.toBeNull();
+    expect(page.querySelector('a[href$="#resultats"]')).not.toBeNull();
+    expect(page.querySelector('.ai-demand')?.textContent).toContain('Résolvez mes énigmes');
+  });
+
+  it('ouvre directement la prévisualisation avec les énigmes avant la date et permet la rediffusion', () => {
+    vi.setSystemTime(new Date('2026-10-28T12:00:00-04:00'));
+    TestBed.overrideProvider(RIDDLE_PREVIEW, { useValue: true });
+    createPage();
+    expect(page.querySelector('.original-site')).toBeNull();
+    expect(page.querySelector('#ai-title')).not.toBeNull();
+    expect(page.querySelector('#enigmes')).not.toBeNull();
+    expect(page.querySelector('#resultats')).not.toBeNull();
+    expect(TestBed.inject(TitleLights).pattern()).toBe('1111111111111');
+    page.querySelector<HTMLButtonElement>('.replay-button')!.click();
+    fixture.detectChanges();
+    expect(page.querySelector('.takeover-terminal')).not.toBeNull();
+    skipIntro();
+    expect(page.querySelector('#enigmes')).not.toBeNull();
   });
 
   it('s’adresse au profil déjà enregistré seulement après la révélation du portail', () => {

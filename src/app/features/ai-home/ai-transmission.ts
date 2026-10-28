@@ -18,6 +18,7 @@ import { AiQuoteRotation } from './ai-quote-rotation';
   host: { class: 'right-sidebar', 'aria-label': 'Transmissions de l’AI' },
 })
 export class AiTransmission {
+  readonly riddlesVisible = input(true);
   readonly participantName = input<string | null>(null);
   readonly replay = output<void>();
   protected readonly rotation = inject(AiQuoteRotation);
@@ -27,6 +28,9 @@ export class AiTransmission {
   protected readonly replyIndex = signal(0);
   protected readonly reply = computed(() => {
     const reply = AI_REPLIES[this.replyIndex()];
+    if (!this.riddlesVisible()) {
+      return 'beforeRelease' in reply ? reply.beforeRelease : reply.general;
+    }
     const name = this.participantName();
     return name ? reply.personal(name) : reply.general;
   });

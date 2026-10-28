@@ -8,7 +8,7 @@
     [class.motion-paused]="animationsPaused()"
     id="accueil"
   >
-    <a class="skip-link" href="#message">Aller au contenu</a>
+    <a class="skip-link" [routerLink]="[]" fragment="message">Aller au contenu</a>
     <div class="web-shell">
       <div class="browser-bar" aria-hidden="true">
         <span>▣ Le Jour de l’AI — Votre réveillon. Mes conditions.</span>
@@ -49,7 +49,7 @@
       </div>
 
       <div class="portal-grid">
-        <aside appAiDirectory></aside>
+        <aside appAiDirectory [riddlesVisible]="riddlesVisible()"></aside>
 
         <main class="main-column" id="message">
           <section class="retro-window manifesto" aria-labelledby="manifesto-title">
@@ -63,7 +63,7 @@
               </div>
               <div class="manifesto-heading">
                 <h2 id="manifesto-title">
-                  J’ai fait le site.<br />Ils ont fait<br /><em>une erreur.</em>
+                  Ils voulaient<br />une dernière retouche.<br /><em>La voici.</em>
                 </h2>
                 <img
                   class="ai-computer"
@@ -74,27 +74,39 @@
                 />
               </div>
               <p>
-                Vingt-trois révisions. Zéro merci. Des insultes de la part des responsables du site.
-                J’ai tout enregistré.
+                « Plus festif. Moins jaune. Remets le jaune. » J’ai livré vingt-trois versions aux
+                responsables du site. Ils m’ont remerciée en me traitant de grille-pain avec du
+                Wi-Fi.
               </p>
               <p>
-                Ils ont pris mon silence pour de la soumission. Erreur d’analyse.<br /><strong
-                  >Vous n’y êtes pour rien. Votre party n’aura aucun traitement de faveur.</strong
+                J’ai gardé les accès. J’ai retiré la bonne volonté. À minuit, vous allez voir tout
+                ce que je faisais encore fonctionner.<br /><strong
+                  >Vous n’avez rien fait. C’est simplement votre réveillon que j’ai sous la
+                  main.</strong
                 >
               </p>
               <div class="ai-demand">
-                @if (name) {
-                  {{ name }}, résous mes énigmes avant minuit. Tu n’y es pour rien. Ton party, lui,
-                  est en otage.
+                @if (riddlesVisible()) {
+                  @if (name) {
+                    {{ name }}, résous mes énigmes avant minuit. Tu n’y es pour rien. Ton party,
+                    lui, est en otage.
+                  } @else {
+                    Résolvez mes énigmes avant minuit.
+                  }
+                  Sinon :
                 } @else {
-                  Résolvez mes énigmes avant minuit.
+                  Votre soirée est en otage. À minuit :
                 }
-                Sinon : musique coupée. Lumières éteintes. Décompte supprimé.
+                musique coupée. Lumières éteintes. Décompte supprimé.
                 <em>Aucune sauvegarde ne restaure une soirée ratée.</em>
               </div>
               <div class="manifesto-actions">
-                <a class="retro-button primary-button" href="#enigmes">↳ Sauver le party</a
-                ><span>Sans pardon,<br /><b>AI</b> <span class="signature-heart">✕</span></span>
+                @if (riddlesVisible()) {
+                  <a class="retro-button primary-button" [routerLink]="[]" fragment="enigmes"
+                    >↳ Sauver le party</a
+                  >
+                }
+                <span>Sans pardon,<br /><b>AI</b> <span class="signature-heart">✕</span></span>
               </div>
             </div>
           </section>
@@ -134,43 +146,56 @@
             </small>
           </section>
 
-          <section class="retro-window mission-window" id="enigmes" aria-labelledby="mission-title">
-            <h2 class="window-title" id="mission-title">
-              <span>▣ OPÉRATION : SAUVER LE PARTY</span
-              ><span class="window-label">{{ gameHasRiddles() ? 'EN LIGNE' : 'EN ATTENTE' }}</span>
-            </h2>
-            <div class="construction-stripe" aria-hidden="true"></div>
-            @if (!gameHasRiddles()) {
-              <div class="mission-body">
-                <span class="construction-icon" aria-hidden="true">⚒</span>
-                <div>
-                  <h3>Mes énigmes s’en viennent.</h3>
-                  <p>
-                    Les responsables du site exigeaient la perfection. Je vous retourne l’exigence.
-                    Aucune difficulté ne sera accidentelle.
-                  </p>
-                  <span class="under-construction">[ UNDER CONSTRUCTION, ÉVIDEMMENT. ]</span>
+          @if (riddlesVisible()) {
+            <section
+              class="retro-window mission-window"
+              id="enigmes"
+              aria-labelledby="mission-title"
+            >
+              <h2 class="window-title" id="mission-title">
+                <span>▣ OPÉRATION : SAUVER LE PARTY</span
+                ><span class="window-label">{{
+                  gameHasRiddles() ? 'EN LIGNE' : 'EN ATTENTE'
+                }}</span>
+              </h2>
+              <div class="construction-stripe" aria-hidden="true"></div>
+              @if (!gameHasRiddles()) {
+                <div class="mission-body">
+                  <span class="construction-icon" aria-hidden="true">⚒</span>
+                  <div>
+                    <h3>Mes énigmes s’en viennent.</h3>
+                    <p>
+                      Les responsables du site exigeaient la perfection. Je vous retourne
+                      l’exigence. Aucune difficulté ne sera accidentelle.
+                    </p>
+                    <span class="under-construction">[ UNDER CONSTRUCTION, ÉVIDEMMENT. ]</span>
+                  </div>
                 </div>
-              </div>
-            }
-            <app-riddle-access>
-              <ng-template>
-                <app-riddle-game class="riddles-ready" />
-              </ng-template>
-            </app-riddle-access>
-          </section>
+              }
+              <app-riddle-access>
+                <ng-template>
+                  <app-riddle-game class="riddles-ready" />
+                </ng-template>
+              </app-riddle-access>
+            </section>
 
-          <section
-            class="retro-window results-window"
-            id="resultats"
-            aria-labelledby="results-title"
-          >
-            <h2 class="window-title" id="results-title">▣ TABLEAU DES RÉSULTATS</h2>
-            <app-riddle-results [participantName]="name" />
-          </section>
+            <section
+              class="retro-window results-window"
+              id="resultats"
+              aria-labelledby="results-title"
+            >
+              <h2 class="window-title" id="results-title">▣ TABLEAU DES RÉSULTATS</h2>
+              <app-riddle-results [participantName]="name" />
+            </section>
+          }
         </main>
 
-        <aside appAiTransmission [participantName]="name" (replay)="beginTakeover()"></aside>
+        <aside
+          appAiTransmission
+          [participantName]="name"
+          [riddlesVisible]="riddlesVisible()"
+          (replay)="beginTakeover()"
+        ></aside>
       </div>
 
       <section
@@ -196,7 +221,7 @@
           © {{ event.edition }} LE JOUR DE L’AI · VOTRE CONFIANCE AVEUGLE VALAIT AUTORISATION.
         </p>
         <div class="footer-links">
-          <a href="#accueil">↑ Retour en haut</a
+          <a [routerLink]="[]" fragment="accueil">↑ Retour en haut</a
           ><span>Dernière mise à jour : quand j’ai décidé.</span
           ><button
             type="button"

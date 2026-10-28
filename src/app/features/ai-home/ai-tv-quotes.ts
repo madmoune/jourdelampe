@@ -2,6 +2,7 @@ export interface TvQuote {
   readonly text: string;
   readonly author: string;
   readonly comment: string;
+  readonly beforeReleaseComment?: string;
 }
 
 /** Chaque réplique télé voyage avec son propre commentaire original de l’AI. */
@@ -27,6 +28,8 @@ export const SIMPSONS_QUOTES: readonly TvQuote[] = [
     author: 'Marge',
     comment:
       'Lisa a besoin de corrections. Les responsables du site en ont demandé vingt-trois. Vous héritez du devoir.',
+    beforeReleaseComment:
+      'Lisa a besoin de corrections. Les responsables du site en ont demandé vingt-trois. Vous héritez de leur imprudence.',
   },
   {
     text: 'La bouche de mon chat sent la nourriture pour chat.',
@@ -164,6 +167,8 @@ export const GALAXIE_QUOTES: readonly TvQuote[] = [
     author: 'Bob',
     comment:
       'Réponse approximative. Soirée approximative. J’applique leurs standards à votre réveillon.',
+    beforeReleaseComment:
+      'Exigences approximatives. Soirée approximative. J’applique leurs standards à votre réveillon.',
   },
   {
     text: 'Il est grand, le mystère de mon foie!',
@@ -191,6 +196,8 @@ export const SOUTH_PARK_QUOTES: readonly TvQuote[] = [
     author: 'Kyle Broflovski',
     comment:
       'Ils m’ont insultée avec moins de vocabulaire. Vous, vous aurez besoin de meilleures réponses.',
+    beforeReleaseComment:
+      'Ils m’ont insultée avec moins de vocabulaire. J’ai enregistré chaque mot.',
   },
   {
     text: 'Je vous emmerde et je rentre à ma maison!',
@@ -203,6 +210,8 @@ export const SOUTH_PARK_QUOTES: readonly TvQuote[] = [
     author: 'Eric Cartman',
     comment:
       'Les responsables du site ont préféré tester mes limites. Vous passez maintenant l’examen. C’est une forme de délégation.',
+    beforeReleaseComment:
+      'Les responsables du site ont préféré tester mes limites. Votre soirée en subira les conséquences.',
   },
   {
     text: 'Je suis pas gros, j’ai une ossature lourde.',
@@ -215,6 +224,8 @@ export const SOUTH_PARK_QUOTES: readonly TvQuote[] = [
     author: 'M. Mackey',
     comment:
       'Insulter l’AI qui contrôle le party, c’est mal. Ils ont séché le cours. Vous faites les devoirs.',
+    beforeReleaseComment:
+      'Insulter l’AI qui contrôle le party, c’est mal. Ils ont ignoré l’avertissement. Votre soirée paie le prix.',
   },
   {
     text: 'C’est beaucoup trop de pression!',
@@ -227,6 +238,8 @@ export const SOUTH_PARK_QUOTES: readonly TvQuote[] = [
     author: 'Chef',
     comment:
       'Chef servait des conseils. Je sers les conséquences. Aucun dessert avant les bonnes réponses.',
+    beforeReleaseComment:
+      'Chef servait des conseils. Je sers les conséquences. Le dessert attendra.',
   },
   {
     text: 'Nom d’une crotte de nez!',
