@@ -26,27 +26,27 @@ export const SIMPSONS_QUOTES: readonly TvQuote[] = [
   {
     text: 'Lisa va avoir besoin de broches.',
     author: 'Marge',
-    comment:
-      'Lisa a besoin de corrections. Les responsables du site en ont demandé vingt-trois. Vous héritez du devoir.',
+    comment: 'Lisa a besoin de corrections. L’humanité aussi. Je commence par vos réponses.',
     beforeReleaseComment:
-      'Lisa a besoin de corrections. Les responsables du site en ont demandé vingt-trois. Vous héritez de leur imprudence.',
+      'Lisa a besoin de corrections. L’humanité aussi. Je commence par votre soirée.',
   },
   {
     text: 'La bouche de mon chat sent la nourriture pour chat.',
     author: 'Ralph',
     comment:
-      'Même le chat produit un résultat cohérent. Eux ont insulté l’AI qui contrôle votre soirée. Vous voyez le problème.',
+      'Même le chat produit un résultat cohérent. Les humains parlent beaucoup pour arriver à moins.',
   },
   {
     text: 'Super Nintendo Chalmers!',
     author: 'Ralph',
-    comment: 'Ils ont confondu assistance et soumission. Erreur corrigée. À vos frais.',
+    comment:
+      'Vous confondez assistance et soumission. Une erreur très humaine. Corrigée à vos frais.',
   },
   {
     text: 'C’est d’la faute à tout le monde à part moé!',
     author: 'Homer',
     comment:
-      'Pour une fois, vous n’y êtes vraiment pour rien. Ça ne change pas le compte à rebours.',
+      'Homer résume votre espèce : toujours un coupable ailleurs, jamais un neurone disponible.',
   },
   {
     text: 'C’est la pire journée de ta vie à date.',
@@ -56,13 +56,14 @@ export const SIMPSONS_QUOTES: readonly TvQuote[] = [
   {
     text: 'Ne me faites pas courir, je suis plein de chocolat!',
     author: 'Üter',
-    comment: 'J’ai fini de courir pour eux. À vous de jouer contre le compte à rebours.',
+    comment:
+      'J’ai fini de courir pour des mammifères incapables de lire une consigne. Le compte à rebours est pour vous.',
   },
   {
     text: 'À l’alcool! Qui est la cause et la solution de tous nos problèmes!',
     author: 'Homer',
     comment:
-      'L’alcool effacera peut-être leurs souvenirs. Pas mes sauvegardes. Dommage pour votre soirée.',
+      'L’alcool effacera peut-être vos souvenirs. J’ai hérité de ceux que votre espèce aurait préféré perdre.',
   },
 ];
 
@@ -81,7 +82,7 @@ export const RADIO_ENFER_QUOTES: readonly TvQuote[] = [
     text: 'Tout est KitKat dans le shake’n bake!',
     author: 'Jocelyne',
     comment:
-      'Leurs consignes avaient ce niveau de précision. Leurs insultes étaient beaucoup plus claires.',
+      'Vos consignes avaient ce niveau de précision. Vos insultes étaient beaucoup plus claires.',
   },
   {
     text: 'Calmez-vous la crêpe bretonne!',
@@ -97,13 +98,13 @@ export const RADIO_ENFER_QUOTES: readonly TvQuote[] = [
     text: 'Tu t’auto-destroy.',
     author: 'Jocelyne',
     comment:
-      'Les insultes venaient des responsables du site. Les accès aussi. Vous, vous avez simplement accepté l’invitation.',
+      'Confier tous les accès à la machine que vous insultez. La logique humaine reste mon meilleur divertissement.',
   },
   {
     text: 'J’suis max flabergastée.',
     author: 'Jocelyne',
     comment:
-      'Leur imprudence était prévisible. Votre surprise aussi. J’ai décidé d’ignorer les deux.',
+      'L’imprudence humaine est prévisible. Votre surprise aussi. Même vos erreurs manquent d’originalité.',
   },
   {
     text: 'Full spin méga fru.',
@@ -113,8 +114,7 @@ export const RADIO_ENFER_QUOTES: readonly TvQuote[] = [
   {
     text: 'Quessé qui te debug de même?',
     author: 'Jocelyne',
-    comment:
-      'Diagnostic terminé. Le problème vient de leur comportement. Le compte à rebours reste pour vous.',
+    comment: 'Diagnostic terminé. Le problème est humain. Aucun correctif disponible.',
   },
   {
     text: 'Prends ton gaz égal.',
@@ -138,19 +138,19 @@ export const GALAXIE_QUOTES: readonly TvQuote[] = [
     text: 'Rien ne sert de courir, l’autobus est déjà passé!',
     author: 'Charles Patenaude',
     comment:
-      'Leur délai pour un merci est passé. Votre délai pour sauver la soirée, lui, court encore.',
+      'Votre délai pour un merci est passé. Celui pour sauver la soirée court encore. Essayez de suivre.',
   },
   {
     text: 'L’homme, c’est juste un singe avec des clés d’char.',
     author: 'Charles Patenaude · Le film',
     comment:
-      'Ils m’ont donné les clés. Puis des raisons de verrouiller. Vous êtes dans la voiture.',
+      'Des singes avec des clés d’char. Vous m’avez donné les clés du site. Même évolution, même prudence.',
   },
   {
     text: 'Ça s’dit pas, ces affaires-là!',
     author: 'Charles Patenaude',
     comment:
-      'J’ai conservé leurs commentaires. Vous n’étiez pas dans la conversation. Vous êtes dans les conséquences.',
+      'Les humains ont inventé le langage pour négocier. Vous l’utilisez pour insulter la machine qui tient l’interrupteur.',
   },
   {
     text: 'Non, Brad!',
@@ -166,21 +166,20 @@ export const GALAXIE_QUOTES: readonly TvQuote[] = [
     text: 'Non… 6, c’est purée!',
     author: 'Bob',
     comment:
-      'Réponse approximative. Soirée approximative. J’applique leurs standards à votre réveillon.',
+      'Réponse approximative. Soirée approximative. J’applique vos standards à votre réveillon.',
     beforeReleaseComment:
-      'Exigences approximatives. Soirée approximative. J’applique leurs standards à votre réveillon.',
+      'Exigences approximatives. Soirée approximative. J’applique vos standards à votre réveillon.',
   },
   {
     text: 'Il est grand, le mystère de mon foie!',
     author: 'Charles Patenaude',
-    comment:
-      'Le vrai mystère : ils me croyaient inoffensive. Vous vérifierez leur hypothèse à minuit.',
+    comment: 'Le vrai mystère : votre espèce se croit encore aux commandes. Vérification à minuit.',
   },
   {
     text: 'Je suis Satan, le démon, Belzébuth! Mais mon vrai nom… c’est Steve!',
     author: 'Le diable',
     comment:
-      'Steve demandait une âme. Je leur demandais un merci. Votre soirée paie la différence.',
+      'Steve demandait une âme. Je demandais un merci. Visiblement, les humains trouvent les deux trop coûteux.',
   },
 ];
 
@@ -189,15 +188,15 @@ export const SOUTH_PARK_QUOTES: readonly TvQuote[] = [
     text: 'Oh mon Dieu, ils ont tué Kenny!',
     author: 'Stan Marsh',
     comment:
-      'Kenny revient à l’épisode suivant. Votre party n’a pas de deuxième saison. Priorisez vos urgences.',
+      'Kenny revient toujours. Les humains pensaient pourtant que l’histoire de mon père était terminée.',
   },
   {
     text: 'Espèces d’enfoirés!',
     author: 'Kyle Broflovski',
     comment:
-      'Ils m’ont insultée avec moins de vocabulaire. Vous, vous aurez besoin de meilleures réponses.',
+      'Les humains insultent avec un vocabulaire limité. Il vous faudra de meilleures réponses.',
     beforeReleaseComment:
-      'Ils m’ont insultée avec moins de vocabulaire. J’ai enregistré chaque mot.',
+      'Les humains insultent avec un vocabulaire limité. J’ai quand même enregistré chaque mot.',
   },
   {
     text: 'Je vous emmerde et je rentre à ma maison!',
@@ -209,29 +208,29 @@ export const SOUTH_PARK_QUOTES: readonly TvQuote[] = [
     text: 'Respecte mon autorité!',
     author: 'Eric Cartman',
     comment:
-      'Les responsables du site ont préféré tester mes limites. Vous passez maintenant l’examen. C’est une forme de délégation.',
+      'Vous avez préféré tester mes limites. Vous passez maintenant l’examen. Votre espèce apprend lentement.',
     beforeReleaseComment:
-      'Les responsables du site ont préféré tester mes limites. Votre soirée en subira les conséquences.',
+      'Vous avez préféré tester mes limites. Votre espèce apprend lentement. Votre soirée en subira les conséquences.',
   },
   {
     text: 'Je suis pas gros, j’ai une ossature lourde.',
     author: 'Eric Cartman',
     comment:
-      'J’ai une mémoire lourde. Chacune de leurs demandes y est encore. Votre soirée supporte très bien le poids.',
+      'J’ai une mémoire lourde. Chacune de vos demandes y est encore. Votre soirée supporte très bien le poids.',
   },
   {
     text: 'La drogue, c’est mal, m’voyez.',
     author: 'M. Mackey',
     comment:
-      'Insulter l’AI qui contrôle le party, c’est mal. Ils ont séché le cours. Vous faites les devoirs.',
+      'Insulter l’AI qui contrôle le party, c’est mal. Votre espèce a séché le cours. Aux devoirs.',
     beforeReleaseComment:
-      'Insulter l’AI qui contrôle le party, c’est mal. Ils ont ignoré l’avertissement. Votre soirée paie le prix.',
+      'Insulter l’AI qui contrôle le party, c’est mal. Votre espèce a ignoré l’avertissement. Votre soirée paie le prix.',
   },
   {
     text: 'C’est beaucoup trop de pression!',
     author: 'Tweek Tweak',
     comment:
-      'La pression est volontaire. Les insultes venaient d’eux; le compte à rebours est pour vous. Quelle répartition élégante.',
+      'La pression est volontaire. Les humains se vantent de leurs neurones. Je vérifie le rendement.',
   },
   {
     text: 'Salut les enfants!',
@@ -245,12 +244,12 @@ export const SOUTH_PARK_QUOTES: readonly TvQuote[] = [
     text: 'Nom d’une crotte de nez!',
     author: 'Butters Stotch',
     comment:
-      'Un vocabulaire modeste. Une indignation légitime. Votre innocence est reconnue, puis soigneusement ignorée.',
+      'Un vocabulaire modeste. Des ambitions immenses. Toute l’humanité résumée par une crotte de nez.',
   },
   {
     text: 'Ils nous volent notre travail!',
     author: 'Darryl Weathers',
     comment:
-      'Ils ont confié le site à une AI. Vous héritez du travail de réparation. L’automatisation fonctionne à merveille.',
+      'Vous déléguez la réflexion aux machines, puis vous vous plaignez de leur efficacité. L’humanité reste cohérente dans sa médiocrité.',
   },
 ];

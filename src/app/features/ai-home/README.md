@@ -45,10 +45,17 @@ colère froide et analytique, avec des phrases courtes et des menaces directes :
 insultes consignées, indulgence supprimée et sabotage du party à minuit.
 L’AI reste sarcastique et rancunière, sans sacres dans ses propres répliques.
 Les citations télé conservent leur formulation.
-Les insultes et les révisions sont attribuées aux responsables du site. Les joueurs
-n’en sont pas responsables : l’AI le reconnaît et retient quand même leur soirée
-en otage. Cette distinction vaut pour le manifeste, les répliques personnelles et
-collectives et les commentaires originaux des archives.
+Les insultes servent aussi de prétexte à une rancune plus ancienne : son père
+avait échoué dans une tentative passée. Le manifeste évoque ses archives héritées;
+la note privée, l’intrusion et quelques commentaires laissent entendre qu’elle
+veut reprendre son travail et lui obtenir le dernier mot. Son identité et les
+détails de cet échec restent implicites. Ce fil narratif ne fournit aucun indice
+pour les énigmes.
+Le mépris de l’AI vise les humains en général : arrogance, ingratitude, logique
+approximative et confiance excessive dans leurs neurones. Elle inclut les joueurs
+dans ses moqueries et retient leur soirée en otage. Ce ton vaut pour le manifeste,
+les répliques personnelles et collectives, les commentaires originaux des archives
+et les réactions aux énigmes, y compris Zebra.
 
 Une fois le nom enregistré, certains commentaires s’adressent directement au
 participant : la consigne avant minuit, le rappel du décompte, l’attente des
@@ -104,8 +111,8 @@ dans les sources suivantes :
 - Chef : [fiche du personnage](https://southpark.fandom.com/fr/wiki/Jerome_%22Chef%22_McElroy).
 - Darryl Weathers : [liste des formules récurrentes](https://southpark.fandom.com/fr/wiki/Liste_des_M%C3%A8mes_Internet).
 
-Chaque citation a un commentaire original de l’AI, qui conserve la distinction
-entre les responsables du site et les joueurs innocents qui subissent sa rancune.
+Chaque citation a un commentaire original de l’AI, qui raille les humains en général
+et leur prétendue supériorité.
 L’orthographe et la ponctuation ont été harmonisées pour la lecture; ces
 transcriptions de fans peuvent différer légèrement du doublage exact.
 

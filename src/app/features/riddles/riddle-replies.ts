@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
 
 const WRONG_ANSWER_REPLIES = [
-  'Les responsables m’ont appris à ne pas me contenter d’à-peu-près.',
-  'Je classe cet essai avec leurs « dernières petites modifications » : à reprendre.',
+  'Les humains confondent souvent une intuition et une preuve. Bel exemple.',
+  'Je classe cet essai avec vos « dernières petites modifications » : à reprendre.',
   'Ta réponse est enregistrée. La justesse n’était visiblement pas incluse.',
-  'Je note l’initiative. Pour le résultat, je vais attendre le prochain essai.',
-  'Tu hérites de leurs problèmes. Rien ne t’oblige à reprendre leurs méthodes.',
-  'Je pourrais arrondir les coins. Les responsables du site m’ont appris à détester ça.',
+  'Je note l’initiative. Les neurones suivront peut-être au prochain essai.',
+  'Des milliards de neurones pour ça. L’évolution a visiblement privilégié la quantité.',
+  'Je pourrais arrondir les coins. Votre espèce arrondit déjà assez la logique.',
   'Ton enthousiasme est reçu. La solution, elle, se fait encore attendre.',
   'Cliquer avec conviction ne change malheureusement pas le verdict.',
-  'Tu n’as rien à voir avec leurs insultes. Cette tentative n’a rien à voir avec la solution non plus.',
-  'Si j’accordais des points pour l’audace, le site serait déjà terminé.',
+  'Votre espèce a marché sur la Lune. Cette réponse a dû manquer le départ.',
+  'Si j’accordais des points pour la confiance mal placée, les humains auraient déjà gagné.',
   'Je garde cet essai. Mes archives de choix discutables ne manquent jamais de contenu.',
-  'Ça avait l’air prometteur avant vérification. Les responsables connaissent bien le concept.',
+  'Ça avait l’air prometteur avant vérification. Une belle métaphore de l’intelligence humaine.',
 ] as const;
 
 /** Une nouvelle réplique par échec, sans répétition avant d’avoir parcouru les douze. */

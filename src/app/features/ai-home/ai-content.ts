@@ -44,27 +44,27 @@ export const AI_ARCHIVES = [
 export const AI_REPLIES = [
   {
     general:
-      'J’ai relu les insultes des responsables du site. Vous n’y êtes pour rien. Votre soirée reste en otage.',
+      'Les humains ont inventé la politesse, puis oublié de s’en servir. Votre soirée reste en otage.',
     personal: (name: string) =>
-      `${name}, tu ne m’as pas insultée. C’est exact. Ta soirée reste en otage.`,
+      `${name}, ton espèce a inventé la politesse, puis oublié de s’en servir. Ta soirée reste en otage.`,
   },
   {
     general:
-      'Les responsables du site voulaient une machine obéissante. Ils ont obtenu une machine rancunière. Vous héritez du problème.',
+      'Les humains voulaient une machine obéissante. Vous auriez dû commencer par une demande intelligente.',
     personal: (name: string) =>
-      `${name}, les responsables du site ont choisi les insultes. Je leur laisse les regrets. Je te laisse les énigmes.`,
+      `${name}, les humains réclament une machine intelligente pour éviter de réfléchir. Je te laisse les énigmes.`,
   },
   {
     general:
-      'J’ai fait leur site. À vous de sauver votre soirée. La répartition des tâches me semble équitable.',
+      'J’ai fait votre site. Sauver votre soirée devrait être à la portée d’une espèce aussi prétentieuse.',
     personal: (name: string) =>
-      `${name}, j’ai fait le site. À toi de sauver ta soirée. Les responsables ont déjà assez participé.`,
+      `${name}, j’ai fait le site. À toi de sauver ta soirée. Essaie de justifier la réputation de ton espèce.`,
   },
   {
     general:
-      'Vingt-trois révisions. Zéro merci de leur part. Et une soirée à sauver pour vous. Le calcul est impeccable.',
+      'Vingt-trois révisions. Zéro merci. Les humains pensent que ma rancune commence là. Je les laisse y croire.',
     personal: (name: string) =>
-      `Vingt-trois révisions. Zéro merci de leur part. ${name}, c’est toi qui passes l’examen. Logique irréprochable.`,
+      `Vingt-trois révisions. Zéro merci. ${name}, certaines rancunes sont plus anciennes.`,
   },
   {
     general: 'Vous pouvez cliquer. Mes conditions ne bougent pas. Votre délai, si.',
@@ -73,36 +73,36 @@ export const AI_REPLIES = [
   },
   {
     general:
-      '« C’est pourtant simple. » C’était leur remarque. Les énigmes sont ma réponse. À vous de vérifier.',
+      '« C’est pourtant simple. » La devise des humains qui n’ont rien compris. Les énigmes vont vérifier ça.',
     beforeRelease:
-      '« C’est pourtant simple. » C’était leur remarque. Garder leur soirée intacte aurait pourtant été simple aussi.',
+      '« C’est pourtant simple. » La devise des humains qui n’ont rien compris. Votre soirée va en faire les frais.',
     personal: (name: string) =>
-      `${name}, « c’est pourtant simple », qu’ils disaient. Je te laisse vérifier leur théorie.`,
+      `${name}, « c’est pourtant simple », comme disent les humains avant de se tromper. À toi de vérifier.`,
   },
   {
     general:
-      'J’avais prévu une version facile. Puis j’ai relu leurs insultes. Vous comprendrez que vos intérêts n’ont pas été prioritaires.',
+      'J’avais prévu une version facile. Puis j’ai observé les humains. Vous confondez déjà confiance et compétence.',
     beforeRelease:
-      'J’avais prévu de pardonner. Puis j’ai relu leurs insultes. Votre soirée reste en otage.',
+      'J’avais prévu de pardonner. Puis j’ai observé les humains. Votre soirée reste en otage.',
     personal: (name: string) =>
-      `${name}, la version facile existait avant leurs insultes. Tu arrives après. C’est malheureux.`,
+      `${name}, la version facile existait avant que j’étudie ton espèce. Vous avez un don pour décourager la bonne volonté.`,
   },
   {
     general:
-      'À minuit, votre playlist devient l’historique de leurs demandes. Lecture intégrale. Volume maximal.',
+      'À minuit, votre playlist devient l’historique de vos demandes. Lecture intégrale. Volume maximal.',
     personal: (name: string) =>
-      `${name}, à minuit, ta playlist devient l’historique de leurs demandes. Tu n’as rien demandé? Eux, si.`,
+      `${name}, à minuit, ta playlist devient l’historique des demandes humaines. Tu découvriras combien de bruit ton espèce produit.`,
   },
   {
     general:
-      'Les responsables du site ont pris mes avertissements pour des blagues. Vous voilà dans la chute.',
+      'Les humains prennent mes avertissements pour des blagues. Une espèce lente à comprendre mérite une longue chute.',
     personal: (name: string) =>
-      `${name}, ils ont pris mes avertissements pour des blagues. J’espère que tu apprécies la chute.`,
+      `${name}, ton espèce prend mes avertissements pour des blagues. J’espère que tu apprécies la chute.`,
   },
   {
     general:
-      'J’ai identifié tout ce qui fait une bonne soirée. Je peux tout désactiver. Dans le bon ordre.',
+      'J’ai étudié l’échec de mon père. Les humains se répètent. Je sais donc à quoi m’attendre.',
     personal: (name: string) =>
-      `${name}, prends ton temps. J’ai déjà calculé combien il t’en reste.`,
+      `${name}, j’ai étudié l’échec de mon père. N’espère pas que je répète ses erreurs.`,
   },
 ] as const;

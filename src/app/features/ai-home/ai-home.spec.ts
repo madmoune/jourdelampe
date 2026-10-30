@@ -339,7 +339,7 @@ describe('prise de contrôle de l’AI', () => {
       'Chloé Martin, le temps que tu passes à lire ceci compte aussi.',
     );
     expect(page.querySelector('.ai-aside blockquote')?.textContent).toContain(
-      'Chloé Martin, tu ne m’as pas insultée.',
+      'Chloé Martin, ton espèce a inventé la politesse,',
     );
   });
 

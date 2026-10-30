@@ -61,13 +61,13 @@ describe('transmissions de l’AI', () => {
     fixture.componentRef.setInput('participantName', 'Ariane Roy');
     fixture.detectChanges();
     expect(page.querySelector('.ai-aside blockquote')!.textContent).toContain(
-      'Ariane Roy, les responsables du site ont choisi les insultes.',
+      'Ariane Roy, les humains réclament une machine intelligente',
     );
     expect(page.querySelector('.tv-quotation blockquote')!.textContent).toBe(televisionQuote);
     fixture.componentRef.setInput('participantName', null);
     fixture.detectChanges();
     expect(page.querySelector('.ai-aside blockquote')!.textContent).toContain(
-      'Les responsables du site voulaient une machine obéissante.',
+      'Les humains voulaient une machine obéissante.',
     );
     expect(page.querySelector('.ai-aside blockquote')!.textContent).not.toContain('Ariane Roy');
   });

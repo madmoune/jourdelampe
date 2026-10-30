@@ -43,6 +43,26 @@
 app-lamp-title {
   margin-left: -5px;
 }
+.lamp-hint {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  max-width: 310px;
+  margin: 0 0 0 8px;
+  color: var(--yellow);
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.5;
+}
+.lamp-hint svg {
+  flex: 0 0 42px;
+  width: 42px;
+  height: 40px;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .hero-intro {
   font-size: clamp(20px, 1.8vw, 25px);
   letter-spacing: -0.035em;

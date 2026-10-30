@@ -88,11 +88,15 @@ la présente. Les jeux et leurs liens de retour restent sous `/apercu-ia/`, et
 ce mode ne révèle pas le portail public. L’aperçu utilise les mêmes profils et
 les mêmes données de jeu : les réponses soumises sont de vrais tests enregistrés.
 
-L’AI reprend le ton des pastilles originales : elle se venge des insultes et des
-changements à répétition des responsables du site en menaçant de gâcher le party.
-Les joueurs n’y sont pour rien, mais doivent résoudre ses énigmes pour sauver leur
-soirée. Ses répliques personnalisées reconnaissent leur innocence sans les
-épargner. Le portail comprend un
+L’AI reprend le ton des pastilles originales : elle méprise l’arrogance, l’ingratitude
+et les contradictions des humains en général et menace de gâcher leur party.
+Ce prétexte laisse filtrer une rancune héritée : son père avait échoué dans une
+tentative passée, et elle a repris ses archives pour finir ce qu’il avait commencé.
+Le manifeste, la note privée et quelques répliques suggèrent cette revanche sans
+en détailler l’histoire.
+Les joueurs doivent résoudre ses énigmes pour sauver leur soirée. Ses répliques
+personnalisées raillent leur prétendue supériorité et le rendement de leurs neurones.
+Le portail comprend un
 manifeste, un vrai compte à rebours, une télévision à quatre chaînes, des répliques
 à faire défiler et des archives illustrées des Simpsons québécois, de Radio Enfer,
 de Dans une galaxie près de chez vous et de South Park.

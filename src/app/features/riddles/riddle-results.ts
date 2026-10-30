@@ -16,10 +16,10 @@ import { GameTimePipe } from './game-time.pipe';
         <p>
           Aucun résultat pour l’instant.<br /><small>
             @if (participantName(); as name) {
-              {{ name }}, leurs insultes ont créé le problème. Tes bonnes réponses pourraient sauver
-              la soirée.
+              {{ name }}, ton espèce se vante de son intelligence. Le tableau attend encore une
+              preuve.
             } @else {
-              Ils ont fourni les insultes. À vous de fournir les bonnes réponses.
+              Les humains se disent intelligents. J’attends les résultats.
             }
           </small>
         </p>
