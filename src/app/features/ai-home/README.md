@@ -24,6 +24,10 @@ avant `EVENT.riddlesOpenAt`, soit le 31 décembre 2026 à 17 h à Montréal. Le 
 `RiddleRelease` actualise leur visibilité chaque seconde. Avant cette heure, le
 catalogue et le profil ne sont pas chargés par l’accueil. Les répliques de l’AI
 et les commentaires télé concernés utilisent leurs variantes sans annonce du jeu.
+Une fenêtre d’attente annonce toutefois une chance de sauver le party le
+31 décembre au soir, dès 17 h, avec une échéance à minuit. Elle apparaît seulement
+dans le portail révélé et est remplacée automatiquement par les énigmes et les
+résultats à l’ouverture, sans rechargement.
 
 `/apercu-ia` utilise le même `AiHome` en mode `RIDDLE_PREVIEW` : accès direct au
 portail complet, sans attendre ni manipuler les ampoules. Le fournisseur de ce

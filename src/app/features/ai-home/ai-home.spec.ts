@@ -270,6 +270,11 @@ describe('prise de contrôle de l’AI', () => {
     createPage();
     revealAi();
     expect(page.querySelector('#ai-title')).not.toBeNull();
+    const reprieve = page.querySelector('#party-reprieve');
+    expect(reprieve?.textContent).toContain('Votre party n’est pas encore perdu.');
+    expect(reprieve?.textContent).toContain('Le 31 décembre au soir');
+    expect(reprieve?.textContent).toContain('une chance de le sauver');
+    expect(reprieve?.textContent).toContain('dès 17 h');
     expect(page.querySelector('#enigmes')).toBeNull();
     expect(page.querySelector('#resultats')).toBeNull();
     expect(page.querySelector('app-riddle-access')).toBeNull();
@@ -291,10 +296,12 @@ describe('prise de contrôle de l’AI', () => {
     reducedMotion = true;
     createPage();
     solveLights();
+    expect(page.querySelector('#party-reprieve')).not.toBeNull();
     expect(page.querySelector('#enigmes')).toBeNull();
     expect(page.querySelector('#resultats')).toBeNull();
     vi.advanceTimersByTime(1000);
     fixture.detectChanges();
+    expect(page.querySelector('#party-reprieve')).toBeNull();
     expect(page.querySelector('#enigmes')).not.toBeNull();
     expect(page.querySelector('#resultats')).not.toBeNull();
     expect(page.querySelector('a[href$="#enigmes"]')).not.toBeNull();
@@ -308,6 +315,7 @@ describe('prise de contrôle de l’AI', () => {
     createPage();
     expect(page.querySelector('.original-site')).toBeNull();
     expect(page.querySelector('#ai-title')).not.toBeNull();
+    expect(page.querySelector('#party-reprieve')).toBeNull();
     expect(page.querySelector('#enigmes')).not.toBeNull();
     expect(page.querySelector('#resultats')).not.toBeNull();
     expect(TestBed.inject(TitleLights).pattern()).toBe('1111111111111');

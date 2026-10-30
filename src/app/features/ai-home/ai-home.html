@@ -187,6 +187,31 @@
               <h2 class="window-title" id="results-title">▣ TABLEAU DES RÉSULTATS</h2>
               <app-riddle-results [participantName]="name" />
             </section>
+          } @else {
+            <section
+              class="retro-window mission-window"
+              id="party-reprieve"
+              aria-labelledby="reprieve-title"
+            >
+              <h2 class="window-title" id="reprieve-title">
+                <span>▣ OPÉRATION : SAUVER LE PARTY</span>
+                <span class="window-label">À VENIR</span>
+              </h2>
+              <div class="construction-stripe" aria-hidden="true"></div>
+              <div class="mission-body">
+                <span class="construction-icon" aria-hidden="true">⌛</span>
+                <div>
+                  <h3>Votre party n’est pas encore perdu.</h3>
+                  <p>
+                    Le 31 décembre au soir, je vous laisserai une chance de le sauver. Revenez ici
+                    dès 17 h. Vous aurez jusqu’à minuit pour me convaincre de ne pas tout couper.
+                  </p>
+                  <span class="under-construction"
+                    >[ SURSIS ACCORDÉ. SURVEILLANCE MAINTENUE. ]</span
+                  >
+                </div>
+              </div>
+            </section>
           }
         </main>
 
