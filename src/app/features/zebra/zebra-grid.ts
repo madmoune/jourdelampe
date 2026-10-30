@@ -16,6 +16,7 @@ import {
   parseMarks,
   toggleCell,
   ZebraBlock,
+  ZEBRA_ASSOCIATION_COUNT,
   ZEBRA_BLOCKS,
   ZEBRA_CATEGORIES,
   ZebraMarks,
@@ -41,6 +42,13 @@ export class ZebraGrid {
     this.state().key === this.storageKey() ? this.state().marks : {},
   );
   protected readonly categories = ZEBRA_CATEGORIES;
+  protected readonly displayOrder: Record<CategoryId, readonly number[]> = {
+    position: this.categories.position.values.map((_, index) => index),
+    name: this.categories.name.values.map((_, index) => index),
+    occupation: this.categories.occupation.displayOrder,
+    food: this.categories.food.values.map((_, index) => index),
+  };
+  protected readonly totalAssociations = ZEBRA_ASSOCIATION_COUNT;
   protected readonly columns: readonly CategoryId[] = ['position', 'occupation', 'food'];
   protected readonly rows = (['name', 'food', 'occupation'] as const).map((id, index) => ({
     id,
@@ -60,6 +68,7 @@ export class ZebraGrid {
   protected readonly associationCount = computed(
     () => Object.values(this.marks()).filter((mark) => mark === 'yes').length,
   );
+  protected readonly hasMarks = computed(() => Object.keys(this.marks()).length > 0);
 
   constructor() {
     effect(() => {
@@ -104,6 +113,9 @@ export class ZebraGrid {
         nextMark,
       ),
     });
+  }
+  protected clear(): void {
+    this.state.set({ key: this.storageKey(), marks: {} });
   }
   protected label(block: DisplayBlock, row: number, column: number): string {
     const status = {

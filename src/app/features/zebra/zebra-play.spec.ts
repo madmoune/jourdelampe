@@ -60,8 +60,11 @@ describe('indication partielle pour la grille complète', () => {
         const transposed = block.column === 'name';
         const rowCategory = transposed ? block.column : block.row;
         const columnCategory = transposed ? block.row : block.column;
-        const label = `${ZEBRA_CATEGORIES[rowCategory].values[row]} / ${ZEBRA_CATEGORIES[columnCategory].label} ${ZEBRA_CATEGORIES[columnCategory].values[row]} :`;
-        buttons.find((button) => button.getAttribute('aria-label')?.startsWith(label))!.click();
+        const columns = block.column === 'position' ? [row * 2, row * 2 + 1] : [row];
+        for (const column of columns) {
+          const label = `${ZEBRA_CATEGORIES[rowCategory].values[row]} / ${ZEBRA_CATEGORIES[columnCategory].label} ${ZEBRA_CATEGORIES[columnCategory].values[column]} :`;
+          buttons.find((button) => button.getAttribute('aria-label')?.startsWith(label))!.click();
+        }
       }
   }
   it('permet d’envoyer la réponse finale avec une grille entièrement vide', async () => {
@@ -103,10 +106,19 @@ describe('indication partielle pour la grille complète', () => {
     expect(checkGrid).not.toHaveBeenCalled();
     await completeGrid(page);
     await fixture.whenStable();
-    expect(checkGrid).toHaveBeenCalledWith('zebra-01', '123412341234123412341234');
+    expect(checkGrid).toHaveBeenCalledWith('zebra-01', '123456781234567812341234567812341234');
     expect(page.querySelector('.grid-status')?.textContent).toContain('Ta grille est correcte');
     expect(submit).not.toHaveBeenCalled();
     expect(page.querySelector('dialog')!.open).toBe(false);
+    page.querySelector<HTMLButtonElement>('.clear-grid')!.click();
+    await fixture.whenStable();
+    expect(page.querySelector('.grid-status')?.textContent).toContain(
+      'Complète les 36 associations',
+    );
+    expect(page.querySelector('.grid-status')?.textContent).not.toContain('Ta grille est correcte');
+    expect(page.querySelectorAll('.cell.yes')).toHaveLength(0);
+    expect(checkGrid).toHaveBeenCalledTimes(1);
+    expect(submit).not.toHaveBeenCalled();
   });
   it('retire le verdict dès qu’une association change et ne revérifie pas une ancienne grille après reset', async () => {
     const { fixture, page, round, checkGrid } = await setup();

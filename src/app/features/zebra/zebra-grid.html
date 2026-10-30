@@ -1,98 +1,115 @@
-<p class="progress">{{ associationCount() }} / 24 associations</p>
-<p id="grid-help" class="grid-help">
-  Clique une case pour faire défiler les états : oui (●), non (×), puis vide. Une association bloque
-  sa ligne et sa colonne dans le même bloc.
-</p>
-<div
-  class="grid-scroll"
-  role="region"
-  aria-label="Grille de résolution Zebra, défilement horizontal"
-  tabindex="0"
->
-  <table aria-describedby="grid-help">
-    <caption>
-      Grille de déduction · quatre personnages, huit positions possibles
-    </caption>
-    <thead>
-      <tr class="group-headings">
-        <td colspan="2" rowspan="2" class="corner">
-          <span>MES DÉDUCTIONS</span
-          ><small>Les cases grisées sont<br />bloquées automatiquement.</small>
-        </td>
-        @for (column of columns; track column) {
-          <th scope="colgroup" [attr.colspan]="categories[column].values.length">
-            {{ categories[column].label }}
-          </th>
-        }
-      </tr>
-      <tr class="value-headings">
-        @for (column of columns; track column) {
-          @for (value of categories[column].values; track value; let first = $first) {
-            <th
-              scope="col"
-              [class.block-start]="first"
-              [class.block-end]="$last"
-              [class.position-heading]="column === 'position'"
-            >
-              <span>{{ value }}</span>
-            </th>
-          }
-        }
-      </tr>
-    </thead>
-    @for (group of rows; track group.id) {
-      <tbody>
-        @for (value of group.values; track value; let row = $index) {
-          <tr>
-            @if ($first) {
-              <th scope="rowgroup" [attr.rowspan]="group.values.length" class="row-group">
-                <span>{{ group.label }}</span>
+<div class="grid-toolbar">
+  <p id="grid-help" class="grid-help">
+    Clique une case pour faire défiler les états : oui (●), non (×), puis vide. Dans les blocs
+    Position, une position cochée bloque le reste de sa colonne; deux positions cochées bloquent le
+    reste de leur ligne. Dans les autres blocs, une association bloque sa ligne et sa colonne.
+  </p>
+  <div class="grid-actions">
+    <p class="progress">{{ associationCount() }} / {{ totalAssociations }} associations</p>
+    <button
+      type="button"
+      class="clear-grid"
+      title="Effacer les associations et les exclusions"
+      [disabled]="!hasMarks()"
+      (click)="clear()"
+    >
+      Vider
+    </button>
+  </div>
+</div>
+<div class="grid-workspace">
+  <ng-content select="[grid-sidebar]" />
+  <div class="grid-main">
+    <div
+      class="grid-scroll"
+      role="region"
+      aria-label="Grille de résolution Zebra, défilement horizontal"
+      tabindex="0"
+    >
+      <table aria-describedby="grid-help">
+        <caption>
+          Grille de déduction · quatre personnages, deux positions chacun
+        </caption>
+        <thead>
+          <tr class="group-headings">
+            <td colspan="2" rowspan="2" class="corner">
+              <span>MES DÉDUCTIONS</span
+              ><small>Les cases grisées sont<br />bloquées automatiquement.</small>
+            </td>
+            @for (column of columns; track column) {
+              <th scope="colgroup" [attr.colspan]="categories[column].values.length">
+                {{ categories[column].label }}
               </th>
             }
-            <th scope="row" class="row-label">
-              {{ value }}
-            </th>
-            @for (block of group.blocks; track block.id) {
-              @for (
-                columnValue of categories[block.column].values;
-                track columnValue;
-                let column = $index
-              ) {
-                @let state = stateOf(block, row, column);
-                <td
-                  [class.block-start]="$first"
+          </tr>
+          <tr class="value-headings">
+            @for (column of columns; track column) {
+              @for (index of displayOrder[column]; track index; let first = $first) {
+                <th
+                  scope="col"
+                  [class.block-start]="first"
                   [class.block-end]="$last"
-                  [class]="'cell ' + state"
+                  [class.position-heading]="column === 'position'"
                 >
-                  <button
-                    type="button"
-                    [attr.aria-label]="label(block, row, column)"
-                    [attr.aria-pressed]="state === 'yes' || state === 'no'"
-                    [disabled]="state === 'blocked'"
-                    (click)="click(block, row, column)"
-                  >
-                    <span aria-hidden="true">{{
-                      state === 'yes' ? '●' : state === 'empty' ? '' : '×'
-                    }}</span>
-                  </button>
-                </td>
+                  <span>{{ categories[column].values[index] }}</span>
+                </th>
               }
             }
-            @if (group.unusedColumns) {
-              <td class="unused" [attr.colspan]="group.unusedColumns" aria-hidden="true"></td>
-            }
           </tr>
+        </thead>
+        @for (group of rows; track group.id) {
+          <tbody>
+            @for (row of displayOrder[group.id]; track row) {
+              <tr>
+                @if ($first) {
+                  <th scope="rowgroup" [attr.rowspan]="group.values.length" class="row-group">
+                    <span>{{ group.label }}</span>
+                  </th>
+                }
+                <th scope="row" class="row-label">
+                  {{ group.values[row] }}
+                </th>
+                @for (block of group.blocks; track block.id) {
+                  @for (column of displayOrder[block.column]; track column) {
+                    @let state = stateOf(block, row, column);
+                    <td
+                      [class.block-start]="$first"
+                      [class.block-end]="$last"
+                      [class]="'cell ' + state"
+                    >
+                      <button
+                        type="button"
+                        [attr.aria-label]="label(block, row, column)"
+                        [attr.aria-pressed]="state === 'yes' || state === 'no'"
+                        [disabled]="state === 'blocked'"
+                        (click)="click(block, row, column)"
+                      >
+                        <span aria-hidden="true">{{
+                          state === 'yes' ? '●' : state === 'empty' ? '' : '×'
+                        }}</span>
+                      </button>
+                    </td>
+                  }
+                }
+                @if (group.unusedColumns) {
+                  <td class="unused" [attr.colspan]="group.unusedColumns" aria-hidden="true"></td>
+                }
+              </tr>
+            }
+          </tbody>
         }
-      </tbody>
-    }
-  </table>
+      </table>
+    </div>
+    <div class="legend" aria-label="Légende">
+      <span><b class="yes-dot">●</b> Association</span
+      ><span><b class="no-cross">×</b> Exclusion manuelle</span
+      ><span><b class="blocked-cross">×</b> Case bloquée</span>
+    </div>
+    <p class="grid-note">
+      Chaque personnage a une occupation, une nourriture et deux positions. Chaque position
+      appartient à un seul personnage; les huit positions sont utilisées. À toi de croiser les
+      déductions entre les blocs.
+    </p>
+    <ng-content select="[grid-status]" />
+  </div>
 </div>
-<div class="legend" aria-label="Légende">
-  <span><b class="yes-dot">●</b> Association</span
-  ><span><b class="no-cross">×</b> Exclusion manuelle</span
-  ><span><b class="blocked-cross">×</b> Case bloquée</span>
-</div>
-<p class="grid-note">
-  Chaque personnage occupe une seule position. Certaines des huit positions resteront libres. Les
-  blocages s’appliquent à l’intérieur de chaque bloc; à toi de croiser les déductions.
-</p>

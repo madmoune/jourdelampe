@@ -51,7 +51,8 @@ Le tableau affiche le nom de chaque énigme, sa réponse, son état et toutes se
 résolutions (nom et heure de Montréal, avec les secondes). Les énigmes et leurs
 réponses sont configurées manuellement lors de leur intégration; le tableau de
 bord ne propose ni ajout ni modification. Le premier puzzle est Zebra,
-sur `/enigmes/zebra`; les énoncés et solutions restent à fournir.
+sur `/enigmes/zebra`; les énoncés sont intégrés et les solutions restent à
+configurer dans le nœud privé.
 
 **Réinitialiser le jeu** demande deux confirmations : accepter la première,
 puis taper `RÉINITIALISER` et confirmer la deuxième. Annuler l’une ou l’autre

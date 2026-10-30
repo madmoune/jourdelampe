@@ -210,7 +210,7 @@
           "$riddle": {
             "$attempt": {
               ".write": "auth != null && auth.uid === $uid && $attempt.matches(/^[A-Za-z0-9_-]{1,128}$/) && !data.exists() && newData.exists() && root.child('game/catalog/' + $riddle).exists() && root.child('participants/' + $uid + '/name').isString() && newData.child('roundId').val() === root.child('game/round/id').val()",
-              ".validate": "newData.hasChildren(['kind', 'answer', 'normalizedAnswer', 'participantName', 'roundId', 'submittedAt', 'correct']) && ((newData.child('kind').val() === 'answer' && newData.child('correct').val() === (root.child('riddleSecrets/' + $riddle + '/normalizedAnswer').isString() && newData.child('normalizedAnswer').val() === root.child('riddleSecrets/' + $riddle + '/normalizedAnswer').val()) && (newData.child('correct').val() === false || (newData.parent().parent().parent().parent().child('solves/' + $riddle + '/' + $uid + '/roundId').val() === newData.child('roundId').val() && newData.parent().parent().parent().parent().child('proofs/' + $uid + '/' + $riddle + '/answer').val() === newData.child('normalizedAnswer').val()))) || (newData.child('kind').val() === 'grid' && root.child('game/catalog/' + $riddle + '/gridReady').val() === true && root.child('riddleSecrets/' + $riddle + '/gridAnswer').isString() && newData.child('answer').val() === newData.child('normalizedAnswer').val() && newData.child('normalizedAnswer').val().matches(/^[1-8]{24}$/) && newData.child('correct').val() === (newData.child('normalizedAnswer').val() === root.child('riddleSecrets/' + $riddle + '/gridAnswer').val())))",
+              ".validate": "newData.hasChildren(['kind', 'answer', 'normalizedAnswer', 'participantName', 'roundId', 'submittedAt', 'correct']) && ((newData.child('kind').val() === 'answer' && newData.child('correct').val() === (root.child('riddleSecrets/' + $riddle + '/normalizedAnswer').isString() && newData.child('normalizedAnswer').val() === root.child('riddleSecrets/' + $riddle + '/normalizedAnswer').val()) && (newData.child('correct').val() === false || (newData.parent().parent().parent().parent().child('solves/' + $riddle + '/' + $uid + '/roundId').val() === newData.child('roundId').val() && newData.parent().parent().parent().parent().child('proofs/' + $uid + '/' + $riddle + '/answer').val() === newData.child('normalizedAnswer').val()))) || (newData.child('kind').val() === 'grid' && root.child('game/catalog/' + $riddle + '/gridReady').val() === true && root.child('riddleSecrets/' + $riddle + '/gridAnswer').isString() && newData.child('answer').val() === newData.child('normalizedAnswer').val() && newData.child('normalizedAnswer').val().matches(/^[1-8]{36}$/) && newData.child('correct').val() === (newData.child('normalizedAnswer').val() === root.child('riddleSecrets/' + $riddle + '/gridAnswer').val())))",
               "kind": {
                 ".validate": "newData.val() === 'answer' || newData.val() === 'grid'"
               },
@@ -255,7 +255,7 @@
           ".validate": false
         },
         "gridAnswer": {
-          ".validate": "newData.isString() && newData.val().matches(/^[1-8]{24}$/)"
+          ".validate": "newData.isString() && newData.val().matches(/^[1-8]{36}$/)"
         }
       }
     }

@@ -13,6 +13,7 @@ import { RiddleAnswer } from '../riddles/riddle-answer';
 import { ZEBRA_ID } from '../riddles/riddle-pages';
 import { RiddleSubmissions } from '../riddles/riddle-submissions';
 import { ZebraGrid } from './zebra-grid';
+import { ZEBRA_ASSOCIATION_COUNT } from './zebra.model';
 
 @Component({
   selector: 'app-zebra-play',
@@ -26,12 +27,13 @@ export class ZebraPlay {
   protected readonly game = inject(GameStore);
   private readonly submissions = inject(RiddleSubmissions);
   protected readonly riddleId = ZEBRA_ID;
+  protected readonly totalAssociations = ZEBRA_ASSOCIATION_COUNT;
   protected readonly riddle = computed(() =>
     this.game.riddles().find((item) => item.id === ZEBRA_ID),
   );
   protected readonly storageKey = computed(
     () =>
-      `jdl-zebra-v1:${this.participants.participant()?.id}:${this.game.round()?.id ?? 'preview'}`,
+      `jdl-zebra-v2:${this.participants.participant()?.id}:${this.game.round()?.id ?? 'preview'}`,
   );
   protected readonly gridState = signal<{ key: string; code: string | null } | null>(null);
   protected readonly gridCode = computed(() =>

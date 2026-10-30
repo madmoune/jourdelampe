@@ -8,6 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:ci": "ng test --watch=false",
+    "test:zebra": "node scripts/check-zebra-clues.mjs",
     "test:rules": "npx --yes firebase-tools@15.34.1 emulators:exec --only database --project demo-jourdelampe \"node scripts/check-database-rules.mjs\"",
     "typecheck": "tsc --noEmit -p tsconfig.app.json"
   },

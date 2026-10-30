@@ -81,7 +81,7 @@ describe('validation et historique des réponses', () => {
   });
   it('vérifie une grille sans créer de résolution ni de preuve de réponse finale', async () => {
     update.mockRejectedValueOnce(new DatabaseWriteError(403));
-    expect(await submissions.checkGrid('a', '123412341234123412341234')).toBe(true);
+    expect(await submissions.checkGrid('a', '123456781234567812341234567812341234')).toBe(true);
     expect(update).toHaveBeenCalledTimes(2);
     const patch = update.mock.calls[1][1];
     expect(Object.keys(patch)).toHaveLength(1);
@@ -90,11 +90,16 @@ describe('validation et historique des réponses', () => {
     );
   });
   it('enregistre une grille incorrecte en un seul appel', async () => {
-    expect(await submissions.checkGrid('a', '123412341234123412341234')).toBe(false);
+    expect(await submissions.checkGrid('a', '123456781234567812341234567812341234')).toBe(false);
     expect(update).toHaveBeenCalledTimes(1);
     expect(Object.values(update.mock.calls[0][1])[0]).toEqual(
       expect.objectContaining({ kind: 'grid', correct: false }),
     );
+  });
+  it('refuse l’ancien encodage à une seule position et les codes de grille mal formés', async () => {
+    for (const code of ['123412341234123412341234', '1'.repeat(35), '9'.repeat(36)])
+      await expect(submissions.checkGrid('a', code)).rejects.toThrow('Complète la grille');
+    expect(update).not.toHaveBeenCalled();
   });
   it('refuse une soumission sans nom avant toute écriture', async () => {
     requireParticipant.mockImplementation(() => {

@@ -1,9 +1,11 @@
 export const ZEBRA_CATEGORIES = {
-  position: { label: 'Position', values: ['1', '2', '3', '4', '5', '6', '7', '8'] },
+  position: { label: 'Position', values: ['1', '4', '5', '11', '18', '6', '3', '2'] },
   name: { label: 'Nom', values: ['Bob', 'Jean-Lou', 'Homer', 'Éric'] },
   occupation: {
     label: 'Occupation',
-    values: ['Pilote', 'Animateur radio', 'Responsable de la sécurité', 'Étudiant'],
+    // L’ordre interne conserve les marques sauvegardées et l’encodage de validation.
+    values: ['Pilote', 'Animateur', 'Inspecteur', 'Étudiant'],
+    displayOrder: [3, 1, 0, 2],
   },
   food: { label: 'Nourriture', values: ['Hot-dog', 'Pogo', 'Cheesy Poofs', 'Beigne'] },
 } as const;
@@ -23,6 +25,11 @@ export const ZEBRA_BLOCKS: readonly ZebraBlock[] = [
   { id: 'food-name', row: 'food', column: 'name' },
   { id: 'food-occupation', row: 'food', column: 'occupation' },
 ];
+export const ZEBRA_ASSOCIATION_COUNT = ZEBRA_BLOCKS.reduce(
+  (count, block) =>
+    count + ZEBRA_CATEGORIES[block.row].values.length * (block.column === 'position' ? 2 : 1),
+  0,
+);
 export type ZebraMarks = Readonly<Record<string, 'yes' | 'no'>>;
 export type ZebraCell = 'yes' | 'no' | 'blocked' | 'empty';
 export const cellKey = (block: string, row: number, column: number): string =>
@@ -35,12 +42,16 @@ export function cellState(
   column: number,
 ): ZebraCell {
   if (marks[cellKey(block.id, row, column)] === 'yes') return 'yes';
+  let selectedInRow = 0;
   for (let other = 0; other < ZEBRA_CATEGORIES[block.column].values.length; other++) {
-    if (other !== column && marks[cellKey(block.id, row, other)] === 'yes') return 'blocked';
+    if (other !== column && marks[cellKey(block.id, row, other)] === 'yes') selectedInRow++;
   }
+  if (selectedInRow >= (block.column === 'position' ? 2 : 1)) return 'blocked';
+  let selectedInColumn = 0;
   for (let other = 0; other < ZEBRA_CATEGORIES[block.row].values.length; other++) {
-    if (other !== row && marks[cellKey(block.id, other, column)] === 'yes') return 'blocked';
+    if (other !== row && marks[cellKey(block.id, other, column)] === 'yes') selectedInColumn++;
   }
+  if (selectedInColumn >= (block.row === 'position' ? 2 : 1)) return 'blocked';
   return marks[cellKey(block.id, row, column)] === 'no' ? 'no' : 'empty';
 }
 
@@ -59,7 +70,7 @@ export function toggleCell(
   return next;
 }
 
-/** Six blocs de quatre associations; les positions inutilisées restent possibles. */
+/** Deux positions par ligne dans les blocs Position; une association dans les autres blocs. */
 export function encodeCompleteGrid(marks: ZebraMarks): string | null {
   const code: number[] = [];
   for (const block of ZEBRA_BLOCKS) {
@@ -68,9 +79,11 @@ export function encodeCompleteGrid(marks: ZebraMarks): string | null {
       const selected = ZEBRA_CATEGORIES[block.column].values
         .map((_, column) => column)
         .filter((column) => marks[cellKey(block.id, row, column)] === 'yes');
-      if (selected.length !== 1 || selectedColumns.has(selected[0])) return null;
-      selectedColumns.add(selected[0]);
-      code.push(selected[0] + 1);
+      const required = block.column === 'position' ? 2 : 1;
+      if (selected.length !== required || selected.some((column) => selectedColumns.has(column)))
+        return null;
+      selected.forEach((column) => selectedColumns.add(column));
+      code.push(...selected.map((column) => column + 1));
     }
   }
   return code.join('');

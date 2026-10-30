@@ -5,15 +5,16 @@
 .play-content {
   padding: 0 40px 40px;
 }
+.resolution {
+  min-width: 0;
+}
 .clues {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  justify-content: space-between;
+  flex: 0 0 320px;
+  min-width: 0;
   padding: 24px;
-  border: 1px dashed #7d688c;
+  border: 1px solid #7d688c;
   background: #23192f;
-  margin: 8px 0 36px;
+  margin: 0;
 }
 .file-label {
   color: #b7cf7f;
@@ -32,20 +33,29 @@ h2 {
 .clues h2 {
   font-size: 24px;
 }
-.clues p {
+.clues p,
+.clues ol {
   font-size: 13px;
   color: #bfb0ce;
   line-height: 1.7;
   margin: 0;
 }
-.stamp {
-  border: 1px solid #a087b2;
-  transform: rotate(-6deg);
-  padding: 8px 10px;
-  color: #bba5cc;
-  font: 10px monospace;
-  white-space: nowrap;
-  letter-spacing: 0.1em;
+.clues p + p {
+  margin-top: 12px;
+}
+.clues ol {
+  margin-top: 20px;
+  padding-left: 24px;
+}
+.clues li {
+  padding-left: 6px;
+}
+.clues li + li {
+  margin-top: 12px;
+}
+.clues li::marker {
+  color: #b7cf7f;
+  font-weight: 700;
 }
 .intro {
   max-width: 70ch;
@@ -86,16 +96,17 @@ button:focus-visible {
   outline: 2px solid #dcff79;
   outline-offset: 3px;
 }
+@media (max-width: 1100px) {
+  .clues {
+    flex-basis: auto;
+  }
+}
 @media (max-width: 600px) {
   .play-content {
     padding: 0 20px 28px;
   }
   .clues {
     padding: 20px;
-    gap: 12px;
-  }
-  .stamp {
-    display: none;
   }
   h2 {
     font-size: 25px;

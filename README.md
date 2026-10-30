@@ -21,6 +21,7 @@ Ouvrir [http://localhost:4200](http://localhost:4200).
 ```sh
 npm run build      # production : dist/jour-de-lampe/browser/
 npm run test:ci    # tests Vitest, sans navigateur externe
+npm run test:zebra # vérifier que reconnaître les nourritures est nécessaire
 npm run test:rules # règles Firebase sur l’émulateur local (Java 21 requis)
 npm run typecheck  # vérification TypeScript
 ```

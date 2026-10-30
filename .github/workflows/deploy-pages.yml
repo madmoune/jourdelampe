@@ -38,6 +38,9 @@ jobs:
       - name: Exécuter les tests unitaires
         run: npm run test:ci
 
+      - name: Vérifier la mécanique du puzzle Zebra
+        run: npm run test:zebra
+
       - name: Installer Java pour l’émulateur Firebase
         uses: actions/setup-java@v4
         with:

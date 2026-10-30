@@ -34,7 +34,7 @@ export class RiddleSubmissions {
     const normalized = normalizeAnswer(answer);
     if (!normalized || answer.length > 200 || normalized.length > 200)
       throw new Error('Entre une réponse de 200 caractères ou moins.');
-    if (kind === 'grid' && !/^[1-8]{24}$/u.test(answer))
+    if (kind === 'grid' && !/^[1-8]{36}$/u.test(answer))
       throw new Error('Complète la grille avant de la vérifier.');
     if (
       kind === 'answer' &&

@@ -160,7 +160,7 @@ await request(
     'riddleSecrets/first': {
       answer: 'Lampe',
       normalizedAnswer: 'LAMPE',
-      gridAnswer: '123412341234123412341234',
+      gridAnswer: '123456781234567812341234567812341234',
     },
     'riddleSecrets/second': { answer: 'Party', normalizedAnswer: 'PARTY' },
   },
@@ -300,21 +300,21 @@ await request(
 await request(
   'game/attempts/player/first/grid-wrong',
   'PUT',
-  attempt('876587651234876512341234', false, 'grid'),
+  attempt('876543218765432112348765432112341234', false, 'grid'),
   200,
   'player',
 );
 await request(
   'game/attempts/player/first/grid-forged',
   'PUT',
-  attempt('876587651234876512341234', true, 'grid'),
+  attempt('876543218765432112348765432112341234', true, 'grid'),
   401,
   'player',
 );
 await request(
   'game/attempts/player/first/grid-right',
   'PUT',
-  attempt('123412341234123412341234', true, 'grid'),
+  attempt('123456781234567812341234567812341234', true, 'grid'),
   200,
   'player',
 );
@@ -330,6 +330,14 @@ await request(
   401,
   'player',
 );
+await request(
+  'game/attempts/player/first/grid-old-format',
+  'PUT',
+  attempt('123412341234123412341234', false, 'grid'),
+  401,
+  'player',
+);
+await request('riddleSecrets/first/gridAnswer', 'PUT', '123412341234123412341234', 401, admin);
 await request(
   'game/catalog/preview',
   'PUT',
