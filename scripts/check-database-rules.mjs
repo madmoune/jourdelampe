@@ -242,11 +242,11 @@ await request(
   401,
   'player',
 );
-function attempt(answer, correct, kind = 'answer', extra = {}) {
+function attempt(answer, correct, kind = 'answer', extra = {}, normalizedAnswer = answer) {
   return {
     kind,
     answer,
-    normalizedAnswer: answer,
+    normalizedAnswer,
     correct,
     participantName: 'Chloé Martin',
     roundId: 'round-one',
@@ -345,6 +345,20 @@ await request(
   'game/attempts/player/first/surname-right',
   'PUT',
   attempt('BROWN', true, 'surname', { target: 'bob' }),
+  200,
+  'player',
+);
+await request(
+  'game/attempts/player/first/surname-case-insensitive',
+  'PUT',
+  attempt('bRoWn', true, 'surname', { target: 'bob' }, 'BROWN'),
+  200,
+  'player',
+);
+await request(
+  'game/attempts/player/first/surname-normalized-separators',
+  'PUT',
+  attempt('Du pont', true, 'surname', { target: 'jean-lou' }, 'DUPONT'),
   200,
   'player',
 );
