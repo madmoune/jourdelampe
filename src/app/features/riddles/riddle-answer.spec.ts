@@ -4,11 +4,13 @@ import { provideRouter } from '@angular/router';
 import { GameStore } from './game-store';
 import { ParticipantStore } from './participant-store';
 import { RiddleAnswer } from './riddle-answer';
-import { RiddleAttempts } from './riddle-attempts';
+import { RiddleAttempt, RiddleAttempts } from './riddle-attempts';
 import { RiddleSubmissions } from './riddle-submissions';
 
 describe('réponse finale sans historique et fenêtre de succès', () => {
-  async function setup() {
+  afterEach(() => localStorage.clear());
+
+  async function setup(solved = false) {
     const round = signal({ id: 'one', resetAt: 1 });
     let confirm!: (correct: boolean) => void;
     const submit = vi.fn(
@@ -17,6 +19,7 @@ describe('réponse finale sans historique et fenêtre de succès', () => {
           confirm = resolve;
         }),
     );
+    const attempts = signal<readonly RiddleAttempt[]>([]);
     Object.defineProperty(HTMLDialogElement.prototype, 'showModal', {
       configurable: true,
       value: function (this: HTMLDialogElement) {
@@ -39,7 +42,13 @@ describe('réponse finale sans historique et fenêtre de succès', () => {
             ready: signal(true),
             error: signal(''),
             round,
-            riddles: signal([{ id: 'a', title: 'Lampe', solutions: [] }]),
+            riddles: signal([
+              {
+                id: 'a',
+                title: 'Lampe',
+                solutions: solved ? [{ participantId: 'alice' }] : [],
+              },
+            ]),
           },
         },
         {
@@ -47,12 +56,7 @@ describe('réponse finale sans historique et fenêtre de succès', () => {
           useValue: { participant: signal({ id: 'alice', name: 'Alice Roy' }) },
         },
         { provide: RiddleSubmissions, useValue: { submit } },
-        {
-          provide: RiddleAttempts,
-          useFactory: () => {
-            throw new Error('L’historique ne doit pas être chargé pour le joueur.');
-          },
-        },
+        { provide: RiddleAttempts, useValue: { attempts } },
       ],
     }).compileComponents();
     const fixture = TestBed.createComponent(RiddleAnswer);
@@ -68,7 +72,15 @@ describe('réponse finale sans historique et fenêtre de succès', () => {
         .querySelector('form')!
         .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     };
-    return { fixture, page, round, confirm: (correct: boolean) => confirm(correct), input, send };
+    return {
+      fixture,
+      page,
+      round,
+      attempts,
+      confirm: (correct: boolean) => confirm(correct),
+      input,
+      send,
+    };
   }
   it('ne charge ni n’affiche les réponses précédentes pour le joueur', async () => {
     const { page } = await setup();
@@ -85,6 +97,35 @@ describe('réponse finale sans historique et fenêtre de succès', () => {
     expect(page.querySelector('dialog')!.open).toBe(true);
     expect(page.querySelector('dialog a')?.getAttribute('href')).toBe('/#enigmes');
     expect(page.querySelector('dialog h2')?.textContent).toContain('Alice Roy');
+    expect(localStorage.getItem('jdl-riddle-answer-v1:a:alice:one')).toBe('Lampe');
+  });
+
+  it('réaffiche la réponse validée en lecture seule quand l’énigme est déjà résolue', async () => {
+    localStorage.setItem('jdl-riddle-answer-v1:a:alice:one', 'Lampe');
+    const { page } = await setup(true);
+    const answer = page.querySelector<HTMLInputElement>('input[readonly]');
+    expect(answer?.value).toBe('Lampe');
+    expect(answer?.readOnly).toBe(true);
+    expect(page.querySelector('form')).toBeNull();
+    expect(page.textContent).toContain('Tu as résolu cette énigme pour cette partie.');
+  });
+
+  it('récupère la réponse validée conservée par Firebase après une ancienne résolution', async () => {
+    const { fixture, page, attempts } = await setup(true);
+    attempts.set([
+      {
+        id: 'attempt-1',
+        riddleId: 'a',
+        participantName: 'Alice Roy',
+        kind: 'answer',
+        answer: 'Lampe',
+        correct: true,
+        roundId: 'one',
+        submittedAt: 1,
+      },
+    ]);
+    await fixture.whenStable();
+    expect(page.querySelector<HTMLInputElement>('input[readonly]')?.value).toBe('Lampe');
   });
   it('ne montre pas le popup pour une réponse incorrecte', async () => {
     const { fixture, page, send, confirm } = await setup();

@@ -1,6 +1,7 @@
 import {
   cellKey,
   cellState,
+  decodeCompleteGrid,
   encodeCompleteGrid,
   parseMarks,
   toggleCell,
@@ -97,6 +98,19 @@ describe('déductions de la grille Zebra à huit positions', () => {
         }),
       ).toBeNull();
     }
+  });
+  it('reconstruit les associations depuis le code d’une grille complète', () => {
+    let marks: ZebraMarks = {};
+    for (const item of ZEBRA_BLOCKS)
+      for (let row = 0; row < 4; row++) {
+        if (item.column === 'position') {
+          marks = toggleCell(marks, item, row, row * 2, 'yes');
+          marks = toggleCell(marks, item, row, row * 2 + 1, 'yes');
+        } else marks = toggleCell(marks, item, row, row, 'yes');
+      }
+    const code = encodeCompleteGrid(marks)!;
+    expect(decodeCompleteGrid(code)).toEqual(marks);
+    expect(decodeCompleteGrid('0'.repeat(36))).toBeNull();
   });
   it('conserve l’ordre voulu des colonnes de positions', () => {
     expect(ZEBRA_CATEGORIES.position.values).toEqual(['1', '4', '5', '11', '18', '6', '3', '2']);

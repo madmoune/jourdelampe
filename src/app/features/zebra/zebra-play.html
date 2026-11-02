@@ -88,7 +88,12 @@
       </div>
     }
   }
-  <app-zebra-grid [storageKey]="storageKey()" (completed)="gridState.set($event)">
+  <app-zebra-grid
+    [storageKey]="storageKey()"
+    [restoredCode]="gridState()?.key === storageKey() ? null : (completion().gridCode ?? null)"
+    [locked]="solved()"
+    (completed)="gridCompleted($event)"
+  >
     <section grid-sidebar class="clues" aria-labelledby="clues-title">
       <span class="file-label">01 / LES ÉNONCÉS</span>
       <h3 id="clues-title">Des dossiers incomplets.</h3>

@@ -98,6 +98,38 @@ export function encodeCompleteGrid(marks: ZebraMarks): string | null {
   return code.join('');
 }
 
+/** Reconstruit les associations d’une grille complète enregistrée. */
+export function decodeCompleteGrid(code: string): ZebraMarks | null {
+  if (!/^[1-8]{36}$/u.test(code)) return null;
+  const marks: Record<string, 'yes'> = {};
+  let offset = 0;
+  for (const block of ZEBRA_BLOCKS) {
+    const columnCount = ZEBRA_CATEGORIES[block.column].values.length;
+    const required = block.column === 'position' ? 2 : 1;
+    const selectedColumns = new Set<number>();
+    for (let row = 0; row < ZEBRA_CATEGORIES[block.row].values.length; row++) {
+      const selected = code
+        .slice(offset, offset + required)
+        .split('')
+        .map((value) => Number(value) - 1);
+      offset += required;
+      if (
+        selected.length !== required ||
+        selected.some(
+          (column) => column < 0 || column >= columnCount || selectedColumns.has(column),
+        )
+      )
+        return null;
+      selected.forEach((column) => {
+        selectedColumns.add(column);
+        marks[cellKey(block.id, row, column)] = 'yes';
+      });
+    }
+    if (selectedColumns.size !== columnCount) return null;
+  }
+  return offset === code.length ? marks : null;
+}
+
 export function parseMarks(value: unknown): ZebraMarks {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
   let marks: ZebraMarks = {};

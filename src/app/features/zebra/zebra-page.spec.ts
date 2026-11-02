@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { AiPortalState } from '../ai-home/ai-portal-state';
 import { ParticipantStore } from '../riddles/participant-store';
+import { RiddleAttempts } from '../riddles/riddle-attempts';
 import { ZebraPage } from './zebra-page';
 import { ZebraPlay } from './zebra-play';
 import { RIDDLE_PREVIEW } from '../riddles/riddle-release';
@@ -43,6 +44,7 @@ describe('nom géré uniquement dans le portail de l’AI', () => {
             riddles: signal([{ id: 'zebra-01', title: 'Zebra', solutions: [] }]),
           },
         },
+        { provide: RiddleAttempts, useValue: { attempts: signal([]) } },
         { provide: RiddleSubmissions, useValue: { submit: vi.fn() } },
       ],
     })

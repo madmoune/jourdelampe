@@ -1,3 +1,4 @@
+import { DOCUMENT } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -10,10 +11,16 @@ import {
 } from '@angular/core';
 import { GameStore } from '../riddles/game-store';
 import { ParticipantStore } from '../riddles/participant-store';
+import { RiddleAttempts } from '../riddles/riddle-attempts';
 import { ZEBRA_ID } from '../riddles/riddle-pages';
 import { RiddleSubmissions } from '../riddles/riddle-submissions';
 import { ZebraGrid } from './zebra-grid';
-import { ZEBRA_ASSOCIATION_COUNT, ZEBRA_NAME_TARGETS, type ZebraNameTarget } from './zebra.model';
+import {
+  decodeCompleteGrid,
+  ZEBRA_ASSOCIATION_COUNT,
+  ZEBRA_NAME_TARGETS,
+  type ZebraNameTarget,
+} from './zebra.model';
 
 interface SurnameCheck {
   readonly code: string;
@@ -22,6 +29,11 @@ interface SurnameCheck {
   readonly checking: boolean;
   readonly correct?: boolean;
   readonly error?: string;
+}
+
+interface ZebraCompletion {
+  readonly gridCode?: string;
+  readonly surnames?: Partial<Record<ZebraNameTarget, string>>;
 }
 
 const SURNAME_CHECK_DEBOUNCE_MS = 300;
@@ -34,8 +46,10 @@ const SURNAME_CHECK_DEBOUNCE_MS = 300;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ZebraPlay {
+  private readonly browser = inject(DOCUMENT).defaultView;
   private readonly participants = inject(ParticipantStore);
   protected readonly game = inject(GameStore);
+  private readonly attempts = inject(RiddleAttempts);
   private readonly submissions = inject(RiddleSubmissions);
   protected readonly totalAssociations = ZEBRA_ASSOCIATION_COUNT;
   protected readonly surnameTargets = ZEBRA_NAME_TARGETS;
@@ -46,9 +60,42 @@ export class ZebraPlay {
     () =>
       `jdl-zebra-v2:${this.participants.participant()?.id}:${this.game.round()?.id ?? 'preview'}`,
   );
+  private readonly completionKey = computed(() => `${this.storageKey()}:completion`);
+  private readonly completionState = signal<{ key: string; value: ZebraCompletion }>({
+    key: '',
+    value: {},
+  });
+  protected readonly storedCompletion = computed(() => {
+    const state = this.completionState();
+    return state.key === this.completionKey() ? state.value : null;
+  });
+  protected readonly completion = computed<ZebraCompletion>(() => {
+    const local = this.storedCompletion() ?? {};
+    const roundId = this.game.round()?.id;
+    const attempts = this.attempts
+      .attempts()
+      .filter(
+        (attempt) =>
+          attempt.riddleId === ZEBRA_ID && attempt.roundId === roundId && attempt.correct,
+      );
+    const gridCode = attempts.find((attempt) => attempt.kind === 'grid')?.answer;
+    const surnames: Partial<Record<ZebraNameTarget, string>> = {};
+    for (const attempt of attempts) {
+      if (attempt.kind === 'surname' && attempt.target)
+        surnames[attempt.target as ZebraNameTarget] = attempt.answer;
+    }
+    return {
+      ...(gridCode || local.gridCode ? { gridCode: local.gridCode ?? gridCode } : {}),
+      ...((Object.keys(surnames).length || local.surnames) && {
+        surnames: { ...surnames, ...local.surnames },
+      }),
+    };
+  });
   protected readonly gridState = signal<{ key: string; code: string | null } | null>(null);
   protected readonly gridCode = computed(() =>
-    this.gridState()?.key === this.storageKey() ? (this.gridState()?.code ?? null) : null,
+    this.gridState()?.key === this.storageKey()
+      ? (this.gridState()?.code ?? null)
+      : (this.completion()?.gridCode ?? null),
   );
   private requestId = 0;
   protected readonly verdict = signal<{
@@ -63,6 +110,12 @@ export class ZebraPlay {
       ? this.verdict()
       : null,
   );
+  protected readonly solved = computed(
+    () =>
+      this.riddle()?.solutions.some(
+        (solution) => solution.participantId === this.participants.participant()?.id,
+      ) ?? false,
+  );
   private readonly surnameDrafts = signal<Partial<Record<ZebraNameTarget, string>>>({});
   private readonly surnameChecks = signal<Partial<Record<ZebraNameTarget, SurnameCheck>>>({});
   private readonly surnameRequestIds = new Map<ZebraNameTarget, number>();
@@ -75,6 +128,10 @@ export class ZebraPlay {
       this.surnameTimers.clear();
     });
     effect(() => {
+      const key = this.completionKey();
+      this.completionState.set({ key, value: this.readCompletion(key) });
+    });
+    effect(() => {
       const code = this.gridCode();
       const key = this.storageKey();
       if (code && this.game.ready()) untracked(() => void this.checkGrid(code, key));
@@ -85,9 +142,10 @@ export class ZebraPlay {
     if (code) void this.checkGrid(code, this.storageKey());
   }
   protected surnameDraft(target: ZebraNameTarget): string {
-    return this.surnameDrafts()[target] ?? '';
+    return this.surnameDrafts()[target] ?? this.completion()?.surnames?.[target] ?? '';
   }
   protected updateSurname(target: ZebraNameTarget, value: string): void {
+    if (this.surnameResult(target)?.correct) return;
     const timer = this.surnameTimers.get(target);
     if (timer !== undefined) clearTimeout(timer);
     this.surnameTimers.delete(target);
@@ -112,9 +170,10 @@ export class ZebraPlay {
   protected surnameResult(target: ZebraNameTarget): SurnameCheck | null {
     const result = this.surnameChecks()[target];
     const code = this.gridCode();
-    return result && code && result.code === code && result.key === this.storageKey()
-      ? result
-      : null;
+    const key = this.storageKey();
+    if (result && code && result.code === code && result.key === key) return result;
+    const stored = this.completion()?.surnames?.[target];
+    return stored && code ? { code, key, value: stored, checking: false, correct: true } : null;
   }
   protected async verifySurname(target: ZebraNameTarget): Promise<void> {
     const value = this.surnameDraft(target).trim();
@@ -138,6 +197,10 @@ export class ZebraPlay {
           ...current,
           [target]: { code, key, value, checking: false, correct },
         }));
+      if (correct)
+        this.saveCompletion({
+          surnames: { ...(this.storedCompletion()?.surnames ?? {}), [target]: value },
+        });
     } catch (error: unknown) {
       if (
         requestId === (this.surnameRequestIds.get(target) ?? 0) &&
@@ -163,8 +226,10 @@ export class ZebraPlay {
     this.verdict.set(null);
     try {
       const correct = await this.submissions.checkGrid(ZEBRA_ID, code);
-      if (requestId === this.requestId && this.storageKey() === key && this.gridCode() === code)
+      if (requestId === this.requestId && this.storageKey() === key && this.gridCode() === code) {
         this.verdict.set({ code, key, correct });
+        if (correct) this.saveCompletion({ gridCode: code });
+      }
     } catch (error: unknown) {
       if (requestId === this.requestId && this.storageKey() === key && this.gridCode() === code)
         this.verdict.set({
@@ -174,6 +239,61 @@ export class ZebraPlay {
         });
     } finally {
       if (requestId === this.requestId) this.checking.set(false);
+    }
+  }
+
+  protected gridCompleted(state: { key: string; code: string | null }): void {
+    this.gridState.set(state);
+    const storedCode = this.completion()?.gridCode;
+    if (!this.solved() && storedCode && storedCode !== state.code) this.clearCompletion();
+  }
+
+  private saveCompletion(patch: Partial<ZebraCompletion>): void {
+    const key = this.completionKey();
+    const value = { ...(this.storedCompletion() ?? {}), ...patch };
+    try {
+      this.browser?.localStorage.setItem(key, JSON.stringify(value));
+    } catch {
+      /* Mémoire de la page seulement. */
+    }
+    this.completionState.set({ key, value });
+  }
+
+  private clearCompletion(): void {
+    const key = this.completionKey();
+    try {
+      this.browser?.localStorage.removeItem(key);
+    } catch {
+      /* Mémoire de la page seulement. */
+    }
+    this.completionState.set({ key, value: {} });
+  }
+
+  private readCompletion(key: string): ZebraCompletion {
+    try {
+      const raw = JSON.parse(this.browser?.localStorage.getItem(key) ?? 'null') as Record<
+        string,
+        unknown
+      > | null;
+      if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
+      const gridCode =
+        typeof raw['gridCode'] === 'string' && decodeCompleteGrid(raw['gridCode'])
+          ? raw['gridCode']
+          : undefined;
+      const rawSurnames = raw['surnames'];
+      const surnames: Partial<Record<ZebraNameTarget, string>> = {};
+      if (rawSurnames && typeof rawSurnames === 'object' && !Array.isArray(rawSurnames)) {
+        for (const target of this.surnameTargets) {
+          const value = (rawSurnames as Record<string, unknown>)[target.id];
+          if (typeof value === 'string' && value.trim()) surnames[target.id] = value;
+        }
+      }
+      return {
+        ...(gridCode ? { gridCode } : {}),
+        ...(Object.keys(surnames).length ? { surnames } : {}),
+      };
+    } catch {
+      return {};
     }
   }
 }

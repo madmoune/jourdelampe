@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { GameStore } from '../riddles/game-store';
 import { ParticipantStore } from '../riddles/participant-store';
+import { RiddleAttempts } from '../riddles/riddle-attempts';
 import { RiddleSubmissions } from '../riddles/riddle-submissions';
 import { ZebraPage } from './zebra-page';
 import { ZEBRA_BLOCKS, ZEBRA_CATEGORIES } from './zebra.model';
@@ -18,9 +19,15 @@ describe('indication partielle pour la grille complète', () => {
     const checkGrid = vi.fn().mockResolvedValue(gridVerdict);
     const checkSurname = vi.fn().mockResolvedValue(surnameVerdict);
     const submit = vi.fn().mockResolvedValue(false);
-    const riddles = signal([
-      { id: 'zebra-01', title: 'Zebra', gridReady, answerReady, solutions: [] },
-    ]);
+    const riddles = signal<
+      {
+        id: string;
+        title: string;
+        gridReady: boolean;
+        answerReady: boolean;
+        solutions: readonly { participantId: string }[];
+      }[]
+    >([{ id: 'zebra-01', title: 'Zebra', gridReady, answerReady, solutions: [] }]);
     const fixture = await TestBed.configureTestingModule({
       imports: [ZebraPage],
       providers: [
@@ -43,6 +50,7 @@ describe('indication partielle pour la grille complète', () => {
             error: signal(''),
           },
         },
+        { provide: RiddleAttempts, useValue: { attempts: signal([]) } },
         { provide: RiddleSubmissions, useValue: { submit, checkGrid, checkSurname } },
       ],
     })
@@ -175,6 +183,41 @@ describe('indication partielle pour la grille complète', () => {
     expect(page.querySelectorAll('.cell.yes')).toHaveLength(0);
     expect(checkGrid).toHaveBeenCalledTimes(1);
     expect(submit).not.toHaveBeenCalled();
+  });
+  it('restaure la grille et les noms validés en revenant dans une énigme résolue', async () => {
+    const { fixture, page, checkSurname, riddles } = await setup();
+    await completeGrid(page);
+    await fixture.whenStable();
+    const bobInput = page.querySelector<HTMLInputElement>(
+      '[data-name-target="bob"] .surname-input',
+    )!;
+    bobInput.value = 'Brown';
+    bobInput.dispatchEvent(new Event('input', { bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 350));
+    await fixture.whenStable();
+    expect(checkSurname).toHaveBeenCalledWith('zebra-01', 'bob', 'Brown');
+    riddles.set([
+      {
+        id: 'zebra-01',
+        title: 'Zebra',
+        gridReady: true,
+        answerReady: true,
+        solutions: [{ participantId: 'alice' }],
+      },
+    ]);
+    await fixture.whenStable();
+    fixture.destroy();
+
+    const returned = TestBed.createComponent(ZebraPage);
+    await returned.whenStable();
+    const returnedPage = returned.nativeElement as HTMLElement;
+    expect(returnedPage.querySelectorAll('.cell.yes')).toHaveLength(36);
+    const returnedBob = returnedPage.querySelector<HTMLInputElement>(
+      '[data-name-target="bob"] .surname-input',
+    )!;
+    expect(returnedBob.value).toBe('Brown');
+    expect(returnedBob.readOnly).toBe(true);
+    expect(returnedPage.querySelector('.clear-grid')?.hasAttribute('disabled')).toBe(true);
   });
   it('vérifie la grille complète même sans indicateur de configuration publique', async () => {
     const { fixture, page } = await setup(true, false);

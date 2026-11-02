@@ -5,7 +5,7 @@
       type="button"
       class="clear-grid"
       title="Effacer les associations et les exclusions"
-      [disabled]="!hasMarks()"
+      [disabled]="locked() || !hasMarks()"
       (click)="clear()"
     >
       Vider
@@ -75,7 +75,7 @@
                         type="button"
                         [attr.aria-label]="label(block, row, column)"
                         [attr.aria-pressed]="state === 'yes' || state === 'no'"
-                        [disabled]="state === 'blocked'"
+                        [disabled]="locked() || state === 'blocked'"
                         (click)="click(block, row, column)"
                       >
                         <span aria-hidden="true">{{

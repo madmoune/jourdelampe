@@ -12,6 +12,7 @@ import { DOCUMENT } from '@angular/common';
 import {
   CategoryId,
   cellState,
+  decodeCompleteGrid,
   encodeCompleteGrid,
   parseMarks,
   toggleCell,
@@ -35,6 +36,8 @@ interface DisplayBlock extends ZebraBlock {
 })
 export class ZebraGrid {
   readonly storageKey = input.required<string>();
+  readonly restoredCode = input<string | null>(null);
+  readonly locked = input(false);
   readonly completed = output<{ key: string; code: string | null }>();
   private readonly browser = inject(DOCUMENT).defaultView;
   private readonly state = signal<{ key: string; marks: ZebraMarks }>({ key: '', marks: {} });
@@ -73,12 +76,14 @@ export class ZebraGrid {
   constructor() {
     effect(() => {
       const key = this.storageKey();
+      const restoredCode = this.restoredCode();
       let marks: ZebraMarks = {};
       try {
         marks = parseMarks(JSON.parse(this.browser?.localStorage.getItem(key) ?? 'null'));
       } catch {
         /* Grille utilisable sans stockage. */
       }
+      if (restoredCode) marks = decodeCompleteGrid(restoredCode) ?? marks;
       this.state.set({ key, marks });
     });
     effect(() => {
@@ -102,6 +107,7 @@ export class ZebraGrid {
     );
   }
   protected click(block: DisplayBlock, row: number, column: number): void {
+    if (this.locked()) return;
     const nextMark = this.stateOf(block, row, column) === 'empty' ? 'yes' : 'no';
     this.state.set({
       key: this.storageKey(),
@@ -115,6 +121,7 @@ export class ZebraGrid {
     });
   }
   protected clear(): void {
+    if (this.locked()) return;
     this.state.set({ key: this.storageKey(), marks: {} });
   }
   protected label(block: DisplayBlock, row: number, column: number): string {

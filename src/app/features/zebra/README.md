@@ -16,6 +16,8 @@ validée affiche aussi les quatre prénoms, l’un sous l’autre, avec un champ
 famille à côté de chacun; chaque réponse est vérifiée automatiquement et confirmée par une coche
 verte ou une croix rouge. La comparaison ignore la casse, les accents, les espaces et la
 ponctuation. Un nom correct reste affiché dans son champ, qui devient alors en lecture seule.
+Après une résolution finale, la grille, les noms validés et la réponse sont restaurés à la
+réouverture pour le même profil et la même partie; les autres tentatives ne sont pas affichées au joueur.
 Sous la grille, un panneau unique rassemble les consignes de manipulation, les
 déductions et la légende.
 `ZebraPlay` contient uniquement l’énigme et sa vérification de grille.

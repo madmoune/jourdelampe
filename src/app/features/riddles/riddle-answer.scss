@@ -30,6 +30,12 @@ input {
   border: 1px solid #8d769f;
   border-radius: 0;
 }
+input[readonly] {
+  border-color: #76934c;
+  background: #344424;
+  color: #e8f4c0;
+  cursor: default;
+}
 button,
 .dialog-actions a {
   display: inline-flex;
