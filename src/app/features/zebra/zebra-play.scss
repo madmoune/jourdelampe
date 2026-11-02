@@ -47,11 +47,12 @@
   font-size: 22px;
 }
 .surname-heading p {
-  max-width: 70ch;
+  max-width: none;
   margin: 0 0 18px;
   color: #c4b6d1;
   font-size: 13px;
   line-height: 1.7;
+  white-space: nowrap;
 }
 .surname-grid {
   display: grid;
