@@ -67,7 +67,7 @@ describe('La Fourchette et le gabarit commun des énigmes', () => {
     const { page } = await setup(false, false);
     expect(page.querySelector('h1')?.textContent).toContain('La Fourchette');
     expect(page.querySelector('input')).toBeNull();
-    expect(page.querySelector('.coming-soon')).toBeNull();
+    expect(page.querySelector('.wordsearch')).toBeNull();
     expect(page.querySelector('.access-notice a')?.getAttribute('href')).toBe('/#enigmes');
   });
 
@@ -78,11 +78,14 @@ describe('La Fourchette et le gabarit commun des énigmes', () => {
       const title = page.querySelector('h1')!;
       const flavor = page.querySelector('.flavor-text')!;
       const input = page.querySelector<HTMLInputElement>('input[name="answer"]')!;
-      const puzzle = page.querySelector('.coming-soon')!;
+      const puzzle = page.querySelector('.wordsearch')!;
       expect(title.compareDocumentPosition(flavor) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
       expect(flavor.compareDocumentPosition(input) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
       expect(input.compareDocumentPosition(puzzle) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-      expect(page.querySelector('label')?.textContent).toBe('Réponse');
+      expect(page.querySelector('label')?.textContent).toBe('Réponse (12 lettres)');
+      expect(flavor.textContent).toBe(
+        'On ne doit jamais faire cavalier seul, sauf si on est solide comme le roque.',
+      );
       expect(page.querySelector('.answer-section')?.textContent).not.toContain('Énigme résolue');
       expect(input.disabled).toBe(false);
       input.value = 'Réponse de test';

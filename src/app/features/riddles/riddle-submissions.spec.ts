@@ -147,8 +147,29 @@ describe('validation et historique des réponses', () => {
       expect.objectContaining({ kind: 'grid', correct: false }),
     );
   });
+  it('conserve les 110 cases du mot caché, y compris les zéros initiaux, sans créer de résolution finale', async () => {
+    const code = '01'.repeat(55);
+    update.mockRejectedValueOnce(new DatabaseWriteError(403));
+    expect(await submissions.checkGrid('a', code)).toBe(true);
+    const patch = update.mock.calls[1][1];
+    expect(Object.keys(patch)).toHaveLength(1);
+    expect(Object.values(patch)[0]).toEqual(
+      expect.objectContaining({
+        kind: 'grid',
+        answer: code,
+        normalizedAnswer: code,
+        correct: true,
+      }),
+    );
+  });
   it('refuse l’ancien encodage à une seule position et les codes de grille mal formés', async () => {
-    for (const code of ['123412341234123412341234', '1'.repeat(35), '9'.repeat(36)])
+    for (const code of [
+      '123412341234123412341234',
+      '1'.repeat(35),
+      '9'.repeat(36),
+      '0'.repeat(109),
+      '2'.repeat(110),
+    ])
       await expect(submissions.checkGrid('a', code)).rejects.toThrow('Complète la grille');
     expect(update).not.toHaveBeenCalled();
   });

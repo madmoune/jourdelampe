@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { AnonymousSession } from '../../core/services/anonymous-session';
 import { DatabaseWriteError, FirebaseRest } from '../../core/services/firebase-rest';
 import { GameStore } from './game-store';
-import { normalizeAnswer } from './game.model';
+import { normalizeAnswer, validGridCode } from './game.model';
 import { ParticipantStore } from './participant-store';
 
 const SERVER_TIME = { '.sv': 'timestamp' };
@@ -40,7 +40,7 @@ export class RiddleSubmissions {
     const normalized = normalizeAnswer(answer);
     if (!normalized || answer.length > 200 || normalized.length > 200)
       throw new Error('Entre une réponse de 200 caractères ou moins.');
-    if (kind === 'grid' && !/^[1-8]{36}$/u.test(answer))
+    if (kind === 'grid' && !validGridCode(answer))
       throw new Error('Complète la grille avant de la vérifier.');
     if (kind === 'surname' && (!target || !/^[a-z][a-z-]{0,63}$/u.test(target)))
       throw new Error('Le prénom à vérifier est invalide.');

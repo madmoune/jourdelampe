@@ -1,0 +1,101 @@
+<section class="wordsearch" aria-label="Mots cachés de La Fourchette">
+  <div class="verification-feedback" aria-live="polite" aria-atomic="true">
+    @if (checking()) {
+      <p class="grid-status" role="status">Vérification de la grille…</p>
+    } @else if (currentVerdict(); as result) {
+      @if (result.error) {
+        <p class="grid-status grid-error" role="alert">{{ result.error }}</p>
+      } @else if (result.correct) {
+        <p class="grid-status grid-success" role="status">
+          <strong>Grille complète et validée.</strong> Tu peux maintenant passer à l’extraction.
+        </p>
+      } @else {
+        <p class="grid-status grid-error" role="alert">
+          <strong>Grille non valide.</strong> Revois les lettres sélectionnées, puis réessaie.
+        </p>
+      }
+    }
+  </div>
+  <div class="wordsearch-workspace">
+    <aside class="word-lists" aria-labelledby="word-list-title">
+      <h2 id="word-list-title">Mots à chercher</h2>
+      <div class="word-columns">
+        @for (words of wordColumns; track $index) {
+          <ul [attr.aria-label]="'Liste de mots ' + ($index + 1)">
+            @for (word of words; track word) {
+              @let found = progress().found.includes(word);
+              <li>
+                <button
+                  type="button"
+                  class="word-button"
+                  [class.found]="found"
+                  [attr.aria-pressed]="found"
+                  [disabled]="locked()"
+                  (click)="toggleWord(word)"
+                >
+                  <span class="word-mark" aria-hidden="true">{{ found ? '✓' : '○' }}</span>
+                  <span class="word-text">{{ word }}</span>
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+      <p class="word-count">{{ foundCount() }} / {{ wordCount }} mots cochés</p>
+      <button type="button" class="verify-grid" [disabled]="!canVerify()" (click)="verify()">
+        {{ checking() ? 'Vérification…' : 'Vérifier la grille' }}
+      </button>
+    </aside>
+    <div class="grid-main">
+      <div
+        class="grid-scroll"
+        role="region"
+        aria-label="Grille de mots cachés, défilement horizontal"
+        tabindex="0"
+      >
+        <table aria-describedby="wordsearch-help">
+          <caption>
+            Grille de mots cachés : 10 lignes, 11 colonnes.
+          </caption>
+          <thead>
+            <tr>
+              <td class="corner"></td>
+              @for (column of columns; track column) {
+                <th scope="col">{{ column }}</th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of rows; track $index; let rowIndex = $index) {
+              <tr>
+                <th scope="row">{{ rowIndex + 1 }}</th>
+                @for (letter of row; track $index; let columnIndex = $index) {
+                  @let index = rowIndex * columns.length + columnIndex;
+                  @let selected = progress().selection[index] === '1';
+                  <td>
+                    <button
+                      type="button"
+                      class="letter"
+                      [class.selected]="selected"
+                      [attr.data-cell]="columns[columnIndex] + (rowIndex + 1)"
+                      [attr.aria-label]="columns[columnIndex] + (rowIndex + 1) + ' : ' + letter"
+                      [attr.aria-pressed]="selected"
+                      [disabled]="locked()"
+                      (click)="toggleCell(index)"
+                    >
+                      {{ letter }}
+                    </button>
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <p id="wordsearch-help" class="wordsearch-help">
+    Clique sur une case pour sélectionner ou désélectionner sa lettre. Clique sur un mot pour le
+    marquer comme trouvé. Une fois les dix mots cochés, vérifie ta grille.
+  </p>
+</section>

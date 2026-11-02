@@ -32,8 +32,8 @@ export function parseGameMode(value: unknown): GameMode {
 }
 
 export interface RiddleSecret {
-  readonly answer: string;
-  readonly normalizedAnswer: string;
+  readonly answer?: string;
+  readonly normalizedAnswer?: string;
   readonly gridAnswer?: string;
   readonly surnames?: Readonly<Record<string, string>>;
 }
@@ -52,6 +52,10 @@ export function normalizeAnswer(value: string): string {
 
 export function gameId(value: string): boolean {
   return /^[A-Za-z0-9_-]{1,128}$/u.test(value);
+}
+
+export function validGridCode(value: unknown): value is string {
+  return typeof value === 'string' && (/^[1-8]{36}$/u.test(value) || /^[01]{110}$/u.test(value));
 }
 
 function record(value: unknown): Record<string, unknown> {
@@ -132,10 +136,17 @@ export function parseSecrets(value: unknown): Record<string, RiddleSecret> {
   const result: Record<string, RiddleSecret> = {};
   for (const [id, raw] of Object.entries(record(value))) {
     const secret = record(raw);
+    const answer = secret['answer'];
+    const normalizedAnswer = secret['normalizedAnswer'];
+    const gridAnswer = secret['gridAnswer'];
     if (
       !gameId(id) ||
-      typeof secret['answer'] !== 'string' ||
-      typeof secret['normalizedAnswer'] !== 'string'
+      (answer === undefined) !== (normalizedAnswer === undefined) ||
+      (answer !== undefined && (typeof answer !== 'string' || !answer.trim())) ||
+      (normalizedAnswer !== undefined &&
+        (typeof normalizedAnswer !== 'string' || !/^[A-Z0-9]+$/u.test(normalizedAnswer))) ||
+      (gridAnswer !== undefined && !validGridCode(gridAnswer)) ||
+      (answer === undefined && gridAnswer === undefined)
     )
       throw new Error('Réponse invalide.');
     let surnames: Record<string, string> | undefined;
@@ -149,9 +160,10 @@ export function parseSecrets(value: unknown): Record<string, RiddleSecret> {
       }
     }
     result[id] = {
-      answer: secret['answer'],
-      normalizedAnswer: secret['normalizedAnswer'],
-      ...(typeof secret['gridAnswer'] === 'string' ? { gridAnswer: secret['gridAnswer'] } : {}),
+      ...(typeof answer === 'string'
+        ? { answer, normalizedAnswer: normalizedAnswer as string }
+        : {}),
+      ...(typeof gridAnswer === 'string' ? { gridAnswer } : {}),
       ...(surnames ? { surnames } : {}),
     };
   }

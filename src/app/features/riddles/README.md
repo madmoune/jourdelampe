@@ -52,8 +52,8 @@ résolutions (nom et heure de Montréal, avec les secondes). Les énigmes et leu
 réponses sont configurées manuellement lors de leur intégration; le tableau de
 bord ne propose ni ajout ni modification. Les pages intégrées sont **Nostalgie**
 (Zebra, `/enigmes/zebra`) et **La Fourchette** (`/enigmes/la-fourchette`). Cette
-dernière contient un contenu provisoire en attendant ses détails et sa réponse
-privée; la gestion indique « À définir » tant que cette réponse manque.
+dernière présente un mot caché interactif; la gestion indique « À définir » tant
+que sa réponse finale privée n’a pas été fournie.
 
 La section **Joueurs enregistrés** suit en temps réel tous les profils de
 `participants`, y compris ceux sans réussite. Chaque fiche affiche la progression
@@ -90,7 +90,7 @@ game/
   proofs/<participantId>/<riddleId>/{answer, roundId}
   attempts/<participantId>/<riddleId>/<attemptId>/
     kind, answer, normalizedAnswer, correct, participantName, roundId, submittedAt, target?
-riddleSecrets/<riddleId>/{answer, normalizedAnswer, gridAnswer?, surnames?}
+riddleSecrets/<riddleId>/{answer?, normalizedAnswer?, gridAnswer?, surnames?}
 ```
 
 Le catalogue, la partie en cours et les résolutions sont publics. Les réponses
@@ -116,6 +116,11 @@ Les vérifications partielles de grille (`kind: grid`) ne résolvent pas l’én
 Une grille complète est vérifiée automatiquement dès que son `gridAnswer` privé est
 configuré; `gridReady` reste accepté dans le catalogue pour compatibilité, mais ne
 bloque plus cette vérification.
+Pour La Fourchette, la vérification est manuelle une fois les dix mots cochés et
+utilise un masque binaire de 110 cases. Le secret peut contenir uniquement
+`gridAnswer` en attendant la réponse finale; `answer` et `normalizedAnswer` doivent
+toujours être configurés ensemble. Une grille correcte ne crée aucune résolution
+finale et les règles refusent toute réussite finale sans réponse privée.
 Pour Zebra, une grille correcte autorise ensuite les quatre vérifications
 `kind: surname`, chacune portant le prénom ciblé dans `target`; les noms attendus
 restent dans `riddleSecrets/<riddleId>/surnames` et ne sont jamais envoyés au
@@ -189,7 +194,8 @@ continue d’enregistrer les essais dans Firebase, sans historique visible pour 
 
 `number` est facultatif et ajoute le numéro de dossier dans l’en-tête et le titre.
 `answerLabel` est facultatif, avec « Réponse » par défaut. Nostalgie précise
-« Réponse (8 lettres) »; les nouvelles énigmes peuvent définir leur propre format.
+« Réponse (8 lettres) », La Fourchette « Réponse (12 lettres) »; les nouvelles
+énigmes peuvent définir leur propre format.
 Le gabarit conserve les liens de retour vers le portail public ou l’aperçu.
 
 `RiddleAccess` crée le contenu de son `ng-template` seulement quand un nom a été

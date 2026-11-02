@@ -1,0 +1,197 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+.wordsearch-workspace {
+  display: grid;
+  grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+  align-items: start;
+  gap: 32px;
+}
+.word-lists {
+  padding: 24px 20px;
+  border: 1px solid #7d688c;
+  background: #23192f;
+}
+h2 {
+  margin: 0 0 20px;
+  color: #efdfbd;
+  font-size: 24px;
+}
+.word-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.word-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 44px;
+  padding: 6px 0;
+  border: 0;
+  background: transparent;
+  color: #ece4f3;
+  text-align: left;
+  font: 12px/1.4 monospace;
+  cursor: pointer;
+}
+.word-mark {
+  flex: 0 0 16px;
+  color: #b7cf7f;
+  text-align: center;
+  font-size: 16px;
+}
+.word-text {
+  overflow-wrap: anywhere;
+}
+.word-button.found {
+  color: #d9f58a;
+}
+.word-button.found .word-text {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+.word-button:hover:not(:disabled) .word-text {
+  color: #dcff79;
+}
+.word-button:disabled,
+.letter:disabled {
+  cursor: default;
+}
+.word-count {
+  margin: 20px 0 12px;
+  color: #c4b6d1;
+  font-size: 13px;
+}
+.verify-grid {
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 2px outset #d5ed8b;
+  background: #d5ed8b;
+  color: #202a12;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.verify-grid:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.grid-main {
+  min-width: 0;
+}
+.grid-scroll {
+  overflow-x: auto;
+  padding: 0 4px 12px;
+  overscroll-behavior-x: contain;
+}
+table {
+  width: 100%;
+  max-width: 704px;
+  min-width: 440px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+th {
+  height: 24px;
+  color: #c4b6d1;
+  font: 11px/1.4 monospace;
+}
+tr > th:first-child,
+.corner {
+  width: 24px;
+}
+td:not(.corner) {
+  padding: 0;
+  border: 1px solid #7d688c;
+  background: #241b30;
+}
+tbody tr:nth-child(even) td {
+  background: #1b1527;
+}
+.letter {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  min-height: 36px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #f0e9f4;
+  font: 700 clamp(18px, 2vw, 26px)/1 monospace;
+  font-variant-numeric: slashed-zero;
+  cursor: pointer;
+}
+.letter:hover:not(:disabled) {
+  box-shadow: inset 0 0 0 2px #a68eb8;
+}
+.letter.selected {
+  background: #344424;
+  color: #dcff79;
+  box-shadow: inset 0 0 0 2px #9dbd5a;
+}
+button:focus-visible,
+.grid-scroll:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid #dcff79;
+  outline-offset: 3px;
+}
+.grid-status {
+  margin: 0 0 24px;
+  padding: 14px 18px;
+  border-left: 4px solid #8d769f;
+  background: #23192f;
+  color: #c4b6d1;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.grid-success {
+  border-color: #d9f58a;
+  background: #344424;
+  color: #e8f4c0;
+}
+.grid-error {
+  border-color: #f3a1a4;
+  background: #40242f;
+  color: #ffd5d6;
+}
+.wordsearch-help {
+  margin: 24px 0 0;
+  color: #c4b6d1;
+  font-size: 13px;
+  line-height: 1.7;
+}
+@media (max-width: 1000px) {
+  .wordsearch-workspace {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .word-lists {
+    max-width: 600px;
+  }
+}
+@media (max-width: 600px) {
+  .word-lists {
+    padding: 20px 14px;
+  }
+  .word-columns {
+    gap: 12px;
+  }
+}

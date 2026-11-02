@@ -1,12 +1,10 @@
 <app-riddle-page
   [riddleId]="riddleId"
   title="La Fourchette"
-  flavorText="Une nouvelle énigme se prépare."
+  flavorText="On ne doit jamais faire cavalier seul, sauf si on est solide comme le roque."
+  answerLabel="Réponse (12 lettres)"
 >
   <ng-template>
-    <section class="coming-soon" aria-labelledby="fourchette-content-title">
-      <h2 id="fourchette-content-title">Énigme à venir</h2>
-      <p>Le contenu de « La Fourchette » sera ajouté prochainement.</p>
-    </section>
+    <app-fourchette-play />
   </ng-template>
 </app-riddle-page>

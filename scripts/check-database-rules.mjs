@@ -425,6 +425,79 @@ await request(
   'player',
 );
 await request('riddleSecrets/first/gridAnswer', 'PUT', '123412341234123412341234', 401, admin);
+// Le mot caché conserve sa validation privée sans réponse finale provisoire.
+const wordsearchCode = '01'.repeat(55);
+await request(
+  'game/catalog/fourchette',
+  'PUT',
+  { title: 'La Fourchette', prompt: '', order: 3 },
+  200,
+  admin,
+);
+await request('riddleSecrets/fourchette', 'PUT', { gridAnswer: wordsearchCode }, 200, admin);
+await request('riddleSecrets/fourchette/gridAnswer', 'GET', undefined, 401, 'player');
+await request(
+  'game/attempts/player/fourchette/valid-grid',
+  'PUT',
+  attempt(wordsearchCode, true, 'grid'),
+  200,
+  'player',
+);
+await request(
+  'game/attempts/player/fourchette/wrong-grid',
+  'PUT',
+  attempt('0'.repeat(110), false, 'grid'),
+  200,
+  'player',
+);
+await request(
+  'game/attempts/player/fourchette/forged-grid',
+  'PUT',
+  attempt('0'.repeat(110), true, 'grid'),
+  401,
+  'player',
+);
+await request(
+  'game/attempts/player/fourchette/false-failure',
+  'PUT',
+  attempt(wordsearchCode, false, 'grid'),
+  401,
+  'player',
+);
+for (const code of ['1'.repeat(109), '2'.repeat(110)]) {
+  await request('riddleSecrets/fourchette/gridAnswer', 'PUT', code, 401, admin);
+  await request(
+    'game/attempts/player/fourchette/bad-format',
+    'PUT',
+    attempt(code, false, 'grid'),
+    401,
+    'player',
+  );
+}
+await request('riddleSecrets/fourchette', 'PATCH', { answer: 'Test' }, 401, admin);
+await request('riddleSecrets/fourchette', 'PATCH', { normalizedAnswer: 'TEST' }, 401, admin);
+await request('riddleSecrets/fourchette', 'PUT', {}, 200, admin);
+await request('riddleSecrets/fourchette', 'PUT', { surnames: { bob: 'TEST' } }, 401, admin);
+await request('riddleSecrets/fourchette', 'PUT', { gridAnswer: wordsearchCode }, 200, admin);
+await request(
+  'game/attempts/player/fourchette/no-final-answer',
+  'PUT',
+  attempt('TEST', false),
+  200,
+  'player',
+);
+await request(
+  'game/attempts/player/fourchette/forged-final-answer',
+  'PUT',
+  attempt('TEST', true),
+  401,
+  'player',
+);
+assert.equal(await request('game/solves/fourchette', 'GET', undefined, 200), null);
+assert.equal(
+  (await request('riddleSecrets/fourchette', 'GET', undefined, 200, admin)).normalizedAnswer,
+  undefined,
+);
 await request(
   'game/catalog/preview',
   'PUT',
