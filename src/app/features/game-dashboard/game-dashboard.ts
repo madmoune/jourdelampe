@@ -2,6 +2,7 @@ import {
   afterRenderEffect,
   ChangeDetectionStrategy,
   Component,
+  computed,
   ElementRef,
   inject,
   signal,
@@ -32,6 +33,11 @@ export class GameDashboard {
   protected readonly resetStep = signal<0 | 1 | 2>(0);
   protected readonly resetText = signal('');
   protected readonly playerToRemove = signal<{ id: string; name: string } | null>(null);
+  protected readonly syncState = computed<'live' | 'loading' | 'error'>(() => {
+    if (this.store.error() || this.store.game.error()) return 'error';
+    if (this.store.loading() || !this.store.game.ready()) return 'loading';
+    return 'live';
+  });
   private readonly resetPanel = viewChild<ElementRef<HTMLElement>>('resetPanel');
   private readonly removePlayerDialog =
     viewChild<ElementRef<HTMLDialogElement>>('removePlayerDialog');

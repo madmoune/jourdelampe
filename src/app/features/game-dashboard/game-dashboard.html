@@ -33,6 +33,20 @@
       </form>
     </section>
   } @else {
+    <p class="live-status" [class.error-state]="syncState() === 'error'" role="status">
+      <span aria-hidden="true">●</span>
+      @switch (syncState()) {
+        @case ('live') {
+          Mises à jour en direct
+        }
+        @case ('loading') {
+          Connexion aux données en direct…
+        }
+        @default {
+          Connexion aux données en direct indisponible
+        }
+      }
+    </p>
     <section class="panel mode-section" aria-labelledby="mode-title">
       <h2 id="mode-title">Mode du puzzle hunt</h2>
       <p>

@@ -39,6 +39,25 @@ h1 {
   letter-spacing: -0.04em;
   margin: 8px 0 30px;
 }
+.live-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: -12px 0 24px;
+  color: #34582a;
+  font-size: 13px;
+  font-weight: 650;
+}
+.live-status span {
+  color: #567045;
+  font-size: 11px;
+}
+.live-status.error-state {
+  color: #8b3029;
+}
+.live-status.error-state span {
+  color: #8b3029;
+}
 h2 {
   font-size: 24px;
   margin: 0 0 14px;

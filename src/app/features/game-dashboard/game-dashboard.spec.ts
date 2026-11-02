@@ -221,6 +221,7 @@ describe('tableau de bord protégé et confirmations de remise à zéro', () => 
 
   it('affiche les joueurs sans réussite et distingue la progression de la contribution', async () => {
     const { page, fixture } = await setup(true);
+    expect(page.querySelector('.live-status')?.textContent).toContain('Mises à jour en direct');
     expect(page.querySelector('#players-heading')?.textContent).toContain('3');
     const [alice, bob, charlie] = page.querySelectorAll<HTMLElement>('.player-card');
     expect(alice.querySelector('progress')?.value).toBe(1);
