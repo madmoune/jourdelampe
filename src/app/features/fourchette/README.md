@@ -12,8 +12,9 @@ reprennent les éléments fournis, y compris la distinction entre O et 0.
 
 Les deux colonnes de cinq mots sont affichées au-dessus de la grille. Ses cinq
 lignes de vingt-deux lettres sont présentées comme un mot caché classique, sans
-coordonnées visibles, avec un espacement carré régulier et des sélections rondes.
-La grille utilise un fond noir et une présentation monospace sans bordures entre les cases.
+coordonnées visibles, avec un espacement carré régulier, des bordures discrètes et
+des sélections rondes. La grille utilise le fond de la page et une présentation
+monospace.
 Chaque case et chaque mot sont des boutons à
 bascule accessibles au clavier. Marquer un mot ne sélectionne pas ses lettres.
 
