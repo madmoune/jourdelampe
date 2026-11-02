@@ -203,6 +203,31 @@ describe('indication partielle pour la grille complète', () => {
     await fixture.whenStable();
     expect(bobEntry.querySelector('.surname-incorrect')?.textContent).toContain('×');
   });
+  it('conserve le focus pendant la vérification automatique d’un nom', async () => {
+    const { fixture, page, checkSurname } = await setup();
+    let resolveSurname!: (correct: boolean) => void;
+    checkSurname.mockReturnValueOnce(
+      new Promise<boolean>((resolve) => {
+        resolveSurname = resolve;
+      }),
+    );
+    await completeGrid(page);
+    await fixture.whenStable();
+    const bobInput = page.querySelector<HTMLInputElement>(
+      '[data-name-target="bob"] .surname-input',
+    )!;
+    bobInput.focus();
+    bobInput.value = 'Brown';
+    bobInput.dispatchEvent(new Event('input', { bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 350));
+    fixture.detectChanges();
+    expect(checkSurname).toHaveBeenCalledWith('zebra-01', 'bob', 'Brown');
+    expect(bobInput.disabled).toBe(false);
+    expect(page.ownerDocument.activeElement).toBe(bobInput);
+    resolveSurname(true);
+    await fixture.whenStable();
+    expect(page.ownerDocument.activeElement).toBe(bobInput);
+  });
   it('affiche une erreur technique au-dessus de la grille', async () => {
     const { fixture, page, checkGrid } = await setup();
     checkGrid.mockRejectedValue(new Error('Vérification indisponible.'));
