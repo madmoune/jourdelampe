@@ -55,7 +55,12 @@ describe('gestion du jeu et suivi des joueurs', () => {
         { provide: FirebaseRest, useValue: { update } },
         {
           provide: GameStore,
-          useValue: { riddles: signal([]), mode: signal<GameMode>('team'), ready: signal(true) },
+          useValue: {
+            catalog: signal([{ id: 'first' }, { id: 'second' }]),
+            riddles: signal([]),
+            mode: signal<GameMode>('team'),
+            ready: signal(true),
+          },
         },
         {
           provide: GameAdminSession,
@@ -96,6 +101,30 @@ describe('gestion du jeu et suivi des joueurs', () => {
   it('signale un refus du serveur sans annoncer de réussite', async () => {
     update.mockRejectedValue(new Error('denied'));
     await expect(store.setMode('team')).rejects.toThrow('Le mode n’a pas pu être enregistré');
+  });
+
+  it('supprime le profil et toutes ses données de jeu avec une écriture admin atomique', async () => {
+    await store.removePlayer('alice');
+    expect(update).toHaveBeenCalledExactlyOnceWith(
+      '',
+      {
+        'participants/alice': null,
+        'game/proofs/alice': null,
+        'game/attempts/alice': null,
+        'game/solves/first/alice': null,
+        'game/solves/second/alice': null,
+      },
+      'admin-token',
+    );
+  });
+
+  it('conserve le profil si la suppression est refusée', async () => {
+    await store.login('password');
+    listeners.get('riddleSecrets')!.emit(null);
+    listeners.get('participants')!.emit({ alice: { name: 'Alice', updatedAt: 1 } });
+    update.mockRejectedValueOnce(new Error('denied'));
+    await expect(store.removePlayer('alice')).rejects.toThrow('n’a pas pu être supprimé');
+    expect(store.players().map((player) => player.id)).toEqual(['alice']);
   });
 
   it('charge tous les profils après connexion et attend les deux lectures avant de les afficher', async () => {

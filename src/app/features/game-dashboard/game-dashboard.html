@@ -110,6 +110,15 @@
                 <span class="badge" [class.accessible]="player.metaUnlocked">
                   {{ player.metaUnlocked ? 'Méta accessible' : 'Méta verrouillé' }}
                 </span>
+                <button
+                  type="button"
+                  class="remove-player"
+                  [disabled]="busy()"
+                  [attr.aria-label]="'Supprimer le joueur ' + player.name"
+                  (click)="startRemovePlayer(player)"
+                >
+                  Supprimer
+                </button>
               </div>
               <dl class="player-stats">
                 <div>
@@ -279,6 +288,39 @@
           </section>
         }
       </section>
+      @if (playerToRemove(); as player) {
+        <dialog
+          #removePlayerDialog
+          class="remove-player-dialog"
+          aria-labelledby="remove-player-title"
+          (cancel)="cancelRemovePlayer()"
+          (close)="cancelRemovePlayer()"
+        >
+          <h2 id="remove-player-title">Supprimer {{ player.name }}?</h2>
+          <p>
+            Le profil, la progression, les résolutions et les essais de ce joueur seront supprimés.
+            Cette action est irréversible.
+          </p>
+          <div class="actions">
+            <button
+              type="button"
+              class="danger"
+              [disabled]="busy()"
+              (click)="confirmRemovePlayer()"
+            >
+              {{ busy() ? 'Suppression…' : 'Supprimer le joueur' }}
+            </button>
+            <button
+              type="button"
+              class="secondary"
+              (click)="cancelRemovePlayer()"
+              [disabled]="busy()"
+            >
+              Annuler
+            </button>
+          </div>
+        </dialog>
+      }
     }
   }
   <div class="feedback" aria-live="polite" aria-atomic="true">

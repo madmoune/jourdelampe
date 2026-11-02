@@ -2,7 +2,7 @@ import { computed, DestroyRef, inject, Injectable, signal } from '@angular/core'
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { FirebaseRest } from '../../core/services/firebase-rest';
 import { GameStore } from '../riddles/game-store';
-import { GameMode, parseSecrets, RiddleSecret } from '../riddles/game.model';
+import { gameId, GameMode, parseSecrets, RiddleSecret } from '../riddles/game.model';
 import { Participant } from '../riddles/participant';
 import { GameAdminSession } from './game-admin-session';
 import { parseParticipants, summarizePlayers } from './player-overview';
@@ -104,6 +104,25 @@ export class GameAdminStore {
       await this.rest.update('game/settings', { mode }, await this.session.token());
     } catch {
       throw new Error('Le mode n’a pas pu être enregistré. Réessaie dans un instant.');
+    }
+  }
+
+  async removePlayer(participantId: string): Promise<void> {
+    if (!gameId(participantId)) throw new Error('Joueur invalide.');
+    const patch: Record<string, unknown> = {
+      [`participants/${participantId}`]: null,
+      [`game/proofs/${participantId}`]: null,
+      [`game/attempts/${participantId}`]: null,
+    };
+    for (const riddle of this.game.catalog())
+      patch[`game/solves/${riddle.id}/${participantId}`] = null;
+    try {
+      await this.rest.update('', patch, await this.session.token());
+      this.participantsState.update((participants) =>
+        participants.filter((participant) => participant.id !== participantId),
+      );
+    } catch {
+      throw new Error('Le joueur n’a pas pu être supprimé. Réessaie dans un instant.');
     }
   }
 

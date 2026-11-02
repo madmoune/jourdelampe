@@ -268,6 +268,10 @@ le groupe, leur accès au méta et le détail de chaque énigme. Les données su
 la partie en cours et se mettent à jour en temps réel, y compris les nouveaux
 joueurs et les changements de nom.
 
+Chaque profil peut être supprimé depuis le tableau de bord après une confirmation.
+La suppression retire le profil, sa progression, ses résolutions et ses essais
+privés de la base Firebase.
+
 Le bouton **Réinitialiser le jeu** demande deux confirmations, dont la saisie de
 `RÉINITIALISER`. Il efface les résolutions de la partie, remet les énigmes à non
 résolues et verrouille le méta, en conservant les énigmes, réponses et profils.

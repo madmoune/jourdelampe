@@ -11,6 +11,7 @@ describe('tableau de bord protégé et confirmations de remise à zéro', () => 
   async function setup(authorized = false) {
     const access = signal(authorized);
     const reset = vi.fn().mockResolvedValue(undefined);
+    const removePlayer = vi.fn().mockResolvedValue(undefined);
     const mode = signal<GameMode>('team');
     const participants = signal<readonly Participant[]>([
       { id: 'alice', name: 'Alice Roy', updatedAt: 1 },
@@ -50,6 +51,7 @@ describe('tableau de bord protégé et confirmations de remise à zéro', () => 
       }),
       logout: vi.fn(async () => access.set(false)),
       reset,
+      removePlayer,
       setMode: vi.fn(async (value: GameMode) => mode.set(value)),
       error: signal(''),
       loading: signal(false),
@@ -66,6 +68,18 @@ describe('tableau de bord protégé et confirmations de remise à zéro', () => 
         riddles,
       },
     };
+    Object.defineProperty(HTMLDialogElement.prototype, 'showModal', {
+      configurable: true,
+      value: function (this: HTMLDialogElement) {
+        this.open = true;
+      },
+    });
+    Object.defineProperty(HTMLDialogElement.prototype, 'close', {
+      configurable: true,
+      value: function (this: HTMLDialogElement) {
+        this.open = false;
+      },
+    });
     await TestBed.configureTestingModule({
       imports: [GameDashboard],
       providers: [provideRouter([])],
@@ -88,7 +102,7 @@ describe('tableau de bord protégé et confirmations de remise à zéro', () => 
       input.dispatchEvent(new Event('input', { bubbles: true }));
       await fixture.whenStable();
     }
-    return { fixture, page, store, reset, click, type, participants, riddles };
+    return { fixture, page, store, reset, removePlayer, click, type, participants, riddles };
   }
 
   it('ne rend pas les réponses avant la connexion et affiche tous les joueurs après celle-ci', async () => {
@@ -140,6 +154,31 @@ describe('tableau de bord protégé et confirmations de remise à zéro', () => 
     await fixture.whenStable();
     expect(reset).toHaveBeenCalledTimes(1);
     expect(page.textContent).toContain('Toutes les énigmes sont à nouveau non résolues.');
+  });
+
+  it('demande une confirmation avant de supprimer un joueur', async () => {
+    const { fixture, page, removePlayer, store } = await setup(true);
+    page.querySelector<HTMLButtonElement>('.remove-player')!.click();
+    await fixture.whenStable();
+    const dialog = page.querySelector<HTMLDialogElement>('.remove-player-dialog')!;
+    expect(dialog.open).toBe(true);
+    expect(dialog.textContent).toContain('Alice Roy');
+    expect(removePlayer).not.toHaveBeenCalled();
+    [...dialog.querySelectorAll<HTMLButtonElement>('button')]
+      .find((button) => button.textContent?.trim() === 'Annuler')!
+      .click();
+    await fixture.whenStable();
+    expect(page.querySelector('.remove-player-dialog')).toBeNull();
+    expect(removePlayer).not.toHaveBeenCalled();
+
+    page.querySelector<HTMLButtonElement>('.remove-player')!.click();
+    await fixture.whenStable();
+    [...page.querySelectorAll<HTMLButtonElement>('.remove-player-dialog button')]
+      .find((button) => button.textContent?.trim() === 'Supprimer le joueur')!
+      .click();
+    await fixture.whenStable();
+    expect(store.removePlayer).toHaveBeenCalledWith('alice');
+    expect(page.textContent).toContain('Le joueur Alice Roy a été supprimé.');
   });
 
   it('change le mode sans réinitialiser les réussites et adapte le suivi du méta', async () => {

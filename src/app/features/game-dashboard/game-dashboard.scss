@@ -163,6 +163,32 @@ button.mode-option[aria-pressed='true'] {
   height: 10px;
   accent-color: #567045;
 }
+.remove-player {
+  min-height: 36px;
+  padding: 7px 12px;
+  border-color: #833b31;
+  background: transparent;
+  color: #833b31;
+  font-size: 12px;
+}
+.remove-player-dialog {
+  width: min(520px, calc(100% - 32px));
+  padding: 28px;
+  border: 1px solid #b76b5d;
+  border-radius: 8px;
+  background: #fffdf7;
+  color: var(--ink);
+  box-shadow: 0 20px 70px #181c1966;
+}
+.remove-player-dialog::backdrop {
+  background: #181c1988;
+}
+.remove-player-dialog h2 {
+  margin: 0 0 14px;
+}
+.remove-player-dialog p {
+  margin: 0;
+}
 .player-details {
   margin-top: 18px;
   border-top: 1px solid #dedfd6;

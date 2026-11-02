@@ -542,4 +542,18 @@ await request('game', 'PATCH', submission('player'), 401, 'player');
 await request('game', 'PATCH', submission('player', 'LAMPE', 'round-two'), 200, 'player');
 assert.equal((await request('participants/player', 'GET', undefined, 200)).name, 'Chloé Martin');
 assert.equal((await request('riddleSecrets/first', 'GET', undefined, 200, admin)).answer, 'Lampe');
+await request(
+  '',
+  'PATCH',
+  {
+    'participants/player': null,
+    'game/solves/first/player': null,
+    'game/proofs/player': null,
+    'game/attempts/player': null,
+  },
+  200,
+  admin,
+);
+assert.equal(await request('participants/player', 'GET', undefined, 200), null);
+assert.equal(await request('game/solves/first/player', 'GET', undefined, 200, admin), null);
 console.log(`${checked} vérifications des règles Firebase réussies.`);

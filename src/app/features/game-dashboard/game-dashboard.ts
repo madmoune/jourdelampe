@@ -31,12 +31,17 @@ export class GameDashboard {
   protected readonly message = signal('');
   protected readonly resetStep = signal<0 | 1 | 2>(0);
   protected readonly resetText = signal('');
+  protected readonly playerToRemove = signal<{ id: string; name: string } | null>(null);
   private readonly resetPanel = viewChild<ElementRef<HTMLElement>>('resetPanel');
+  private readonly removePlayerDialog =
+    viewChild<ElementRef<HTMLDialogElement>>('removePlayerDialog');
 
   constructor() {
     afterRenderEffect(() => {
-      this.resetStep();
-      this.resetPanel()?.nativeElement.focus({ preventScroll: true });
+      if (this.resetStep()) this.resetPanel()?.nativeElement.focus({ preventScroll: true });
+      const dialog = this.removePlayerDialog()?.nativeElement;
+      if (this.playerToRemove() && dialog && !dialog.open) dialog.showModal();
+      else if (!this.playerToRemove() && dialog?.open) dialog.close();
     });
   }
 
@@ -75,6 +80,29 @@ export class GameDashboard {
   protected cancelReset(): void {
     this.resetStep.set(0);
     this.resetText.set('');
+  }
+
+  protected startRemovePlayer(player: { id: string; name: string }): void {
+    if (this.busy()) return;
+    this.cancelReset();
+    this.error.set('');
+    this.message.set('');
+    this.playerToRemove.set(player);
+  }
+
+  protected cancelRemovePlayer(): void {
+    if (this.busy()) return;
+    this.playerToRemove.set(null);
+  }
+
+  protected async confirmRemovePlayer(): Promise<void> {
+    const player = this.playerToRemove();
+    if (!player) return;
+    await this.perform(async () => {
+      await this.store.removePlayer(player.id);
+      this.playerToRemove.set(null);
+      this.message.set(`Le joueur ${player.name} a été supprimé.`);
+    });
   }
 
   protected async confirmReset(): Promise<void> {
