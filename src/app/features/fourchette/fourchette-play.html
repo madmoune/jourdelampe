@@ -27,17 +27,6 @@
       <p class="word-count">{{ foundCount() }} / {{ wordCount }} mots cochés</p>
     </aside>
     <div class="grid-main">
-      <div class="grid-toolbar">
-        <button
-          type="button"
-          class="clear-grid"
-          title="Désélectionner toutes les lettres et décocher les mots"
-          [disabled]="locked() || !hasProgress()"
-          (click)="clearGrid()"
-        >
-          Vider la grille
-        </button>
-      </div>
       <div class="verification-feedback" aria-live="polite" aria-atomic="true">
         @if (checking()) {
           <p class="grid-status" role="status">Vérification de la grille…</p>
@@ -92,6 +81,17 @@
             }
           </tbody>
         </table>
+      </div>
+      <div class="grid-toolbar">
+        <button
+          type="button"
+          class="clear-grid"
+          title="Désélectionner toutes les lettres et décocher les mots"
+          [disabled]="locked() || !hasProgress()"
+          (click)="clearGrid()"
+        >
+          Vider la grille
+        </button>
       </div>
     </div>
   </div>
