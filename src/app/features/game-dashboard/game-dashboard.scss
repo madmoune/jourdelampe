@@ -114,6 +114,20 @@ button.mode-option[aria-pressed='true'] {
   display: grid;
   gap: 16px;
 }
+.riddle-card {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.25fr) minmax(170px, 0.85fr) minmax(280px, 2fr);
+  align-items: center;
+  gap: 18px 24px;
+  padding: 18px 24px;
+}
+.riddle-card .card-heading {
+  justify-content: flex-start;
+  min-width: 0;
+}
+.riddle-card .card-heading h3 {
+  flex: 1 1 auto;
+}
 .players-section {
   margin-bottom: 36px;
 }
@@ -229,6 +243,36 @@ button.mode-option[aria-pressed='true'] {
   padding: 10px 0;
   border-bottom: 1px dotted #c3c8ba;
 }
+.riddle-card .secret-answer {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+}
+.riddle-card .secret-answer strong {
+  min-width: 0;
+}
+.riddle-card .solutions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  min-width: 0;
+  margin: 0;
+}
+.riddle-card .solutions li {
+  justify-content: flex-start;
+  gap: 8px;
+  min-width: 0;
+  padding: 0;
+  border-bottom: 0;
+}
+.riddle-card > .muted {
+  grid-column: 3;
+  margin: 0;
+}
 .solutions strong {
   min-width: 0;
   overflow-wrap: anywhere;
@@ -334,5 +378,24 @@ button.secondary {
   }
   .header-content {
     min-height: 72px;
+  }
+}
+@media (max-width: 900px) {
+  .riddle-card {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .riddle-card .solutions,
+  .riddle-card > .muted {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 620px) {
+  .riddle-card {
+    grid-template-columns: 1fr;
+  }
+  .riddle-card .secret-answer,
+  .riddle-card .solutions,
+  .riddle-card > .muted {
+    grid-column: auto;
   }
 }
