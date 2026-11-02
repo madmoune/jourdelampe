@@ -122,14 +122,19 @@ describe('grille interactive de La Fourchette', () => {
     expect(word.getAttribute('aria-pressed')).toBe('false');
   });
 
-  it('met en évidence les lettres restantes pour l’extraction après validation', async () => {
-    const { page, cell, checkWords, waitForCheck } = await setup();
+  it('met en évidence les lettres restantes sélectionnées après validation', async () => {
+    const { fixture, page, cell, checkWords, waitForCheck } = await setup();
     cell('A01').click();
     await checkWords();
-    expect(page.querySelectorAll('.letter.extraction-letter')).toHaveLength(0);
+    expect(page.querySelectorAll('.letter.extraction-selected')).toHaveLength(0);
     await waitForCheck();
-    expect(page.querySelectorAll('.letter.selected')).toHaveLength(1);
-    expect(page.querySelectorAll('.letter.extraction-letter')).toHaveLength(109);
+    expect(page.querySelectorAll('.letter.used-letter')).toHaveLength(1);
+    expect(cell('A01').disabled).toBe(true);
+    cell('A02').click();
+    await fixture.whenStable();
+    expect(page.querySelector('.grid-success')).not.toBeNull();
+    expect(page.querySelectorAll('.letter.extraction-selected')).toHaveLength(1);
+    expect(cell('A02').getAttribute('aria-pressed')).toBe('true');
   });
 
   it('vérifie automatiquement les cases dès les dix mots cochés, sans résoudre la réponse finale', async () => {
@@ -147,7 +152,7 @@ describe('grille interactive de La Fourchette', () => {
     expect(submit).not.toHaveBeenCalled();
   });
 
-  it('revalide automatiquement après une modification et conserve le focus dans la grille', async () => {
+  it('conserve la validation et le focus pendant la sélection de l’extraction', async () => {
     const { fixture, page, checkWords, waitForCheck, cell, checkGrid, submit } = await setup();
     await checkWords();
     await waitForCheck();
@@ -157,19 +162,13 @@ describe('grille interactive de La Fourchette', () => {
       message.compareDocumentPosition(page.querySelector('table')!) &
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
-    checkGrid.mockResolvedValueOnce(false);
     const editedCell = cell('A02');
     editedCell.focus();
     editedCell.click();
     await fixture.whenStable();
-    expect(page.querySelector('.grid-success')).toBeNull();
-    await waitForCheck(2);
-    expect(checkGrid).toHaveBeenLastCalledWith(
-      FOURCHETTE_ID,
-      '01' + '0'.repeat(108),
-      FOURCHETTE_GRID_VERSION,
-    );
-    expect(page.querySelector('.grid-error')?.textContent).toContain('Grille non valide');
+    expect(page.querySelector('.grid-success')).not.toBeNull();
+    expect(page.querySelector('.letter.extraction-selected')).toBe(editedCell);
+    expect(checkGrid).toHaveBeenCalledTimes(1);
     expect(editedCell.ownerDocument.activeElement).toBe(editedCell);
     expect(submit).not.toHaveBeenCalled();
   });

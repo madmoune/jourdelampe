@@ -53,6 +53,7 @@ export class FourchettePlay {
   private readonly state = signal<{ key: string; progress: FourchetteProgress | null } | null>(
     null,
   );
+  private readonly gridValidation = signal<{ key: string; code: string } | null>(null);
   private readonly verifiedCode = computed(
     () =>
       this.attempts
@@ -82,12 +83,25 @@ export class FourchettePlay {
     if (code && (this.locked() || !local)) return { selection: code, found: FOURCHETTE_WORDS };
     return local ?? emptyFourchetteProgress();
   });
+  protected readonly validatedGridCode = computed(() => {
+    const validation = this.gridValidation();
+    return validation?.key === this.storageKey() ? validation.code : '';
+  });
   protected readonly foundCount = computed(() => this.progress().found.length);
   protected readonly hasProgress = computed(
     () => this.progress().selection.includes('1') || this.foundCount() > 0,
   );
   protected readonly allFound = computed(() => this.foundCount() === this.wordCount);
   protected readonly checking = signal(false);
+  protected readonly extractionReady = computed(() => {
+    const code = this.validatedGridCode();
+    const selection = this.progress().selection;
+    return (
+      this.allFound() &&
+      code.length === selection.length &&
+      code.split('').every((letter, index) => letter === '0' || selection[index] === '1')
+    );
+  });
   private readonly verdict = signal<{
     key: string;
     code: string;
@@ -96,20 +110,22 @@ export class FourchettePlay {
   } | null>(null);
   protected readonly currentVerdict = computed<{ correct?: boolean; error?: string } | null>(() => {
     if (!this.allFound()) return null;
+    if (this.extractionReady()) return { correct: true };
     const result = this.verdict();
     const code = this.progress().selection;
     if (result?.key === this.storageKey() && result.code === code) return result;
     return this.verifiedCode() === code ? { correct: true } : null;
   });
-  protected readonly extractionReady = computed(() => this.currentVerdict()?.correct === true);
   private requestId = 0;
 
   constructor() {
     effect(() => {
       const key = this.storageKey();
+      const verifiedCode = this.verifiedCode();
       this.requestId++;
       this.checking.set(false);
       this.verdict.set(null);
+      this.gridValidation.set(verifiedCode ? { key, code: verifiedCode } : null);
       this.state.set({ key, progress: this.readProgress(key) });
     });
     effect((onCleanup) => {
@@ -117,7 +133,7 @@ export class FourchettePlay {
       const code = this.progress().selection;
       const eligible =
         this.allFound() && this.game.ready() && !!this.game.round() && !this.locked();
-      const alreadyValid = this.verifiedCode() === code;
+      const alreadyValid = this.extractionReady();
       const requestId = ++this.requestId;
       let timer: ReturnType<typeof setTimeout> | undefined;
       this.checking.set(false);
@@ -138,6 +154,7 @@ export class FourchettePlay {
 
   protected toggleCell(index: number): void {
     if (this.locked()) return;
+    if (this.extractionReady() && this.validatedGridCode()[index] === '1') return;
     const progress = this.progress();
     const code = progress.selection;
     if (!Number.isInteger(index) || index < 0 || index >= code.length) return;
@@ -148,7 +165,7 @@ export class FourchettePlay {
   }
 
   protected toggleWord(word: string): void {
-    if (this.locked() || !FOURCHETTE_WORDS.includes(word)) return;
+    if (this.locked() || this.extractionReady() || !FOURCHETTE_WORDS.includes(word)) return;
     const progress = this.progress();
     this.saveProgress({
       ...progress,
@@ -162,6 +179,7 @@ export class FourchettePlay {
     if (this.locked()) return;
     this.requestId++;
     this.checking.set(false);
+    this.gridValidation.set(null);
     this.saveProgress(emptyFourchetteProgress());
   }
 
@@ -179,8 +197,10 @@ export class FourchettePlay {
         this.requestId === requestId &&
         key === this.storageKey() &&
         code === this.progress().selection
-      )
+      ) {
+        if (correct) this.gridValidation.set({ key, code });
         this.verdict.set({ key, code, correct });
+      }
     } catch {
       if (
         this.requestId === requestId &&

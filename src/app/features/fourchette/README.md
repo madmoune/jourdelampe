@@ -28,8 +28,8 @@ affiché au-dessus de la grille; une panne conserve les sélections et déclench
 jusqu’à deux nouvelles tentatives automatiques. Les réponses obsolètes sont
 ignorées après une modification, une remise à zéro ou la fermeture de la page.
 Cette validation partielle ne résout pas la réponse finale. Quand la grille est
-validée, les cases restantes — les lettres de l’extraction — sont mises en évidence
-avec une couleur distincte des lettres sélectionnées.
+validée, les cases déjà utilisées sont estompées; les cases restantes peuvent être
+sélectionnées pour l’extraction et prennent alors une couleur distincte.
 
 Les sélections et les mots cochés sont sauvegardés localement par profil et par
 partie sous `jdl-fourchette-large:<participantId>:<roundId>`. Un essai de grille

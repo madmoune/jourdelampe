@@ -142,7 +142,11 @@ td {
   color: #dcff79;
   box-shadow: inset 0 0 0 2px #9dbd5a;
 }
-.letter.extraction-letter {
+.letter.used-letter {
+  opacity: 0.35;
+  cursor: default;
+}
+.letter.extraction-selected {
   background: #5c4730;
   color: #ffe6a7;
   box-shadow: inset 0 0 0 2px #d8b76b;

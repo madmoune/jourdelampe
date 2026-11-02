@@ -59,18 +59,22 @@
                 @for (letter of row; track $index; let columnIndex = $index) {
                   @let index = rowIndex * columns.length + columnIndex;
                   @let selected = progress().selection[index] === '1';
+                  @let usedLetter = extractionReady() && validatedGridCode()[index] === '1';
+                  @let extractionSelected =
+                    extractionReady() && selected && validatedGridCode()[index] === '0';
                   <td>
                     <button
                       type="button"
                       class="letter"
-                      [class.selected]="selected"
-                      [class.extraction-letter]="extractionReady() && !selected"
+                      [class.selected]="selected && !extractionSelected"
+                      [class.used-letter]="usedLetter"
+                      [class.extraction-selected]="extractionSelected"
                       [attr.data-cell]="rowLabels[rowIndex] + columns[columnIndex]"
                       [attr.aria-label]="
                         rowLabels[rowIndex] + columns[columnIndex] + ' : ' + letter
                       "
                       [attr.aria-pressed]="selected"
-                      [disabled]="locked()"
+                      [disabled]="locked() || usedLetter"
                       (click)="toggleCell(index)"
                     >
                       {{ letter }}
