@@ -10,9 +10,10 @@ reprennent les éléments fournis, y compris la distinction entre O et 0.
 - Catalogue Firebase : `game/catalog/fourchette-01` (titre, description, ordre 1).
 - Réponse privée à ajouter : `riddleSecrets/fourchette-01/{answer, normalizedAnswer}`.
 
-Les deux colonnes de cinq mots sont affichées au-dessus de la grille. Ses lignes
-sont étiquetées A à E et ses colonnes 01 à 22. La grille utilise un fond noir et
-une présentation monospace sans bordures entre les cases, comme l’image fournie.
+Les deux colonnes de cinq mots sont affichées au-dessus de la grille. Ses cinq
+lignes de vingt-deux lettres sont présentées comme un mot caché classique, sans
+coordonnées visibles, avec un espacement carré régulier et des sélections rondes.
+La grille utilise un fond noir et une présentation monospace sans bordures entre les cases.
 Chaque case et chaque mot sont des boutons à
 bascule accessibles au clavier. Marquer un mot ne sélectionne pas ses lettres.
 

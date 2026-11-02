@@ -86,12 +86,12 @@ describe('grille interactive de La Fourchette', () => {
       ),
     ).toEqual(FOURCHETTE_WORD_COLUMNS);
     expect(page.querySelectorAll('tbody tr')).toHaveLength(5);
+    expect(page.querySelector('thead, th')).toBeNull();
     expect(
-      [...page.querySelectorAll('tbody th')].map((label) => label.textContent?.trim()),
-    ).toEqual(['A', 'B', 'C', 'D', 'E']);
-    expect(
-      [...page.querySelectorAll('thead th')].map((label) => label.textContent?.trim()),
-    ).toEqual(Array.from({ length: 22 }, (_, index) => String(index + 1).padStart(2, '0')));
+      [...page.querySelectorAll('tbody tr')].every(
+        (row) => row.querySelectorAll('td').length === 22,
+      ),
+    ).toBe(true);
     expect(cell('A05').textContent?.trim()).toBe('O');
     expect(cell('A04').textContent?.trim()).toBe('0');
     expect(page.querySelector('.verify-grid')).toBeNull();

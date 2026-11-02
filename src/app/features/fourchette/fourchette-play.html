@@ -63,20 +63,11 @@
       >
         <table aria-describedby="wordsearch-help">
           <caption>
-            Grille de mots cachés : 5 lignes de A à E, 22 colonnes de 01 à 22.
+            Grille de mots cachés : 5 lignes de 22 lettres.
           </caption>
-          <thead>
-            <tr>
-              <td class="corner"></td>
-              @for (column of columns; track column) {
-                <th scope="col">{{ column }}</th>
-              }
-            </tr>
-          </thead>
           <tbody>
             @for (row of rows; track $index; let rowIndex = $index) {
               <tr>
-                <th scope="row">{{ rowLabels[rowIndex] }}</th>
                 @for (letter of row; track $index; let columnIndex = $index) {
                   @let index = rowIndex * columns.length + columnIndex;
                   @let selected = progress().selection[index] === '1';
