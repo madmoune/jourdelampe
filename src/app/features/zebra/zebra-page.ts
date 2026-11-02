@@ -1,19 +1,16 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { AiPortalState } from '../ai-home/ai-portal-state';
-import { ParticipantStore } from '../riddles/participant-store';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RiddlePage } from '../riddles/riddle-page';
+import { ZEBRA_ID } from '../riddles/riddle-pages';
 import { ZebraPlay } from './zebra-play';
-import { RIDDLE_PREVIEW, RIDDLE_PREVIEW_PATH } from '../riddles/riddle-release';
 
 @Component({
   selector: 'app-zebra-page',
-  imports: [RouterLink, ZebraPlay],
+  imports: [RiddlePage, ZebraPlay],
   templateUrl: './zebra-page.html',
-  styleUrl: './zebra-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ZebraPage {
-  protected readonly homePath = inject(RIDDLE_PREVIEW) ? RIDDLE_PREVIEW_PATH : '/';
-  protected readonly portal = inject(AiPortalState);
-  protected readonly participants = inject(ParticipantStore);
+  protected readonly riddleId = ZEBRA_ID;
+  protected readonly flavorText =
+    "Le nom de famille d'une personne nous dit bien des choses sur celle-ci, surtout lorsqu'on connait sa position.";
 }

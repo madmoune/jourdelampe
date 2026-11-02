@@ -1,9 +1,4 @@
 <div class="grid-toolbar">
-  <p id="grid-help" class="grid-help">
-    Clique une case pour faire défiler les états : oui (●), non (×), puis vide. Dans les blocs
-    Position, une position cochée bloque le reste de sa colonne; deux positions cochées bloquent le
-    reste de leur ligne. Dans les autres blocs, une association bloque sa ligne et sa colonne.
-  </p>
   <div class="grid-actions">
     <p class="progress">{{ associationCount() }} / {{ totalAssociations }} associations</p>
     <button
@@ -33,8 +28,7 @@
         <thead>
           <tr class="group-headings">
             <td colspan="2" rowspan="2" class="corner">
-              <span>MES DÉDUCTIONS</span
-              ><small>Les cases grisées sont<br />bloquées automatiquement.</small>
+              <span class="visually-hidden">Grille de déductions</span>
             </td>
             @for (column of columns; track column) {
               <th scope="colgroup" [attr.colspan]="categories[column].values.length">
@@ -100,16 +94,5 @@
         }
       </table>
     </div>
-    <div class="legend" aria-label="Légende">
-      <span><b class="yes-dot">●</b> Association</span
-      ><span><b class="no-cross">×</b> Exclusion manuelle</span
-      ><span><b class="blocked-cross">×</b> Case bloquée</span>
-    </div>
-    <p class="grid-note">
-      Chaque personnage a une occupation, une nourriture et deux positions. Chaque position
-      appartient à un seul personnage; les huit positions sont utilisées. À toi de croiser les
-      déductions entre les blocs.
-    </p>
-    <ng-content select="[grid-status]" />
   </div>
 </div>

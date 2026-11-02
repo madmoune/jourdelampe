@@ -1,13 +1,48 @@
-import { signal } from '@angular/core';
+import { computed, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { GameAdminStore } from './game-admin-store';
 import { GameDashboard } from './game-dashboard';
+import { GameMode } from '../riddles/game.model';
+import { Participant } from '../riddles/participant';
+import { summarizePlayers } from './player-overview';
 
 describe('tableau de bord protégé et confirmations de remise à zéro', () => {
   async function setup(authorized = false) {
     const access = signal(authorized);
     const reset = vi.fn().mockResolvedValue(undefined);
+    const mode = signal<GameMode>('team');
+    const participants = signal<readonly Participant[]>([
+      { id: 'alice', name: 'Alice Roy', updatedAt: 1 },
+      { id: 'bob', name: 'Bob Tremblay', updatedAt: 1 },
+      { id: 'charlie', name: 'Charlie Sans-réussite', updatedAt: 1 },
+    ]);
+    const riddles = signal([
+      {
+        id: 'a',
+        title: 'La lampe',
+        prompt: '',
+        order: 0,
+        solutions: [
+          {
+            participantId: 'alice',
+            participantName: 'Alice Roy',
+            riddleId: 'a',
+            riddleTitle: 'La lampe',
+            roundId: 'one',
+            solvedAt: Date.parse('2026-12-31T23:00:00Z'),
+          },
+          {
+            participantId: 'bob',
+            participantName: 'Bob Tremblay',
+            riddleId: 'a',
+            riddleTitle: 'La lampe',
+            roundId: 'one',
+            solvedAt: Date.parse('2026-12-31T23:01:00Z'),
+          },
+        ],
+      },
+    ]);
     const store = {
       session: { authorized: access },
       login: vi.fn(async () => {
@@ -15,35 +50,20 @@ describe('tableau de bord protégé et confirmations de remise à zéro', () => 
       }),
       logout: vi.fn(async () => access.set(false)),
       reset,
+      setMode: vi.fn(async (value: GameMode) => mode.set(value)),
       error: signal(''),
       loading: signal(false),
       secrets: signal({ a: { answer: 'Réponse secrète', normalizedAnswer: 'REPONSESECRETE' } }),
+      players: computed(() => summarizePlayers(participants(), riddles(), mode(), true)),
       game: {
         ready: signal(true),
+        mode,
         error: signal(''),
         solvedCount: signal(1),
-        metaUnlocked: signal(true),
+        teamMetaUnlocked: signal(true),
+        individualMetaCount: signal(1),
         catalog: signal([{ id: 'a' }]),
-        riddles: signal([
-          {
-            id: 'a',
-            title: 'La lampe',
-            prompt: '',
-            order: 0,
-            solutions: [
-              {
-                participantId: 'alice',
-                participantName: 'Alice Roy',
-                solvedAt: Date.parse('2026-12-31T23:00:00Z'),
-              },
-              {
-                participantId: 'bob',
-                participantName: 'Bob Tremblay',
-                solvedAt: Date.parse('2026-12-31T23:01:00Z'),
-              },
-            ],
-          },
-        ]),
+        riddles,
       },
     };
     await TestBed.configureTestingModule({
@@ -68,13 +88,14 @@ describe('tableau de bord protégé et confirmations de remise à zéro', () => 
       input.dispatchEvent(new Event('input', { bubbles: true }));
       await fixture.whenStable();
     }
-    return { fixture, page, store, reset, click, type };
+    return { fixture, page, store, reset, click, type, participants, riddles };
   }
 
   it('ne rend pas les réponses avant la connexion et affiche tous les joueurs après celle-ci', async () => {
     const { fixture, page, type, click, store } = await setup();
     expect(page.textContent).not.toContain('Réponse secrète');
     expect(page.textContent).not.toContain('Alice Roy');
+    expect(page.textContent).not.toContain('Charlie Sans-réussite');
     await type('#game-password', 'test-password');
     click('Ouvrir le tableau de bord');
     await fixture.whenStable();
@@ -82,11 +103,13 @@ describe('tableau de bord protégé et confirmations de remise à zéro', () => 
     expect(page.textContent).toContain('Réponse secrète');
     expect(page.textContent).toContain('Alice Roy');
     expect(page.textContent).toContain('Bob Tremblay');
+    expect(page.textContent).toContain('Charlie Sans-réussite');
     expect(page.querySelector('time')?.textContent).toContain('18:00:00');
     click('Se déconnecter');
     await fixture.whenStable();
     expect(page.textContent).not.toContain('Réponse secrète');
     expect(page.textContent).not.toContain('Alice Roy');
+    expect(page.textContent).not.toContain('Charlie Sans-réussite');
   });
 
   it('n’efface rien à la première confirmation, à l’annulation ou sans le texte de deuxième confirmation', async () => {
@@ -117,5 +140,112 @@ describe('tableau de bord protégé et confirmations de remise à zéro', () => 
     await fixture.whenStable();
     expect(reset).toHaveBeenCalledTimes(1);
     expect(page.textContent).toContain('Toutes les énigmes sont à nouveau non résolues.');
+  });
+
+  it('change le mode sans réinitialiser les réussites et adapte le suivi du méta', async () => {
+    const { fixture, page, store, reset } = await setup(true);
+    const individual = page.querySelector<HTMLButtonElement>('.mode-option')!;
+    expect(individual.getAttribute('aria-pressed')).toBe('false');
+    individual.click();
+    await fixture.whenStable();
+    expect(store.setMode).toHaveBeenCalledWith('individual');
+    expect(individual.getAttribute('aria-pressed')).toBe('true');
+    expect(page.textContent).toContain('1 accès au méta');
+    expect(page.textContent).toContain('Mode individuel activé. Les réussites sont conservées.');
+    expect(page.textContent).toContain('Alice Roy');
+    page.querySelectorAll<HTMLButtonElement>('.mode-option')[1].click();
+    await fixture.whenStable();
+    expect(store.setMode).toHaveBeenLastCalledWith('team');
+    expect(page.textContent).toContain('Méta déverrouillé');
+    expect(reset).not.toHaveBeenCalled();
+  });
+
+  it.each(['game', 'answers'])(
+    'arrête l’affichage du chargement si la lecture de %s échoue',
+    async (source) => {
+      const { fixture, page, store } = await setup(true);
+      if (source === 'game') {
+        store.game.ready.set(false);
+        store.game.error.set('L’état du jeu est indisponible.');
+      } else {
+        store.loading.set(true);
+        store.error.set('Les réponses sont indisponibles.');
+      }
+      await fixture.whenStable();
+      expect(page.querySelector('[role="alert"]')?.textContent).toContain('indisponible');
+      expect(page.textContent).not.toContain(
+        'Chargement des joueurs, des énigmes et des résolutions…',
+      );
+      expect(page.querySelector('.riddle-list')).toBeNull();
+    },
+  );
+
+  it('affiche les joueurs sans réussite et distingue la progression de la contribution', async () => {
+    const { page, fixture } = await setup(true);
+    expect(page.querySelector('#players-heading')?.textContent).toContain('3');
+    const [alice, bob, charlie] = page.querySelectorAll<HTMLElement>('.player-card');
+    expect(alice.querySelector('progress')?.value).toBe(1);
+    expect(alice.querySelector('.player-stats > div:last-child strong')?.textContent).toBe('1');
+    expect(bob.querySelector('.player-stats > div:last-child strong')?.textContent).toBe('0');
+    expect(charlie.querySelector('progress')?.value).toBe(0);
+    expect(charlie.textContent).toContain('Méta accessible');
+    expect(charlie.textContent).toContain('Aucune énigme résolue');
+    expect(charlie.textContent).toContain('À résoudre');
+    expect(alice.querySelector('.player-riddles time')?.textContent).toContain('18:00:00');
+    expect(alice.querySelector('summary')).not.toBeNull();
+    page.querySelector<HTMLButtonElement>('.mode-option')!.click();
+    await fixture.whenStable();
+    expect(alice.textContent).toContain('Méta accessible');
+    expect(charlie.textContent).toContain('Méta verrouillé');
+  });
+
+  it('actualise les nouveaux profils, les noms et la progression sans perdre les joueurs au reset', async () => {
+    const { page, fixture, participants, riddles } = await setup(true);
+    participants.update((current) => [
+      { ...current[0], name: 'Alice Nouveau nom' },
+      ...current.slice(1),
+      { id: 'david', name: 'David', updatedAt: 2 },
+    ]);
+    await fixture.whenStable();
+    expect(page.querySelectorAll('.player-card')).toHaveLength(4);
+    expect(page.querySelector('.player-card h3')?.textContent).toBe('Alice Nouveau nom');
+    expect(page.querySelector<HTMLProgressElement>('.player-card progress')?.value).toBe(1);
+    riddles.update((current) => current.map((riddle) => ({ ...riddle, solutions: [] })));
+    await fixture.whenStable();
+    expect(page.querySelectorAll('.player-card')).toHaveLength(4);
+    for (const card of page.querySelectorAll<HTMLElement>('.player-card')) {
+      expect(card.querySelector('progress')?.value).toBe(0);
+      expect(card.textContent).toContain('Méta verrouillé');
+      expect(card.textContent).toContain('Aucune énigme résolue');
+    }
+    participants.set([]);
+    await fixture.whenStable();
+    expect(page.textContent).toContain('Aucun joueur enregistré pour le moment.');
+  });
+
+  it('attend la confirmation du serveur et conserve le mode actif si l’enregistrement échoue', async () => {
+    const { fixture, page, store } = await setup(true);
+    let reject!: (error: Error) => void;
+    store.setMode.mockImplementation(
+      () =>
+        new Promise<void>((_, fail) => {
+          reject = fail;
+        }),
+    );
+    const options = page.querySelectorAll<HTMLButtonElement>('.mode-option');
+    options[0].click();
+    await fixture.whenStable();
+    expect(options[0].disabled).toBe(true);
+    expect(options[1].getAttribute('aria-pressed')).toBe('true');
+    expect(page.textContent).not.toContain('Mode individuel activé');
+    reject(new Error('Enregistrement indisponible.'));
+    await vi.waitFor(async () => {
+      await fixture.whenStable();
+      expect(page.querySelector('[role="alert"]')?.textContent).toContain(
+        'Enregistrement indisponible',
+      );
+    });
+    expect(options[1].getAttribute('aria-pressed')).toBe('true');
+    expect(options[0].disabled).toBe(false);
   });
 });

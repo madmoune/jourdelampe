@@ -54,24 +54,42 @@ bord ne propose ni ajout ni modification. Le premier puzzle est Zebra,
 sur `/enigmes/zebra`; les énoncés sont intégrés et les solutions restent à
 configurer dans le nœud privé.
 
+La section **Joueurs enregistrés** suit en temps réel tous les profils de
+`participants`, y compris ceux sans réussite. Chaque fiche affiche la progression
+personnelle (nombre et pourcentage d’énigmes résolues), l’accès au méta selon le
+mode courant, la dernière réussite et le détail des énigmes résolues ou restantes.
+La contribution compte les énigmes dont le joueur a obtenu la première résolution
+du groupe; plusieurs réussites au même horodatage sont créditées à chacun.
+Ces compteurs utilisent seulement le catalogue et les résolutions de la partie
+courante. Une remise à zéro conserve les profils et remet leurs compteurs à zéro.
+Un changement de nom conserve la progression; deux profils du même nom restent
+deux joueurs distincts. Cette section est affichée uniquement après connexion à
+la gestion et ne modifie aucune donnée de jeu.
+
 **Réinitialiser le jeu** demande deux confirmations : accepter la première,
 puis taper `RÉINITIALISER` et confirmer la deuxième. Annuler l’une ou l’autre
 n’écrit rien. La remise à zéro change l’identifiant de partie et efface les
 résolutions, les essais et les preuves privées en une seule écriture. Elle conserve le
 catalogue, les réponses attendues et les profils des participants.
 
+Le choix **Individuel / En équipe** s’applique à tous les joueurs en temps réel,
+sans confirmation supplémentaire ni suppression des réussites. Seul le compte
+`gameAdmin` peut modifier `game/settings/mode`. Le mode reste conservé lors d’une
+réinitialisation. Sans réglage enregistré, les parties existantes restent en équipe.
+
 ## Réponses et résolutions
 
 ```text
 game/
+  settings/{mode: "individual" | "team"}
   round/{id, resetAt}
   catalog/<riddleId>/{title, prompt, order, answerReady?, gridReady?}
   solves/<riddleId>/<participantId>/
     participantId, participantName, riddleId, riddleTitle, roundId, solvedAt
   proofs/<participantId>/<riddleId>/{answer, roundId}
   attempts/<participantId>/<riddleId>/<attemptId>/
-    kind, answer, normalizedAnswer, correct, participantName, roundId, submittedAt
-riddleSecrets/<riddleId>/{answer, normalizedAnswer, gridAnswer?}
+    kind, answer, normalizedAnswer, correct, participantName, roundId, submittedAt, target?
+riddleSecrets/<riddleId>/{answer, normalizedAnswer, gridAnswer?, surnames?}
 ```
 
 Le catalogue, la partie en cours et les résolutions sont publics. Les réponses
@@ -87,11 +105,20 @@ incorrecte ne crée ni preuve ni résolution. Les accents, majuscules, espaces e
 ponctuation ne comptent pas; les réponses doivent contenir des lettres ou chiffres.
 
 Chaque réponse finale, correcte ou incorrecte, est conservée dans l’historique
-privé du participant. Le serveur vérifie aussi son verdict. Une bonne réponse
+privé du participant, accessible à l’administrateur. Cet historique n’est plus
+chargé ni affiché dans les pages des joueurs. Le serveur vérifie aussi son verdict. Une bonne réponse
 enregistre l’essai et la résolution atomiquement; une mauvaise réponse enregistre
 seulement l’essai. Une erreur technique conserve la saisie et ne compte pas comme
 une réponse incorrecte. Le popup de succès propose un retour au portail des énigmes.
 Les vérifications partielles de grille (`kind: grid`) ne résolvent pas l’énigme.
+Une grille complète est vérifiée automatiquement dès que son `gridAnswer` privé est
+configuré; `gridReady` reste accepté dans le catalogue pour compatibilité, mais ne
+bloque plus cette vérification.
+Pour Zebra, une grille correcte autorise ensuite les quatre vérifications
+`kind: surname`, chacune portant le prénom ciblé dans `target`; les noms attendus
+restent dans `riddleSecrets/<riddleId>/surnames` et ne sont jamais envoyés au
+navigateur. Ces essais sont conservés dans l’historique administrateur sans
+apparaître au joueur.
 Le bouton et la touche Entrée envoient une réponse même avec une grille vide.
 Sans réponse officielle dans le nœud privé, les essais sont enregistrés comme
 non valides. Ajouter la solution privée active sa reconnaissance immédiatement;
@@ -119,17 +146,47 @@ les suppressions, les faux noms et les horodatages imposés par un client.
 
 ## Progression et méta
 
-`GameStore` écoute le catalogue, la partie et les résolutions. Le méta se
-déverrouille quand **chaque énigme du catalogue a au moins une résolution dans la
-partie courante**, peu importe le participant. Deux résolutions de la même énigme
-ne remplacent jamais une autre énigme manquante. Un catalogue vide ne déverrouille
-pas le méta. Une remise à zéro le verrouille immédiatement.
+`GameStore` écoute le catalogue, la partie, les résolutions et les réglages.
+`PlayerProgress` fournit la progression du joueur selon le mode :
+
+- **Individuel** : le méta exige une résolution personnelle de chaque énigme.
+  Les résultats affichés et les informations débloquées suivent le profil courant.
+- **En équipe** : chaque énigme doit avoir été résolue au moins une fois par
+  quelqu’un pour débloquer le méta pour tout le monde. Les résultats et informations
+  débloquées sont communs. Une réussite d’équipe n’attribue aucune résolution aux
+  autres joueurs : ils peuvent encore résoudre l’énigme à leur nom.
+
+Deux résolutions de la même énigme ne remplacent jamais une autre énigme manquante.
+Un catalogue vide reste verrouillé. Une remise à zéro verrouille immédiatement le
+méta dans les deux modes. Changer de mode peut verrouiller ou déverrouiller le méta
+selon les réussites existantes, sans les modifier.
 
 Le contenu du méta reste à ajouter. Son indicateur est déjà disponible dans le
 jeu public et le tableau de bord; ses futurs composants pourront utiliser
-`GameStore.metaUnlocked()`.
+`PlayerProgress.metaUnlocked()`. Les futures informations obtenues après une énigme
+peuvent suivre `PlayerProgress.riddles()[…].infoUnlocked`; `solvedByMe` reste personnel
+dans les deux modes. Aucun contenu de méta ni information de récompense n’est encore
+intégré. Pour son suivi global, le tableau de bord utilise
+`GameStore.teamMetaUnlocked()` ou `GameStore.individualMetaCount()`.
 
 ## Intégration publique
+
+Toutes les pages d’énigmes utilisent `RiddlePage` avec l’ordre **titre → flavortext
+→ champ de réponse → énigme**. Le contenu du puzzle est fourni dans un
+`ng-template` et n’est créé qu’après disponibilité du profil enregistré. Le champ
+de réponse est indépendant de la grille et du type d’énigme; `RiddleSubmissions`
+continue d’enregistrer les essais dans Firebase, sans historique visible pour le joueur.
+
+```html
+<app-riddle-page riddleId="identifiant" title="Titre" flavorText="Texte d’ambiance">
+  <ng-template>
+    <!-- Contenu de l’énigme, sans second formulaire de réponse -->
+  </ng-template>
+</app-riddle-page>
+```
+
+`number` est facultatif et ajoute le numéro de dossier dans l’en-tête et le titre.
+Le gabarit conserve les liens de retour vers le portail public ou l’aperçu.
 
 `RiddleAccess` crée le contenu de son `ng-template` seulement quand un nom a été
 enregistré avec succès et que le profil est disponible. Placer les futurs jeux

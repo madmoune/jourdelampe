@@ -8,7 +8,8 @@ export interface RiddleAttempt {
   readonly id: string;
   readonly riddleId: string;
   readonly participantName: string;
-  readonly kind: 'answer' | 'grid';
+  readonly kind: 'answer' | 'grid' | 'surname';
+  readonly target?: string;
   readonly answer: string;
   readonly correct: boolean;
   readonly roundId: string;
@@ -28,11 +29,13 @@ function parseAttempts(raw: unknown): readonly RiddleAttempt[] {
       if (
         typeof item['answer'] !== 'string' ||
         typeof item['participantName'] !== 'string' ||
-        !['answer', 'grid'].includes(item['kind'] as string) ||
+        !['answer', 'grid', 'surname'].includes(item['kind'] as string) ||
         typeof item['correct'] !== 'boolean' ||
         typeof item['roundId'] !== 'string' ||
         typeof item['submittedAt'] !== 'number' ||
-        !Number.isFinite(item['submittedAt'])
+        !Number.isFinite(item['submittedAt']) ||
+        (item['kind'] === 'surname' &&
+          (typeof item['target'] !== 'string' || !/^[a-z][a-z-]{0,63}$/u.test(item['target'])))
       )
         throw new Error('Historique invalide.');
       attempts.push({ ...item, id, riddleId } as unknown as RiddleAttempt);

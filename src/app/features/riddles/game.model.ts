@@ -21,10 +21,21 @@ export interface GameRound {
   readonly resetAt: number;
 }
 
+export type GameMode = 'individual' | 'team';
+
+export function parseGameMode(value: unknown): GameMode {
+  // Les parties existantes conservent leur progression commune.
+  if (value === null) return 'team';
+  const mode = record(value)['mode'];
+  if (mode !== 'individual' && mode !== 'team') throw new Error('Mode de jeu invalide.');
+  return mode;
+}
+
 export interface RiddleSecret {
   readonly answer: string;
   readonly normalizedAnswer: string;
   readonly gridAnswer?: string;
+  readonly surnames?: Readonly<Record<string, string>>;
 }
 
 export type GameSolutions = Record<string, Record<string, RiddleSolution>>;
@@ -127,10 +138,21 @@ export function parseSecrets(value: unknown): Record<string, RiddleSecret> {
       typeof secret['normalizedAnswer'] !== 'string'
     )
       throw new Error('Réponse invalide.');
+    let surnames: Record<string, string> | undefined;
+    if (secret['surnames'] !== undefined) {
+      const rawSurnames = record(secret['surnames']);
+      surnames = {};
+      for (const [target, surname] of Object.entries(rawSurnames)) {
+        if (!/^[a-z][a-z-]{0,63}$/u.test(target) || typeof surname !== 'string' || !surname.trim())
+          throw new Error('Réponse invalide.');
+        surnames[target] = surname;
+      }
+    }
     result[id] = {
       answer: secret['answer'],
       normalizedAnswer: secret['normalizedAnswer'],
       ...(typeof secret['gridAnswer'] === 'string' ? { gridAnswer: secret['gridAnswer'] } : {}),
+      ...(surnames ? { surnames } : {}),
     };
   }
   return result;

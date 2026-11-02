@@ -72,6 +72,19 @@ h1 span {
   color: #c2b0d0;
   font-size: 14px;
   line-height: 1.7;
+  white-space: pre-line;
+}
+.puzzle-play {
+  padding: 0 40px 40px;
+}
+.puzzle-body {
+  margin-top: 32px;
+  padding-top: 28px;
+  border-top: 1px solid #655078;
+}
+.game-error {
+  color: #ffacb4;
+  font-size: 13px;
 }
 .access-notice {
   margin: 0 40px 40px;
@@ -121,6 +134,9 @@ a:focus-visible {
   }
   .access-notice {
     margin: 0 22px 28px;
+  }
+  .puzzle-play {
+    padding: 0 22px 28px;
   }
   h1 {
     font-size: 60px;

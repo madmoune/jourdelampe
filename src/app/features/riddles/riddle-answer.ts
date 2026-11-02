@@ -14,30 +14,28 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AiPortalState } from '../ai-home/ai-portal-state';
 import { GameStore } from './game-store';
-import { GameTimePipe } from './game-time.pipe';
 import { ParticipantStore } from './participant-store';
-import { RiddleAttempts } from './riddle-attempts';
 import { RiddleSubmissions } from './riddle-submissions';
 import { RiddleReplies } from './riddle-replies';
 
 @Component({
   selector: 'app-riddle-answer',
-  imports: [FormsModule, RouterLink, GameTimePipe],
+  imports: [FormsModule, RouterLink],
   templateUrl: './riddle-answer.html',
   styleUrl: './riddle-answer.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RiddleAnswer {
   readonly riddleId = input.required<string>();
+  readonly hint = input('');
   protected readonly game = inject(GameStore);
-  protected readonly history = inject(RiddleAttempts);
   protected readonly portal = inject(AiPortalState);
   private readonly participants = inject(ParticipantStore);
   private readonly submissions = inject(RiddleSubmissions);
   private readonly replies = inject(RiddleReplies);
   private readonly dialog = viewChild<ElementRef<HTMLDialogElement>>('successDialog');
   private readonly answerInput = viewChild<ElementRef<HTMLInputElement>>('answerInput');
-  private readonly answerHeading = viewChild<ElementRef<HTMLHeadingElement>>('answerHeading');
+  private readonly answerSection = viewChild<ElementRef<HTMLElement>>('answerSection');
   protected readonly draft = signal('');
   protected readonly busy = signal(false);
   protected readonly feedback = signal<{ correct: boolean; text: string } | null>(null);
@@ -54,16 +52,6 @@ export class RiddleAnswer {
   );
   protected readonly canEnterAnswer = computed(
     () => this.game.ready() && !!this.game.round() && !!this.riddle(),
-  );
-  protected readonly attempts = computed(() =>
-    this.history
-      .attempts()
-      .filter(
-        (attempt) =>
-          attempt.kind === 'answer' &&
-          attempt.riddleId === this.riddleId() &&
-          attempt.roundId === this.game.round()?.id,
-      ),
   );
   private readonly context = computed(
     () => `${this.riddleId()}:${this.game.round()?.id}:${this.participants.participant()?.id}`,
@@ -84,7 +72,7 @@ export class RiddleAnswer {
   }
   protected closeSuccess(): void {
     this.success.set(false);
-    (this.answerInput()?.nativeElement ?? this.answerHeading()?.nativeElement)?.focus();
+    (this.answerInput()?.nativeElement ?? this.answerSection()?.nativeElement)?.focus();
   }
   protected async submit(): Promise<void> {
     if (this.busy() || !this.canEnterAnswer() || this.solved() || !this.draft().trim()) return;

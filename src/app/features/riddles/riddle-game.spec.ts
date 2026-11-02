@@ -23,10 +23,9 @@ describe('liens du catalogue des énigmes', () => {
           useValue: {
             error: signal(''),
             ready: signal(true),
+            mode: signal('team'),
             catalog: signal(catalog),
             riddles: signal(catalog),
-            metaUnlocked: signal(false),
-            solvedCount: signal(0),
           },
         },
       ],

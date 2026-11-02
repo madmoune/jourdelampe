@@ -33,22 +33,152 @@
       </form>
     </section>
   } @else {
+    <section class="panel mode-section" aria-labelledby="mode-title">
+      <h2 id="mode-title">Mode du puzzle hunt</h2>
+      <p>
+        Le mode s’applique à tous les joueurs en direct. Tu peux en changer pendant la partie sans
+        effacer les réussites.
+      </p>
+      <div class="mode-options" role="group" aria-labelledby="mode-title">
+        <button
+          type="button"
+          class="mode-option"
+          [attr.aria-pressed]="store.game.mode() === 'individual'"
+          [disabled]="busy() || !store.game.ready() || store.game.mode() === 'individual'"
+          (click)="changeMode('individual')"
+        >
+          <strong>Individuel</strong>
+          <span>Chaque joueur doit résoudre toutes les énigmes pour accéder à son méta.</span>
+        </button>
+        <button
+          type="button"
+          class="mode-option"
+          [attr.aria-pressed]="store.game.mode() === 'team'"
+          [disabled]="busy() || !store.game.ready() || store.game.mode() === 'team'"
+          (click)="changeMode('team')"
+        >
+          <strong>En équipe</strong>
+          <span>Les réussites débloquent le méta et les informations pour tout le monde.</span>
+        </button>
+      </div>
+      <p class="muted">
+        En équipe, chaque joueur peut encore résoudre les énigmes à son nom. Le changement de mode
+        recalcule l’accès au méta à partir des réussites existantes.
+      </p>
+    </section>
     <div class="summary" aria-live="polite">
       <div class="panel">
         <strong>{{ store.game.solvedCount() }} / {{ store.game.catalog().length }}</strong
         ><span>énigmes résolues au moins une fois</span>
       </div>
-      <div class="panel" [class.unlocked]="store.game.metaUnlocked()">
-        <strong>{{ store.game.metaUnlocked() ? 'Méta déverrouillé' : 'Méta verrouillé' }}</strong
-        ><span>Chaque énigme doit avoir au moins une résolution.</span>
+      <div
+        class="panel"
+        [class.unlocked]="
+          store.game.mode() === 'team'
+            ? store.game.teamMetaUnlocked()
+            : store.game.individualMetaCount() > 0
+        "
+      >
+        @if (store.game.mode() === 'team') {
+          <strong>{{
+            store.game.teamMetaUnlocked() ? 'Méta déverrouillé' : 'Méta verrouillé'
+          }}</strong>
+          <span>Chaque énigme doit avoir au moins une résolution dans l’équipe.</span>
+        } @else {
+          <strong>{{ store.game.individualMetaCount() }} accès au méta</strong>
+          <span>Nombre de joueurs ayant personnellement résolu toutes les énigmes.</span>
+        }
       </div>
     </div>
     @if (store.game.error() || store.error()) {
       <p class="error" role="alert">{{ store.game.error() || store.error() }}</p>
-    }
-    @if (!store.game.ready() || store.loading()) {
-      <p role="status">Chargement des énigmes et des résolutions…</p>
+    } @else if (!store.game.ready() || store.loading()) {
+      <p role="status">Chargement des joueurs, des énigmes et des résolutions…</p>
     } @else {
+      <section class="players-section" aria-labelledby="players-heading">
+        <h2 id="players-heading">Joueurs enregistrés ({{ store.players().length }})</h2>
+        <p>
+          La progression compte les énigmes résolues personnellement dans la partie en cours. La
+          contribution compte les premières résolutions pour le groupe; les réussites simultanées
+          sont créditées à chacun. Les heures sont affichées à l’heure de Montréal.
+        </p>
+        <div class="player-list">
+          @for (player of store.players(); track player.id) {
+            <article class="panel player-card" [attr.aria-labelledby]="'player-' + player.id">
+              <div class="card-heading">
+                <h3 [id]="'player-' + player.id">{{ player.name }}</h3>
+                <span class="badge" [class.accessible]="player.metaUnlocked">
+                  {{ player.metaUnlocked ? 'Méta accessible' : 'Méta verrouillé' }}
+                </span>
+              </div>
+              <dl class="player-stats">
+                <div>
+                  <dt>Progression personnelle</dt>
+                  <dd>
+                    <strong>{{ player.solvedCount }} / {{ store.game.catalog().length }}</strong>
+                    énigmes · {{ player.percentage }} %
+                  </dd>
+                </div>
+                <div>
+                  <dt>Contribution au groupe</dt>
+                  <dd>
+                    <strong>{{ player.firstSolveCount }}</strong>
+                    {{
+                      player.firstSolveCount === 1 ? 'première résolution' : 'premières résolutions'
+                    }}
+                  </dd>
+                </div>
+              </dl>
+              <progress
+                [value]="player.solvedCount"
+                [max]="store.game.catalog().length || 1"
+                [attr.aria-label]="'Progression personnelle de ' + player.name"
+              >
+                {{ player.percentage }} %
+              </progress>
+              @if (player.lastSolvedAt !== null) {
+                <p class="muted">
+                  Dernière réussite :
+                  <time [attr.datetime]="player.lastSolvedAt | gameTime: true">{{
+                    player.lastSolvedAt | gameTime
+                  }}</time>
+                </p>
+              } @else {
+                <p class="muted">Aucune énigme résolue pour cette partie.</p>
+              }
+              @if (player.riddles.length) {
+                <details class="player-details">
+                  <summary>Voir les énigmes de {{ player.name }}</summary>
+                  <ul class="player-riddles">
+                    @for (riddle of player.riddles; track riddle.id) {
+                      <li>
+                        <div class="player-riddle-heading">
+                          <strong>{{ riddle.title }}</strong>
+                          @if (riddle.solution; as solution) {
+                            <span class="success">✓ Résolue</span>
+                            @if (riddle.firstForTeam) {
+                              <span class="badge accessible">Première résolution</span>
+                            }
+                            <time [attr.datetime]="solution.solvedAt | gameTime: true">{{
+                              solution.solvedAt | gameTime
+                            }}</time>
+                          } @else {
+                            <span class="muted">À résoudre</span>
+                          }
+                        </div>
+                      </li>
+                    }
+                  </ul>
+                </details>
+              } @else {
+                <p class="muted">Aucune énigme configurée pour le moment.</p>
+              }
+            </article>
+          } @empty {
+            <p class="panel">Aucun joueur enregistré pour le moment.</p>
+          }
+        </div>
+      </section>
       <section aria-labelledby="riddles-heading">
         <h2 id="riddles-heading">État des énigmes</h2>
         <p>
@@ -90,7 +220,7 @@
         <h2 id="reset-title">Réinitialiser le jeu</h2>
         <p>
           Remet toutes les énigmes à non résolues, efface les essais et verrouille le méta. Les
-          énigmes, leurs réponses et les noms des participants sont conservés.
+          énigmes, leurs réponses, les noms des participants et le mode de jeu sont conservés.
         </p>
         @if (!resetStep()) {
           <button type="button" class="danger" (click)="startReset()" [disabled]="busy()">

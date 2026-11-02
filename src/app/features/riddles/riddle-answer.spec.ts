@@ -7,7 +7,7 @@ import { RiddleAnswer } from './riddle-answer';
 import { RiddleAttempts } from './riddle-attempts';
 import { RiddleSubmissions } from './riddle-submissions';
 
-describe('réponse finale, historique et fenêtre de succès', () => {
+describe('réponse finale sans historique et fenêtre de succès', () => {
   async function setup() {
     const round = signal({ id: 'one', resetAt: 1 });
     let confirm!: (correct: boolean) => void;
@@ -49,38 +49,8 @@ describe('réponse finale, historique et fenêtre de succès', () => {
         { provide: RiddleSubmissions, useValue: { submit } },
         {
           provide: RiddleAttempts,
-          useValue: {
-            ready: signal(true),
-            error: signal(''),
-            attempts: signal([
-              {
-                id: 'old',
-                kind: 'answer',
-                riddleId: 'a',
-                answer: 'Ancienne partie',
-                correct: false,
-                roundId: 'old',
-                submittedAt: 1,
-              },
-              {
-                id: 'wrong',
-                kind: 'answer',
-                riddleId: 'a',
-                answer: 'Lumière',
-                correct: false,
-                roundId: 'one',
-                submittedAt: 2,
-              },
-              {
-                id: 'right',
-                kind: 'answer',
-                riddleId: 'a',
-                answer: 'Lampe',
-                correct: true,
-                roundId: 'one',
-                submittedAt: 3,
-              },
-            ]),
+          useFactory: () => {
+            throw new Error('L’historique ne doit pas être chargé pour le joueur.');
           },
         },
       ],
@@ -100,12 +70,11 @@ describe('réponse finale, historique et fenêtre de succès', () => {
     };
     return { fixture, page, round, confirm: (correct: boolean) => confirm(correct), input, send };
   }
-  it('affiche les réponses exactes avec leur verdict et seulement la partie courante', async () => {
+  it('ne charge ni n’affiche les réponses précédentes pour le joueur', async () => {
     const { page } = await setup();
-    expect(page.querySelector('.history')?.textContent).toContain('Lumière');
-    expect(page.querySelector('.history')?.textContent).toContain('× Incorrecte');
-    expect(page.querySelector('.history')?.textContent).toContain('✓ Réussie');
-    expect(page.textContent).not.toContain('Ancienne partie');
+    expect(page.querySelector('.history')).toBeNull();
+    expect(page.textContent).not.toContain('Tes réponses précédentes');
+    expect(page.querySelector('input[name="answer"]')).not.toBeNull();
   });
   it('ouvre le popup uniquement après confirmation d’une bonne réponse et propose le retour aux énigmes', async () => {
     const { fixture, page, send, confirm } = await setup();

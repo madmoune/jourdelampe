@@ -262,18 +262,33 @@ des énigmes, leur état, toutes les personnes qui les ont résolues et leurs he
 de réussite à Montréal. Les énigmes sont intégrées manuellement; le tableau de bord
 sert uniquement au suivi et à la remise à zéro.
 
+La section **Joueurs enregistrés** affiche aussi tous les profils, même sans
+réussite, avec leur progression personnelle, leurs premières résolutions pour
+le groupe, leur accès au méta et le détail de chaque énigme. Les données suivent
+la partie en cours et se mettent à jour en temps réel, y compris les nouveaux
+joueurs et les changements de nom.
+
 Le bouton **Réinitialiser le jeu** demande deux confirmations, dont la saisie de
 `RÉINITIALISER`. Il efface les résolutions de la partie, remet les énigmes à non
 résolues et verrouille le méta, en conservant les énigmes, réponses et profils.
 
-Le méta se déverrouille quand chaque énigme a été résolue au moins une fois par
-n’importe quel joueur. Un catalogue vide reste verrouillé. Le contenu du
-méta reste à ajouter. Le premier puzzle Zebra propose une grille cliquable avec
+Le tableau de bord permet d’alterner entre deux modes pour tous les joueurs :
+**Individuel**, où chacun doit résoudre toutes les énigmes pour débloquer son méta,
+et **En équipe**, où une résolution de chaque énigme par n’importe quel joueur
+débloque le méta pour tout le monde. En équipe, les informations débloquées sont
+communes et chacun peut encore résoudre chaque énigme à son nom. Le changement
+s’applique en temps réel et conserve les réussites. Le mode, enregistré dans
+`game/settings/mode`, reste conservé lors d’une remise à zéro; seul le compte de
+gestion peut le modifier. Sans réglage, le jeu reste en équipe comme auparavant.
+Publier les nouvelles règles Firebase avant d’utiliser cette version.
+
+Un catalogue vide reste verrouillé. Le contenu du méta reste à ajouter.
+Le premier puzzle Zebra propose une grille cliquable avec
 huit positions, quatre noms, quatre occupations et quatre nourritures.
 Voir `src/app/features/zebra/README.md` pour activer ses énoncés et validations.
 
 `src/app/features/riddles/` contient le formulaire de nom obligatoire, le jeu, ses
-résultats et sa progression commune. Le nom est limité à
+résultats et sa progression individuelle ou commune. Le nom est limité à
 60 caractères et sauvegardé dans Firebase, sous un identifiant conservé dans le
 navigateur. **Modifier mon nom** conserve le même identifiant et les futures
 résolutions. Deux personnes du même nom gardent des profils distincts.

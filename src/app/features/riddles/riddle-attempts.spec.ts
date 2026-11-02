@@ -39,4 +39,30 @@ describe('historique privé des essais', () => {
     raw.next({});
     expect(history.attempts()).toEqual([]);
   });
+
+  it('accepte aussi les essais de nom de famille dans l’historique privé', async () => {
+    const participant = signal({ id: 'alice', name: 'Alice Roy' });
+    const raw = new BehaviorSubject<unknown>({
+      zebra: {
+        surname: {
+          kind: 'surname',
+          target: 'bob',
+          answer: 'Brown',
+          correct: true,
+          participantName: 'Alice Roy',
+          submittedAt: 3,
+          roundId: 'one',
+        },
+      },
+    });
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: ParticipantStore, useValue: { participant } },
+        { provide: RealtimeDatabase, useValue: { watch: vi.fn(() => raw) } },
+      ],
+    });
+    const history = TestBed.inject(RiddleAttempts);
+    TestBed.tick();
+    expect(history.attempts()[0]).toMatchObject({ kind: 'surname', target: 'bob' });
+  });
 });

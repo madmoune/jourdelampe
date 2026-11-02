@@ -4,22 +4,15 @@
   font-size: 14px;
   line-height: 1.65;
 }
-h3 {
-  margin: 0 0 8px;
-  font:
-    24px Georgia,
-    serif;
-  color: #efdfbd;
-}
-.hint {
-  color: #bfb0ce;
-  margin: 8px 0 18px;
-  font-size: 13px;
-}
 label {
   display: block;
   font-weight: 700;
   margin: 14px 0 6px;
+}
+.answer-hint {
+  margin: -2px 0 8px;
+  color: #c4b6d1;
+  font-size: 13px;
 }
 .answer-controls {
   display: flex;
@@ -62,47 +55,6 @@ input:disabled {
 }
 .success {
   color: #dcff79;
-}
-.history {
-  margin-top: 30px;
-  border-top: 1px solid #51405f;
-  padding-top: 24px;
-}
-.history h3 {
-  font-size: 20px;
-}
-ol {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-li {
-  display: flex;
-  gap: 8px 18px;
-  flex-wrap: wrap;
-  border-top: 1px solid #3b2e48;
-  padding: 13px 0;
-}
-.attempt-answer {
-  flex: 1 1 160px;
-  overflow-wrap: anywhere;
-  font-weight: 600;
-}
-.verdict {
-  color: #ffacb4;
-  font-size: 12px;
-}
-.correct .verdict {
-  color: #dcff79;
-}
-time {
-  color: #b7a6c6;
-  font-size: 12px;
-  font-variant-numeric: tabular-nums;
-}
-.empty {
-  color: #b7a6c6;
-  font-size: 13px;
 }
 dialog {
   color: #ece4f3;

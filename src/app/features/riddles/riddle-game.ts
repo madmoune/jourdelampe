@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { RouterLink } from '@angular/router';
 import { GameStore } from './game-store';
 import { ParticipantStore } from './participant-store';
+import { PlayerProgress } from './player-progress';
 import { RiddleAnswer } from './riddle-answer';
 import { RIDDLE_PAGES } from './riddle-pages';
 import { RIDDLE_PREVIEW, RIDDLE_PREVIEW_PATH } from './riddle-release';
@@ -16,6 +17,7 @@ import { RIDDLE_PREVIEW, RIDDLE_PREVIEW_PATH } from './riddle-release';
 export class RiddleGame {
   protected readonly pagePrefix = inject(RIDDLE_PREVIEW) ? RIDDLE_PREVIEW_PATH : '';
   protected readonly game = inject(GameStore);
+  protected readonly progress = inject(PlayerProgress);
   private readonly participants = inject(ParticipantStore);
   protected readonly name = computed(() => this.participants.participant()?.name ?? '');
   protected readonly pages = RIDDLE_PAGES;

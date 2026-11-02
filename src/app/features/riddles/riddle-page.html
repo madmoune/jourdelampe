@@ -1,0 +1,53 @@
+<div class="puzzle-world" style="background-image: url('images/ai/stars.svg')">
+  <a class="skip-link" [routerLink]="[]" fragment="puzzle-content">Aller au puzzle</a>
+  <div class="puzzle-shell">
+    <header>
+      <a [routerLink]="homePath" fragment="enigmes" (click)="portal.revealed.set(true)"
+        >← Retour aux énigmes</a
+      >
+      <span
+        >LE JOUR DE L’AI
+        @if (number()) {
+          <b> / </b> DOSSIER {{ number() }}
+        }
+      </span>
+    </header>
+    <main id="puzzle-content">
+      <div class="puzzle-heading">
+        <h1>
+          {{ title() }}
+          @if (number()) {
+            <span>{{ number() }}</span>
+          }
+        </h1>
+        <p class="flavor-text">{{ flavorText() }}</p>
+      </div>
+      @if (participants.loading()) {
+        <p class="access-notice" role="status">Chargement de l’énigme…</p>
+      } @else if (participants.canSolve()) {
+        <div class="puzzle-play">
+          <app-riddle-answer [riddleId]="riddleId()" [hint]="answerHint()" />
+          @if (game.error()) {
+            <p class="game-error" role="alert">{{ game.error() }}</p>
+          }
+          <div class="puzzle-body">
+            <ng-container [ngTemplateOutlet]="content()" />
+          </div>
+        </div>
+      } @else {
+        <section class="access-notice" aria-label="Accès à l’énigme">
+          <p>
+            {{
+              participants.error() ||
+                'Entre ton nom dans la page du Jour de l’AI pour accéder à cette énigme.'
+            }}
+          </p>
+          <a [routerLink]="homePath" fragment="enigmes" (click)="portal.revealed.set(true)"
+            >Aller au Jour de l’AI</a
+          >
+        </section>
+      }
+    </main>
+    <footer>UNE ÉNIGME DE L’AI · DES NEURONES? PROUVEZ-LE.</footer>
+  </div>
+</div>

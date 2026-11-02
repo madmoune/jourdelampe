@@ -1,11 +1,23 @@
 # Premier puzzle Zebra
 
-Page : `/enigmes/zebra`, accessible depuis le portail de l’AI après saisie du nom.
+Page : `/enigmes/zebra`, intitulée **Nostalgie**, accessible depuis le portail de l’AI après saisie du nom.
 La saisie et la modification du nom restent uniquement dans le portail de l’AI.
 La page Zebra attend le profil et n’affiche le jeu qu’avec un nom enregistré;
 sinon, elle propose un lien vers la section des énigmes du portail.
 Identifiant Firebase : `zebra-01`. Les pages sont reliées manuellement dans
 `riddle-pages.ts`, sans interface d’ajout dynamique.
+
+La page utilise le gabarit commun `RiddlePage` : titre **Nostalgie**, flavortext
+« Le nom de famille d’une personne nous dit bien des choses sur celle-ci, surtout lorsqu’on connait sa position. », champ de réponse,
+puis énoncés et grille. Un seul champ de réponse est affiché, en haut du jeu.
+Les énoncés restent à gauche de la grille. Au-dessus de celle-ci, le verdict de
+vérification est affiché dès que les 36 associations sont complètes. Une grille
+validée affiche aussi les quatre prénoms, l’un sous l’autre, avec un champ de nom de
+famille à côté de chacun; chaque réponse est vérifiée automatiquement et confirmée par une coche
+verte ou une croix rouge.
+Sous la grille, un panneau unique rassemble les consignes de manipulation, les
+déductions et la légende.
+`ZebraPlay` contient uniquement l’énigme et sa vérification de grille.
 
 La grille triangulaire contient les six croisements entre Position, Nom,
 Occupation et Nourriture. Les positions sont affichées dans l’ordre
@@ -67,10 +79,14 @@ Configurer les solutions **uniquement dans le nœud privé**
 - `answer` : mot ou code attendu, pour le tableau de bord protégé;
 - `normalizedAnswer` : résultat de `normalizeAnswer(answer)`;
 - `gridAnswer` : les 36 chiffres de la grille correcte (encodage ci-dessous).
+- `surnames` : les quatre noms normalisés, sous les clés `bob`, `jean-lou`,
+  `homer` et `eric`, utilisés pour vérifier l’extraction.
 
-Activer ensuite `game/catalog/zebra-01/gridReady` pour la vérification de grille. Ne jamais
-placer ces solutions dans les fichiers publics ou le dépôt. Le navigateur ne
-reçoit aucune solution, même pour la vérification partielle de la grille.
+La présence de `gridAnswer` active la vérification : chaque grille complète est
+envoyée automatiquement, même si le champ public `game/catalog/zebra-01/gridReady`
+est absent ou faux. Ne jamais placer ces solutions dans les fichiers publics ou le
+dépôt. Le navigateur ne reçoit aucune solution, même pour la vérification partielle
+de la grille.
 
 `encodeCompleteGrid` parcourt les six blocs de `ZEBRA_BLOCKS` dans l’ordre,
 puis leurs quatre lignes dans l’ordre de `ZEBRA_CATEGORIES`, avant la transposition
@@ -83,18 +99,19 @@ et permet de détecter des déductions contradictoires entre ceux-ci. La grille
 doit comporter exactement deux associations par ligne dans les blocs Position,
 une dans les autres blocs, et aucune colonne partagée dans un même bloc.
 Les règles Firebase et `RiddleSubmissions` acceptent ce nouvel encodage;
-redéployer les règles et remplacer l’ancien `gridAnswer` avant d’activer
-`gridReady` pour cette version. Aucune donnée distante n’est modifiée par le code local.
+redéployer les règles avant de renseigner le `gridAnswer` privé de cette version.
+Aucune donnée distante n’est modifiée par le code local.
 
 Une grille complète est vérifiée automatiquement. Un verdict positif indique
-seulement que la grille est correcte. Seule la réponse finale valide enregistre
-une résolution, le nom et l’heure serveur, contribue au méta et ouvre le popup
-offrant le retour à `/#enigmes`.
+que la grille est correcte et ouvre la vérification des quatre noms de famille.
+Seule la réponse finale valide enregistre une résolution, le nom et l’heure
+serveur, contribue au méta et ouvre le popup offrant le retour à `/#enigmes`.
 
 Les réponses finales et vérifications de grille sont enregistrées dans
 `game/attempts/<uid>/zebra-01/<attemptId>` avec le nom, l’heure serveur, la partie
-et un verdict validé côté serveur. Le joueur retrouve l’historique de ses mots
-et codes, réussis ou incorrects. Ses essais sont privés (propriétaire et rôle
+et un verdict validé côté serveur. L’historique des mots et codes n’est pas
+affiché au joueur; il reste enregistré pour l’administrateur.
+Les essais sont privés (propriétaire et rôle
 `gameAdmin` seulement). Une panne réseau ou un refus d’accès ne crée pas de faux
 verdict « incorrect » et conserve le texte saisi.
 

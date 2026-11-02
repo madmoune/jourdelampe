@@ -3,9 +3,14 @@
 } @else if (!game.ready()) {
   <p class="feedback" role="status">Chargement des énigmes…</p>
 } @else {
-  @for (riddle of game.riddles(); track riddle.id) {
+  @for (riddle of progress.riddles(); track riddle.id) {
     <article class="riddle" [attr.aria-labelledby]="'riddle-' + riddle.id">
       <h3 [id]="'riddle-' + riddle.id">{{ riddle.title }}</h3>
+      @if (riddle.solvedByMe) {
+        <p class="riddle-status">✓ Résolue par toi</p>
+      } @else if (riddle.infoUnlocked) {
+        <p class="riddle-status">Résolue par l’équipe · À résoudre pour toi</p>
+      }
       @if (riddle.prompt) {
         <p class="prompt">{{ riddle.prompt }}</p>
       }
@@ -22,11 +27,12 @@
   }
   @if (game.catalog().length) {
     <div class="meta-status" aria-live="polite">
-      <strong>{{ game.metaUnlocked() ? 'MÉTA DÉVERROUILLÉ' : 'MÉTA VERROUILLÉ' }}</strong>
+      <strong>{{ progress.metaUnlocked() ? 'MÉTA DÉVERROUILLÉ' : 'MÉTA VERROUILLÉ' }}</strong>
       <p>
-        {{ game.solvedCount() }} / {{ game.catalog().length }} énigmes résolues au moins une fois.
+        {{ progress.solvedCount() }} / {{ game.catalog().length }} énigmes résolues
+        {{ game.mode() === 'team' ? 'par l’équipe' : 'par toi' }}.
       </p>
-      @if (game.metaUnlocked()) {
+      @if (progress.metaUnlocked()) {
         <p>Le méta sera accessible ici dès sa mise en ligne.</p>
       }
     </div>

@@ -10,6 +10,15 @@ export const ZEBRA_CATEGORIES = {
   food: { label: 'Nourriture', values: ['Hot-dog', 'Pogo', 'Cheesy Poofs', 'Beigne'] },
 } as const;
 
+export const ZEBRA_NAME_TARGETS = [
+  { id: 'bob', label: 'Bob' },
+  { id: 'jean-lou', label: 'Jean-Lou' },
+  { id: 'eric', label: 'Éric' },
+  { id: 'homer', label: 'Homer' },
+] as const;
+
+export type ZebraNameTarget = (typeof ZEBRA_NAME_TARGETS)[number]['id'];
+
 export type CategoryId = keyof typeof ZEBRA_CATEGORIES;
 export interface ZebraBlock {
   readonly id: string;

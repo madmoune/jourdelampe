@@ -154,6 +154,16 @@
           ".validate": false
         }
       },
+      "settings": {
+        ".read": true,
+        ".validate": "newData.hasChildren(['mode'])",
+        "mode": {
+          ".validate": "newData.val() === 'individual' || newData.val() === 'team'"
+        },
+        "$other": {
+          ".validate": false
+        }
+      },
       "solves": {
         ".read": true,
         "$riddle": {
@@ -210,9 +220,9 @@
           "$riddle": {
             "$attempt": {
               ".write": "auth != null && auth.uid === $uid && $attempt.matches(/^[A-Za-z0-9_-]{1,128}$/) && !data.exists() && newData.exists() && root.child('game/catalog/' + $riddle).exists() && root.child('participants/' + $uid + '/name').isString() && newData.child('roundId').val() === root.child('game/round/id').val()",
-              ".validate": "newData.hasChildren(['kind', 'answer', 'normalizedAnswer', 'participantName', 'roundId', 'submittedAt', 'correct']) && ((newData.child('kind').val() === 'answer' && newData.child('correct').val() === (root.child('riddleSecrets/' + $riddle + '/normalizedAnswer').isString() && newData.child('normalizedAnswer').val() === root.child('riddleSecrets/' + $riddle + '/normalizedAnswer').val()) && (newData.child('correct').val() === false || (newData.parent().parent().parent().parent().child('solves/' + $riddle + '/' + $uid + '/roundId').val() === newData.child('roundId').val() && newData.parent().parent().parent().parent().child('proofs/' + $uid + '/' + $riddle + '/answer').val() === newData.child('normalizedAnswer').val()))) || (newData.child('kind').val() === 'grid' && root.child('game/catalog/' + $riddle + '/gridReady').val() === true && root.child('riddleSecrets/' + $riddle + '/gridAnswer').isString() && newData.child('answer').val() === newData.child('normalizedAnswer').val() && newData.child('normalizedAnswer').val().matches(/^[1-8]{36}$/) && newData.child('correct').val() === (newData.child('normalizedAnswer').val() === root.child('riddleSecrets/' + $riddle + '/gridAnswer').val())))",
+              ".validate": "newData.hasChildren(['kind', 'answer', 'normalizedAnswer', 'participantName', 'roundId', 'submittedAt', 'correct']) && ((newData.child('kind').val() === 'answer' && newData.child('correct').val() === (root.child('riddleSecrets/' + $riddle + '/normalizedAnswer').isString() && newData.child('normalizedAnswer').val() === root.child('riddleSecrets/' + $riddle + '/normalizedAnswer').val()) && (newData.child('correct').val() === false || (newData.parent().parent().parent().parent().child('solves/' + $riddle + '/' + $uid + '/roundId').val() === newData.child('roundId').val() && newData.parent().parent().parent().parent().child('proofs/' + $uid + '/' + $riddle + '/answer').val() === newData.child('normalizedAnswer').val()))) || (newData.child('kind').val() === 'grid' && root.child('riddleSecrets/' + $riddle + '/gridAnswer').isString() && newData.child('answer').val() === newData.child('normalizedAnswer').val() && newData.child('normalizedAnswer').val().matches(/^[1-8]{36}$/) && newData.child('correct').val() === (newData.child('normalizedAnswer').val() === root.child('riddleSecrets/' + $riddle).child('gridAnswer').val())) || (newData.child('kind').val() === 'surname' && newData.child('target').val() === 'bob' && root.child('riddleSecrets').child($riddle).child('surnames').child('bob').isString() && newData.child('answer').val() === newData.child('normalizedAnswer').val() && newData.child('correct').val() === (newData.child('normalizedAnswer').val() === root.child('riddleSecrets').child($riddle).child('surnames').child('bob').val())) || (newData.child('kind').val() === 'surname' && newData.child('target').val() === 'jean-lou' && root.child('riddleSecrets').child($riddle).child('surnames').child('jean-lou').isString() && newData.child('answer').val() === newData.child('normalizedAnswer').val() && newData.child('correct').val() === (newData.child('normalizedAnswer').val() === root.child('riddleSecrets').child($riddle).child('surnames').child('jean-lou').val())) || (newData.child('kind').val() === 'surname' && newData.child('target').val() === 'homer' && root.child('riddleSecrets').child($riddle).child('surnames').child('homer').isString() && newData.child('answer').val() === newData.child('normalizedAnswer').val() && newData.child('correct').val() === (newData.child('normalizedAnswer').val() === root.child('riddleSecrets').child($riddle).child('surnames').child('homer').val())) || (newData.child('kind').val() === 'surname' && newData.child('target').val() === 'eric' && root.child('riddleSecrets').child($riddle).child('surnames').child('eric').isString() && newData.child('answer').val() === newData.child('normalizedAnswer').val() && newData.child('correct').val() === (newData.child('normalizedAnswer').val() === root.child('riddleSecrets').child($riddle).child('surnames').child('eric').val())))",
               "kind": {
-                ".validate": "newData.val() === 'answer' || newData.val() === 'grid'"
+                ".validate": "newData.val() === 'answer' || newData.val() === 'grid' || newData.val() === 'surname'"
               },
               "answer": {
                 ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 200"
@@ -222,6 +232,9 @@
               },
               "participantName": {
                 ".validate": "newData.isString() && newData.val() === root.child('participants/' + $uid + '/name').val()"
+              },
+              "target": {
+                ".validate": "newData.isString() && newData.val().matches(/^[a-z][a-z-]{0,63}$/)"
               },
               "roundId": {
                 ".validate": "newData.val() === root.child('game/round/id').val()"
@@ -256,6 +269,12 @@
         },
         "gridAnswer": {
           ".validate": "newData.isString() && newData.val().matches(/^[1-8]{36}$/)"
+        },
+        "surnames": {
+          ".validate": "newData.hasChildren(['bob', 'jean-lou', 'homer', 'eric'])",
+          "$target": {
+            ".validate": "($target === 'bob' || $target === 'jean-lou' || $target === 'homer' || $target === 'eric') && newData.isString() && newData.val().length > 0 && newData.val().matches(/^[A-Z0-9]+$/)"
+          }
         }
       }
     }

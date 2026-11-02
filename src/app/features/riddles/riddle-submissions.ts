@@ -22,20 +22,28 @@ export class RiddleSubmissions {
   checkGrid(riddleId: string, code: string): Promise<boolean> {
     return this.check(riddleId, code, 'grid');
   }
+  checkSurname(riddleId: string, target: string, surname: string): Promise<boolean> {
+    return this.check(riddleId, surname, 'surname', target);
+  }
 
-  private async check(riddleId: string, answer: string, kind: 'answer' | 'grid'): Promise<boolean> {
+  private async check(
+    riddleId: string,
+    answer: string,
+    kind: 'answer' | 'grid' | 'surname',
+    target?: string,
+  ): Promise<boolean> {
     const participant = this.participants.requireParticipant();
     const riddle = this.game.riddles().find((item) => item.id === riddleId);
     const round = this.game.round();
     if (!this.game.ready() || !riddle || !round)
       throw new Error('Cette énigme est indisponible pour le moment.');
-    if (kind === 'grid' && riddle.gridReady !== true)
-      throw new Error('La vérification sera disponible avec les énoncés.');
     const normalized = normalizeAnswer(answer);
     if (!normalized || answer.length > 200 || normalized.length > 200)
       throw new Error('Entre une réponse de 200 caractères ou moins.');
     if (kind === 'grid' && !/^[1-8]{36}$/u.test(answer))
       throw new Error('Complète la grille avant de la vérifier.');
+    if (kind === 'surname' && (!target || !/^[a-z][a-z-]{0,63}$/u.test(target)))
+      throw new Error('Le prénom à vérifier est invalide.');
     if (
       kind === 'answer' &&
       riddle.solutions.some((solution) => solution.participantId === participant.id)
@@ -49,6 +57,7 @@ export class RiddleSubmissions {
       participantName: participant.name,
       roundId: round.id,
       submittedAt: SERVER_TIME,
+      ...(target ? { target } : {}),
     };
     const token = await this.session.token();
     const success: Record<string, unknown> = { [attemptPath]: { ...attempt, correct: true } };
@@ -73,8 +82,14 @@ export class RiddleSubmissions {
         try {
           await this.database.update('game', success, token);
           return true;
-        } catch {
-          /* Une erreur d’accès ou de partie n’est pas une mauvaise réponse. */
+        } catch (successError: unknown) {
+          if (denied(successError)) {
+            throw new Error(
+              kind === 'grid'
+                ? 'La vérification de la grille n’est pas configurée. Publie les règles Firebase et la solution privée, puis réessaie.'
+                : 'La validation de cette énigme n’est pas configurée. Renseigne la réponse privée, puis réessaie.',
+            );
+          }
         }
       }
       throw new Error(

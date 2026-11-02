@@ -10,7 +10,7 @@ export const routes: Routes = [
     children: [
       {
         path: 'enigmes/zebra',
-        title: 'Zebra — Le Jour de l’AI',
+        title: 'Nostalgie — Le Jour de l’AI',
         loadComponent: () =>
           import('./features/zebra/zebra-page').then((module) => module.ZebraPage),
       },
@@ -24,7 +24,7 @@ export const routes: Routes = [
   {
     path: 'enigmes/zebra',
     canMatch: [requireRiddleRelease],
-    title: 'Zebra — Le Jour de l’AI',
+    title: 'Nostalgie — Le Jour de l’AI',
     loadComponent: () => import('./features/zebra/zebra-page').then((module) => module.ZebraPage),
   },
   {

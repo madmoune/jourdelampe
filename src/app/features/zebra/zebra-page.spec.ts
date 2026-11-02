@@ -6,9 +6,17 @@ import { ParticipantStore } from '../riddles/participant-store';
 import { ZebraPage } from './zebra-page';
 import { ZebraPlay } from './zebra-play';
 import { RIDDLE_PREVIEW } from '../riddles/riddle-release';
+import { GameStore } from '../riddles/game-store';
+import { RiddleSubmissions } from '../riddles/riddle-submissions';
+
+const createPuzzle = vi.fn();
 
 @Component({ selector: 'app-zebra-play', template: '<p>Grille Zebra accessible</p>' })
-class ZebraPlayStub {}
+class ZebraPlayStub {
+  constructor() {
+    createPuzzle();
+  }
+}
 
 describe('nom géré uniquement dans le portail de l’AI', () => {
   const loading = signal(false);
@@ -17,14 +25,25 @@ describe('nom géré uniquement dans le portail de l’AI', () => {
   beforeEach(async () => {
     loading.set(false);
     canSolve.set(false);
+    createPuzzle.mockClear();
     await TestBed.configureTestingModule({
       imports: [ZebraPage],
       providers: [
         provideRouter([]),
         {
           provide: ParticipantStore,
-          useValue: { loading, canSolve, error: signal('') },
+          useValue: { loading, canSolve, error: signal(''), participant: signal(null) },
         },
+        {
+          provide: GameStore,
+          useValue: {
+            error: signal(''),
+            ready: signal(true),
+            round: signal({ id: 'one', resetAt: 1 }),
+            riddles: signal([{ id: 'zebra-01', title: 'Zebra', solutions: [] }]),
+          },
+        },
+        { provide: RiddleSubmissions, useValue: { submit: vi.fn() } },
       ],
     })
       .overrideComponent(ZebraPage, {
@@ -39,6 +58,7 @@ describe('nom géré uniquement dans le portail de l’AI', () => {
     await fixture.whenStable();
     const page = fixture.nativeElement as HTMLElement;
     expect(page.querySelector('app-zebra-play')).toBeNull();
+    expect(createPuzzle).not.toHaveBeenCalled();
     expect(page.querySelector('app-riddle-access')).toBeNull();
     expect(page.querySelector('input')).toBeNull();
     const link = page.querySelector<HTMLAnchorElement>('.access-notice a')!;
@@ -53,6 +73,9 @@ describe('nom géré uniquement dans le portail de l’AI', () => {
     await fixture.whenStable();
     const page = fixture.nativeElement as HTMLElement;
     expect(page.querySelector('app-zebra-play')).not.toBeNull();
+    expect(createPuzzle).toHaveBeenCalledOnce();
+    expect(page.querySelector('input[name="answer"]')).not.toBeNull();
+    expect(page.querySelector('.answer-hint')?.textContent).toContain('8 lettres');
     expect(page.querySelector('app-riddle-access')).toBeNull();
     expect(page.textContent).not.toContain('Modifier mon nom');
     expect(page.querySelector('.access-notice')).toBeNull();

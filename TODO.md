@@ -7,3 +7,15 @@
 - NPC AI, voix qui parle sur le site?
 - Vidéo de menace de l'AI
 - Nom de l'AI?
+
+
+- Puzzle
+    - Mot caché avec 2 lettres par cases
+    - Crossword (Cavalier)
+    - Définition gauche/droite avec croisement au milieu
+    - Puzzle sur une mécanique de jeu?
+    - Zebra puzzle?
+    - 4-5 jeux logiques
+    - Genre de puzzle de variation de mots, mécanique de changement de lettre qui reste encore valide après.
+    - Crossword dans une fleur?
+    - Énigmes pour les enfants x4?

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { GameStore } from './game-store';
 import { GameTimePipe } from './game-time.pipe';
+import { PlayerProgress } from './player-progress';
 
 @Component({
   selector: 'app-riddle-results',
@@ -27,7 +28,7 @@ import { GameTimePipe } from './game-time.pipe';
       </div>
     } @else {
       <ul class="results" aria-live="polite">
-        @for (riddle of game.riddles(); track riddle.id) {
+        @for (riddle of progress.riddles(); track riddle.id) {
           <li>
             <h3>{{ riddle.title }}</h3>
             @if (riddle.solutions.length) {
@@ -48,8 +49,9 @@ import { GameTimePipe } from './game-time.pipe';
         }
       </ul>
       <p class="meta">
-        {{ game.metaUnlocked() ? 'Méta déverrouillé.' : 'Méta verrouillé.' }}
-        {{ game.solvedCount() }} / {{ game.catalog().length }} énigmes résolues. Heures de Montréal.
+        {{ progress.metaUnlocked() ? 'Méta déverrouillé.' : 'Méta verrouillé.' }}
+        {{ progress.solvedCount() }} / {{ game.catalog().length }} énigmes résolues
+        {{ game.mode() === 'team' ? 'par l’équipe' : 'par toi' }}. Heures de Montréal.
       </p>
     }
   `,
@@ -133,5 +135,6 @@ import { GameTimePipe } from './game-time.pipe';
 export class RiddleResults {
   readonly participantName = input<string | null>(null);
   protected readonly game = inject(GameStore);
+  protected readonly progress = inject(PlayerProgress);
   readonly hasRiddles = computed(() => this.game.catalog().length > 0);
 }

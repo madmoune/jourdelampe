@@ -10,6 +10,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { GameTimePipe } from '../riddles/game-time.pipe';
+import { GameMode } from '../riddles/game.model';
 import { GameAdminSession } from './game-admin-session';
 import { GameAdminStore } from './game-admin-store';
 
@@ -59,6 +60,16 @@ export class GameDashboard {
     this.message.set('');
     this.resetText.set('');
     this.resetStep.set(1);
+  }
+
+  protected async changeMode(mode: GameMode): Promise<void> {
+    if (!this.store.game.ready() || this.store.game.mode() === mode) return;
+    await this.perform(async () => {
+      await this.store.setMode(mode);
+      this.message.set(
+        `Mode ${mode === 'team' ? 'en équipe' : 'individuel'} activé. Les réussites sont conservées.`,
+      );
+    });
   }
 
   protected cancelReset(): void {

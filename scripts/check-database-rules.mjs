@@ -161,6 +161,12 @@ await request(
       answer: 'Lampe',
       normalizedAnswer: 'LAMPE',
       gridAnswer: '123456781234567812341234567812341234',
+      surnames: {
+        bob: 'BROWN',
+        'jean-lou': 'DUPONT',
+        homer: 'SIMPSON',
+        eric: 'CARTER',
+      },
     },
     'riddleSecrets/second': { answer: 'Party', normalizedAnswer: 'PARTY' },
   },
@@ -170,6 +176,16 @@ await request(
 await request('game', 'GET', undefined, 401);
 await request('game/catalog', 'GET', undefined, 200);
 await request('game/round', 'GET', undefined, 200);
+assert.equal(await request('game/settings', 'GET', undefined, 200), null);
+await request('game/settings', 'PUT', { mode: 'individual' }, 401);
+await request('game/settings', 'PUT', { mode: 'individual' }, 401, 'player');
+await request('game/settings', 'PUT', { mode: 'individual' }, 200, admin);
+await request('game/settings', 'PUT', { mode: 'unknown' }, 401, admin);
+await request('game/settings', 'PUT', { mode: true }, 401, admin);
+await request('game/settings', 'PUT', { other: 'team' }, 401, admin);
+await request('game/settings', 'PATCH', { other: true }, 401, admin);
+await request('game/settings/mode', 'PUT', 'team', 401, 'player');
+assert.deepEqual(await request('game/settings', 'GET', undefined, 200), { mode: 'individual' });
 await request('riddleSecrets', 'GET', undefined, 401);
 await request('riddleSecrets/first/answer', 'GET', undefined, 401, 'player');
 await request('game/proofs', 'GET', undefined, 401, 'player');
@@ -318,6 +334,63 @@ await request(
   200,
   'player',
 );
+await request(
+  'game/attempts/player/first/surname-wrong',
+  'PUT',
+  attempt('FAUX', false, 'surname', { target: 'bob' }),
+  200,
+  'player',
+);
+await request(
+  'game/attempts/player/first/surname-right',
+  'PUT',
+  attempt('BROWN', true, 'surname', { target: 'bob' }),
+  200,
+  'player',
+);
+for (const [target, surname] of [
+  ['jean-lou', 'DUPONT'],
+  ['homer', 'SIMPSON'],
+  ['eric', 'CARTER'],
+]) {
+  await request(
+    'game/attempts/player/first/surname-' + target + '-wrong',
+    'PUT',
+    attempt('FAUX', false, 'surname', { target }),
+    200,
+    'player',
+  );
+  await request(
+    'game/attempts/player/first/surname-' + target + '-right',
+    'PUT',
+    attempt(surname, true, 'surname', { target }),
+    200,
+    'player',
+  );
+}
+await request(
+  'game/attempts/player/first/surname-forged',
+  'PUT',
+  attempt('FAUX', true, 'surname', { target: 'bob' }),
+  401,
+  'player',
+);
+await request(
+  'game/attempts/player/first/surname-unknown-target',
+  'PUT',
+  attempt('BROWN', true, 'surname', { target: 'unknown' }),
+  401,
+  'player',
+);
+await request('game/catalog/first/gridReady', 'PUT', false, 200, admin);
+await request(
+  'game/attempts/player/first/grid-without-public-flag',
+  'PUT',
+  attempt('123456781234567812341234567812341234', true, 'grid'),
+  200,
+  'player',
+);
+await request('game/catalog/first/gridReady', 'PUT', true, 200, admin);
 assert.equal(
   await request('game/solves', 'GET', undefined, 200),
   null,
@@ -433,6 +506,10 @@ assert.equal(Object.keys(sharedSolves).length, 2);
 assert.equal(sharedSolves.player.participantName, 'Chloé Martin');
 assert.ok(sharedSolves.player.solvedAt > Date.now() - 60_000);
 assert.equal(sharedSolves.player.answer, undefined);
+await request('game/settings', 'PATCH', { mode: 'team' }, 200, admin);
+assert.deepEqual(await request('game/solves/first', 'GET', undefined, 200), sharedSolves);
+await request('game/settings', 'PATCH', { mode: 'individual' }, 200, admin);
+assert.deepEqual(await request('game/solves/first', 'GET', undefined, 200), sharedSolves);
 await request('game/proofs/player/first/answer', 'GET', undefined, 401, 'player');
 const reset = {
   round: { id: 'round-two', resetAt: serverTime },
@@ -444,6 +521,7 @@ await request('game', 'PATCH', reset, 401, 'player');
 await request('game', 'PATCH', reset, 200, admin);
 assert.equal(await request('game/solves', 'GET', undefined, 200), null);
 assert.equal(await request('game/proofs', 'GET', undefined, 200, admin), null);
+assert.deepEqual(await request('game/settings', 'GET', undefined, 200), { mode: 'individual' });
 assert.equal(await request('game/attempts/player', 'GET', undefined, 200, 'player'), null);
 await request('game/attempts/player/first/late', 'PUT', attempt('FAUX', false), 401, 'player');
 await request('game', 'PATCH', submission('player'), 401, 'player');
