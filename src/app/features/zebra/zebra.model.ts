@@ -13,8 +13,8 @@ export const ZEBRA_CATEGORIES = {
 export const ZEBRA_NAME_TARGETS = [
   { id: 'bob', label: 'Bob' },
   { id: 'jean-lou', label: 'Jean-Lou' },
-  { id: 'eric', label: 'Éric' },
   { id: 'homer', label: 'Homer' },
+  { id: 'eric', label: 'Éric' },
 ] as const;
 
 export type ZebraNameTarget = (typeof ZEBRA_NAME_TARGETS)[number]['id'];

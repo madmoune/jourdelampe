@@ -147,7 +147,7 @@ describe('indication partielle pour la grille complète', () => {
       [...page.querySelectorAll<HTMLElement>('.surname-entry')].map(
         (entry) => entry.dataset['nameTarget'],
       ),
-    ).toEqual(['bob', 'jean-lou', 'eric', 'homer']);
+    ).toEqual(['bob', 'jean-lou', 'homer', 'eric']);
     const bobEntry = page.querySelector<HTMLElement>('[data-name-target="bob"]')!;
     const bobInput = bobEntry.querySelector<HTMLInputElement>('.surname-input')!;
     bobInput.value = 'Brown';
