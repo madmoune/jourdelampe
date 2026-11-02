@@ -74,6 +74,28 @@ ul {
 .grid-main {
   min-width: 0;
 }
+.grid-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+.clear-grid {
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid #a68eb8;
+  background: #241b30;
+  color: #f0dba7;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.clear-grid:hover:not(:disabled) {
+  background: #41334f;
+}
+.clear-grid:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
 .grid-scroll {
   overflow-x: auto;
   padding: 16px 12px 20px;

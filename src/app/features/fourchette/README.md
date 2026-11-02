@@ -34,6 +34,12 @@ cochés en l’absence de brouillon. Cette disposition utilise `target: fourchet
 sur ses essais de grille pour ignorer les validations de l’ancienne disposition,
 sans effacer son stockage ni son historique. Après la réponse finale, la grille est verrouillée.
 
+Le bouton **Vider la grille**, au-dessus de la grille, désélectionne toutes les
+lettres, décoche les mots et retire le verdict courant. Cet état vide est mémorisé
+pour éviter qu’une ancienne validation restaure automatiquement les sélections.
+Les essais et les réussites Firebase sont conservés. Le bouton est désactivé si
+le brouillon est vide ou si la réponse finale est déjà résolue.
+
 Le catalogue permet l’affichage dans l’accueil, les résultats, les compteurs et
 le tableau de bord en direct. Le secret de grille peut être configuré seul :
 aucune réponse finale provisoire n’est inventée et la gestion affiche « À définir »

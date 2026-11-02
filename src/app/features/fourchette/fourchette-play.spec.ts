@@ -223,6 +223,39 @@ describe('grille interactive de La Fourchette', () => {
       expect(button.disabled).toBe(true);
   });
 
+  it('vide une grille restaurée sans la remplir à nouveau depuis l’historique après réouverture', async () => {
+    const { fixture, page, attempts, submit } = await setup();
+    attempts.set([
+      {
+        id: 'right',
+        riddleId: FOURCHETTE_ID,
+        kind: 'grid',
+        target: FOURCHETTE_GRID_VERSION,
+        answer: '01'.repeat(55),
+        correct: true,
+        participantName: 'Alice',
+        roundId: 'one',
+        submittedAt: 1,
+      },
+    ]);
+    await fixture.whenStable();
+    expect(page.querySelectorAll('.letter.selected')).toHaveLength(55);
+    page.querySelector<HTMLButtonElement>('.clear-grid')!.click();
+    await fixture.whenStable();
+    expect(page.querySelectorAll('.letter.selected')).toHaveLength(0);
+    expect(page.querySelectorAll('.word-button.found')).toHaveLength(0);
+    expect(page.querySelector('.grid-success')).toBeNull();
+    expect(attempts()).toHaveLength(1);
+    expect(submit).not.toHaveBeenCalled();
+    fixture.destroy();
+    const reopened = TestBed.createComponent(FourchettePlay);
+    await reopened.whenStable();
+    const restored = reopened.nativeElement as HTMLElement;
+    expect(restored.querySelectorAll('.letter.selected')).toHaveLength(0);
+    expect(restored.querySelectorAll('.word-button.found')).toHaveLength(0);
+    expect(restored.querySelector<HTMLButtonElement>('.clear-grid')?.disabled).toBe(true);
+  });
+
   it('ignore une vérification reçue après une remise à zéro', async () => {
     const { fixture, page, checkGrid, checkWords, waitForCheck, round } = await setup();
     let resolve!: (value: boolean) => void;

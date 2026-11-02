@@ -83,6 +83,9 @@ export class FourchettePlay {
     return local ?? emptyFourchetteProgress();
   });
   protected readonly foundCount = computed(() => this.progress().found.length);
+  protected readonly hasProgress = computed(
+    () => this.progress().selection.includes('1') || this.foundCount() > 0,
+  );
   protected readonly allFound = computed(() => this.foundCount() === this.wordCount);
   protected readonly checking = signal(false);
   private readonly verdict = signal<{
@@ -152,6 +155,13 @@ export class FourchettePlay {
         ? progress.found.filter((entry) => entry !== word)
         : [...progress.found, word],
     });
+  }
+
+  protected clearGrid(): void {
+    if (this.locked()) return;
+    this.requestId++;
+    this.checking.set(false);
+    this.saveProgress(emptyFourchetteProgress());
   }
 
   private async checkGrid(key: string, code: string, requestId: number): Promise<boolean> {
