@@ -89,6 +89,12 @@ export class AiHome {
       }
     });
     effect(() => {
+      if (this.portal.revealed() && this.stage() === 'original') {
+        this.clearTakeoverTimers();
+        this.stage.set('complete');
+      }
+    });
+    effect(() => {
       const captured = this.stage() === 'complete';
       this.title.setTitle(
         captured

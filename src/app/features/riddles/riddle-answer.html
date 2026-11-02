@@ -57,7 +57,10 @@
     isolé te monter à la tête.
   </p>
   <div class="dialog-actions">
-    <a routerLink="/" fragment="enigmes" (click)="portal.revealed.set(true); closeSuccess()"
+    <a
+      [routerLink]="homePath"
+      fragment="enigmes"
+      (click)="portal.revealed.set(true); closeSuccess()"
       >Retour aux énigmes</a
     ><button type="button" class="secondary" (click)="closeSuccess()">Rester ici</button>
   </div>

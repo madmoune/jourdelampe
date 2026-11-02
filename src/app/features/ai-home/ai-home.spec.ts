@@ -13,6 +13,7 @@ import { GameStore } from '../riddles/game-store';
 import { RiddleSubmissions } from '../riddles/riddle-submissions';
 import { RIDDLE_PREVIEW } from '../riddles/riddle-release';
 import { AiQuoteRotation } from './ai-quote-rotation';
+import { AiPortalState } from './ai-portal-state';
 
 @Component({
   selector: 'app-home',
@@ -173,6 +174,16 @@ describe('prise de contrôle de l’AI', () => {
     createPage();
     expect(page.querySelector('#ai-title')).not.toBeNull();
     expect(page.querySelector('.takeover-terminal')).toBeNull();
+  });
+
+  it('révèle le portail si un lien de retour active l’état pendant la navigation', async () => {
+    createPage();
+    expect(page.querySelector('.original-site')).not.toBeNull();
+    TestBed.inject(AiPortalState).revealed.set(true);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(page.querySelector('#ai-title')).not.toBeNull();
+    expect(page.querySelector('.original-site')).toBeNull();
   });
 
   it('exige aussi que toutes les minuscules soient éteintes, quel que soit l’ordre des clics', () => {

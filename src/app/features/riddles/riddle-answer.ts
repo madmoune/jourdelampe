@@ -17,6 +17,7 @@ import { GameStore } from './game-store';
 import { ParticipantStore } from './participant-store';
 import { RiddleSubmissions } from './riddle-submissions';
 import { RiddleReplies } from './riddle-replies';
+import { RIDDLE_PREVIEW, RIDDLE_PREVIEW_PATH } from './riddle-release';
 
 @Component({
   selector: 'app-riddle-answer',
@@ -30,6 +31,7 @@ export class RiddleAnswer {
   readonly hint = input('');
   protected readonly game = inject(GameStore);
   protected readonly portal = inject(AiPortalState);
+  protected readonly homePath = inject(RIDDLE_PREVIEW) ? RIDDLE_PREVIEW_PATH : '/';
   private readonly participants = inject(ParticipantStore);
   private readonly submissions = inject(RiddleSubmissions);
   private readonly replies = inject(RiddleReplies);
