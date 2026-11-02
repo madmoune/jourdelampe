@@ -66,24 +66,9 @@ ul {
   cursor: default;
 }
 .word-count {
-  margin: 20px 0 12px;
+  margin: 20px 0 0;
   color: #c4b6d1;
   font-size: 13px;
-}
-.verify-grid {
-  min-height: 44px;
-  padding: 10px 16px;
-  border: 2px outset #d5ed8b;
-  background: #d5ed8b;
-  color: #202a12;
-  font: inherit;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-}
-.verify-grid:disabled {
-  opacity: 0.5;
-  cursor: default;
 }
 .grid-main {
   min-width: 0;

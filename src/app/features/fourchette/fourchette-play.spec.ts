@@ -54,8 +54,8 @@ describe('grille interactive de La Fourchette', () => {
         if (word.getAttribute('aria-pressed') === 'false') word.click();
       await fixture.whenStable();
     };
-    const verify = async () => {
-      page.querySelector<HTMLButtonElement>('.verify-grid')!.click();
+    const waitForCheck = async (calls = 1) => {
+      await vi.waitFor(() => expect(checkGrid).toHaveBeenCalledTimes(calls), { timeout: 2500 });
       await fixture.whenStable();
     };
     return {
@@ -69,12 +69,12 @@ describe('grille interactive de La Fourchette', () => {
       submit,
       cell,
       checkWords,
-      verify,
+      waitForCheck,
     };
   }
 
   it('reproduit les lettres, les chiffres et les deux colonnes de mots fournis', async () => {
-    const { page, cell } = await setup();
+    const { page, cell, checkGrid } = await setup();
     expect(page.querySelectorAll('.letter')).toHaveLength(110);
     expect(
       [...page.querySelectorAll('.letter')].map((letter) => letter.textContent!.trim()).join(''),
@@ -86,7 +86,10 @@ describe('grille interactive de La Fourchette', () => {
     ).toEqual(FOURCHETTE_WORD_COLUMNS);
     expect(cell('C1').textContent?.trim()).toBe('O');
     expect(cell('A6').textContent?.trim()).toBe('0');
-    expect(page.querySelector<HTMLButtonElement>('.verify-grid')?.disabled).toBe(true);
+    expect(page.querySelector('.verify-grid')).toBeNull();
+    expect(page.textContent).not.toContain('Vérifier la grille');
+    expect(page.querySelector('.wordsearch-help')?.textContent).not.toContain('vérifie');
+    expect(checkGrid).not.toHaveBeenCalled();
   });
 
   it('bascule indépendamment une lettre et un mot, sans sélectionner automatiquement les lettres', async () => {
@@ -108,44 +111,49 @@ describe('grille interactive de La Fourchette', () => {
     expect(word.getAttribute('aria-pressed')).toBe('false');
   });
 
-  it('attend les dix mots cochés et vérifie les cases réelles sans résoudre la réponse finale', async () => {
-    const { page, cell, checkWords, verify, checkGrid, submit } = await setup(false);
+  it('vérifie automatiquement les cases dès les dix mots cochés, sans résoudre la réponse finale', async () => {
+    const { page, cell, checkWords, waitForCheck, checkGrid, submit } = await setup(false);
     cell('A1').click();
     await checkWords();
-    expect(page.querySelector<HTMLButtonElement>('.verify-grid')?.disabled).toBe(false);
-    await verify();
+    await waitForCheck();
     expect(checkGrid).toHaveBeenCalledExactlyOnceWith(FOURCHETTE_ID, '1' + '0'.repeat(109));
     expect(page.querySelector('.grid-error')?.textContent).toContain('Grille non valide');
     expect(page.querySelector('.grid-success')).toBeNull();
     expect(submit).not.toHaveBeenCalled();
   });
 
-  it('annonce une grille validée au-dessus de la grille et retire ce message après une modification', async () => {
-    const { fixture, page, checkWords, verify, cell, submit } = await setup();
+  it('revalide automatiquement après une modification et conserve le focus dans la grille', async () => {
+    const { fixture, page, checkWords, waitForCheck, cell, checkGrid, submit } = await setup();
     await checkWords();
-    await verify();
+    await waitForCheck();
     const message = page.querySelector('.grid-success')!;
     expect(message.textContent).toContain('Tu peux maintenant passer à l’extraction');
     expect(
       message.compareDocumentPosition(page.querySelector('table')!) &
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
-    cell('B1').click();
+    checkGrid.mockResolvedValueOnce(false);
+    const editedCell = cell('B1');
+    editedCell.focus();
+    editedCell.click();
     await fixture.whenStable();
     expect(page.querySelector('.grid-success')).toBeNull();
+    await waitForCheck(2);
+    expect(checkGrid).toHaveBeenLastCalledWith(FOURCHETTE_ID, '01' + '0'.repeat(108));
+    expect(page.querySelector('.grid-error')?.textContent).toContain('Grille non valide');
+    expect(editedCell.ownerDocument.activeElement).toBe(editedCell);
     expect(submit).not.toHaveBeenCalled();
   });
 
-  it('conserve les sélections et permet de réessayer après une panne de validation', async () => {
-    const { page, cell, checkWords, verify, checkGrid } = await setup();
+  it('conserve les sélections et réessaie automatiquement après une panne de validation', async () => {
+    const { page, cell, checkWords, waitForCheck, checkGrid } = await setup();
     checkGrid.mockRejectedValueOnce(new Error('Connexion indisponible. Réessaie.'));
     cell('C1').click();
     await checkWords();
-    await verify();
-    expect(page.querySelector('.grid-error')?.textContent).toContain('Connexion indisponible');
+    await waitForCheck();
+    expect(page.querySelector('.grid-error')?.textContent).toContain('momentanément indisponible');
     expect(cell('C1').getAttribute('aria-pressed')).toBe('true');
-    expect(page.querySelector<HTMLButtonElement>('.verify-grid')?.disabled).toBe(false);
-    await verify();
+    await waitForCheck(2);
     expect(checkGrid).toHaveBeenCalledTimes(2);
     expect(page.querySelector('.grid-success')).not.toBeNull();
   });
@@ -199,7 +207,7 @@ describe('grille interactive de La Fourchette', () => {
   });
 
   it('ignore une vérification reçue après une remise à zéro', async () => {
-    const { fixture, page, checkGrid, checkWords, verify, round } = await setup();
+    const { fixture, page, checkGrid, checkWords, waitForCheck, round } = await setup();
     let resolve!: (value: boolean) => void;
     checkGrid.mockImplementationOnce(
       () =>
@@ -208,13 +216,36 @@ describe('grille interactive de La Fourchette', () => {
         }),
     );
     await checkWords();
-    await verify();
+    await waitForCheck();
     round.set({ id: 'two', resetAt: 2 });
     await fixture.whenStable();
     resolve(true);
     await fixture.whenStable();
     expect(page.querySelector('.grid-success')).toBeNull();
     expect(page.querySelectorAll('.word-button.found')).toHaveLength(0);
+  });
+
+  it('regroupe les clics rapprochés et ne perd pas une modification pendant une validation', async () => {
+    const { fixture, cell, page, checkWords, waitForCheck, checkGrid } = await setup();
+    let resolve!: (value: boolean) => void;
+    checkGrid.mockImplementationOnce(
+      () =>
+        new Promise<boolean>((done) => {
+          resolve = done;
+        }),
+    );
+    await checkWords();
+    await waitForCheck();
+    cell('A1').click();
+    cell('B1').click();
+    cell('C1').click();
+    await fixture.whenStable();
+    resolve(false);
+    await fixture.whenStable();
+    expect(page.querySelector('.grid-error')).toBeNull();
+    await waitForCheck(2);
+    expect(checkGrid).toHaveBeenLastCalledWith(FOURCHETTE_ID, '111' + '0'.repeat(107));
+    expect(page.querySelector('.grid-success')).not.toBeNull();
   });
 
   it('refuse le stockage corrompu et ignore les mots inconnus ou répétés', () => {

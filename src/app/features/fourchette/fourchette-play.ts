@@ -22,6 +22,10 @@ import {
   validFourchetteSelection,
 } from './fourchette.model';
 
+const GRID_CHECK_DEBOUNCE_MS = 300;
+const GRID_CHECK_RETRY_DELAY_MS = 1000;
+const MAX_GRID_CHECK_RETRIES = 2;
+
 @Component({
   selector: 'app-fourchette-play',
   templateUrl: './fourchette-play.html',
@@ -76,14 +80,6 @@ export class FourchettePlay {
   protected readonly foundCount = computed(() => this.progress().found.length);
   protected readonly allFound = computed(() => this.foundCount() === this.wordCount);
   protected readonly checking = signal(false);
-  protected readonly canVerify = computed(
-    () =>
-      this.allFound() &&
-      this.game.ready() &&
-      !!this.game.round() &&
-      !this.locked() &&
-      !this.checking(),
-  );
   private readonly verdict = signal<{
     key: string;
     code: string;
@@ -106,6 +102,28 @@ export class FourchettePlay {
       this.checking.set(false);
       this.verdict.set(null);
       this.state.set({ key, progress: this.readProgress(key) });
+    });
+    effect((onCleanup) => {
+      const key = this.storageKey();
+      const code = this.progress().selection;
+      const eligible =
+        this.allFound() && this.game.ready() && !!this.game.round() && !this.locked();
+      const alreadyValid = this.verifiedCode() === code;
+      const requestId = ++this.requestId;
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      this.checking.set(false);
+      onCleanup(() => {
+        clearTimeout(timer);
+        if (this.requestId === requestId) this.requestId++;
+      });
+      if (!eligible || alreadyValid) return;
+      const check = (retry = 0): void => {
+        void this.checkGrid(key, code, requestId).then((retryNeeded) => {
+          if (retryNeeded && this.requestId === requestId && retry < MAX_GRID_CHECK_RETRIES)
+            timer = setTimeout(() => check(retry + 1), GRID_CHECK_RETRY_DELAY_MS * (retry + 1));
+        });
+      };
+      timer = setTimeout(() => check(), GRID_CHECK_DEBOUNCE_MS);
     });
   }
 
@@ -131,11 +149,8 @@ export class FourchettePlay {
     });
   }
 
-  protected async verify(): Promise<void> {
-    if (!this.canVerify()) return;
-    const key = this.storageKey();
-    const code = this.progress().selection;
-    const requestId = ++this.requestId;
+  private async checkGrid(key: string, code: string, requestId: number): Promise<boolean> {
+    if (requestId !== this.requestId) return false;
     this.checking.set(true);
     this.verdict.set(null);
     try {
@@ -146,23 +161,23 @@ export class FourchettePlay {
         code === this.progress().selection
       )
         this.verdict.set({ key, code, correct });
-    } catch (error: unknown) {
+    } catch {
       if (
         this.requestId === requestId &&
         key === this.storageKey() &&
         code === this.progress().selection
-      )
+      ) {
         this.verdict.set({
           key,
           code,
-          error:
-            error instanceof Error
-              ? error.message
-              : 'Vérification indisponible. Réessaie dans un instant.',
+          error: 'Validation de la grille momentanément indisponible.',
         });
+        return true;
+      }
     } finally {
       if (this.requestId === requestId) this.checking.set(false);
     }
+    return false;
   }
 
   private saveProgress(progress: FourchetteProgress): void {

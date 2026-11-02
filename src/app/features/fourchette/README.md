@@ -14,12 +14,16 @@ Les deux colonnes de cinq mots sont affichées à gauche de la grille sur ordina
 puis au-dessus sur petit écran. Chaque case et chaque mot sont des boutons à
 bascule accessibles au clavier. Marquer un mot ne sélectionne pas ses lettres.
 
-Le bouton **Vérifier la grille** devient disponible lorsque les dix mots sont
-cochés. Il soumet un masque de 110 caractères (1 = sélection, 0 = case restante)
+La grille est vérifiée automatiquement lorsque les dix mots sont cochés, puis
+après chaque modification de la sélection, avec un délai de 300 ms pour regrouper
+les clics rapprochés. Aucun bouton ni consigne de vérification n’est affiché.
+La vérification soumet un masque de 110 caractères (1 = sélection, 0 = case restante)
 à la validation privée `riddleSecrets/fourchette-01/gridAnswer`. Le serveur
 compare les cases, et pas seulement le nombre de mots cochés. Le verdict est
-affiché au-dessus de la grille; une panne conserve les sélections et permet de
-réessayer. Cette validation partielle ne résout pas la réponse finale.
+affiché au-dessus de la grille; une panne conserve les sélections et déclenche
+jusqu’à deux nouvelles tentatives automatiques. Les réponses obsolètes sont
+ignorées après une modification, une remise à zéro ou la fermeture de la page.
+Cette validation partielle ne résout pas la réponse finale.
 
 Les sélections et les mots cochés sont sauvegardés localement par profil et par
 partie sous `jdl-fourchette-v1:<participantId>:<roundId>`. Un essai de grille

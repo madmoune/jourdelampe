@@ -116,8 +116,9 @@ Les vérifications partielles de grille (`kind: grid`) ne résolvent pas l’én
 Une grille complète est vérifiée automatiquement dès que son `gridAnswer` privé est
 configuré; `gridReady` reste accepté dans le catalogue pour compatibilité, mais ne
 bloque plus cette vérification.
-Pour La Fourchette, la vérification est manuelle une fois les dix mots cochés et
-utilise un masque binaire de 110 cases. Le secret peut contenir uniquement
+Pour La Fourchette, la vérification est automatique une fois les dix mots cochés,
+puis à chaque modification des lettres sélectionnées, et utilise un masque
+binaire de 110 cases. Le secret peut contenir uniquement
 `gridAnswer` en attendant la réponse finale; `answer` et `normalizedAnswer` doivent
 toujours être configurés ensemble. Une grille correcte ne crée aucune résolution
 finale et les règles refusent toute réussite finale sans réponse privée.

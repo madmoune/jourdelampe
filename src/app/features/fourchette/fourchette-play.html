@@ -11,7 +11,7 @@
         </p>
       } @else {
         <p class="grid-status grid-error" role="alert">
-          <strong>Grille non valide.</strong> Revois les lettres sélectionnées, puis réessaie.
+          <strong>Grille non valide.</strong> Revois les lettres sélectionnées.
         </p>
       }
     }
@@ -42,9 +42,6 @@
         }
       </div>
       <p class="word-count">{{ foundCount() }} / {{ wordCount }} mots cochés</p>
-      <button type="button" class="verify-grid" [disabled]="!canVerify()" (click)="verify()">
-        {{ checking() ? 'Vérification…' : 'Vérifier la grille' }}
-      </button>
     </aside>
     <div class="grid-main">
       <div
@@ -96,6 +93,6 @@
   </div>
   <p id="wordsearch-help" class="wordsearch-help">
     Clique sur une case pour sélectionner ou désélectionner sa lettre. Clique sur un mot pour le
-    marquer comme trouvé. Une fois les dix mots cochés, vérifie ta grille.
+    marquer comme trouvé.
   </p>
 </section>
