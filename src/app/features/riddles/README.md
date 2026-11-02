@@ -50,9 +50,10 @@ Se connecter à la gestion ne change pas le profil de joueur du même navigateur
 Le tableau affiche le nom de chaque énigme, sa réponse, son état et toutes ses
 résolutions (nom et heure de Montréal, avec les secondes). Les énigmes et leurs
 réponses sont configurées manuellement lors de leur intégration; le tableau de
-bord ne propose ni ajout ni modification. Le premier puzzle est Zebra,
-sur `/enigmes/zebra`; les énoncés sont intégrés et les solutions restent à
-configurer dans le nœud privé.
+bord ne propose ni ajout ni modification. Les pages intégrées sont **Nostalgie**
+(Zebra, `/enigmes/zebra`) et **La Fourchette** (`/enigmes/la-fourchette`). Cette
+dernière contient un contenu provisoire en attendant ses détails et sa réponse
+privée; la gestion indique « À définir » tant que cette réponse manque.
 
 La section **Joueurs enregistrés** suit en temps réel tous les profils de
 `participants`, y compris ceux sans réussite. Chaque fiche affiche la progression
@@ -105,8 +106,9 @@ incorrecte ne crée ni preuve ni résolution. Les accents, majuscules, espaces e
 ponctuation ne comptent pas; les réponses doivent contenir des lettres ou chiffres.
 
 Chaque réponse finale, correcte ou incorrecte, est conservée dans l’historique
-privé du participant, accessible à l’administrateur. Cet historique n’est plus
-chargé ni affiché dans les pages des joueurs. Le serveur vérifie aussi son verdict. Une bonne réponse
+privé du participant, accessible à l’administrateur. Les essais corrects permettent
+de restaurer la réponse validée en lecture seule; la liste des anciennes tentatives
+n’est pas affichée au joueur. Le serveur vérifie aussi son verdict. Une bonne réponse
 enregistre l’essai et la résolution atomiquement; une mauvaise réponse enregistre
 seulement l’essai. Une erreur technique conserve la saisie et ne compte pas comme
 une réponse incorrecte. Le popup de succès propose un retour au portail des énigmes.
@@ -186,6 +188,8 @@ continue d’enregistrer les essais dans Firebase, sans historique visible pour 
 ```
 
 `number` est facultatif et ajoute le numéro de dossier dans l’en-tête et le titre.
+`answerLabel` est facultatif, avec « Réponse » par défaut. Nostalgie précise
+« Réponse (8 lettres) »; les nouvelles énigmes peuvent définir leur propre format.
 Le gabarit conserve les liens de retour vers le portail public ou l’aperçu.
 
 `RiddleAccess` crée le contenu de son `ng-template` seulement quand un nom a été

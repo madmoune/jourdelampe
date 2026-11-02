@@ -30,18 +30,24 @@ describe('ouverture publique et liens de prévisualisation', () => {
 
   afterEach(() => vi.restoreAllMocks());
 
-  it('redirige un lien direct vers Zebra avant l’ouverture', async () => {
-    const harness = await RouterTestingHarness.create();
-    await harness.navigateByUrl('/enigmes/zebra', RouteProbe);
-    expect(TestBed.inject(Router).url).toBe('/');
-  });
+  it.each(['/enigmes/zebra', '/enigmes/la-fourchette'])(
+    'redirige le lien %s avant l’ouverture',
+    async (path) => {
+      const harness = await RouterTestingHarness.create();
+      await harness.navigateByUrl(path, RouteProbe);
+      expect(TestBed.inject(Router).url).toBe('/');
+    },
+  );
 
-  it('autorise Zebra dès 17 h à Montréal, soit 22 h UTC', async () => {
-    vi.mocked(Date.now).mockReturnValue(Date.parse('2026-12-31T22:00:00Z'));
-    const released = await RouterTestingHarness.create();
-    await released.navigateByUrl('/enigmes/zebra', RouteProbe);
-    expect(TestBed.inject(Router).url).toBe('/enigmes/zebra');
-  });
+  it.each(['/enigmes/zebra', '/enigmes/la-fourchette'])(
+    'autorise %s dès 17 h à Montréal, soit 22 h UTC',
+    async (path) => {
+      vi.mocked(Date.now).mockReturnValue(Date.parse('2026-12-31T22:00:00Z'));
+      const released = await RouterTestingHarness.create();
+      await released.navigateByUrl(path, RouteProbe);
+      expect(TestBed.inject(Router).url).toBe(path);
+    },
+  );
 
   it('garde l’aperçu dans ses propres routes sans ouvrir le portail public', async () => {
     const harness = await RouterTestingHarness.create();
@@ -51,6 +57,9 @@ describe('ouverture publique et liens de prévisualisation', () => {
     const puzzle = await harness.navigateByUrl('/apercu-ia/enigmes/zebra', RouteProbe);
     expect(puzzle.preview).toBe(true);
     expect(puzzle.portal).toBe(preview.portal);
+    const fourchette = await harness.navigateByUrl('/apercu-ia/enigmes/la-fourchette', RouteProbe);
+    expect(fourchette.preview).toBe(true);
+    expect(fourchette.portal).toBe(preview.portal);
     const home = await harness.navigateByUrl('/apercu-ia#enigmes', RouteProbe);
     expect(home.preview).toBe(true);
     const publicHome = await harness.navigateByUrl('/', RouteProbe);

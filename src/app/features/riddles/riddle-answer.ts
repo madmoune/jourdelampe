@@ -30,6 +30,7 @@ import { RIDDLE_PREVIEW, RIDDLE_PREVIEW_PATH } from './riddle-release';
 })
 export class RiddleAnswer {
   readonly riddleId = input.required<string>();
+  readonly answerLabel = input('Réponse');
   readonly hint = input('');
   private readonly browser = inject(DOCUMENT).defaultView;
   protected readonly game = inject(GameStore);

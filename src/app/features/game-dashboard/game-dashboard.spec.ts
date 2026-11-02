@@ -4,6 +4,7 @@ import { provideRouter } from '@angular/router';
 import { GameAdminStore } from './game-admin-store';
 import { GameDashboard } from './game-dashboard';
 import { GameMode } from '../riddles/game.model';
+import { FOURCHETTE_ID } from '../riddles/riddle-pages';
 import { Participant } from '../riddles/participant';
 import { summarizePlayers } from './player-overview';
 
@@ -154,6 +155,26 @@ describe('tableau de bord protégé et confirmations de remise à zéro', () => 
     await fixture.whenStable();
     expect(reset).toHaveBeenCalledTimes(1);
     expect(page.textContent).toContain('Toutes les énigmes sont à nouveau non résolues.');
+  });
+
+  it('intègre une nouvelle énigme sans réponse configurée au suivi en direct', async () => {
+    const { fixture, page, store, riddles } = await setup(true);
+    store.game.catalog.set([{ id: 'a' }, { id: FOURCHETTE_ID }]);
+    riddles.update((current) => [
+      ...current,
+      { id: FOURCHETTE_ID, title: 'La Fourchette', prompt: '', order: 1, solutions: [] },
+    ]);
+    await fixture.whenStable();
+    const cards = page.querySelectorAll<HTMLElement>('.riddle-card');
+    expect(cards).toHaveLength(2);
+    expect(cards[1].querySelector('h3')?.textContent).toBe('La Fourchette');
+    expect(cards[1].querySelector('.badge')?.textContent).toContain('Non résolue');
+    expect(cards[1].querySelector('.secret-answer')?.textContent).toContain('À définir');
+    for (const player of page.querySelectorAll<HTMLElement>('.player-card')) {
+      expect(player.querySelector('progress')?.max).toBe(2);
+      expect(player.querySelector('.player-riddles')?.textContent).toContain('La Fourchette');
+      expect(player.textContent).toContain('Méta verrouillé');
+    }
   });
 
   it('demande une confirmation avant de supprimer un joueur', async () => {

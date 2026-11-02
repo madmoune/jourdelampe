@@ -15,6 +15,12 @@ export const routes: Routes = [
           import('./features/zebra/zebra-page').then((module) => module.ZebraPage),
       },
       {
+        path: 'enigmes/la-fourchette',
+        title: 'La Fourchette — Le Jour de l’AI',
+        loadComponent: () =>
+          import('./features/fourchette/fourchette-page').then((module) => module.FourchettePage),
+      },
+      {
         path: '',
         title: 'Le Jour de l’AI — Votre party est en sursis',
         loadComponent: () => import('./features/ai-home/ai-home').then((module) => module.AiHome),
@@ -26,6 +32,13 @@ export const routes: Routes = [
     canMatch: [requireRiddleRelease],
     title: 'Nostalgie — Le Jour de l’AI',
     loadComponent: () => import('./features/zebra/zebra-page').then((module) => module.ZebraPage),
+  },
+  {
+    path: 'enigmes/la-fourchette',
+    canMatch: [requireRiddleRelease],
+    title: 'La Fourchette — Le Jour de l’AI',
+    loadComponent: () =>
+      import('./features/fourchette/fourchette-page').then((module) => module.FourchettePage),
   },
   {
     path: 'gestion-enigmes',

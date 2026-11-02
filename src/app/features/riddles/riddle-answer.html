@@ -2,7 +2,7 @@
   @if (solved()) {
     <p class="success">Énigme résolue</p>
     @if (solvedAnswer(); as answer) {
-      <label [for]="'answer-' + riddleId()">Réponse (8 lettres)</label>
+      <label [for]="'answer-' + riddleId()">{{ answerLabel() }}</label>
       <input
         [id]="'answer-' + riddleId()"
         name="answer"
@@ -14,7 +14,7 @@
     }
   } @else {
     <form (ngSubmit)="submit()">
-      <label [for]="'answer-' + riddleId()">Réponse (8 lettres)</label>
+      <label [for]="'answer-' + riddleId()">{{ answerLabel() }}</label>
       @if (hint()) {
         <p class="answer-hint" [id]="'answer-hint-' + riddleId()">{{ hint() }}</p>
       }

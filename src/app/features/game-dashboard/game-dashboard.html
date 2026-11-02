@@ -217,7 +217,7 @@
               </div>
               <p class="secret-answer">
                 <span>Réponse</span
-                ><strong>{{ store.secrets()[riddle.id]?.answer ?? 'Réponse indisponible' }}</strong>
+                ><strong>{{ store.secrets()[riddle.id]?.answer ?? 'À définir' }}</strong>
               </p>
               @if (riddle.solutions.length) {
                 <ul class="solutions">

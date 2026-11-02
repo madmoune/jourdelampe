@@ -27,6 +27,7 @@ export class RiddlePage {
   readonly title = input.required<string>();
   readonly flavorText = input.required<string>();
   readonly number = input('');
+  readonly answerLabel = input('Réponse');
   readonly answerHint = input('');
   protected readonly content = contentChild.required(TemplateRef<unknown>);
   protected readonly homePath = inject(RIDDLE_PREVIEW) ? RIDDLE_PREVIEW_PATH : '/';

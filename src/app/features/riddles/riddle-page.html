@@ -26,7 +26,11 @@
         <p class="access-notice" role="status">Chargement de l’énigme…</p>
       } @else if (participants.canSolve()) {
         <div class="puzzle-play">
-          <app-riddle-answer [riddleId]="riddleId()" [hint]="answerHint()" />
+          <app-riddle-answer
+            [riddleId]="riddleId()"
+            [answerLabel]="answerLabel()"
+            [hint]="answerHint()"
+          />
           @if (game.error()) {
             <p class="game-error" role="alert">{{ game.error() }}</p>
           }
