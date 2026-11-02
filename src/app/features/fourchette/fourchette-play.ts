@@ -101,6 +101,7 @@ export class FourchettePlay {
     if (result?.key === this.storageKey() && result.code === code) return result;
     return this.verifiedCode() === code ? { correct: true } : null;
   });
+  protected readonly extractionReady = computed(() => this.currentVerdict()?.correct === true);
   private requestId = 0;
 
   constructor() {

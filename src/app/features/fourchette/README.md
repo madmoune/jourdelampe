@@ -27,7 +27,9 @@ compare les cases, et pas seulement le nombre de mots cochés. Le verdict est
 affiché au-dessus de la grille; une panne conserve les sélections et déclenche
 jusqu’à deux nouvelles tentatives automatiques. Les réponses obsolètes sont
 ignorées après une modification, une remise à zéro ou la fermeture de la page.
-Cette validation partielle ne résout pas la réponse finale.
+Cette validation partielle ne résout pas la réponse finale. Quand la grille est
+validée, les cases restantes — les lettres de l’extraction — sont mises en évidence
+avec une couleur distincte des lettres sélectionnées.
 
 Les sélections et les mots cochés sont sauvegardés localement par profil et par
 partie sous `jdl-fourchette-large:<participantId>:<roundId>`. Un essai de grille
@@ -36,7 +38,7 @@ cochés en l’absence de brouillon. Cette disposition utilise `target: fourchet
 sur ses essais de grille pour ignorer les validations de l’ancienne disposition,
 sans effacer son stockage ni son historique. Après la réponse finale, la grille est verrouillée.
 
-Le bouton **Vider la grille**, au-dessus de la grille, désélectionne toutes les
+Le bouton **Vider la grille**, sous la grille, désélectionne toutes les
 lettres, décoche les mots et retire le verdict courant. Cet état vide est mémorisé
 pour éviter qu’une ancienne validation restaure automatiquement les sélections.
 Les essais et les réussites Firebase sont conservés. Le bouton est désactivé si

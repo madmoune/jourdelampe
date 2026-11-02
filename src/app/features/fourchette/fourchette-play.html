@@ -64,6 +64,7 @@
                       type="button"
                       class="letter"
                       [class.selected]="selected"
+                      [class.extraction-letter]="extractionReady() && !selected"
                       [attr.data-cell]="rowLabels[rowIndex] + columns[columnIndex]"
                       [attr.aria-label]="
                         rowLabels[rowIndex] + columns[columnIndex] + ' : ' + letter

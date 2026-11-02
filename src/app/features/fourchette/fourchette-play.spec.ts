@@ -122,6 +122,16 @@ describe('grille interactive de La Fourchette', () => {
     expect(word.getAttribute('aria-pressed')).toBe('false');
   });
 
+  it('met en évidence les lettres restantes pour l’extraction après validation', async () => {
+    const { page, cell, checkWords, waitForCheck } = await setup();
+    cell('A01').click();
+    await checkWords();
+    expect(page.querySelectorAll('.letter.extraction-letter')).toHaveLength(0);
+    await waitForCheck();
+    expect(page.querySelectorAll('.letter.selected')).toHaveLength(1);
+    expect(page.querySelectorAll('.letter.extraction-letter')).toHaveLength(109);
+  });
+
   it('vérifie automatiquement les cases dès les dix mots cochés, sans résoudre la réponse finale', async () => {
     const { page, cell, checkWords, waitForCheck, checkGrid, submit } = await setup(false);
     cell('A01').click();
