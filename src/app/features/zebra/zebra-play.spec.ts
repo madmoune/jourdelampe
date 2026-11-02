@@ -156,6 +156,9 @@ describe('indication partielle pour la grille complète', () => {
     await fixture.whenStable();
     expect(checkSurname).toHaveBeenCalledWith('zebra-01', 'bob', 'Brown');
     expect(bobEntry.querySelector('.surname-correct')?.textContent).toContain('✓');
+    expect(bobInput.readOnly).toBe(true);
+    expect(bobInput.value).toBe('Brown');
+    expect(bobInput.getAttribute('aria-label')).toContain('nom de famille validé');
     expect(
       success.compareDocumentPosition(page.querySelector('app-zebra-grid')!) &
         Node.DOCUMENT_POSITION_FOLLOWING,

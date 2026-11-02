@@ -15,7 +15,7 @@ vérification est affiché dès que les 36 associations sont complètes. Une gri
 validée affiche aussi les quatre prénoms, l’un sous l’autre, avec un champ de nom de
 famille à côté de chacun; chaque réponse est vérifiée automatiquement et confirmée par une coche
 verte ou une croix rouge. La comparaison ignore la casse, les accents, les espaces et la
-ponctuation.
+ponctuation. Un nom correct reste affiché dans son champ, qui devient alors en lecture seule.
 Sous la grille, un panneau unique rassemble les consignes de manipulation, les
 déductions et la légende.
 `ZebraPlay` contient uniquement l’énigme et sa vérification de grille.

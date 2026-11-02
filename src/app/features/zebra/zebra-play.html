@@ -42,6 +42,11 @@
                   autocomplete="off"
                   maxlength="200"
                   [value]="surnameDraft(name.id)"
+                  [readonly]="surnameResult(name.id)?.correct === true"
+                  [attr.aria-label]="
+                    name.label +
+                    (surnameResult(name.id)?.correct === true ? ' — nom de famille validé' : '')
+                  "
                   (input)="updateSurname(name.id, $any($event.target).value)"
                 />
                 @if (surnameResult(name.id); as check) {
