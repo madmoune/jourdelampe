@@ -96,6 +96,9 @@ describe('grille interactive de La Fourchette', () => {
     expect(cell('A04').textContent?.trim()).toBe('0');
     expect(page.querySelector('.verify-grid')).toBeNull();
     expect(page.textContent).not.toContain('Vérifier la grille');
+    expect(page.querySelector('.wordsearch-help')?.textContent).toContain(
+      'Chaque caractère n’est utilisé qu’une seule fois.',
+    );
     expect(page.querySelector('.wordsearch-help')?.textContent).not.toContain('vérifie');
     expect(checkGrid).not.toHaveBeenCalled();
   });
