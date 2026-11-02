@@ -107,7 +107,7 @@ describe('réponse finale sans historique et fenêtre de succès', () => {
     expect(answer?.value).toBe('Lampe');
     expect(answer?.readOnly).toBe(true);
     expect(page.querySelector('form')).toBeNull();
-    expect(page.textContent).toContain('Tu as résolu cette énigme pour cette partie.');
+    expect(page.textContent).toContain('Énigme résolue');
   });
 
   it('récupère la réponse validée conservée par Firebase après une ancienne résolution', async () => {

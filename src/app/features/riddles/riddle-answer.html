@@ -1,6 +1,6 @@
 <section #answerSection tabindex="-1" aria-label="Réponse finale" class="answer-section">
   @if (solved()) {
-    <p class="success">Tu as résolu cette énigme pour cette partie.</p>
+    <p class="success">Énigme résolue</p>
     @if (solvedAnswer(); as answer) {
       <label [for]="'answer-' + riddleId()">Réponse (8 lettres)</label>
       <input
