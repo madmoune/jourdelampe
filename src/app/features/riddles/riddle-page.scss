@@ -44,7 +44,7 @@ header b {
   color: #b4cf76;
 }
 .puzzle-heading {
-  padding: 40px 40px 18px;
+  padding: 40px 40px 12px;
 }
 .eyebrow {
   margin: 0;
@@ -69,6 +69,7 @@ h1 span {
   letter-spacing: 0;
 }
 .puzzle-heading > p:last-child {
+  margin: 0;
   color: #c2b0d0;
   font-size: 14px;
   line-height: 1.7;

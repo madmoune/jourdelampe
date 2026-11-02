@@ -62,6 +62,9 @@ input:disabled {
 .success {
   color: #dcff79;
 }
+.answer-section > .success {
+  margin: 0 0 16px;
+}
 dialog {
   color: #ece4f3;
   background: #21182e;
