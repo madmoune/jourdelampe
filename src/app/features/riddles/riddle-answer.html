@@ -3,7 +3,7 @@
     <p class="success">Tu as résolu cette énigme pour cette partie.</p>
   } @else {
     <form (ngSubmit)="submit()">
-      <label [for]="'answer-' + riddleId()">Ta réponse</label>
+      <label [for]="'answer-' + riddleId()">Réponse (8 lettres)</label>
       @if (hint()) {
         <p class="answer-hint" [id]="'answer-hint-' + riddleId()">{{ hint() }}</p>
       }

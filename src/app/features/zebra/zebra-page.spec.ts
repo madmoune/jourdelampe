@@ -75,7 +75,10 @@ describe('nom géré uniquement dans le portail de l’AI', () => {
     expect(page.querySelector('app-zebra-play')).not.toBeNull();
     expect(createPuzzle).toHaveBeenCalledOnce();
     expect(page.querySelector('input[name="answer"]')).not.toBeNull();
-    expect(page.querySelector('.answer-hint')?.textContent).toContain('8 lettres');
+    expect(page.querySelector('label[for="answer-zebra-01"]')?.textContent).toContain(
+      'Réponse (8 lettres)',
+    );
+    expect(page.querySelector('.answer-hint')).toBeNull();
     expect(page.querySelector('app-riddle-access')).toBeNull();
     expect(page.textContent).not.toContain('Modifier mon nom');
     expect(page.querySelector('.access-notice')).toBeNull();
