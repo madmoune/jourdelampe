@@ -1,7 +1,7 @@
 # La Fourchette
 
 La page utilise le gabarit commun `RiddlePage` : titre, texte d’ambiance, réponse
-de 12 lettres, puis contenu. Le texte d’ambiance et les dix lignes de onze cases
+de 12 lettres, puis contenu. Le texte d’ambiance et les cinq lignes de vingt-deux cases
 reprennent les éléments fournis, y compris la distinction entre O et 0.
 
 - Identifiant stable : `fourchette-01`.
@@ -10,8 +10,10 @@ reprennent les éléments fournis, y compris la distinction entre O et 0.
 - Catalogue Firebase : `game/catalog/fourchette-01` (titre, description, ordre 1).
 - Réponse privée à ajouter : `riddleSecrets/fourchette-01/{answer, normalizedAnswer}`.
 
-Les deux colonnes de cinq mots sont affichées à gauche de la grille sur ordinateur,
-puis au-dessus sur petit écran. Chaque case et chaque mot sont des boutons à
+Les deux colonnes de cinq mots sont affichées au-dessus de la grille. Ses lignes
+sont étiquetées A à E et ses colonnes 01 à 22. La grille utilise un fond noir et
+une présentation monospace sans bordures entre les cases, comme l’image fournie.
+Chaque case et chaque mot sont des boutons à
 bascule accessibles au clavier. Marquer un mot ne sélectionne pas ses lettres.
 
 La grille est vérifiée automatiquement lorsque les dix mots sont cochés, puis
@@ -26,9 +28,11 @@ ignorées après une modification, une remise à zéro ou la fermeture de la pag
 Cette validation partielle ne résout pas la réponse finale.
 
 Les sélections et les mots cochés sont sauvegardés localement par profil et par
-partie sous `jdl-fourchette-v1:<participantId>:<roundId>`. Un essai de grille
+partie sous `jdl-fourchette-large:<participantId>:<roundId>`. Un essai de grille
 correct conservé dans Firebase restaure aussi les sélections et les dix mots
-cochés en l’absence de brouillon. Après la réponse finale, la grille est verrouillée.
+cochés en l’absence de brouillon. Cette disposition utilise `target: fourchette-large`
+sur ses essais de grille pour ignorer les validations de l’ancienne disposition,
+sans effacer son stockage ni son historique. Après la réponse finale, la grille est verrouillée.
 
 Le catalogue permet l’affichage dans l’accueil, les résultats, les compteurs et
 le tableau de bord en direct. Le secret de grille peut être configuré seul :

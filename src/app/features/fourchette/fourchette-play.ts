@@ -15,6 +15,7 @@ import { RiddleSubmissions } from '../riddles/riddle-submissions';
 import {
   emptyFourchetteProgress,
   FOURCHETTE_GRID,
+  FOURCHETTE_GRID_VERSION,
   FOURCHETTE_WORD_COLUMNS,
   FOURCHETTE_WORDS,
   FourchetteProgress,
@@ -39,12 +40,15 @@ export class FourchettePlay {
   private readonly attempts = inject(RiddleAttempts);
   private readonly submissions = inject(RiddleSubmissions);
   protected readonly rows = FOURCHETTE_GRID.map((row) => [...row]);
-  protected readonly columns = [...'ABCDEFGHIJK'];
+  protected readonly rowLabels = [...'ABCDE'];
+  protected readonly columns = Array.from({ length: FOURCHETTE_GRID[0].length }, (_, index) =>
+    String(index + 1).padStart(2, '0'),
+  );
   protected readonly wordColumns = FOURCHETTE_WORD_COLUMNS;
   protected readonly wordCount = FOURCHETTE_WORDS.length;
   private readonly storageKey = computed(
     () =>
-      `jdl-fourchette-v1:${this.participants.participant()?.id}:${this.game.round()?.id ?? 'preview'}`,
+      `jdl-${FOURCHETTE_GRID_VERSION}:${this.participants.participant()?.id}:${this.game.round()?.id ?? 'preview'}`,
   );
   private readonly state = signal<{ key: string; progress: FourchetteProgress | null } | null>(
     null,
@@ -58,6 +62,7 @@ export class FourchettePlay {
             attempt.riddleId === FOURCHETTE_ID &&
             attempt.roundId === this.game.round()?.id &&
             attempt.kind === 'grid' &&
+            attempt.target === FOURCHETTE_GRID_VERSION &&
             attempt.correct &&
             validFourchetteSelection(attempt.answer),
         )?.answer ?? null,
@@ -154,7 +159,11 @@ export class FourchettePlay {
     this.checking.set(true);
     this.verdict.set(null);
     try {
-      const correct = await this.submissions.checkGrid(FOURCHETTE_ID, code);
+      const correct = await this.submissions.checkGrid(
+        FOURCHETTE_ID,
+        code,
+        FOURCHETTE_GRID_VERSION,
+      );
       if (
         this.requestId === requestId &&
         key === this.storageKey() &&

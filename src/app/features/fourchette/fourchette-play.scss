@@ -4,11 +4,12 @@
 }
 .wordsearch-workspace {
   display: grid;
-  grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
-  gap: 32px;
+  gap: 24px;
 }
 .word-lists {
+  max-width: 840px;
   padding: 24px 20px;
   border: 1px solid #7d688c;
   background: #23192f;
@@ -75,13 +76,14 @@ ul {
 }
 .grid-scroll {
   overflow-x: auto;
-  padding: 0 4px 12px;
+  padding: 16px 12px 20px;
+  background: #1b1b1b;
   overscroll-behavior-x: contain;
 }
 table {
   width: 100%;
-  max-width: 704px;
-  min-width: 440px;
+  max-width: 1120px;
+  min-width: 880px;
   border-collapse: collapse;
   table-layout: fixed;
 }
@@ -94,32 +96,35 @@ caption {
   white-space: nowrap;
 }
 th {
-  height: 24px;
-  color: #c4b6d1;
-  font: 11px/1.4 monospace;
+  height: 32px;
+  color: #e7e7e7;
+  font: 700 16px/1.4 monospace;
+  text-align: center;
 }
 tr > th:first-child,
 .corner {
-  width: 24px;
+  width: 40px;
+}
+tbody th {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  border-right: 1px solid #e7e7e7;
+  background: #1b1b1b;
 }
 td:not(.corner) {
   padding: 0;
-  border: 1px solid #7d688c;
-  background: #241b30;
-}
-tbody tr:nth-child(even) td {
-  background: #1b1527;
+  border: 0;
 }
 .letter {
   display: block;
   width: 100%;
-  aspect-ratio: 1;
-  min-height: 36px;
+  height: 44px;
   padding: 0;
   border: 0;
   background: transparent;
-  color: #f0e9f4;
-  font: 700 clamp(18px, 2vw, 26px)/1 monospace;
+  color: #e7e7e7;
+  font: 600 18px/1 monospace;
   font-variant-numeric: slashed-zero;
   cursor: pointer;
 }
@@ -162,15 +167,6 @@ button:focus-visible,
   color: #c4b6d1;
   font-size: 13px;
   line-height: 1.7;
-}
-@media (max-width: 1000px) {
-  .wordsearch-workspace {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-  .word-lists {
-    max-width: 600px;
-  }
 }
 @media (max-width: 600px) {
   .word-lists {

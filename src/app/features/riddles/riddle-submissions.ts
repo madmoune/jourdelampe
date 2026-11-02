@@ -19,8 +19,8 @@ export class RiddleSubmissions {
   submit(riddleId: string, answer: string): Promise<boolean> {
     return this.check(riddleId, answer, 'answer');
   }
-  checkGrid(riddleId: string, code: string): Promise<boolean> {
-    return this.check(riddleId, code, 'grid');
+  checkGrid(riddleId: string, code: string, version?: string): Promise<boolean> {
+    return this.check(riddleId, code, 'grid', version);
   }
   checkSurname(riddleId: string, target: string, surname: string): Promise<boolean> {
     return this.check(riddleId, surname, 'surname', target);
@@ -42,6 +42,8 @@ export class RiddleSubmissions {
       throw new Error('Entre une réponse de 200 caractères ou moins.');
     if (kind === 'grid' && !validGridCode(answer))
       throw new Error('Complète la grille avant de la vérifier.');
+    if (kind === 'grid' && target !== undefined && !/^[a-z][a-z-]{0,63}$/u.test(target))
+      throw new Error('La version de la grille est invalide.');
     if (kind === 'surname' && (!target || !/^[a-z][a-z-]{0,63}$/u.test(target)))
       throw new Error('Le prénom à vérifier est invalide.');
     if (

@@ -439,7 +439,7 @@ await request('riddleSecrets/fourchette/gridAnswer', 'GET', undefined, 401, 'pla
 await request(
   'game/attempts/player/fourchette/valid-grid',
   'PUT',
-  attempt(wordsearchCode, true, 'grid'),
+  attempt(wordsearchCode, true, 'grid', { target: 'fourchette-large' }),
   200,
   'player',
 );

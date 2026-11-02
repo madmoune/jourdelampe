@@ -150,7 +150,7 @@ describe('validation et historique des réponses', () => {
   it('conserve les 110 cases du mot caché, y compris les zéros initiaux, sans créer de résolution finale', async () => {
     const code = '01'.repeat(55);
     update.mockRejectedValueOnce(new DatabaseWriteError(403));
-    expect(await submissions.checkGrid('a', code)).toBe(true);
+    expect(await submissions.checkGrid('a', code, 'fourchette-large')).toBe(true);
     const patch = update.mock.calls[1][1];
     expect(Object.keys(patch)).toHaveLength(1);
     expect(Object.values(patch)[0]).toEqual(
@@ -159,6 +159,7 @@ describe('validation et historique des réponses', () => {
         answer: code,
         normalizedAnswer: code,
         correct: true,
+        target: 'fourchette-large',
       }),
     );
   });
@@ -171,6 +172,12 @@ describe('validation et historique des réponses', () => {
       '2'.repeat(110),
     ])
       await expect(submissions.checkGrid('a', code)).rejects.toThrow('Complète la grille');
+    expect(update).not.toHaveBeenCalled();
+  });
+  it('refuse un identifiant de version de grille invalide avant toute écriture', async () => {
+    await expect(submissions.checkGrid('a', '0'.repeat(110), 'bad version')).rejects.toThrow(
+      'version',
+    );
     expect(update).not.toHaveBeenCalled();
   });
   it('refuse une soumission sans nom avant toute écriture', async () => {

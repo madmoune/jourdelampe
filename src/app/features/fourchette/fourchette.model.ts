@@ -1,15 +1,11 @@
-/** Transcription de la grille fournie : le O de C1 est une lettre, les 0 sont des chiffres. */
+/** Transcription de la grille fournie, avec distinction entre la lettre O et le chiffre 0. */
+export const FOURCHETTE_GRID_VERSION = 'fourchette-large';
 export const FOURCHETTE_GRID = [
-  'BEOTNARNMLG',
-  'VLOCKOGOAYN',
-  'RNIFDERAENL',
-  'AIMLPEEAPIT',
-  'O2TIUIXEZKI',
-  '0VRRASHLAAK',
-  'SI0SCDLUEHE',
-  'O0EEELTNREK',
-  'HSEAAA0SOT8',
-  'GRCM0PNS0AP',
+  'AYD0O2AHAAEM0ECN8CIPVR',
+  'R0RNNIVRXL0GHL0MTOIEKE',
+  'KPTN0AZPLLUIGTERANHOIK',
+  'AEAEOEETUILOEAABSTANEA',
+  'SGPLCSRSOIDESNEKMOSLRF',
 ] as const;
 
 export const FOURCHETTE_WORD_COLUMNS = [

@@ -1,21 +1,4 @@
 <section class="wordsearch" aria-label="Mots cachés de La Fourchette">
-  <div class="verification-feedback" aria-live="polite" aria-atomic="true">
-    @if (checking()) {
-      <p class="grid-status" role="status">Vérification de la grille…</p>
-    } @else if (currentVerdict(); as result) {
-      @if (result.error) {
-        <p class="grid-status grid-error" role="alert">{{ result.error }}</p>
-      } @else if (result.correct) {
-        <p class="grid-status grid-success" role="status">
-          <strong>Grille complète et validée.</strong> Tu peux maintenant passer à l’extraction.
-        </p>
-      } @else {
-        <p class="grid-status grid-error" role="alert">
-          <strong>Grille non valide.</strong> Revois les lettres sélectionnées.
-        </p>
-      }
-    }
-  </div>
   <div class="wordsearch-workspace">
     <aside class="word-lists" aria-labelledby="word-list-title">
       <h2 id="word-list-title">Mots à chercher</h2>
@@ -44,6 +27,23 @@
       <p class="word-count">{{ foundCount() }} / {{ wordCount }} mots cochés</p>
     </aside>
     <div class="grid-main">
+      <div class="verification-feedback" aria-live="polite" aria-atomic="true">
+        @if (checking()) {
+          <p class="grid-status" role="status">Vérification de la grille…</p>
+        } @else if (currentVerdict(); as result) {
+          @if (result.error) {
+            <p class="grid-status grid-error" role="alert">{{ result.error }}</p>
+          } @else if (result.correct) {
+            <p class="grid-status grid-success" role="status">
+              <strong>Grille complète et validée.</strong> Tu peux maintenant passer à l’extraction.
+            </p>
+          } @else {
+            <p class="grid-status grid-error" role="alert">
+              <strong>Grille non valide.</strong> Revois les lettres sélectionnées.
+            </p>
+          }
+        }
+      </div>
       <div
         class="grid-scroll"
         role="region"
@@ -52,7 +52,7 @@
       >
         <table aria-describedby="wordsearch-help">
           <caption>
-            Grille de mots cachés : 10 lignes, 11 colonnes.
+            Grille de mots cachés : 5 lignes de A à E, 22 colonnes de 01 à 22.
           </caption>
           <thead>
             <tr>
@@ -65,7 +65,7 @@
           <tbody>
             @for (row of rows; track $index; let rowIndex = $index) {
               <tr>
-                <th scope="row">{{ rowIndex + 1 }}</th>
+                <th scope="row">{{ rowLabels[rowIndex] }}</th>
                 @for (letter of row; track $index; let columnIndex = $index) {
                   @let index = rowIndex * columns.length + columnIndex;
                   @let selected = progress().selection[index] === '1';
@@ -74,8 +74,10 @@
                       type="button"
                       class="letter"
                       [class.selected]="selected"
-                      [attr.data-cell]="columns[columnIndex] + (rowIndex + 1)"
-                      [attr.aria-label]="columns[columnIndex] + (rowIndex + 1) + ' : ' + letter"
+                      [attr.data-cell]="rowLabels[rowIndex] + columns[columnIndex]"
+                      [attr.aria-label]="
+                        rowLabels[rowIndex] + columns[columnIndex] + ' : ' + letter
+                      "
                       [attr.aria-pressed]="selected"
                       [disabled]="locked()"
                       (click)="toggleCell(index)"
