@@ -4,7 +4,7 @@ import { provideRouter } from '@angular/router';
 import { GameStore } from './game-store';
 import { ParticipantStore } from './participant-store';
 import { RiddleGame } from './riddle-game';
-import { FOURCHETTE_ID, ZEBRA_ID } from './riddle-pages';
+import { FOURCHETTE_ID, MATCHMAKER_ID, ZEBRA_ID } from './riddle-pages';
 import { RIDDLE_PREVIEW } from './riddle-release';
 
 describe('liens du catalogue des énigmes', () => {
@@ -15,6 +15,7 @@ describe('liens du catalogue des énigmes', () => {
     const catalog = [
       { id: ZEBRA_ID, title: 'Nostalgie', prompt: '', order: 0, solutions: [] },
       { id: FOURCHETTE_ID, title: 'La Fourchette', prompt: '', order: 1, solutions: [] },
+      { id: MATCHMAKER_ID, title: 'Le début de la fin', prompt: '', order: 2, solutions: [] },
     ];
     await TestBed.configureTestingModule({
       imports: [RiddleGame],
@@ -38,14 +39,18 @@ describe('liens du catalogue des énigmes', () => {
     await fixture.whenStable();
     const page = fixture.nativeElement as HTMLElement;
     const links = page.querySelectorAll<HTMLAnchorElement>('.puzzle-link');
-    expect(links).toHaveLength(2);
+    expect(links).toHaveLength(3);
     expect(links[0].getAttribute('href')).toBe(path);
     expect(links[1].getAttribute('href')).toBe(
       `${preview ? '/apercu-ia' : ''}/enigmes/la-fourchette`,
     );
+    expect(links[2].getAttribute('href')).toBe(
+      `${preview ? '/apercu-ia' : ''}/enigmes/le-debut-de-la-fin`,
+    );
     expect([...page.querySelectorAll('h3')].map((title) => title.textContent)).toEqual([
       'Nostalgie',
       'La Fourchette',
+      'Le début de la fin',
     ]);
   });
 });

@@ -51,9 +51,14 @@ Le tableau affiche le nom de chaque énigme, sa réponse, son état et toutes se
 résolutions (nom et heure de Montréal, avec les secondes). Les énigmes et leurs
 réponses sont configurées manuellement lors de leur intégration; le tableau de
 bord ne propose ni ajout ni modification. Les pages intégrées sont **Nostalgie**
-(Zebra, `/enigmes/zebra`) et **La Fourchette** (`/enigmes/la-fourchette`). Cette
-dernière présente un mot caché interactif; la gestion indique « À définir » tant
-que sa réponse finale privée n’a pas été fournie.
+(Zebra, `/enigmes/zebra`), **La Fourchette** (`/enigmes/la-fourchette`) et
+**Le début de la fin** (Matchmaker, `/enigmes/le-debut-de-la-fin`).
+La gestion indique « À définir » tant que la réponse finale privée n’a pas été fournie.
+
+Le Matchmaker utilise l’identifiant `matchmaker-01`. Son entrée dans
+`game/catalog/matchmaker-01` contient le titre « Le début de la fin », un `prompt`
+vide et l’ordre `2`. La réponse sera configurée dans
+`riddleSecrets/matchmaker-01/{answer, normalizedAnswer}` lorsque le contenu sera fourni.
 
 La section **Joueurs enregistrés** suit en temps réel tous les profils de
 `participants`, y compris ceux sans réussite. Chaque fiche affiche la progression

@@ -21,6 +21,12 @@ export const routes: Routes = [
           import('./features/fourchette/fourchette-page').then((module) => module.FourchettePage),
       },
       {
+        path: 'enigmes/le-debut-de-la-fin',
+        title: 'Le début de la fin — Le Jour de l’AI',
+        loadComponent: () =>
+          import('./features/matchmaker/matchmaker-page').then((module) => module.MatchmakerPage),
+      },
+      {
         path: '',
         title: 'Le Jour de l’AI — Votre party est en sursis',
         loadComponent: () => import('./features/ai-home/ai-home').then((module) => module.AiHome),
@@ -39,6 +45,13 @@ export const routes: Routes = [
     title: 'La Fourchette — Le Jour de l’AI',
     loadComponent: () =>
       import('./features/fourchette/fourchette-page').then((module) => module.FourchettePage),
+  },
+  {
+    path: 'enigmes/le-debut-de-la-fin',
+    canMatch: [requireRiddleRelease],
+    title: 'Le début de la fin — Le Jour de l’AI',
+    loadComponent: () =>
+      import('./features/matchmaker/matchmaker-page').then((module) => module.MatchmakerPage),
   },
   {
     path: 'gestion-enigmes',

@@ -12,6 +12,8 @@ class RouteProbe {
   readonly portal = inject(AiPortalState);
 }
 
+const puzzlePaths = ['/enigmes/zebra', '/enigmes/la-fourchette', '/enigmes/le-debut-de-la-fin'];
+
 function probeRoutes(config: Routes): Routes {
   return config.map((route) =>
     route.redirectTo !== undefined
@@ -30,7 +32,7 @@ describe('ouverture publique et liens de prévisualisation', () => {
 
   afterEach(() => vi.restoreAllMocks());
 
-  it.each(['/enigmes/zebra', '/enigmes/la-fourchette'])(
+  it.each(puzzlePaths)(
     'redirige le lien %s avant l’ouverture',
     async (path) => {
       const harness = await RouterTestingHarness.create();
@@ -39,7 +41,7 @@ describe('ouverture publique et liens de prévisualisation', () => {
     },
   );
 
-  it.each(['/enigmes/zebra', '/enigmes/la-fourchette'])(
+  it.each(puzzlePaths)(
     'autorise %s dès 17 h à Montréal, soit 22 h UTC',
     async (path) => {
       vi.mocked(Date.now).mockReturnValue(Date.parse('2026-12-31T22:00:00Z'));
@@ -54,12 +56,12 @@ describe('ouverture publique et liens de prévisualisation', () => {
     const preview = await harness.navigateByUrl('/apercu-ia', RouteProbe);
     expect(preview.preview).toBe(true);
     preview.portal.revealed.set(true);
-    const puzzle = await harness.navigateByUrl('/apercu-ia/enigmes/zebra', RouteProbe);
-    expect(puzzle.preview).toBe(true);
-    expect(puzzle.portal).toBe(preview.portal);
-    const fourchette = await harness.navigateByUrl('/apercu-ia/enigmes/la-fourchette', RouteProbe);
-    expect(fourchette.preview).toBe(true);
-    expect(fourchette.portal).toBe(preview.portal);
+    for (const path of puzzlePaths) {
+      const puzzle = await harness.navigateByUrl(`/apercu-ia${path}`, RouteProbe);
+      expect(TestBed.inject(Router).url).toBe(`/apercu-ia${path}`);
+      expect(puzzle.preview).toBe(true);
+      expect(puzzle.portal).toBe(preview.portal);
+    }
     const home = await harness.navigateByUrl('/apercu-ia#enigmes', RouteProbe);
     expect(home.preview).toBe(true);
     const publicHome = await harness.navigateByUrl('/', RouteProbe);
