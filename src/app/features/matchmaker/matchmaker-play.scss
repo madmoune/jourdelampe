@@ -135,7 +135,7 @@ input:focus-visible,
 .pairing-board {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 48px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 320px) minmax(0, 1fr);
   gap: 18px;
 }
 
@@ -175,15 +175,37 @@ input:focus-visible,
   text-align: right;
 }
 
+.match-left .match-dot {
+  order: 4;
+  margin-left: auto;
+}
+
+.match-left .match-number {
+  order: 1;
+}
+
+.match-left .match-text {
+  order: 2;
+}
+
+.match-left .connection-number {
+  order: 3;
+}
+
+.match-right .match-dot {
+  order: 1;
+  margin-right: auto;
+}
+
+.match-right .connection-number {
+  order: 2;
+}
+
 .match-right .match-text {
   order: 3;
 }
 
 .match-right .match-number {
-  order: 2;
-}
-
-.match-right .match-dot {
   order: 4;
 }
 
@@ -268,7 +290,7 @@ input:focus-visible,
   }
 
   .pairing-board {
-    grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(92px, 140px) minmax(0, 1fr);
     gap: 6px;
   }
 
