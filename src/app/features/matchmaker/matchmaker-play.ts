@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, signal } from '@angular/core';
 
 export interface MatchmakerSongEntry {
   readonly excerpt: string;
@@ -59,17 +59,43 @@ export class MatchmakerPlay {
 
   protected selectLeft(index: number): void {
     if (!Number.isInteger(index) || index < 0 || index >= MATCHMAKER_COUNT) return;
+    const pair = this.pairForLeft(index);
+    if (pair) {
+      this.removePair(pair.left);
+      this.selectedLeft.set(null);
+      return;
+    }
     this.selectedLeft.set(this.selectedLeft() === index ? null : index);
   }
 
   protected selectRight(index: number): void {
     const left = this.selectedLeft();
-    if (left === null || !Number.isInteger(index) || index < 0 || index >= MATCHMAKER_COUNT) return;
+    if (!Number.isInteger(index) || index < 0 || index >= MATCHMAKER_COUNT) return;
+    const pair = this.pairForRight(index);
+    if (left === null) {
+      if (pair) this.removePair(pair.left);
+      return;
+    }
+    if (pair?.left === left) {
+      this.removePair(left);
+      this.selectedLeft.set(null);
+      return;
+    }
     this.pairs.update((pairs) => [
       ...pairs.filter((pair) => pair.left !== left && pair.right !== index),
       { left, right: index },
     ]);
     this.selectedLeft.set(null);
+  }
+
+  @HostListener('document:click', ['$event'])
+  protected clearSelectionOutsideMatchItem(event: Event): void {
+    const target = event.target;
+    if (!(target instanceof Element) || !target.closest('.match-item')) this.selectedLeft.set(null);
+  }
+
+  private removePair(left: number): void {
+    this.pairs.update((pairs) => pairs.filter((pair) => pair.left !== left));
   }
 
   protected pairForLeft(index: number): MatchmakerPair | undefined {

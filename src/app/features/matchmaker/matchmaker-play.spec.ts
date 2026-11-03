@@ -33,6 +33,14 @@ describe('gabarit Matchmaker', () => {
     expect(left[0].textContent).toContain('↔ 06');
     expect(right[5].textContent).toContain('01 ↔');
 
+    left[0].click();
+    await fixture.whenStable();
+    expect(page.querySelectorAll('.pair-lines line')).toHaveLength(0);
+
+    left[0].click();
+    right[5].click();
+    await fixture.whenStable();
+
     left[1].click();
     right[5].click();
     await fixture.whenStable();
@@ -40,5 +48,21 @@ describe('gabarit Matchmaker', () => {
     expect(left[0].textContent).not.toContain('↔');
     expect(right[5].textContent).toContain('02 ↔');
     expect(page.querySelector('.pairing-status')?.textContent).toContain('1 / 14');
+
+    right[5].click();
+    await fixture.whenStable();
+    expect(page.querySelectorAll('.pair-lines line')).toHaveLength(0);
+    expect(page.querySelector('.pairing-status')?.textContent).toContain('0 / 14');
+  });
+
+  it('annule le point sélectionné quand on clique ailleurs', async () => {
+    const { fixture, page } = await setup();
+    const left = page.querySelectorAll<HTMLButtonElement>('.match-left .match-item');
+    left[0].click();
+    await fixture.whenStable();
+    expect(left[0].getAttribute('aria-pressed')).toBe('true');
+    page.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await fixture.whenStable();
+    expect(left[0].getAttribute('aria-pressed')).toBe('false');
   });
 });
