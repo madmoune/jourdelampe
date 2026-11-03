@@ -131,5 +131,15 @@
       </div>
     </div>
     <p class="pairing-status" aria-live="polite">{{ pairs().length }} / {{ rowNumbers.length }} phrases reliées</p>
+    <div class="pairing-actions">
+      <button
+        type="button"
+        class="clear-links"
+        [disabled]="pairs().length === 0"
+        (click)="clearPairs()"
+      >
+        Vider tous les liens
+      </button>
+    </div>
   </section>
 </section>

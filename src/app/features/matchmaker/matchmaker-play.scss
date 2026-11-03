@@ -266,6 +266,32 @@ input:focus-visible,
   text-align: center;
 }
 
+.pairing-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.clear-links {
+  min-height: 38px;
+  padding: 8px 14px;
+  border: 1px solid #806a91;
+  background: #191124;
+  color: #f0dba7;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.clear-links:hover:not(:disabled) {
+  background: #41334f;
+}
+
+.clear-links:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

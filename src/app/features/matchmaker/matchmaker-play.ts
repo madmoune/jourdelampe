@@ -98,6 +98,11 @@ export class MatchmakerPlay {
     this.pairs.update((pairs) => pairs.filter((pair) => pair.left !== left));
   }
 
+  protected clearPairs(): void {
+    this.pairs.set([]);
+    this.selectedLeft.set(null);
+  }
+
   protected pairForLeft(index: number): MatchmakerPair | undefined {
     return this.pairs().find((pair) => pair.left === index);
   }

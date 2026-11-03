@@ -65,4 +65,21 @@ describe('gabarit Matchmaker', () => {
     await fixture.whenStable();
     expect(left[0].getAttribute('aria-pressed')).toBe('false');
   });
+
+  it('vide toutes les connexions avec le bouton dédié', async () => {
+    const { fixture, page } = await setup();
+    const left = page.querySelectorAll<HTMLButtonElement>('.match-left .match-item');
+    const right = page.querySelectorAll<HTMLButtonElement>('.match-right .match-item');
+    const clear = page.querySelector<HTMLButtonElement>('.clear-links')!;
+    expect(clear.disabled).toBe(true);
+    left[0].click();
+    right[1].click();
+    await fixture.whenStable();
+    expect(clear.disabled).toBe(false);
+    clear.click();
+    await fixture.whenStable();
+    expect(page.querySelectorAll('.pair-lines line')).toHaveLength(0);
+    expect(page.querySelector('.pairing-status')?.textContent).toContain('0 / 14');
+    expect(clear.disabled).toBe(true);
+  });
 });
