@@ -1,21 +1,5 @@
-<app-riddle-page [riddleId]="riddleId" title="Le début de la fin" flavorText="À venir.">
+<app-riddle-page [riddleId]="riddleId" title="Le début de la fin" flavorText="À venir">
   <ng-template>
-    <section class="matchmaker" aria-label="Matchmaker">
-      <p class="matchmaker-note">Les propositions et les chiffres seront ajoutés prochainement.</p>
-      <div class="matchmaker-board">
-        <div class="matchmaker-column">
-          <h2>À gauche</h2>
-          <span aria-hidden="true">—</span>
-        </div>
-        <div class="matchmaker-column matchmaker-numbers">
-          <h2>Chiffres</h2>
-          <span aria-hidden="true">—</span>
-        </div>
-        <div class="matchmaker-column">
-          <h2>À droite</h2>
-          <span aria-hidden="true">—</span>
-        </div>
-      </div>
-    </section>
+    <app-matchmaker-play />
   </ng-template>
 </app-riddle-page>

@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RiddlePage } from '../riddles/riddle-page';
 import { MATCHMAKER_ID } from '../riddles/riddle-pages';
+import { MatchmakerPlay } from './matchmaker-play';
 
 @Component({
   selector: 'app-matchmaker-page',
-  imports: [RiddlePage],
+  imports: [RiddlePage, MatchmakerPlay],
   templateUrl: './matchmaker-page.html',
-  styleUrl: './matchmaker-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MatchmakerPage {
