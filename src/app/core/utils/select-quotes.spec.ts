@@ -16,9 +16,9 @@ describe('tirage des citations', () => {
     );
   });
 
-  it('réserve exactement les tirages inférieurs à 0,1 à une intervention de l’AI', () => {
-    const ai = selectQuotes(CONTENT.quotes, AI_QUOTES, 6, () => 0.099);
-    const regular = selectQuotes(CONTENT.quotes, AI_QUOTES, 6, () => 0.1);
+  it('réserve exactement les tirages inférieurs à 0,2 à une intervention de l’AI', () => {
+    const ai = selectQuotes(CONTENT.quotes, AI_QUOTES, 6, () => 0.199);
+    const regular = selectQuotes(CONTENT.quotes, AI_QUOTES, 6, () => 0.2);
 
     expect(ai[0].author).toBe('AI');
     expect(ai.slice(1).every((quote) => quote.author !== 'AI')).toBe(true);

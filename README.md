@@ -163,7 +163,7 @@ reste dans le champ et un message permet de réessayer.
 Après un ajout réussi, la citation apparaît immédiatement dans la pastille en haut
 à droite pour la personne qui l’a proposée. Elle y reste pendant la visite, jusqu’à
 un nouvel ajout ou à son retrait dans la gestion. Elle n’est pas répétée dans les
-autres pastilles. Le rechargement rétablit le tirage habituel, y compris les 10 %
+autres pastilles. Le rechargement rétablit le tirage habituel, y compris les 20 %
 de chances d’intervention de l’AI.
 
 `database.rules.json` autorise la lecture et l’écriture publiques sur les nœuds
@@ -201,7 +201,7 @@ et retirées. Le catalogue des invités est affiché par défaut dans la gestion
 La page permet de modifier le texte et le lien, retirer une citation
 de la rotation et la rétablir. Le retrait conserve l’enregistrement (`active: false`),
 ce qui permet d’annuler l’action. Les répliques de l’AI gardent leur signature et
-leur rôle dans le tirage à 10 %.
+leur rôle dans le tirage à 20 %.
 
 Chaque retrait demande une confirmation qui affiche la citation ou le nom et le
 repas du potluck. Annuler ne modifie rien. Le rétablissement reste direct.
@@ -226,7 +226,7 @@ l’opération et ne fait rien si la version 2 est déjà en place.
 
 Les six pastilles partagent un tirage au chargement de l’accueil. Les citations
 ordinaires sont mélangées sans répétition. À chaque chargement, il y a
-**10 % de chances** qu’une des dix répliques de l’AI vexée, signée « AI », remplace
+**20 % de chances** qu’une des dix répliques de l’AI vexée, signée « AI », remplace
 la citation de la pastille la plus haute, près de l’illustration des lampes.
 Les cinq autres pastilles affichent toujours des citations ordinaires.
 Le tirage reste stable tant que le catalogue ne change pas. Les ajouts,

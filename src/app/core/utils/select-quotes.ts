@@ -1,6 +1,6 @@
 import type { Quote } from '../models/quote';
 
-export const AI_QUOTE_CHANCE = 0.1;
+export const AI_QUOTE_CHANCE = 0.2;
 
 /** Mélange une copie du catalogue pour préserver la source locale ou distante. */
 function shuffle(quotes: readonly Quote[], random: () => number): Quote[] {
@@ -12,7 +12,7 @@ function shuffle(quotes: readonly Quote[], random: () => number): Quote[] {
   return shuffled;
 }
 
-/** Un tirage par visite : l’AI a 10 % de chances d’occuper le premier emplacement. */
+/** Un tirage par visite : l’AI a 20 % de chances d’occuper le premier emplacement. */
 export function selectQuotes(
   quotes: readonly Quote[],
   aiQuotes: readonly Quote[],
