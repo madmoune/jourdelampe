@@ -14,14 +14,36 @@
   outline: 2px solid #dcff79;
   outline-offset: 3px;
 }
+.riddle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 14px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
 .riddle,
 .meta-status {
-  margin: 0 20px 20px;
   padding: 16px;
   border: 1px solid #6b5b83;
   background: #100c23;
   font-size: 12px;
   overflow-wrap: anywhere;
+}
+.riddle.solved {
+  border-color: #81936c;
+}
+.meta-status {
+  margin-top: 18px;
+  border-color: #a28a61;
+  background: #23192f;
+}
+.file-label {
+  margin: 0 0 8px;
+  color: #c4b6d1;
+  font: 11px/1.4 monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 h3 {
   margin: 0 0 12px;
@@ -35,15 +57,27 @@ h3 {
   color: #e4dcee;
   line-height: 1.8;
 }
-.feedback {
-  margin: 0 20px 20px;
+.feedback,
+.progress,
+.answer-locked {
   color: #c9bad8;
-  font-size: 11px;
+  font-size: 13px;
+}
+.feedback,
+.progress {
+  margin: 0 0 16px;
+}
+.answer-locked {
+  margin: 14px 0 0;
 }
 .error {
   color: #ffacb4;
 }
-.meta-status strong,
 .riddle-status {
+  margin: 0 0 12px;
+  color: #c9bad8;
+  font-weight: 700;
+}
+.solved .riddle-status {
   color: #dcff79;
 }

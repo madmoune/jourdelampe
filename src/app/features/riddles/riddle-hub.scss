@@ -1,0 +1,27 @@
+.puzzle-shell {
+  max-width: 1120px;
+}
+
+.puzzle-heading h1 {
+  font-size: clamp(42px, 8vw, 72px);
+}
+
+app-riddle-access {
+  display: block;
+  margin: 18px 0 28px;
+  border: 1px solid #655078;
+  background: #23192f;
+}
+
+h2 {
+  margin: 0 0 8px;
+  color: #efdfbd;
+  font: 28px/1.2 Georgia, serif;
+}
+
+.reveal-help {
+  margin: 0 0 18px;
+  color: #c4b6d1;
+  font-size: 13px;
+  line-height: 1.6;
+}

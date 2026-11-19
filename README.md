@@ -44,7 +44,7 @@ source de Pages doit être **GitHub Actions**.
 
 - `src/app/core/config/event.config.ts` : date, édition, lieu et heure.
 - `src/app/core/config/content.config.ts` : phrases, description, programme et citations initiales.
-- `src/app/core/config/ai-quotes.config.ts` : les dix répliques initiales du personnage AI.
+- `src/app/core/config/ai-quotes.config.ts` : les répliques initiales du personnage AI.
 - `src/app/features/ai-home/ai-content.ts` : les répliques originales et les archives télé du Jour de l’AI.
 - `src/app/features/ai-home/ai-tv-quotes.ts` : dix courtes citations pour chacune des quatre émissions.
 - `src/app/features/ai-home/` : le nouvel accueil GeoCities et la prise de contrôle animée.
@@ -76,11 +76,10 @@ Il n’y a aucun accès mémorisé dans `sessionStorage`; un rechargement comple
 rallume les ampoules et revient à l’accueil original. Le titre de l’onglet et
 les métadonnées de partage présentent le Jour de Lampe avant la révélation.
 
-Les énigmes, le formulaire de nom, les résultats et leurs annonces restent
-masqués jusqu’au **31 décembre 2026 à 17 h, heure de Montréal**. L’heure est
-configurée dans `EVENT.riddlesOpenAt`; les sections apparaissent automatiquement
-à l’ouverture, sans rechargement. Un lien direct public vers Zebra renvoie à
-l’accueil avant cette heure.
+L’accès anticipé aux énigmes est actif (`EVENT.riddlesOpenEarly`) : le lien vers
+`/enigmes` s’affiche dès la révélation du Jour de l’AI et les routes sont accessibles.
+Une fois ce réglage désactivé, les liens et les routes s’ouvrent automatiquement le
+**31 décembre 2026 à 17 h, heure de Montréal** (`EVENT.riddlesOpenAt`).
 
 La route **`/apercu-ia`** ouvre directement le même portail avec les énigmes
 visibles, sans résoudre les ampoules ni attendre la date. Aucun lien public ne
@@ -129,7 +128,7 @@ changements en temps réel entre l’accueil et la gestion. Le SDK est chargé �
 première utilisation du service `RealtimeDatabase`.
 
 Si le nœud n’existe pas, une transaction importe une seule fois les six citations
-fournies et les dix répliques de l’AI. Une base déjà initialisée reste la source
+fournies et les répliques de l’AI. Une base déjà initialisée reste la source
 de vérité, même si toutes ses citations ont été retirées. Les tableaux locaux
 servent ensuite uniquement de secours en cas d’indisponibilité du service.
 
@@ -171,8 +170,9 @@ de chances d’intervention de l’AI.
 noms dans `participants` sont lisibles pour les futurs résultats, mais chaque
 profil peut être modifié uniquement par son propriétaire identifié par Firebase.
 Le catalogue et les résolutions du jeu sont dans `game/catalog` et `game/solves`.
-Les réponses dans `riddleSecrets` et les preuves dans `game/proofs` sont réservées
-au rôle de gestion `gameAdmin`. Les règles valident les réponses, le nom du profil,
+Les secrets et les preuves dans `game/proofs` sont réservés au rôle de gestion
+`gameAdmin`, sauf le texte de la réponse qu’un joueur peut révéler après une
+résolution selon le mode de jeu. Les règles valident les réponses, le nom du profil,
 la partie en cours et l’horodatage serveur avant toute résolution. Les autres
 nœuds restent fermés aux clients.
 
@@ -226,7 +226,7 @@ l’opération et ne fait rien si la version 2 est déjà en place.
 
 Les six pastilles partagent un tirage au chargement de l’accueil. Les citations
 ordinaires sont mélangées sans répétition. À chaque chargement, il y a
-**20 % de chances** qu’une des dix répliques de l’AI vexée, signée « AI », remplace
+**20 % de chances** qu’une réplique de l’AI vexée, signée « AI », remplace
 la citation de la pastille la plus haute, près de l’illustration des lampes.
 Les cinq autres pastilles affichent toujours des citations ordinaires.
 Le tirage reste stable tant que le catalogue ne change pas. Les ajouts,
@@ -286,7 +286,10 @@ s’applique en temps réel et conserve les réussites. Le mode, enregistré dan
 gestion peut le modifier. Sans réglage, le jeu reste en équipe comme auparavant.
 Publier les nouvelles règles Firebase avant d’utiliser cette version.
 
-Un catalogue vide reste verrouillé. Le contenu du méta reste à ajouter.
+La page `/enigmes` présente huit dossiers, avec un état « À venir » pour ceux qui
+ne sont pas encore publiés. Après résolution, la réponse se révèle au clic, selon
+le mode de jeu. Le méta est à part, verrouillé jusqu’à la résolution des huit
+énigmes. Son contenu reste à ajouter.
 Le premier puzzle Zebra propose une grille cliquable avec
 huit positions, quatre noms, quatre occupations et quatre nourritures.
 Voir `src/app/features/zebra/README.md` pour activer ses énoncés et validations.

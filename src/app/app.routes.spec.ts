@@ -4,7 +4,7 @@ import { provideRouter, Router, Routes } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from './app.routes';
 import { AiPortalState } from './features/ai-home/ai-portal-state';
-import { RIDDLE_PREVIEW } from './features/riddles/riddle-release';
+import { RIDDLE_OPEN_EARLY, RIDDLE_PREVIEW } from './features/riddles/riddle-release';
 
 @Component({ template: '<p>{{ preview ? "Aperçu" : "Public" }}</p>' })
 class RouteProbe {
@@ -12,7 +12,12 @@ class RouteProbe {
   readonly portal = inject(AiPortalState);
 }
 
-const puzzlePaths = ['/enigmes/zebra', '/enigmes/la-fourchette', '/enigmes/le-debut-de-la-fin'];
+const puzzlePaths = [
+  '/enigmes',
+  '/enigmes/zebra',
+  '/enigmes/la-fourchette',
+  '/enigmes/le-debut-de-la-fin',
+];
 
 function probeRoutes(config: Routes): Routes {
   return config.map((route) =>
@@ -33,8 +38,18 @@ describe('ouverture publique et liens de prévisualisation', () => {
   afterEach(() => vi.restoreAllMocks());
 
   it.each(puzzlePaths)(
-    'redirige le lien %s avant l’ouverture',
+    'autorise %s avant la date quand l’accès anticipé est actif',
     async (path) => {
+      const harness = await RouterTestingHarness.create();
+      await harness.navigateByUrl(path, RouteProbe);
+      expect(TestBed.inject(Router).url).toBe(path);
+    },
+  );
+
+  it.each(puzzlePaths)(
+    'redirige le lien %s avant l’ouverture quand la restriction est active',
+    async (path) => {
+      TestBed.overrideProvider(RIDDLE_OPEN_EARLY, { useValue: false });
       const harness = await RouterTestingHarness.create();
       await harness.navigateByUrl(path, RouteProbe);
       expect(TestBed.inject(Router).url).toBe('/');
@@ -44,6 +59,7 @@ describe('ouverture publique et liens de prévisualisation', () => {
   it.each(puzzlePaths)(
     'autorise %s dès 17 h à Montréal, soit 22 h UTC',
     async (path) => {
+      TestBed.overrideProvider(RIDDLE_OPEN_EARLY, { useValue: false });
       vi.mocked(Date.now).mockReturnValue(Date.parse('2026-12-31T22:00:00Z'));
       const released = await RouterTestingHarness.create();
       await released.navigateByUrl(path, RouteProbe);
@@ -67,5 +83,11 @@ describe('ouverture publique et liens de prévisualisation', () => {
     const publicHome = await harness.navigateByUrl('/', RouteProbe);
     expect(publicHome.preview).toBe(false);
     expect(publicHome.portal.revealed()).toBe(false);
+  });
+
+  it.each(['/cheatsheet', '/cheetsheet'])('ouvre la fiche de référence avec %s', async (path) => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl(path, RouteProbe);
+    expect(TestBed.inject(Router).url).toBe('/cheatsheet');
   });
 });

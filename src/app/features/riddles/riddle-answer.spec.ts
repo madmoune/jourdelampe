@@ -95,8 +95,13 @@ describe('réponse finale sans historique et fenêtre de succès', () => {
     confirm(true);
     await fixture.whenStable();
     expect(page.querySelector('dialog')!.open).toBe(true);
-    expect(page.querySelector('dialog a')?.getAttribute('href')).toBe('/#enigmes');
+    expect(page.querySelector('dialog a')?.getAttribute('href')).toBe('/enigmes#dossiers');
     expect(page.querySelector('dialog h2')?.textContent).toContain('Alice Roy');
+    const reply = page.querySelector('.success-reply')?.textContent?.trim();
+    expect(reply).toBeTruthy();
+    const verdict = page.querySelector('#answer-feedback-a [role="status"]')?.textContent;
+    expect(verdict).toContain('Alice Roy, réponse validée.');
+    expect(verdict).toContain(reply);
     expect(localStorage.getItem('jdl-riddle-answer-v1:a:alice:one')).toBe('Lampe');
   });
 

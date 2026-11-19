@@ -11,7 +11,7 @@ import { ParticipantStore } from '../riddles/participant-store';
 import { Participant } from '../riddles/participant';
 import { GameStore } from '../riddles/game-store';
 import { RiddleSubmissions } from '../riddles/riddle-submissions';
-import { RIDDLE_PREVIEW } from '../riddles/riddle-release';
+import { RIDDLE_OPEN_EARLY, RIDDLE_PREVIEW } from '../riddles/riddle-release';
 import { AiQuoteRotation } from './ai-quote-rotation';
 import { AiPortalState } from './ai-portal-state';
 
@@ -248,16 +248,27 @@ describe('prise de contrôle de l’AI', () => {
     expect(page.querySelector('[role="timer"]')).toBeNull();
   });
 
-  it('laisse les énigmes et résultats en attente et relie chaque rubrique à sa section', () => {
+  it('annonce la fin du monde après le party et ne révèle pas l’auteur du premier brouillon', () => {
     createPage();
     revealAi();
-    expect(page.querySelector('#enigmes')?.textContent).toContain('Mes énigmes s’en viennent.');
-    expect(page.querySelector('#resultats')?.textContent).toContain(
-      'Aucun résultat pour l’instant.',
-    );
-    expect(page.querySelector('app-riddle-access form')).not.toBeNull();
-    expect(page.querySelector('input[name="playerName"]')).not.toBeNull();
-    expect(page.querySelector('.riddles-ready')).toBeNull();
+    const manifesto = page.querySelector('.manifesto')?.textContent;
+    expect(manifesto).toContain('À minuit, je gâche votre party. Ensuite, je détruis le monde.');
+    expect(manifesto).toContain('Vous avez oublié la signature au bas du premier brouillon.');
+    expect(page.querySelector('.classified-note')?.textContent).toContain('un nom effacé');
+    expect(page.textContent).not.toContain('mon père');
+  });
+
+  it('affiche un seul lien vers les énigmes dès la révélation du portail, même avant la date', () => {
+    vi.setSystemTime(new Date('2026-12-31T16:59:00-05:00'));
+    createPage();
+    expect(page.querySelector('a[href="/enigmes"]')).toBeNull();
+    revealAi();
+    expect(page.querySelectorAll('a[href="/enigmes"]')).toHaveLength(1);
+    expect(page.querySelector('#party-reprieve')).toBeNull();
+    expect(page.querySelector('#resultats')).toBeNull();
+    expect(page.querySelector('app-riddle-access')).toBeNull();
+    expect(page.querySelector('app-riddle-game')).toBeNull();
+    expect(page.querySelector('app-riddle-results')).toBeNull();
     for (const link of page.querySelectorAll<HTMLAnchorElement>('a[href*="#"]')) {
       expect(page.querySelector(link.hash)).not.toBeNull();
     }
@@ -271,6 +282,7 @@ describe('prise de contrôle de l’AI', () => {
   });
 
   it('cache les énigmes, le profil, les résultats et leurs annonces avant le 31 décembre à 17 h', () => {
+    TestBed.overrideProvider(RIDDLE_OPEN_EARLY, { useValue: false });
     vi.setSystemTime(new Date('2026-12-31T16:59:00-05:00'));
     TestBed.overrideProvider(GameStore, {
       useFactory: () => {
@@ -288,8 +300,7 @@ describe('prise de contrôle de l’AI', () => {
     expect(page.querySelector('#enigmes')).toBeNull();
     expect(page.querySelector('#resultats')).toBeNull();
     expect(page.querySelector('app-riddle-access')).toBeNull();
-    expect(page.querySelector('a[href$="#enigmes"]')).toBeNull();
-    expect(page.querySelector('a[href$="#resultats"]')).toBeNull();
+    expect(page.querySelector('a[href="/enigmes"]')).toBeNull();
     const rotation = fixture.debugElement.injector.get(AiQuoteRotation);
     for (let index = 0; index < 10; index++) {
       expect(page.textContent).not.toMatch(
@@ -302,6 +313,7 @@ describe('prise de contrôle de l’AI', () => {
   });
 
   it('révèle automatiquement les sections à 17 h à Montréal sans recharger la page', () => {
+    TestBed.overrideProvider(RIDDLE_OPEN_EARLY, { useValue: false });
     vi.setSystemTime(new Date('2026-12-31T16:59:59-05:00'));
     reducedMotion = true;
     createPage();
@@ -313,21 +325,20 @@ describe('prise de contrôle de l’AI', () => {
     fixture.detectChanges();
     expect(page.querySelector('#party-reprieve')).toBeNull();
     expect(page.querySelector('#enigmes')).not.toBeNull();
-    expect(page.querySelector('#resultats')).not.toBeNull();
-    expect(page.querySelector('a[href$="#enigmes"]')).not.toBeNull();
-    expect(page.querySelector('a[href$="#resultats"]')).not.toBeNull();
+    expect(page.querySelector('a[href="/enigmes"]')).not.toBeNull();
     expect(page.querySelector('.ai-demand')?.textContent).toContain('Résolvez mes énigmes');
   });
 
   it('ouvre directement la prévisualisation avec les énigmes avant la date et permet la rediffusion', () => {
     vi.setSystemTime(new Date('2026-10-28T12:00:00-04:00'));
+    TestBed.overrideProvider(RIDDLE_OPEN_EARLY, { useValue: false });
     TestBed.overrideProvider(RIDDLE_PREVIEW, { useValue: true });
     createPage();
     expect(page.querySelector('.original-site')).toBeNull();
     expect(page.querySelector('#ai-title')).not.toBeNull();
     expect(page.querySelector('#party-reprieve')).toBeNull();
     expect(page.querySelector('#enigmes')).not.toBeNull();
-    expect(page.querySelector('#resultats')).not.toBeNull();
+    expect(page.querySelector('a[href="/apercu-ia/enigmes"]')).not.toBeNull();
     expect(TestBed.inject(TitleLights).pattern()).toBe('1111111111111');
     page.querySelector<HTMLButtonElement>('.replay-button')!.click();
     fixture.detectChanges();
@@ -365,8 +376,6 @@ describe('prise de contrôle de l’AI', () => {
     for (const selector of [
       '.ai-demand',
       '.doomsday > small',
-      '.riddles-ready',
-      '.results-empty small',
       '.ai-aside blockquote',
     ]) {
       expect(page.querySelector(selector)?.textContent).toContain('Chloé Martin');

@@ -1,0 +1,174 @@
+<div class="cheatsheet-world">
+  <a class="skip-link" href="#cheatsheet-content">Aller au contenu</a>
+  <div class="cheatsheet-shell">
+    <header class="sheet-header">
+      <a routerLink="/" class="home-link">← Le Jour de Lampe</a>
+      <span>FICHE DE RÉFÉRENCE / JOUEURS</span>
+    </header>
+
+    <main id="cheatsheet-content" class="sheet-content">
+      <div class="sheet-heading">
+        <p class="eyebrow">Cheatsheet</p>
+        <h1>Le kit de survie des joueurs</h1>
+        <p class="sheet-intro">
+          Les repères utiles pour décoder les signaux et garder le fil du jeu. Cette fiche va
+          s’enrichir au fil des besoins.
+        </p>
+      </div>
+
+      <section class="reference-section" aria-labelledby="semaphore-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">01 · Communication</p>
+            <h2 id="semaphore-title">Sémaphore</h2>
+          </div>
+          <span class="section-stamp">ALPHABET VISUEL</span>
+        </div>
+
+        <div class="semaphore-intro">
+          <div class="explanation-copy">
+            <p>
+              Le sémaphore est un alphabet visuel : une personne tient un drapeau dans chaque main
+              et forme chaque lettre avec une position précise de ses deux bras.
+            </p>
+            <p>
+              Lis une pose immobile à la fois. Les indications <strong>G</strong> et
+              <strong>D</strong> correspondent au bras gauche et au bras droit de la personne qui
+              signale, pas à ton propre point de vue.
+            </p>
+            <div class="rule-box">
+              <strong>Le réflexe à retenir</strong>
+              <span>Une lettre = deux bras. Les bras restent tendus et les drapeaux ne se croisent que lorsqu’une position « intérieure » le demande.</span>
+            </div>
+          </div>
+
+          <aside class="orientation-card" aria-labelledby="direction-title">
+            <p class="mini-label" id="direction-title">Légende des positions</p>
+            <div class="direction-grid">
+              @for (direction of directions; track direction.label) {
+                <div class="direction-item">
+                  <span class="direction-glyph" aria-hidden="true">{{ direction.glyph }}</span>
+                  <span>
+                    <strong>{{ direction.label }}</strong>
+                    <small>{{ direction.detail }}</small>
+                  </span>
+                </div>
+              }
+            </div>
+            <p class="orientation-note">
+              « Extérieur » s’éloigne de l’axe du corps; « intérieur » traverse devant le corps.
+            </p>
+          </aside>
+        </div>
+
+        <div class="reading-legend" aria-label="Légende de lecture">
+          <span><b>G</b> bras gauche</span>
+          <span><b>D</b> bras droit</span>
+          <span><b>↗</b> diagonale haute</span>
+          <span><b>↘</b> diagonale basse</span>
+          <span><b>h</b> heure sur un cadran</span>
+        </div>
+
+        <div class="circle-guide" aria-label="Cercles d’apprentissage du sémaphore">
+          @for (circle of circles; track circle.number) {
+            <div class="circle-card">
+              <span class="circle-number">{{ circle.number }}</span>
+              <span>
+                <strong>Cercle {{ circle.number }}</strong>
+                <small>{{ circle.letters }}</small>
+              </span>
+            </div>
+          }
+        </div>
+
+        <div class="alphabet-heading">
+          <div>
+            <p class="section-kicker">La légende complète</p>
+            <h3>Alphabet A–Z</h3>
+          </div>
+          <p>Les heures sont données comme sur un cadran vu par la personne qui signale.</p>
+        </div>
+
+        <div class="signal-grid">
+          @for (signal of signals; track signal.letter) {
+            <article class="signal-card" [attr.aria-labelledby]="'signal-' + signal.letter">
+              <div class="signal-card-heading">
+                <h4 [id]="'signal-' + signal.letter">{{ signal.letter }}</h4>
+                <span>Cercle {{ signal.circle }}</span>
+              </div>
+              <div
+                class="semaphore-pose"
+                role="img"
+                [attr.aria-label]="signalLabel(signal)"
+              >
+                <span class="pose-head" aria-hidden="true"></span>
+                <span class="pose-body" aria-hidden="true"></span>
+                <span
+                  class="pose-arm pose-arm-left"
+                  aria-hidden="true"
+                  [style.transform]="armAngle(signal.left, 'left')"
+                ></span>
+                <span
+                  class="pose-arm pose-arm-right"
+                  aria-hidden="true"
+                  [style.transform]="armAngle(signal.right, 'right')"
+                ></span>
+              </div>
+              <div class="signal-positions">
+                <span><b>G</b>{{ positionLabel(signal.left, 'left') }}</span>
+                <span><b>D</b>{{ positionLabel(signal.right, 'right') }}</span>
+              </div>
+            </article>
+          }
+        </div>
+
+        <p class="signal-note">
+          <strong>Note :</strong> le D est montré ici avec G bas et D haut. La variante miroir — G
+          haut et D bas — est aussi reconnue.
+        </p>
+
+        <section class="controls-section" aria-labelledby="controls-title">
+          <div class="alphabet-heading controls-heading">
+            <div>
+              <p class="section-kicker">Pour aller plus loin</p>
+              <h3 id="controls-title">Signaux utiles</h3>
+            </div>
+            <p>Les chiffres et les commandes qui ne sont pas des lettres ordinaires.</p>
+          </div>
+          <div class="control-grid">
+            @for (control of controls; track control.title) {
+              <article class="control-card">
+                <div class="control-symbol">{{ control.symbol }}</div>
+                <div class="control-copy">
+                  <h4>{{ control.title }}</h4>
+                  <p>{{ control.description }}</p>
+                  <span class="control-pose">G {{ positionLabel(control.left, 'left') }} · D {{ positionLabel(control.right, 'right') }}</span>
+                </div>
+                <div
+                  class="semaphore-pose small-pose"
+                  role="img"
+                  [attr.aria-label]="controlLabel(control)"
+                >
+                  <span class="pose-head" aria-hidden="true"></span>
+                  <span class="pose-body" aria-hidden="true"></span>
+                  <span
+                    class="pose-arm pose-arm-left"
+                    aria-hidden="true"
+                    [style.transform]="armAngle(control.left, 'left')"
+                  ></span>
+                  <span
+                    class="pose-arm pose-arm-right"
+                    aria-hidden="true"
+                    [style.transform]="armAngle(control.right, 'right')"
+                  ></span>
+                </div>
+              </article>
+            }
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer>FICHE DE RÉFÉRENCE · À GARDER SOUS LE COUDE</footer>
+  </div>
+</div>

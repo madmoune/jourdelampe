@@ -27,6 +27,12 @@ export const routes: Routes = [
           import('./features/matchmaker/matchmaker-page').then((module) => module.MatchmakerPage),
       },
       {
+        path: 'enigmes',
+        title: 'Les énigmes — Le Jour de l’AI',
+        loadComponent: () =>
+          import('./features/riddles/riddle-hub').then((module) => module.RiddleHub),
+      },
+      {
         path: '',
         title: 'Le Jour de l’AI — Votre party est en sursis',
         loadComponent: () => import('./features/ai-home/ai-home').then((module) => module.AiHome),
@@ -54,6 +60,13 @@ export const routes: Routes = [
       import('./features/matchmaker/matchmaker-page').then((module) => module.MatchmakerPage),
   },
   {
+    path: 'enigmes',
+    canMatch: [requireRiddleRelease],
+    title: 'Les énigmes — Le Jour de l’AI',
+    loadComponent: () =>
+      import('./features/riddles/riddle-hub').then((module) => module.RiddleHub),
+  },
+  {
     path: 'gestion-enigmes',
     title: `Tableau de bord des énigmes — ${EVENT.name}`,
     loadComponent: () =>
@@ -65,6 +78,13 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/maintenance/maintenance').then((module) => module.Maintenance),
   },
+  {
+    path: 'cheatsheet',
+    title: `Cheatsheet — ${EVENT.name}`,
+    loadComponent: () =>
+      import('./features/cheatsheet/cheatsheet').then((module) => module.Cheatsheet),
+  },
+  { path: 'cheetsheet', redirectTo: 'cheatsheet', pathMatch: 'full' },
   {
     path: '',
     title: `${EVENT.name} — ${EVENT.edition}`,

@@ -1,5 +1,6 @@
 import { GameMode, GameRiddle, RiddleSolution } from '../riddles/game.model';
 import { parseParticipant, Participant } from '../riddles/participant';
+import { META_ID, RIDDLE_COUNT } from '../riddles/riddle-pages';
 
 type ProgressRiddle = GameRiddle & { readonly solutions: readonly RiddleSolution[] };
 
@@ -20,11 +21,12 @@ export function summarizePlayers(
   mode: GameMode,
   ready: boolean,
 ) {
+  const mainRiddles = riddles.filter((riddle) => riddle.id !== META_ID);
   const teamMetaUnlocked =
-    riddles.length > 0 && riddles.every((riddle) => riddle.solutions.length > 0);
+    mainRiddles.length >= RIDDLE_COUNT && mainRiddles.every((riddle) => riddle.solutions.length > 0);
   return participants
     .map((participant) => {
-      const progress = riddles.map((riddle) => {
+      const progress = mainRiddles.map((riddle) => {
         const solution = riddle.solutions.find((entry) => entry.participantId === participant.id);
         return {
           id: riddle.id,
@@ -44,14 +46,14 @@ export function summarizePlayers(
         ...participant,
         riddles: progress,
         solvedCount,
-        percentage: riddles.length ? Math.round((solvedCount / riddles.length) * 100) : 0,
+        percentage: mainRiddles.length ? Math.round((solvedCount / mainRiddles.length) * 100) : 0,
         firstSolveCount: progress.filter((riddle) => riddle.firstForTeam).length,
         lastSolvedAt,
         metaUnlocked:
           ready &&
           (mode === 'team'
             ? teamMetaUnlocked
-            : riddles.length > 0 && solvedCount === riddles.length),
+            : mainRiddles.length >= RIDDLE_COUNT && solvedCount === mainRiddles.length),
       };
     })
     .sort((a, b) => a.name.localeCompare(b.name, 'fr-CA') || a.id.localeCompare(b.id));

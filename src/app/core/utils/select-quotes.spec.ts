@@ -26,13 +26,13 @@ describe('tirage des citations', () => {
     expect(regular.every((quote) => quote.author !== 'AI')).toBe(true);
   });
 
-  it('tire une réplique parmi les dix et la place uniquement au premier emplacement', () => {
+  it('peut tirer l’indice des lumières uniquement au premier emplacement', () => {
     // Tirage de la visite, mélange des citations ordinaires, choix de la réplique.
     let index = 0;
     const shuffleRolls = CONTENT.quotes.length - 1;
     const quotes = selectQuotes(CONTENT.quotes, AI_QUOTES, 6, () => {
       const current = index++;
-      return current === 0 ? 0.05 : current <= shuffleRolls ? 0.5 : 0.75;
+      return current === 0 ? 0.05 : current <= shuffleRolls ? 0.5 : 0.99;
     });
 
     expect(quotes.map((quote) => quote.author === 'AI')).toEqual([
@@ -43,7 +43,7 @@ describe('tirage des citations', () => {
       false,
       false,
     ]);
-    expect(quotes[0]).toBe(AI_QUOTES[7]);
+    expect(quotes[0].id).toBe('ai-lettres-lumineuses');
     expect(new Set(quotes.map((quote) => quote.id)).size).toBe(6);
   });
 

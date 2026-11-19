@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -9,6 +9,4 @@ import { RouterLink } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'left-sidebar', 'aria-label': 'Répertoire et état du site' },
 })
-export class AiDirectory {
-  readonly riddlesVisible = input(true);
-}
+export class AiDirectory {}

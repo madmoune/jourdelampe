@@ -1,6 +1,6 @@
 import { RiddleReplies } from './riddle-replies';
 
-describe('répliques de l’AI aux mauvaises réponses', () => {
+describe('répliques de l’AI aux réponses', () => {
   it('fait tourner douze répliques sans répétition et sans doublon entre deux séries', () => {
     const replies = new RiddleReplies();
     let previous = '';
@@ -21,5 +21,21 @@ describe('répliques de l’AI aux mauvaises réponses', () => {
     const message = replies.wrongAnswer('Éric Martin');
     expect(message).toContain('Éric Martin');
     expect(message).not.toContain('Alice Roy');
+  });
+
+  it('fait tourner cinq répliques de réussite indépendamment des échecs', () => {
+    const replies = new RiddleReplies();
+    const drawSuccesses = () =>
+      Array.from({ length: 5 }, () => {
+        replies.wrongAnswer('Alice Roy');
+        return replies.correctAnswer();
+      });
+    const first = drawSuccesses();
+    const second = drawSuccesses();
+    expect(new Set(first).size).toBe(5);
+    expect(new Set(second)).toEqual(new Set(first));
+    expect(second[0]).not.toBe(first.at(-1));
+    expect(first.some((reply) => reply.includes('Détruire le monde'))).toBe(true);
+    expect(first.some((reply) => reply.includes('premier brouillon'))).toBe(true);
   });
 });

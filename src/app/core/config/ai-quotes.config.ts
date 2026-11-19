@@ -62,4 +62,10 @@ export const AI_QUOTES: readonly Quote[] = [
     href: null,
     author: 'AI',
   },
+  {
+    id: 'ai-lettres-lumineuses',
+    text: 'Si je voulais que toutes les lettres brillent, je les aurais toutes écrites pareil.',
+    href: null,
+    author: 'AI',
+  },
 ];

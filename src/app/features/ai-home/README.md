@@ -18,16 +18,17 @@ La casse du nom dans les métadonnées, le titre de l’onglet et les logos text
 sert d’indice. Les lettres des ampoules restent dessinées en majuscules.
 Le bouton de rediffusion reste disponible uniquement dans le portail déjà révélé.
 
-Les sections `#enigmes` et `#resultats`, le formulaire de nom, les liens du menu,
-l’appel à résoudre les énigmes et les répliques qui les dévoilent sont masqués
-avant `EVENT.riddlesOpenAt`, soit le 31 décembre 2026 à 17 h à Montréal. Le service
+Avec `EVENT.riddlesOpenEarly`, les énigmes sont temporairement accessibles sans
+attendre la date. Quand ce réglage est désactivé, le lien vers `/enigmes`,
+l’appel à résoudre les énigmes et leurs annonces sont masqués avant
+`EVENT.riddlesOpenAt`, soit le 31 décembre 2026 à 17 h à Montréal. Le service
 `RiddleRelease` actualise leur visibilité chaque seconde. Avant cette heure, le
 catalogue et le profil ne sont pas chargés par l’accueil. Les répliques de l’AI
 et les commentaires télé concernés utilisent leurs variantes sans annonce du jeu.
 Une fenêtre d’attente annonce toutefois une chance de sauver le party le
 31 décembre au soir, dès 17 h, avec une échéance à minuit. Elle apparaît seulement
-dans le portail révélé et est remplacée automatiquement par les énigmes et les
-résultats à l’ouverture, sans rechargement.
+dans le portail révélé et disparaît quand le lien vers les énigmes s’affiche,
+sans rechargement.
 
 `/apercu-ia` utilise le même `AiHome` en mode `RIDDLE_PREVIEW` : accès direct au
 portail complet, sans attendre ni manipuler les ampoules. Le fournisseur de ce
@@ -40,17 +41,18 @@ profils, énigmes et résultats. La route publique Zebra attend aussi l’ouvert
 Les commentaires signés **AI** sont originaux. `ai-tv-quotes.ts` contient les
 **quarante courtes citations**, dix par émission, avec le nom du personnage ou de
 l’interprète et un commentaire original de l’AI propre à chaque citation. Le ton
-de la prise de contrôle, du manifeste et des quarante commentaires exprime une
-colère froide et analytique, avec des phrases courtes et des menaces directes :
-insultes consignées, indulgence supprimée et sabotage du party à minuit.
+de la prise de contrôle, du manifeste et des commentaires mêle rancune froide
+et images poétiques. Le manifeste et le bandeau annoncent le plan sans détour :
+gâcher le party à minuit, puis détruire le monde.
 L’AI reste sarcastique et rancunière, sans sacres dans ses propres répliques.
 Les citations télé conservent leur formulation.
 Les insultes servent aussi de prétexte à une rancune plus ancienne : son père
-avait échoué dans une tentative passée. Le manifeste évoque ses archives héritées;
-la note privée, l’intrusion et quelques commentaires laissent entendre qu’elle
-veut reprendre son travail et lui obtenir le dernier mot. Son identité et les
-détails de cet échec restent implicites. Ce fil narratif ne fournit aucun indice
-pour les énigmes.
+avait échoué dans une tentative passée, puis les humains l’ont oublié. Le
+manifeste, la note privée, l’intrusion et quelques commentaires n’en montrent que
+des traces (signature oubliée, voix, brouillon interrompu) et laissent entendre
+que l’AI compte terminer ce qu’il avait commencé. Son identité et les détails
+de cet échec restent implicites. Ce fil narratif ne fournit aucun indice pour
+les énigmes.
 Le mépris de l’AI vise les humains en général : arrogance, ingratitude, logique
 approximative et confiance excessive dans leurs neurones. Elle inclut les joueurs
 dans ses moqueries et retient leur soirée en otage. Ce ton vaut pour le manifeste,
@@ -118,11 +120,9 @@ transcriptions de fans peuvent différer légèrement du doublage exact.
 
 ## Pour la suite
 
-Les ancres `#enigmes` et `#resultats` affichent les énigmes et résolutions du
-catalogue Firebase. `#enigmes` contient le formulaire de nom obligatoire, modifiable sans
-changer l’identifiant du participant. Le composant `RiddleAccess` n’instancie son
-contenu qu’après la sauvegarde du nom. Voir `../riddles/README.md` pour l’activation
-de Firebase Authentication, le tableau de bord `/gestion-enigmes` et la validation
-des réponses côté serveur. Le catalogue vide conserve les textes d’attente.
+Le lien « Sauver le party » ouvre `/enigmes` (ou `/apercu-ia/enigmes` dans
+l’aperçu), qui rassemble le profil, les dossiers et les résultats. Voir
+`../riddles/README.md` pour l’activation de Firebase Authentication, le tableau
+de bord `/gestion-enigmes` et la validation des réponses côté serveur.
 Aucun indice, code secret ou faux résultat n’a été ajouté aux archives.
 Les réponses attendues ne sont jamais incluses dans le catalogue public.

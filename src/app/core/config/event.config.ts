@@ -7,6 +7,7 @@ export const EVENT = {
   // Minuit à Montréal / Toronto (UTC−5 en hiver), indépendamment du navigateur.
   newYearAt: '2027-01-01T00:00:00-05:00',
   riddlesOpenAt: '2026-12-31T17:00:00-05:00',
+  riddlesOpenEarly: true,
   timeZone: 'America/Toronto',
   startTime: null as string | null,
   location: null as string | null,

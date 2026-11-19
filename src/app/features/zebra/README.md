@@ -1,7 +1,7 @@
 # Premier puzzle Zebra
 
 Page : `/enigmes/zebra`, intitulée **Nostalgie**, accessible depuis le portail de l’AI après saisie du nom.
-La saisie et la modification du nom restent uniquement dans le portail de l’AI.
+La saisie et la modification du nom sont dans `/enigmes#profil`.
 La page Zebra attend le profil et n’affiche le jeu qu’avec un nom enregistré;
 sinon, elle propose un lien vers la section des énigmes du portail.
 Identifiant Firebase : `zebra-01`. Les pages sont reliées manuellement dans
@@ -108,7 +108,7 @@ Aucune donnée distante n’est modifiée par le code local.
 Une grille complète est vérifiée automatiquement. Un verdict positif indique
 que la grille est correcte et ouvre la vérification des quatre noms de famille.
 Seule la réponse finale valide enregistre une résolution, le nom et l’heure
-serveur, contribue au méta et ouvre le popup offrant le retour à `/#enigmes`.
+serveur, contribue au méta et ouvre le popup offrant le retour à `/enigmes`.
 
 Les réponses finales et vérifications de grille sont enregistrées dans
 `game/attempts/<uid>/zebra-01/<attemptId>` avec le nom, l’heure serveur, la partie

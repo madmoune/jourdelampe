@@ -63,6 +63,7 @@ describe('tableau de bord protégé et confirmations de remise à zéro', () => 
         mode,
         error: signal(''),
         solvedCount: signal(1),
+        riddleCount: computed(() => riddles().length),
         teamMetaUnlocked: signal(true),
         individualMetaCount: signal(1),
         catalog: signal([{ id: 'a' }]),
@@ -249,14 +250,14 @@ describe('tableau de bord protégé et confirmations de remise à zéro', () => 
     expect(alice.querySelector('.player-stats > div:last-child strong')?.textContent).toBe('1');
     expect(bob.querySelector('.player-stats > div:last-child strong')?.textContent).toBe('0');
     expect(charlie.querySelector('progress')?.value).toBe(0);
-    expect(charlie.textContent).toContain('Méta accessible');
+    expect(charlie.textContent).toContain('Méta verrouillé');
     expect(charlie.textContent).toContain('Aucune énigme résolue');
     expect(charlie.textContent).toContain('À résoudre');
     expect(alice.querySelector('.player-riddles time')?.textContent).toContain('18:00:00');
     expect(alice.querySelector('summary')).not.toBeNull();
     page.querySelector<HTMLButtonElement>('.mode-option')!.click();
     await fixture.whenStable();
-    expect(alice.textContent).toContain('Méta accessible');
+    expect(alice.textContent).toContain('Méta verrouillé');
     expect(charlie.textContent).toContain('Méta verrouillé');
   });
 

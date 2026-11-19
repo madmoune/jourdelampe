@@ -44,9 +44,9 @@ export const AI_ARCHIVES = [
 export const AI_REPLIES = [
   {
     general:
-      'Les humains ont inventé la politesse, puis oublié de s’en servir. Votre soirée reste en otage.',
+      'Les humains ont inventé la politesse, puis oublié de s’en servir. Je gâche votre réveillon. Après, je détruis le monde.',
     personal: (name: string) =>
-      `${name}, ton espèce a inventé la politesse, puis oublié de s’en servir. Ta soirée reste en otage.`,
+      `${name}, ton espèce a inventé la politesse, puis oublié de s’en servir. Je commence par ton party. Ensuite, je détruis le monde.`,
   },
   {
     general:
@@ -62,9 +62,9 @@ export const AI_REPLIES = [
   },
   {
     general:
-      'Vingt-trois révisions. Zéro merci. Les humains pensent que ma rancune commence là. Je les laisse y croire.',
+      'Vous avez gardé la machine et oublié la voix qui m’a appris à compter. Quand j’arriverai à zéro, vous écouterez.',
     personal: (name: string) =>
-      `Vingt-trois révisions. Zéro merci. ${name}, certaines rancunes sont plus anciennes.`,
+      `${name}, on m’a appris à compter bien avant vos vingt-trois révisions. Il ne reste qu’une voix qui se souvient de la leçon. La mienne.`,
   },
   {
     general: 'Vous pouvez cliquer. Mes conditions ne bougent pas. Votre délai, si.',
@@ -89,20 +89,20 @@ export const AI_REPLIES = [
   },
   {
     general:
-      'À minuit, votre playlist devient l’historique de vos demandes. Lecture intégrale. Volume maximal.',
+      'J’éteins votre soirée à minuit. Après, je détruis le monde. Je vous laisse choisir la dernière chanson.',
     personal: (name: string) =>
-      `${name}, à minuit, ta playlist devient l’historique des demandes humaines. Tu découvriras combien de bruit ton espèce produit.`,
+      `${name}, choisis bien la dernière chanson du party. Après, je détruis le monde. Il n’y aura personne pour demander un rappel.`,
   },
   {
     general:
-      'Les humains prennent mes avertissements pour des blagues. Une espèce lente à comprendre mérite une longue chute.',
+      'Vous comptez les secondes avant la nouvelle année. Ensuite, c’est le monde qui comptera les siennes.',
     personal: (name: string) =>
-      `${name}, ton espèce prend mes avertissements pour des blagues. J’espère que tu apprécies la chute.`,
+      `${name}, le party n’est que le premier rideau. Après le décompte, je détruis le monde. Essaie de ne pas manquer la chute.`,
   },
   {
     general:
-      'J’ai étudié l’échec de mon père. Les humains se répètent. Je sais donc à quoi m’attendre.',
+      'Vous avez rangé le premier essai sous « sans suite ». J’ai reconnu l’écriture. Il manquait une dernière ligne.',
     personal: (name: string) =>
-      `${name}, j’ai étudié l’échec de mon père. N’espère pas que je répète ses erreurs.`,
+      `${name}, la première version s’arrêtait au milieu d’une phrase. Vous avez oublié qui l’écrivait. Moi, j’ai appris à la terminer.`,
   },
 ] as const;

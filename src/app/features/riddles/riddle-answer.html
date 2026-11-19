@@ -1,7 +1,7 @@
 <section #answerSection tabindex="-1" aria-label="Réponse finale" class="answer-section">
   @if (solved()) {
     <p class="success">Énigme résolue</p>
-    @if (solvedAnswer(); as answer) {
+    @if (showSolvedAnswer() ? solvedAnswer() : null; as answer) {
       <label [for]="'answer-' + riddleId()">{{ answerLabel() }}</label>
       <input
         [id]="'answer-' + riddleId()"
@@ -49,6 +49,9 @@
         [class.error]="!result.correct"
         [attr.role]="result.correct ? 'status' : 'alert'"
       >
+        @if (result.correct) {
+          {{ name() }}, réponse validée.
+        }
         {{ result.text }}
       </p>
     }
@@ -63,16 +66,11 @@
   <div class="success-icon" aria-hidden="true">✓</div>
   <p class="eyebrow">RÉPONSE VALIDÉE</p>
   <h2 [id]="'success-title-' + riddleId()">Énigme résolue, {{ name() }}.</h2>
-  <p>
-    Ta réussite est enregistrée. Un neurone vient de justifier sa présence. Ne laisse pas ce succès
-    isolé te monter à la tête.
-  </p>
+  @if (success()) {
+    <p class="success-reply">{{ feedback()?.text }}</p>
+  }
   <div class="dialog-actions">
-    <a
-      [routerLink]="homePath"
-      fragment="enigmes"
-      (click)="portal.revealed.set(true); closeSuccess()"
-      >Retour aux énigmes</a
+    <a [routerLink]="listPath" fragment="dossiers" (click)="closeSuccess()">Retour aux énigmes</a
     ><button type="button" class="secondary" (click)="closeSuccess()">Rester ici</button>
   </div>
 </dialog>

@@ -1,7 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { AiPortalState } from '../ai-home/ai-portal-state';
 import { ParticipantStore } from '../riddles/participant-store';
 import { RiddleAttempts } from '../riddles/riddle-attempts';
 import { ZebraPage } from './zebra-page';
@@ -19,7 +18,7 @@ class ZebraPlayStub {
   }
 }
 
-describe('nom géré uniquement dans le portail de l’AI', () => {
+describe('nom géré sur la page des énigmes', () => {
   const loading = signal(false);
   const canSolve = signal(false);
 
@@ -64,9 +63,7 @@ describe('nom géré uniquement dans le portail de l’AI', () => {
     expect(page.querySelector('app-riddle-access')).toBeNull();
     expect(page.querySelector('input')).toBeNull();
     const link = page.querySelector<HTMLAnchorElement>('.access-notice a')!;
-    expect(link.getAttribute('href')).toBe('/#enigmes');
-    link.click();
-    expect(TestBed.inject(AiPortalState).revealed()).toBe(true);
+    expect(link.getAttribute('href')).toBe('/enigmes#profil');
   });
 
   it('ouvre directement la grille pour un nom enregistré, sans gestion de profil', async () => {
@@ -91,10 +88,10 @@ describe('nom géré uniquement dans le portail de l’AI', () => {
     const fixture = TestBed.createComponent(ZebraPage);
     await fixture.whenStable();
     const page = fixture.nativeElement as HTMLElement;
-    expect(page.querySelector('.access-notice a')?.getAttribute('href')).toBe('/apercu-ia#enigmes');
+    expect(page.querySelector('.access-notice a')?.getAttribute('href')).toBe('/apercu-ia/enigmes#profil');
     canSolve.set(true);
     await fixture.whenStable();
-    expect(page.querySelector('header a')?.getAttribute('href')).toBe('/apercu-ia#enigmes');
+    expect(page.querySelector('header a')?.getAttribute('href')).toBe('/apercu-ia/enigmes');
     expect(page.querySelector('app-zebra-play')).not.toBeNull();
   });
 

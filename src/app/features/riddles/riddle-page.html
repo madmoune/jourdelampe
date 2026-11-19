@@ -2,9 +2,7 @@
   <a class="skip-link" [routerLink]="[]" fragment="puzzle-content">Aller au puzzle</a>
   <div class="puzzle-shell">
     <header>
-      <a [routerLink]="homePath" fragment="enigmes" (click)="portal.revealed.set(true)"
-        >← Retour aux énigmes</a
-      >
+      <a [routerLink]="listPath">← Retour aux énigmes</a>
       <span
         >LE JOUR DE L’AI
         @if (number()) {
@@ -43,12 +41,10 @@
           <p>
             {{
               participants.error() ||
-                'Entre ton nom dans la page du Jour de l’AI pour accéder à cette énigme.'
+                'Entre ton nom dans la page des énigmes pour accéder à cette énigme.'
             }}
           </p>
-          <a [routerLink]="homePath" fragment="enigmes" (click)="portal.revealed.set(true)"
-            >Aller au Jour de l’AI</a
-          >
+          <a [routerLink]="listPath" fragment="profil">Aller au profil</a>
         </section>
       }
     </main>

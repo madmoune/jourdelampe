@@ -3,38 +3,78 @@
 } @else if (!game.ready()) {
   <p class="feedback" role="status">Chargement des énigmes…</p>
 } @else {
-  @for (riddle of progress.riddles(); track riddle.id) {
-    <article class="riddle" [attr.aria-labelledby]="'riddle-' + riddle.id">
-      <h3 [id]="'riddle-' + riddle.id">{{ riddle.title }}</h3>
-      @if (riddle.solvedByMe) {
-        <p class="riddle-status">✓ Résolue par toi</p>
-      } @else if (riddle.infoUnlocked) {
-        <p class="riddle-status">Résolue par l’équipe · À résoudre pour toi</p>
-      }
-      @if (riddle.prompt) {
-        <p class="prompt">{{ riddle.prompt }}</p>
-      }
-      @if (pages[riddle.id]; as page) {
-        <a class="puzzle-link" [routerLink]="pagePrefix + page">Ouvrir l’énigme →</a>
-      } @else {
-        <app-riddle-answer [riddleId]="riddle.id" />
-      }
-    </article>
-  } @empty {
-    <p class="feedback">
-      {{ name() }}, ton nom est enregistré. Il reste à prouver que les neurones suivent.
-    </p>
-  }
-  @if (game.catalog().length) {
-    <div class="meta-status" aria-live="polite">
-      <strong>{{ progress.metaUnlocked() ? 'MÉTA DÉVERROUILLÉ' : 'MÉTA VERROUILLÉ' }}</strong>
-      <p>
-        {{ progress.solvedCount() }} / {{ game.catalog().length }} énigmes résolues
-        {{ game.mode() === 'team' ? 'par l’équipe' : 'par toi' }}.
+  <p class="progress" aria-live="polite">
+    {{ progress.solvedCount() }} / {{ total() }} énigmes résolues
+    {{ game.mode() === 'team' ? 'par l’équipe' : 'par toi' }}.
+  </p>
+  <ol class="riddle-grid">
+    @for (riddle of slots(); track riddle?.id ?? $index; let number = $index) {
+      <li class="riddle" [class.solved]="riddle?.infoUnlocked">
+        <p class="file-label">Dossier {{ number + 1 }}</p>
+        <h3>{{ riddle?.title ?? 'Énigme ' + (number + 1) }}</h3>
+        @if (riddle) {
+          <p class="riddle-status">
+            {{
+              riddle.solvedByMe ? '✓ Résolue par toi' :
+                riddle.infoUnlocked ? '✓ Résolue par l’équipe' : 'Non résolue'
+            }}
+          </p>
+          @if (canPlay() && riddle.infoUnlocked) {
+            <app-riddle-results [solutions]="riddle.solutions" />
+          }
+          @if (riddle.prompt) {
+            <p class="prompt">{{ riddle.prompt }}</p>
+          }
+          @if (pages[riddle.id]; as page) {
+            <a class="puzzle-link" [routerLink]="pagePrefix + page"
+              [attr.aria-label]="'Ouvrir l’énigme : ' + riddle.title">Ouvrir l’énigme →</a>
+          } @else if (canPlay()) {
+            <app-riddle-answer [riddleId]="riddle.id" [showSolvedAnswer]="false" />
+          }
+          @if (canPlay() && riddle.infoUnlocked) {
+            <app-riddle-spoiler [riddleId]="riddle.id" [context]="revealContext()" />
+          } @else {
+            <p class="answer-locked">
+              {{ riddle.infoUnlocked ? 'Enregistre ton nom pour révéler la réponse.' : 'Réponse masquée jusqu’à la résolution.' }}
+            </p>
+          }
+        } @else {
+          <p class="riddle-status">À venir</p>
+          <p class="answer-locked">Ce dossier n’est pas encore en ligne.</p>
+        }
+      </li>
+    }
+  </ol>
+  <section class="meta-status" aria-labelledby="meta-title" [class.solved]="progress.meta()?.infoUnlocked">
+    @let meta = progress.meta();
+    <p class="file-label">Dossier final</p>
+    <h3 id="meta-title">{{ meta?.title ?? 'Le méta' }}</h3>
+    @if (progress.metaUnlocked()) {
+      <p class="riddle-status">
+        {{ meta?.solvedByMe ? '✓ Résolu par toi' :
+          meta?.infoUnlocked ? '✓ Résolu par l’équipe' : 'Déverrouillé · Non résolu' }}
       </p>
-      @if (progress.metaUnlocked()) {
+      @if (meta) {
+        @if (canPlay() && meta.infoUnlocked) {
+          <app-riddle-results [solutions]="meta.solutions" />
+        }
+        <p class="prompt">{{ meta.prompt }}</p>
+        @if (canPlay()) {
+          <app-riddle-answer [riddleId]="metaId" [showSolvedAnswer]="false" />
+        }
+        @if (canPlay() && meta.infoUnlocked) {
+          <app-riddle-spoiler [riddleId]="metaId" [context]="revealContext()" />
+        } @else {
+          <p class="answer-locked">
+            {{ meta.infoUnlocked ? 'Enregistre ton nom pour révéler la réponse.' : 'Réponse masquée jusqu’à la résolution.' }}
+          </p>
+        }
+      } @else {
         <p>Le méta sera accessible ici dès sa mise en ligne.</p>
       }
-    </div>
-  }
+    } @else {
+      <p class="riddle-status">Verrouillé</p>
+      <p>Résous les {{ total() }} énigmes pour ouvrir le dossier final.</p>
+    }
+  </section>
 }

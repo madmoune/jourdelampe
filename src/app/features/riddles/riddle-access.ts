@@ -28,7 +28,7 @@ export class RiddleAccess {
   readonly participantName = computed(() =>
     this.store.canSolve() ? (this.store.participant()?.name ?? null) : null,
   );
-  protected readonly content = contentChild.required(TemplateRef<unknown>);
+  protected readonly content = contentChild(TemplateRef<unknown>);
   protected readonly nameMaxLength = PARTICIPANT_NAME_MAX_LENGTH;
   protected readonly name = signal('');
   protected readonly editing = signal(false);

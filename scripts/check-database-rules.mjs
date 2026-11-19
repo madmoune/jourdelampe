@@ -574,6 +574,11 @@ await request(
 );
 await request('game', 'PATCH', submission('player'), 401, 'player');
 await request('game/solves/first/player', 'DELETE', undefined, 401, 'player');
+assert.equal(await request('riddleSecrets/first/answer', 'GET', undefined, 200, 'player'), 'Lampe');
+await request('riddleSecrets/first', 'GET', undefined, 401, 'player');
+await request('riddleSecrets/first/normalizedAnswer', 'GET', undefined, 401, 'player');
+await request('riddleSecrets/first/gridAnswer', 'GET', undefined, 401, 'player');
+await request('riddleSecrets/first/answer', 'GET', undefined, 401);
 await request(
   'participants/other-player',
   'PUT',
@@ -581,6 +586,13 @@ await request(
   200,
   'other-player',
 );
+await request('riddleSecrets/first/answer', 'GET', undefined, 401, 'other-player');
+await request('game/settings', 'PATCH', { mode: 'team' }, 200, admin);
+assert.equal(await request('riddleSecrets/first/answer', 'GET', undefined, 200, 'other-player'), 'Lampe');
+await request('riddleSecrets/second/answer', 'GET', undefined, 401, 'other-player');
+await request('riddleSecrets/first/answer', 'GET', undefined, 401, 'unnamed');
+await request('game/settings', 'PATCH', { mode: 'individual' }, 200, admin);
+await request('riddleSecrets/first/answer', 'GET', undefined, 401, 'other-player');
 await request(
   'game',
   'PATCH',
@@ -607,6 +619,7 @@ const reset = {
 await request('game', 'PATCH', reset, 401, 'player');
 await request('game', 'PATCH', reset, 200, admin);
 assert.equal(await request('game/solves', 'GET', undefined, 200), null);
+await request('riddleSecrets/first/answer', 'GET', undefined, 401, 'player');
 assert.equal(await request('game/proofs', 'GET', undefined, 200, admin), null);
 assert.deepEqual(await request('game/settings', 'GET', undefined, 200), { mode: 'individual' });
 assert.equal(await request('game/attempts/player', 'GET', undefined, 200, 'player'), null);

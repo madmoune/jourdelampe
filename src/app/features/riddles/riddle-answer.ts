@@ -13,12 +13,12 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { AiPortalState } from '../ai-home/ai-portal-state';
 import { GameStore } from './game-store';
 import { ParticipantStore } from './participant-store';
 import { RiddleAttempts } from './riddle-attempts';
 import { RiddleSubmissions } from './riddle-submissions';
 import { RiddleReplies } from './riddle-replies';
+import { RIDDLE_LIST_PATH } from './riddle-pages';
 import { RIDDLE_PREVIEW, RIDDLE_PREVIEW_PATH } from './riddle-release';
 
 @Component({
@@ -32,10 +32,11 @@ export class RiddleAnswer {
   readonly riddleId = input.required<string>();
   readonly answerLabel = input('Réponse');
   readonly hint = input('');
+  readonly showSolvedAnswer = input(true);
   private readonly browser = inject(DOCUMENT).defaultView;
   protected readonly game = inject(GameStore);
-  protected readonly portal = inject(AiPortalState);
-  protected readonly homePath = inject(RIDDLE_PREVIEW) ? RIDDLE_PREVIEW_PATH : '/';
+  protected readonly listPath =
+    (inject(RIDDLE_PREVIEW) ? RIDDLE_PREVIEW_PATH : '') + RIDDLE_LIST_PATH;
   private readonly participants = inject(ParticipantStore);
   private readonly attempts = inject(RiddleAttempts);
   private readonly submissions = inject(RiddleSubmissions);
@@ -119,9 +120,7 @@ export class RiddleAnswer {
       if (correct) this.saveAnswer(answer);
       this.feedback.set({
         correct,
-        text: correct
-          ? `${this.name()}, réponse validée. Une énigme de moins. Ma rancune reste entière.`
-          : this.replies.wrongAnswer(this.name()),
+        text: correct ? this.replies.correctAnswer() : this.replies.wrongAnswer(this.name()),
       });
       this.draft.set('');
       this.success.set(correct);

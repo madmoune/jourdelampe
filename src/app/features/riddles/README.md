@@ -1,6 +1,8 @@
 # Profils, énigmes et tableau de bord
 
-Le portail de l’AI demande le **nom** du participant dans la section `#enigmes`.
+La page `/enigmes` demande le **nom** du participant dans la section `#profil`.
+Le Jour de l’AI y mène par le lien « Sauver le party », visible dès l’ouverture.
+L’aperçu utilise `/apercu-ia/enigmes`.
 Aucun courriel ni mot de passe n’est demandé. `AnonymousSession` utilise Firebase
 Authentication pour conserver un identifiant dans le navigateur, puis
 `ParticipantStore` enregistre le nom dans `participants/<uid>`. Un compte n’est
@@ -102,8 +104,12 @@ riddleSecrets/<riddleId>/{answer?, normalizedAnswer?, gridAnswer?, surnames?}
 ```
 
 Le catalogue, la partie en cours et les résolutions sont publics. Les réponses
-attendues et les preuves de validation sont réservées à l’administrateur,
-y compris pour les requêtes directes vers Firebase. Les anciennes branches
+attendues ne sont pas envoyées avec le catalogue. Au clic sur **Révéler la
+réponse**, la page lit seulement le champ `answer` : Firebase l’autorise pour
+un profil enregistré après une résolution personnelle en mode individuel, ou
+après une résolution de l’équipe en mode équipe. Une remise à zéro efface
+les résolutions et referme cet accès. Le reste des secrets et les preuves de
+validation sont réservés à l’administrateur. Les anciennes branches
 `riddles` et `riddleProgress` ne servent pas au jeu.
 
 `RiddleSubmissions` vérifie le profil, normalise la réponse et soumet une preuve
@@ -144,9 +150,11 @@ Un essai incorrect est validé et enregistré en un seul appel serveur. Si le se
 refuse ce verdict parce que la réponse est correcte, un second appel enregistre
 atomiquement l’essai réussi, la preuve et la résolution. Une panne ou un refus des
 deux verdicts reste une erreur technique, jamais une fausse réussite.
-`RiddleReplies` fait tourner douze commentaires originaux de l’AI, personnalisés
-avec le nom courant, sans répétition dans une série ni entre deux séries successives.
-La rotation avance uniquement après une mauvaise réponse confirmée par le serveur.
+`RiddleReplies` fait tourner douze commentaires d’échec et cinq commentaires de
+réussite. Chaque rotation avance uniquement après le verdict correspondant
+du serveur, sans répétition dans une série ni à la jonction de deux séries.
+Le nom courant accompagne le verdict, et la fenêtre de succès reprend le même
+commentaire que le formulaire.
 Voir `../zebra/README.md` pour la configuration privée de la première grille.
 
 Une même personne ne peut résoudre qu’une fois la même énigme par partie. Plusieurs
@@ -172,18 +180,17 @@ les suppressions, les faux noms et les horodatages imposés par un client.
   débloquées sont communs. Une réussite d’équipe n’attribue aucune résolution aux
   autres joueurs : ils peuvent encore résoudre l’énigme à leur nom.
 
-Deux résolutions de la même énigme ne remplacent jamais une autre énigme manquante.
-Un catalogue vide reste verrouillé. Une remise à zéro verrouille immédiatement le
-méta dans les deux modes. Changer de mode peut verrouiller ou déverrouiller le méta
-selon les réussites existantes, sans les modifier.
+La page prévoit huit dossiers ordinaires; les emplacements sans entrée Firebase
+restent « À venir ». Deux résolutions du même dossier n’en remplacent jamais
+un autre. Tant que les huit dossiers ne sont pas publiés et résolus selon le
+mode actif, la carte du méta reste verrouillée. Une remise à zéro la verrouille
+immédiatement; un changement de mode recalcule l’accès, sans effacer les réussites.
 
-Le contenu du méta reste à ajouter. Son indicateur est déjà disponible dans le
-jeu public et le tableau de bord; ses futurs composants pourront utiliser
-`PlayerProgress.metaUnlocked()`. Les futures informations obtenues après une énigme
-peuvent suivre `PlayerProgress.riddles()[…].infoUnlocked`; `solvedByMe` reste personnel
-dans les deux modes. Aucun contenu de méta ni information de récompense n’est encore
-intégré. Pour son suivi global, le tableau de bord utilise
-`GameStore.teamMetaUnlocked()` ou `GameStore.individualMetaCount()`.
+Pour publier le méta, configurer `game/catalog/meta` (titre, énoncé, ordre) et
+`riddleSecrets/meta` (réponse, réponse normalisée). La carte finale ne compte
+pas dans la progression des huit énigmes et affiche son énoncé et son formulaire
+après déverrouillage. Le tableau de bord suit aussi l’accès au méta en fonction
+des huit dossiers.
 
 ## Intégration publique
 
@@ -205,11 +212,13 @@ continue d’enregistrer les essais dans Firebase, sans historique visible pour 
 `answerLabel` est facultatif, avec « Réponse » par défaut. Nostalgie précise
 « Réponse (8 lettres) », La Fourchette « Réponse (12 lettres) »; les nouvelles
 énigmes peuvent définir leur propre format.
-Le gabarit conserve les liens de retour vers le portail public ou l’aperçu.
+Le gabarit retourne à la liste publique ou à celle de l’aperçu.
 
 `RiddleAccess` crée le contenu de son `ng-template` seulement quand un nom a été
-enregistré avec succès et que le profil est disponible. Placer les futurs jeux
-et leurs formulaires dans ce bloc, déjà présent dans `ai-home.html` :
+enregistré avec succès et que le profil est disponible. La page `RiddleHub`
+l’utilise pour gérer le profil et n’active les formulaires intégrés et les
+révélations qu’après l’enregistrement. Le catalogue reste visible sans profil.
+Pour un autre usage, le composant accepte aussi un contenu conditionnel :
 
 ```html
 <app-riddle-access>
@@ -224,7 +233,8 @@ Avant chaque soumission de réponse, appeler aussi
 nom ou un profil indisponible. Modifier un nom déjà enregistré garde le jeu
 monté et son état intact pendant la sauvegarde.
 
-Le portail utilise `RiddleGame` dans ce bloc et `RiddleResults` pour le suivi public.
+La page dédiée utilise `RiddleGame` pour le catalogue et `RiddleResults` pour
+afficher le nom et l’heure de chaque résolution directement sur sa carte.
 `Riddle` décrit uniquement ce qui peut être livré au navigateur. `RiddleProgress`
 décrit une résolution confirmée. Ne jamais ajouter une réponse au modèle public.
 

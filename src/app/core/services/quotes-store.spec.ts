@@ -97,7 +97,7 @@ describe('citations en temps réel', () => {
     const initial = initialQuoteCatalog();
     source.next({ initialized: true, items: { ...initial.items, ...initial.ai } });
     expect(store.regular()).toHaveLength(6);
-    expect(store.ai()).toHaveLength(10);
+    expect(store.ai()).toHaveLength(11);
     const quote = store.ai()[0];
     await store.setActive(quote, false);
     expect(database.update).toHaveBeenLastCalledWith(

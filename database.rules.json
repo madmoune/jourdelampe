@@ -259,6 +259,7 @@
       "$riddle": {
         ".validate": "$riddle.matches(/^[A-Za-z0-9_-]{1,128}$/) && (newData.hasChildren(['answer', 'normalizedAnswer']) || (!newData.child('answer').exists() && !newData.child('normalizedAnswer').exists() && newData.hasChild('gridAnswer')))",
         "answer": {
+          ".read": "auth != null && root.child('participants').child(auth.uid).child('name').isString() && root.child('game/round/id').isString() && (root.child('game/solves').child($riddle).child(auth.uid).child('roundId').val() === root.child('game/round/id').val() || ((!root.child('game/settings/mode').exists() || root.child('game/settings/mode').val() === 'team') && root.child('game/solves').child($riddle).hasChildren()))",
           ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 200"
         },
         "normalizedAnswer": {

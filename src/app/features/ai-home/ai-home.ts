@@ -8,6 +8,7 @@ import {
   effect,
   ElementRef,
   inject,
+  Injector,
   signal,
   viewChild,
 } from '@angular/core';
@@ -21,11 +22,10 @@ import { AiTransmission } from './ai-transmission';
 import { AiArchives } from './ai-archives';
 import { AiQuoteRotation } from './ai-quote-rotation';
 import { TitleLights } from '../home/lamp-title/title-lights';
-import { RiddleAccess } from '../riddles/riddle-access';
-import { RiddleGame } from '../riddles/riddle-game';
-import { RiddleResults } from '../riddles/riddle-results';
+import { ParticipantStore } from '../riddles/participant-store';
+import { RIDDLE_LIST_PATH } from '../riddles/riddle-pages';
 import { AiPortalState } from './ai-portal-state';
-import { RIDDLE_PREVIEW, RiddleRelease } from '../riddles/riddle-release';
+import { RIDDLE_PREVIEW, RIDDLE_PREVIEW_PATH, RiddleRelease } from '../riddles/riddle-release';
 
 type TakeoverStage = 'original' | 'intrusion' | 'complete';
 
@@ -37,9 +37,6 @@ type TakeoverStage = 'original' | 'intrusion' | 'complete';
     AiDirectory,
     AiTransmission,
     AiArchives,
-    RiddleAccess,
-    RiddleGame,
-    RiddleResults,
   ],
   providers: [AiQuoteRotation],
   templateUrl: './ai-home.html',
@@ -57,8 +54,7 @@ export class AiHome {
   private readonly browser = inject(DOCUMENT).defaultView;
   private readonly timers: ReturnType<typeof setTimeout>[] = [];
   private readonly pageTitle = viewChild<ElementRef<HTMLHeadingElement>>('pageTitle');
-  private readonly riddleAccess = viewChild(RiddleAccess);
-  private readonly riddleResults = viewChild(RiddleResults);
+  private readonly injector = inject(Injector);
   private focusAfterTakeover = false;
   private readonly now = signal(Date.now());
   protected readonly event = EVENT;
@@ -66,11 +62,13 @@ export class AiHome {
     this.preview || this.portal.revealed() ? 'complete' : 'original',
   );
   protected readonly riddlesVisible = computed(() => this.preview || this.release.released());
+  protected readonly riddlePath = (this.preview ? RIDDLE_PREVIEW_PATH : '') + RIDDLE_LIST_PATH;
   protected readonly animationsPaused = signal(false);
-  protected readonly participantName = computed(
-    () => this.riddleAccess()?.participantName() ?? null,
-  );
-  protected readonly gameHasRiddles = computed(() => this.riddleResults()?.hasRiddles() ?? false);
+  protected readonly participantName = computed(() => {
+    if (this.stage() !== 'complete' || !this.riddlesVisible()) return null;
+    const players = this.injector.get(ParticipantStore);
+    return players.canSolve() ? (players.participant()?.name ?? null) : null;
+  });
   protected readonly remaining = computed(() => countdownUntil(EVENT.newYearAt, this.now()));
   protected readonly units = computed(() => {
     const value = this.remaining();

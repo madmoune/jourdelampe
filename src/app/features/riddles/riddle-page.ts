@@ -8,10 +8,10 @@ import {
   TemplateRef,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AiPortalState } from '../ai-home/ai-portal-state';
 import { GameStore } from './game-store';
 import { ParticipantStore } from './participant-store';
 import { RiddleAnswer } from './riddle-answer';
+import { RIDDLE_LIST_PATH } from './riddle-pages';
 import { RIDDLE_PREVIEW, RIDDLE_PREVIEW_PATH } from './riddle-release';
 
 /** Gabarit commun : titre, flavortext, réponse, puis contenu de l’énigme. */
@@ -30,8 +30,8 @@ export class RiddlePage {
   readonly answerLabel = input('Réponse');
   readonly answerHint = input('');
   protected readonly content = contentChild.required(TemplateRef<unknown>);
-  protected readonly homePath = inject(RIDDLE_PREVIEW) ? RIDDLE_PREVIEW_PATH : '/';
-  protected readonly portal = inject(AiPortalState);
+  protected readonly listPath =
+    (inject(RIDDLE_PREVIEW) ? RIDDLE_PREVIEW_PATH : '') + RIDDLE_LIST_PATH;
   protected readonly participants = inject(ParticipantStore);
   protected readonly game = inject(GameStore);
 }

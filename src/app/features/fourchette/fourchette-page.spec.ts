@@ -68,7 +68,7 @@ describe('La Fourchette et le gabarit commun des énigmes', () => {
     expect(page.querySelector('h1')?.textContent).toContain('La Fourchette');
     expect(page.querySelector('input')).toBeNull();
     expect(page.querySelector('.wordsearch')).toBeNull();
-    expect(page.querySelector('.access-notice a')?.getAttribute('href')).toBe('/#enigmes');
+    expect(page.querySelector('.access-notice a')?.getAttribute('href')).toBe('/enigmes#profil');
   });
 
   it.each([false, true])(
@@ -97,8 +97,8 @@ describe('La Fourchette et le gabarit commun des énigmes', () => {
       await fixture.whenStable();
       expect(submit).toHaveBeenCalledWith(FOURCHETTE_ID, 'Réponse de test');
       expect(page.querySelector('dialog')?.open).toBe(true);
-      const portal = `${preview ? '/apercu-ia' : '/'}#enigmes`;
-      expect(page.querySelector('dialog a')?.getAttribute('href')).toBe(portal);
+      const portal = `${preview ? '/apercu-ia' : ''}/enigmes`;
+      expect(page.querySelector('dialog a')?.getAttribute('href')).toBe(`${portal}#dossiers`);
       expect(page.querySelector('header a')?.getAttribute('href')).toBe(portal);
       solved.set(true);
       await fixture.whenStable();

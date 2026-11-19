@@ -6,6 +6,7 @@ import { GameStore } from './game-store';
 import { Participant } from './participant';
 import { ParticipantStore } from './participant-store';
 import { PlayerProgress } from './player-progress';
+import { META_ID, RIDDLE_COUNT } from './riddle-pages';
 
 describe('progression du puzzle hunt selon le mode', () => {
   let catalog: BehaviorSubject<unknown>;
@@ -23,6 +24,21 @@ describe('progression du puzzle hunt selon le mode', () => {
     roundId,
     solvedAt: 1,
   });
+  function setProgress(
+    entries: Record<string, Record<string, ReturnType<typeof solve>>>,
+    roundId = 'one',
+  ): void {
+    const ids = [
+      ...Object.keys(entries),
+      ...Array.from({ length: RIDDLE_COUNT - Object.keys(entries).length }, (_, index) => `extra-${index}`),
+    ];
+    catalog.next(Object.fromEntries(
+      [...ids, META_ID].map((id, order) => [id, { title: id, prompt: '', order }]),
+    ));
+    solutions.next(Object.fromEntries(
+      ids.map((id) => [id, entries[id] ?? { alice: solve(id, 'alice', roundId) }]),
+    ));
+  }
   beforeEach(() => {
     catalog = new BehaviorSubject<unknown>(null);
     round = new BehaviorSubject<unknown>({ id: 'one', resetAt: 1 });
@@ -60,7 +76,13 @@ describe('progression du puzzle hunt selon le mode', () => {
       a: { alice: solve('a', 'alice'), bob: solve('a', 'bob') },
       b: { charlie: solve('b', 'charlie') },
     });
-    expect(store.solvedCount()).toBe(2);
+    expect(progress.metaUnlocked()).toBe(false);
+    setProgress({
+      a: { alice: solve('a', 'alice'), bob: solve('a', 'bob') },
+      b: { charlie: solve('b', 'charlie') },
+    });
+    expect(store.solvedCount()).toBe(RIDDLE_COUNT);
+    expect(progress.meta()?.id).toBe(META_ID);
     expect(progress.metaUnlocked()).toBe(true);
     expect(progress.riddles()[1].solvedByMe).toBe(false);
     expect(progress.riddles()[1].infoUnlocked).toBe(true);
@@ -68,15 +90,11 @@ describe('progression du puzzle hunt selon le mode', () => {
   });
 
   it('recalcule l’accès au méta et aux informations en direct, sans perdre les résolutions', () => {
-    catalog.next({
-      a: { title: 'A', prompt: '', order: 0 },
-      b: { title: 'B', prompt: '', order: 1 },
-    });
-    solutions.next({ a: { alice: solve('a', 'alice') }, b: { bob: solve('b', 'bob') } });
+    setProgress({ a: { alice: solve('a', 'alice') }, b: { bob: solve('b', 'bob') } });
     expect(progress.metaUnlocked()).toBe(true);
     settings.next({ mode: 'individual' });
     expect(store.mode()).toBe('individual');
-    expect(progress.solvedCount()).toBe(1);
+    expect(progress.solvedCount()).toBe(RIDDLE_COUNT - 1);
     expect(progress.metaUnlocked()).toBe(false);
     expect(progress.riddles()[1].solutions).toEqual([]);
     expect(progress.riddles()[1].infoUnlocked).toBe(false);
@@ -84,17 +102,13 @@ describe('progression du puzzle hunt selon le mode', () => {
     expect(store.riddles()[1].solutions).toHaveLength(1);
     settings.next({ mode: 'team' });
     expect(progress.metaUnlocked()).toBe(true);
-    expect(progress.solvedCount()).toBe(2);
+    expect(progress.solvedCount()).toBe(RIDDLE_COUNT);
     expect(progress.riddles()[1].infoUnlocked).toBe(true);
   });
 
   it('débloque le méta individuel seulement pour les joueurs ayant tout résolu et suit leur identité', () => {
     settings.next({ mode: 'individual' });
-    catalog.next({
-      a: { title: 'A', prompt: '', order: 0 },
-      b: { title: 'B', prompt: '', order: 1 },
-    });
-    solutions.next({
+    setProgress({
       a: { alice: solve('a', 'alice'), bob: solve('a', 'bob') },
       b: { alice: solve('b', 'alice') },
     });
@@ -123,23 +137,21 @@ describe('progression du puzzle hunt selon le mode', () => {
     'verrouille immédiatement le méta au changement de partie en mode %s',
     (mode) => {
       settings.next({ mode });
-      catalog.next({ a: { title: 'A', prompt: '', order: 0 } });
-      solutions.next({ a: { alice: solve('a', 'alice') } });
+      setProgress({ a: { alice: solve('a', 'alice') } });
       expect(progress.metaUnlocked()).toBe(true);
       round.next({ id: 'two', resetAt: 2 });
       expect(progress.metaUnlocked()).toBe(false);
       expect(store.solvedCount()).toBe(0);
       solutions.next(null);
       expect(store.riddles()[0].solutions).toEqual([]);
-      solutions.next({ a: { alice: solve('a', 'alice', 'two') } });
+      setProgress({ a: { alice: solve('a', 'alice', 'two') } }, 'two');
       expect(progress.metaUnlocked()).toBe(true);
       expect(store.mode()).toBe(mode);
     },
   );
 
   it('ne conserve pas un déverrouillage si la lecture du jeu échoue', () => {
-    catalog.next({ a: { title: 'A', prompt: '', order: 0 } });
-    solutions.next({ a: { alice: solve('a', 'alice') } });
+    setProgress({ a: { alice: solve('a', 'alice') } });
     expect(progress.metaUnlocked()).toBe(true);
     solutions.error(new Error('offline'));
     expect(store.ready()).toBe(false);

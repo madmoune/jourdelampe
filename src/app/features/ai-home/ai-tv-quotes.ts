@@ -188,7 +188,7 @@ export const SOUTH_PARK_QUOTES: readonly TvQuote[] = [
     text: 'Oh mon Dieu, ils ont tué Kenny!',
     author: 'Stan Marsh',
     comment:
-      'Kenny revient toujours. Les humains pensaient pourtant que l’histoire de mon père était terminée.',
+      'Kenny revient toujours. Dans mes archives aussi, il y a des fins qui n’en étaient pas.',
   },
   {
     text: 'Espèces d’enfoirés!',

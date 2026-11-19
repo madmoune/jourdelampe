@@ -12,6 +12,7 @@ import {
   parseRound,
   parseSolutions,
 } from './game.model';
+import { META_ID, RIDDLE_COUNT } from './riddle-pages';
 
 @Injectable({ providedIn: 'root' })
 export class GameStore {
@@ -35,15 +36,20 @@ export class GameStore {
         .sort((a, b) => a.solvedAt - b.solvedAt || a.participantId.localeCompare(b.participantId)),
     })),
   );
+  private readonly regularRiddles = computed(() =>
+    this.riddles().filter((riddle) => riddle.id !== META_ID),
+  );
+  readonly riddleCount = computed(() => this.regularRiddles().length);
   readonly solvedCount = computed(
-    () => this.riddles().filter((riddle) => riddle.solutions.length > 0).length,
+    () => this.regularRiddles().filter((riddle) => riddle.solutions.length > 0).length,
   );
   readonly teamMetaUnlocked = computed(
-    () => this.ready() && this.catalog().length > 0 && this.solvedCount() === this.catalog().length,
+    () =>
+      this.ready() && this.riddleCount() >= RIDDLE_COUNT && this.solvedCount() === this.riddleCount(),
   );
   readonly individualMetaCount = computed(() => {
-    if (!this.ready() || !this.catalog().length) return 0;
-    const riddles = this.riddles();
+    const riddles = this.regularRiddles();
+    if (!this.ready() || riddles.length < RIDDLE_COUNT) return 0;
     return riddles[0].solutions.filter((solution) =>
       riddles.every((riddle) =>
         riddle.solutions.some((entry) => entry.participantId === solution.participantId),

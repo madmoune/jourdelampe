@@ -1,5 +1,6 @@
 import { GameRiddle, RiddleSolution } from '../riddles/game.model';
 import { Participant } from '../riddles/participant';
+import { META_ID, RIDDLE_COUNT } from '../riddles/riddle-pages';
 import { parseParticipants, summarizePlayers } from './player-overview';
 
 describe('progression et contribution des joueurs enregistrés', () => {
@@ -72,7 +73,12 @@ describe('progression et contribution des joueurs enregistrés', () => {
   });
 
   it('partage le méta en équipe sans attribuer les réussites et adapte l’accès au mode individuel', () => {
-    const riddles = [riddle('a', [solve('a', 'alice', 10)])];
+    const riddles = [
+      ...Array.from({ length: RIDDLE_COUNT }, (_, index) =>
+        riddle(`case-${index}`, [solve(`case-${index}`, 'alice', 10)]),
+      ),
+      riddle(META_ID),
+    ];
     const team = summarizePlayers(participants, riddles, 'team', true);
     expect(team.every((player) => player.metaUnlocked)).toBe(true);
     expect(team[1].solvedCount).toBe(0);

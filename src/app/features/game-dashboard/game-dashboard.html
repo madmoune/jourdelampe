@@ -82,7 +82,7 @@
     </section>
     <div class="summary" aria-live="polite">
       <div class="panel">
-        <strong>{{ store.game.solvedCount() }} / {{ store.game.catalog().length }}</strong
+        <strong>{{ store.game.solvedCount() }} / {{ store.game.riddleCount() }}</strong
         ><span>énigmes résolues au moins une fois</span>
       </div>
       <div
@@ -138,7 +138,7 @@
                 <div>
                   <dt>Progression personnelle</dt>
                   <dd>
-                    <strong>{{ player.solvedCount }} / {{ store.game.catalog().length }}</strong>
+                    <strong>{{ player.solvedCount }} / {{ store.game.riddleCount() }}</strong>
                     énigmes · {{ player.percentage }} %
                   </dd>
                 </div>
@@ -154,7 +154,7 @@
               </dl>
               <progress
                 [value]="player.solvedCount"
-                [max]="store.game.catalog().length || 1"
+                [max]="store.game.riddleCount() || 1"
                 [attr.aria-label]="'Progression personnelle de ' + player.name"
               >
                 {{ player.percentage }} %
