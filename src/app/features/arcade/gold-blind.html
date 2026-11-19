@@ -1,0 +1,142 @@
+<section class="console" arcadeControls (gameInput)="input($event)" tabindex="0" aria-label="Pokemon Gold & Blind">
+  <div class="handheld" data-arcade-playfield>
+    @if (battle(); as fight) {
+      @let rival = trainers[fight.trainer];
+      @let active = activeRival(fight);
+      <div class="battle-layout">
+        <div class="battle" role="group" [attr.aria-label]="'Braisillon affronte ' + creatures[active.creature]">
+          <svg viewBox="0 0 160 102" aria-hidden="true">
+            @if (fight.enemy || rivalHit()) {
+              <g class="rival-sprite" [class.lunge]="phase() === 'rival-lunge'" [class.recover]="phase() === 'hero-impact'"
+                [class.impact]="rivalHit()">
+                <image [attr.href]="'/images/arcade/' + active.creature + '.webp'"
+                  x="92" y="19" width="49" height="41" preserveAspectRatio="xMidYMax meet"/>
+              </g>
+            }
+            @if (fight.hp || phase() === 'hero-impact') {
+              <g class="hero-sprite" [class.lunge]="phase() === 'charge-lunge'" [class.recover]="phase() === 'charge-impact'"
+                [class.impact]="phase() === 'hero-impact'">
+                <image href="/images/arcade/braisillon.webp" x="20" y="51" width="52" height="41"
+                  preserveAspectRatio="xMidYMax meet" [attr.visibility]="attackPose() ? 'hidden' : 'visible'"/>
+                <svg class="attack-sprite" x="18" y="38" width="56" height="54" overflow="hidden"
+                  [attr.viewBox]="attackPose() ?? '0 0 56 54'" [attr.visibility]="attackPose() ? 'visible' : 'hidden'">
+                  <image href="/images/arcade/braisillon-attacks.webp" width="168" height="54"/>
+                </svg>
+              </g>
+            }
+            @if (phase() === 'spark-ready' || phase() === 'spark-release') {
+              <g transform="translate(62 56)">
+                <g class="spark" [class.flying]="phase() === 'spark-release'">
+                  <path d="M-2-7h4v4h3v2h3v3H3v4h-5V2h-5v-3h3v-3h2Z" fill="#ffe888" stroke="#986333"/>
+                  <path d="M-2-2h4v4h-4Z" fill="#fff8dc"/>
+                  <path d="M-11 1h2v2h-2Zm16-8h3v2H5Z" fill="#ffec90"/>
+                </g>
+              </g>
+            }
+            @if (rivalHit() || phase() === 'hero-impact') {
+              <g class="impact-mark" [attr.transform]="rivalHit() ? 'translate(113 42)' : 'translate(48 74)'"
+                [attr.fill]="phase() === 'spark-impact' ? '#ffde61' : '#f7efd2'">
+                <path d="M-2-12h4v6h5v3h6v5H6v5H2v6h-4V7h-5V2h-6v-5h6v-3h5Z"/>
+                <path d="M-14-11h3v3h-3ZM10 8h3v3h-3Zm3-17h2v3h-2Z"/>
+              </g>
+            }
+          </svg>
+          <div class="hp rival">
+            <label>{{ creatures[active.creature] }}
+              <progress [value]="fight.enemy" [max]="active.hp"></progress>
+            </label>
+          </div>
+          <div class="hp hero">
+            <label>Braisillon <progress [value]="fight.hp" [max]="maxHp"></progress></label>
+            <small>{{ fight.hp }} / {{ maxHp }} PV</small>
+          </div>
+        </div>
+        <div class="roster">
+          <strong>Équipe {{ rival.order }}</strong>
+          <ul [attr.aria-label]="'Équipe de ' + rival.name">
+            @for (member of rival.slots; track $index; let index = $index) {
+              @let defeatedMember = index < fight.active || !fight.enemy;
+              @let activeMember = index === fight.active && fight.enemy > 0;
+              <li [class.empty]="!member" [class.ko]="member && defeatedMember" [class.active]="activeMember">
+                @if (member) {
+                  <img [src]="'/images/arcade/' + member.creature + '.webp'"
+                    [alt]="creatures[member.creature] + (defeatedMember ? ' · K.O.' : activeMember ? ' · au combat' : '')" />
+                } @else {
+                  <span class="slot-description">Case vide</span>
+                }
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+      <div class="textbox">
+        @if ((fight.hp && fight.enemy) || phase()) {
+          <div class="moves" aria-label="Attaques">
+            @for (attackText of moves; track attackText; let index = $index) {
+              <button type="button" [class.chosen]="move() === index" [disabled]="!!phase() || (index === 1 && !fight.sparks)"
+                (click)="attack(index)">{{ attackText }} @if (index === 1) { <small>{{ fight.sparks }}/2</small> }</button>
+            }
+          </div>
+        }
+        <p role="status">{{ fight.message }}</p>
+      </div>
+    } @else {
+      <svg class="map" viewBox="0 0 160 112" role="img" aria-label="Sentier boisé et trois dresseurs"
+        shape-rendering="crispEdges">
+        <defs>
+          <pattern id="gold-grass" width="16" height="16" patternUnits="userSpaceOnUse">
+            <path d="M0 0h16v16H0Z" fill="#aac075"/>
+            <path d="M1 5h2v-1h1v2H1Zm10 7h3v1h-3Zm-4-9h1v1H7Z" fill="#8eaa67"/>
+            <path d="M6 11h2v1H6Zm6-9h2v1h-2Z" fill="#c9ce87"/>
+          </pattern>
+          <g id="gold-tree">
+            <path d="M6 0h5v2h3v4h2v6h-2v2h-3v2H5v-2H2v-2H0V6h2V3h4Z" fill="#3a6049"/>
+            <path d="M5 3h7v2h2v6h-3v2H5v-2H2V7h3Z" fill="#689358"/>
+            <path d="M6 3h4v2H7v2H4V5h2Z" fill="#a9b970"/>
+            <path d="M7 13h3v3H7Zm3-4h4v2h-4Z" fill="#576946"/>
+          </g>
+          <g id="gold-person">
+            <path d="M5 1h6v1h2v3h-1v5h2v4h-3v2H5v-2H2v-4h2V5H3V2h2Z" fill="#3c333d"/>
+            <path d="M5 2h6v1h1v2H4V3h1Zm0 8h6v3H5Z" fill="currentColor"/>
+            <path d="M5 6h6v3H5Z" fill="#f2cc92"/>
+            <path d="M6 7h1v1H6Zm3 0h1v1H9Z" fill="#503e45"/>
+            <path d="M6 13h4v2H6Z" fill="#617386"/>
+          </g>
+        </defs>
+        <rect width="160" height="112" fill="url(#gold-grass)"/>
+        @for (row of tiles; track $index; let y = $index) {
+          @for (tile of row; track $index; let x = $index) {
+            <g [attr.transform]="'translate(' + (x * 16) + ' ' + (y * 16) + ')'">
+              @if (tile === '#') {
+                <use href="#gold-tree"/>
+              } @else {
+                <path d="M5 0h6v2h3v3h2v6h-2v3h-3v2H5v-2H2v-3H0V5h2V2h3Z"
+                  [attr.fill]="(x + y) % 2 ? '#daca86' : '#dfce8a'" />
+                <path d="M4 5h2v1H4Zm6 4h2v1h-2Z" fill="#c0ad72"/>
+                @if (tile !== '.') {
+                  <use href="#gold-person" [style.color]="tile === 'A' ? '#576dad' : tile === 'B' ? '#d3a145' : '#a15782'"/>
+                  @if (defeated().has(tile)) { <path d="m10 1 2 2 3-3" fill="none" stroke="#f5f2bd"/> }
+                }
+                @if (position().x === x && position().y === y) {
+                  <use href="#gold-person" class="walker" [class.leftward]="facing() === 'left'"/>
+                }
+              }
+            </g>
+          }
+        }
+      </svg>
+      <div class="textbox" role="status">
+        @if (challenger(); as trainer) {
+          <p>{{ trainers[trainer].name }} · « {{ trainers[trainer].line }} »</p>
+        } @else {
+          <p>
+            @if (near(); as trainer) { {{ trainers[trainer].name }} est à côté. }
+            @else { {{ message() || 'Sentier de Vermeil' }} }
+          </p>
+        }
+      </div>
+    }
+  </div>
+  <app-arcade-gamepad [repeat]="!battle()" [labelA]="battle() ? 'Valider' : challenger() ? 'Combattre' : 'Parler'"
+    [labelB]="battle() || challenger() ? 'Retour' : 'Aide'" (control)="input($event)"/>
+</section>

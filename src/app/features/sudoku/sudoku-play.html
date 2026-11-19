@@ -1,0 +1,90 @@
+<div class="vigie">
+  <section class="sudoku" aria-labelledby="sudoku-title">
+    <p class="file-label">01 · La grille</p>
+    <h2 id="sudoku-title">Sudoku</h2>
+    <p id="sudoku-guide">
+      Place les chiffres de 1 à 9 une seule fois par ligne, par colonne et par bloc de 3 × 3.
+      Tu peux te déplacer avec les flèches du clavier.
+    </p>
+
+    <table aria-labelledby="sudoku-title" aria-describedby="sudoku-guide">
+      <tbody>
+        @for (row of positions; track row) {
+          <tr>
+            @for (column of positions; track column) {
+              @let cell = row * size + column;
+              <td
+                [class.given]="givens[cell]"
+                [class.box-right]="(column + 1) % boxSize === 0 && column < size - 1"
+                [class.box-bottom]="(row + 1) % boxSize === 0 && row < size - 1"
+              >
+                <input
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="1"
+                  autocomplete="off"
+                  [id]="'sudoku-cell-' + cell"
+                  [value]="board()[cell] || ''"
+                  [readOnly]="!!givens[cell]"
+                  [attr.aria-label]="'Ligne ' + (row + 1) + ', colonne ' + (column + 1)"
+                  [tabIndex]="focused() === cell ? 0 : -1"
+                  (focus)="selectCell($event, cell)"
+                  (input)="editCell($event, cell)"
+                  (keydown)="moveFocus($event, row, column)"
+                />
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+    <p class="grid-status" [class.valid]="complete()" role="status">
+      @if (complete()) {
+        ✓ Grille correcte. Les drapeaux sont en place.
+      } @else if (filledCount() === size * size) {
+        Grille remplie. Vérifie qu’aucun chiffre ne se répète dans une ligne, une colonne ou un bloc.
+      } @else {
+        {{ filledCount() }} / {{ size * size }} cases remplies
+      }
+    </p>
+  </section>
+
+  <section class="semaphore" aria-labelledby="signals-title">
+    <p class="file-label">02 · Les signaux</p>
+    <h2 id="signals-title">Neuf poses</h2>
+    <p>
+      Dans chaque bloc, repère la paire indiquée ci-dessous. Le centre du bloc est le point de
+      départ : les deux cases de la paire donnent les directions des drapeaux.
+    </p>
+    <ol class="signal-grid">
+      @for (pair of flagDigits; track $index; let box = $index) {
+        <li>
+          <span class="signal-label">Bloc {{ box + 1 }}</span>
+          <strong>{{ pair[0] }} et {{ pair[1] }}</strong>
+          @if (poses()[box]; as pose) {
+            <svg
+              class="pose"
+              viewBox="0 0 66 66"
+              role="img"
+              [attr.aria-label]="'Drapeaux : ' + pose[0].direction + ' et ' + pose[1].direction"
+            >
+              <path d="M21 0V66M45 0V66M0 21H66M0 45H66" class="pose-grid" />
+              @for (flag of pose; track flag.cell) {
+                <line x1="33" y1="33" [attr.x2]="flag.x" [attr.y2]="flag.y" class="pose-arm" />
+                <circle [attr.cx]="flag.x" [attr.cy]="flag.y" r="4" class="pose-flag" />
+              }
+              <circle cx="33" cy="33" r="3.5" class="pose-center" />
+            </svg>
+          }
+        </li>
+      }
+    </ol>
+    <p>
+      Utilise les poses telles que dessinées dans la fiche, sans les retourner. Lis les blocs
+      de gauche à droite, puis de haut en bas.
+    </p>
+    <a routerLink="/cheatsheet" fragment="semaphore-title" target="_blank" rel="noopener">
+      Consulter la fiche du sémaphore (nouvel onglet) ↗
+    </a>
+  </section>
+</div>

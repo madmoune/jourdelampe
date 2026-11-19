@@ -17,6 +17,10 @@ const puzzlePaths = [
   '/enigmes/zebra',
   '/enigmes/la-fourchette',
   '/enigmes/le-debut-de-la-fin',
+  '/enigmes/la-porcherie',
+  '/enigmes/la-vigie',
+  '/enigmes/en-manchettes',
+  '/enigmes/salle-arcade',
 ];
 
 function probeRoutes(config: Routes): Routes {

@@ -1,0 +1,122 @@
+<section class="console" arcadeControls (gameInput)="input($event)" tabindex="0" aria-label="Final Fantaceasar 9">
+  <div class="battleframe" data-arcade-playfield>
+    <div class="arena">
+      @let cue = animation();
+      <svg viewBox="0 0 500 250" role="img"
+        [attr.aria-label]="'Romaine et Croûton affrontent ' + enemyName + ', un Romain en toge couronné de laurier.'">
+        @if (battle().enemy || cue?.phase === 'boss-impact') {
+          @let countering = cue?.phase === 'counter-ready' || cue?.phase === 'counter-cast' || cue?.phase === 'party-impact';
+          <g class="enemy-position" [attr.transform]="'translate(' + boss.x + ' ' + boss.y + ')'">
+            <ellipse rx="47" ry="10" fill="#0a101b" opacity=".66"/>
+            <g class="enemy-fighter" [class.hit]="cue?.phase === 'boss-impact'" [class.fatal]="!battle().enemy">
+              <g transform="scale(-1 1)">
+                <image href="/images/arcade/caesar.webp" x="-74" y="-142" width="148" height="147"
+                  preserveAspectRatio="xMidYMax meet" [attr.visibility]="countering ? 'hidden' : 'visible'"/>
+                <svg x="-76" y="-149" width="152" height="154" overflow="hidden"
+                  [attr.viewBox]="cue?.phase === 'counter-ready' ? '0 0 152 154' : '152 0 152 154'"
+                  [attr.visibility]="countering ? 'visible' : 'hidden'" class="counter-sprite">
+                  <image href="/images/arcade/caesar-attacks.webp" width="304" height="154"/>
+                </svg>
+              </g>
+            </g>
+          </g>
+        }
+        @for (hero of party; track hero.name; let index = $index) {
+          @let position = heroes[index];
+          @let acting = cue?.actor === index && (cue?.phase === 'attack' || cue?.phase === 'boss-impact');
+          <g class="party-position" [attr.transform]="'translate(' + position.x + ' ' + position.y + ')'">
+            @if (!ended() && !cue && battle().actor === index) {
+              <ellipse class="acting-ring" rx="31" ry="9" />
+            }
+            <g class="party-fighter" [class.fallen]="!battle().hp[index]"
+              [class.lunge]="acting && cue?.phase === 'attack' && cue?.command === 'strike'"
+              [class.recover]="acting && cue?.phase === 'boss-impact' && cue?.command === 'strike'"
+              [class.hit]="cue?.phase === 'party-impact' && cue.targets.includes(index)"
+              [style.--lunge-x]="(boss.x + 50 - position.x) + 'px'"
+              [style.--lunge-y]="(boss.y + 8 - position.y) + 'px'">
+              <ellipse rx="24" ry="7" fill="#101323" opacity=".63"/>
+              <g transform="scale(-1 1)">
+                <image [attr.href]="'/images/arcade/' + position.sprite + '.webp'"
+                  [attr.x]="-position.width / 2" [attr.y]="4 - position.height"
+                  [attr.width]="position.width" [attr.height]="position.height" preserveAspectRatio="xMidYMax meet"
+                  [attr.visibility]="acting ? 'hidden' : 'visible'"/>
+                <svg x="-76" y="-149" width="152" height="154" overflow="hidden" class="attack-sprite"
+                  [attr.viewBox]="cue?.command === 'spell' ? '152 0 152 154' : '0 0 152 154'"
+                  [attr.visibility]="acting ? 'visible' : 'hidden'">
+                  <image [attr.href]="'/images/arcade/' + position.sprite + '-attacks.webp'" width="304" height="154"/>
+                </svg>
+              </g>
+            </g>
+          </g>
+        }
+        @for (bolt of projectiles(); track $index) {
+          <g [attr.transform]="'translate(' + bolt.x + ' ' + bolt.y + ')'">
+            <g class="bolt" [class.counter]="bolt.counter" [style.--flight-x]="bolt.dx + 'px'" [style.--flight-y]="bolt.dy + 'px'">
+              <circle class="halo" r="12"/>
+              <circle class="core" r="5"/>
+              <path d="M0-14l2 9 7-5-4 8 10 2-10 2 4 8-7-5-2 9-2-9-7 5 4-8-10-2 10-2-4-8 7 5Z"/>
+            </g>
+          </g>
+        }
+        @if (cue?.phase === 'boss-impact') {
+          <g [attr.transform]="'translate(' + boss.x + ' ' + (boss.y - 70) + ')'">
+            <path class="impact-mark" [class.magic]="cue.command === 'spell'"
+              d="M0-19 4-6 16-12 8-2 20 3 7 5 11 18 1 10-5 19-6 7-19 11-11 1-20-7-6-7Z"/>
+            <text class="impact" x="0" y="-20">−{{ damage }}</text>
+          </g>
+        }
+        @if (cue?.phase === 'party-impact') {
+          @for (target of cue.targets; track target) {
+            <g [attr.transform]="'translate(' + heroes[target].x + ' ' + (heroes[target].y - 60) + ')'">
+              <path class="impact-mark enemy-mark"
+                d="M0-19 4-6 16-12 8-2 20 3 7 5 11 18 1 10-5 19-6 7-19 11-11 1-20-7-6-7Z"/>
+              <text class="impact" x="0" y="-20">−{{ damage }}</text>
+            </g>
+          }
+        }
+      </svg>
+      <label class="boss-hp">{{ enemyName }}
+        <progress [value]="battle().enemy" [max]="enemyHp"></progress>
+      </label>
+      @if (resultVisible()) {
+        <div class="result">
+          <strong>{{ battle().status === 'win' ? 'Victoire !' : 'Défaite' }}</strong>
+          <button type="button" (click)="restart()">Rejouer le combat</button>
+        </div>
+      }
+    </div>
+    <div class="panels">
+      <div class="commands" aria-label="Commandes de combat">
+        @for (command of commands; track command.id; let index = $index) {
+          <button type="button" [class.chosen]="!ended() && selected() === index"
+            [disabled]="ended() || !!animation() || mana() < command.cost" (click)="act(index)">
+            {{ command.label }} @if (command.cost) { <small>{{ command.cost }} PM</small> }
+          </button>
+        }
+      </div>
+      <div class="status">
+        @for (hero of party; track hero.name; let index = $index) {
+          @let active = !ended() && !animation() && battle().actor === index;
+          <div class="hero" [class.active]="active" [attr.aria-current]="active ? 'true' : null">
+            <strong>{{ hero.name }}</strong>
+            <span>{{ battle().hp[index] }}<small>/{{ hero.maxHp }} PV</small></span>
+            <span>{{ battle().mp[index] }} <small>PM</small></span>
+            <progress [value]="battle().hp[index]" [max]="hero.maxHp" [attr.aria-label]="'Vie de ' + hero.name"></progress>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+  <app-arcade-gamepad [labelA]="resultVisible() ? 'Rejouer' : 'Valider'" labelB="Retour" (control)="input($event)"/>
+  @if (battle().message; as message) {
+    <p class="verdict" role="status">
+      {{ message }}
+      @if (!ended() && !animation()) { · Tour de {{ party[battle().actor].name }} }
+    </p>
+  }
+  <div class="controls">
+    <button type="button" [attr.aria-pressed]="sound() === 'on'" [disabled]="ended()"
+      (click)="toggleMusic()">Musique · {{ sound() === 'on' ? 'activée' : sound() === 'loading' ? 'chargement' : 'coupée' }}</button>
+  </div>
+  @if (audioError()) { <p role="status">La musique est indisponible dans ce navigateur.</p> }
+</section>

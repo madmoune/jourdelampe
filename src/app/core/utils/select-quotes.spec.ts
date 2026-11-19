@@ -32,7 +32,7 @@ describe('tirage des citations', () => {
     const shuffleRolls = CONTENT.quotes.length - 1;
     const quotes = selectQuotes(CONTENT.quotes, AI_QUOTES, 6, () => {
       const current = index++;
-      return current === 0 ? 0.05 : current <= shuffleRolls ? 0.5 : 0.99;
+      return current === 0 ? 0.05 : current <= shuffleRolls ? 0.5 : 0.9;
     });
 
     expect(quotes.map((quote) => quote.author === 'AI')).toEqual([

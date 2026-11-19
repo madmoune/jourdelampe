@@ -1,0 +1,23 @@
+<section class="arcade" aria-label="Jeux de la salle d’arcade">
+  <div class="cabinets" role="group" aria-label="Choisir un mini-jeu">
+    @for (cabinet of cabinets; track cabinet.id) {
+      <div class="cabinet-choice">
+        <button type="button" [attr.aria-pressed]="selected() === cabinet.id"
+          [attr.aria-describedby]="cabinet.id + '-answer-pattern'" (click)="select(cabinet.id)">
+          <span class="cabinet-art" [attr.data-art]="cabinet.id" aria-hidden="true"></span>
+          <strong>{{ cabinet.title }}</strong>
+        </button>
+        <p class="answer-pattern" [id]="cabinet.id + '-answer-pattern'">{{ cabinet.pattern }}</p>
+      </div>
+    }
+  </div>
+  <div class="cabinet-screen" #screen [attr.data-game]="selected()">
+    <h2>{{ current().title }}</h2>
+    @switch (selected()) {
+      @case ('morsio') { <app-paper-morsio /> }
+      @case ('diablo') { <app-diablo-ten /> }
+      @case ('trainers') { <app-gold-blind /> }
+      @case ('fantaceasar') { <app-final-fantaceasar /> }
+    }
+  </div>
+</section>

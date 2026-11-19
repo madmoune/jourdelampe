@@ -27,6 +27,30 @@ export const routes: Routes = [
           import('./features/matchmaker/matchmaker-page').then((module) => module.MatchmakerPage),
       },
       {
+        path: 'enigmes/la-porcherie',
+        title: 'La porcherie — Le Jour de l’AI',
+        loadComponent: () =>
+          import('./features/pigpen/pigpen-page').then((module) => module.PigpenPage),
+      },
+      {
+        path: 'enigmes/la-vigie',
+        title: 'La vigie — Le Jour de l’AI',
+        loadComponent: () =>
+          import('./features/sudoku/sudoku-page').then((module) => module.SudokuPage),
+      },
+      {
+        path: 'enigmes/en-manchettes',
+        title: 'En manchettes — Le Jour de l’AI',
+        loadComponent: () =>
+          import('./features/manchettes/manchettes-page').then((module) => module.ManchettesPage),
+      },
+      {
+        path: 'enigmes/salle-arcade',
+        title: 'Salle d’arcade — Le Jour de l’AI',
+        loadComponent: () =>
+          import('./features/arcade/arcade-page').then((module) => module.ArcadePage),
+      },
+      {
         path: 'enigmes',
         title: 'Les énigmes — Le Jour de l’AI',
         loadComponent: () =>
@@ -58,6 +82,34 @@ export const routes: Routes = [
     title: 'Le début de la fin — Le Jour de l’AI',
     loadComponent: () =>
       import('./features/matchmaker/matchmaker-page').then((module) => module.MatchmakerPage),
+  },
+  {
+    path: 'enigmes/la-porcherie',
+    canMatch: [requireRiddleRelease],
+    title: 'La porcherie — Le Jour de l’AI',
+    loadComponent: () =>
+      import('./features/pigpen/pigpen-page').then((module) => module.PigpenPage),
+  },
+  {
+    path: 'enigmes/la-vigie',
+    canMatch: [requireRiddleRelease],
+    title: 'La vigie — Le Jour de l’AI',
+    loadComponent: () =>
+      import('./features/sudoku/sudoku-page').then((module) => module.SudokuPage),
+  },
+  {
+    path: 'enigmes/en-manchettes',
+    canMatch: [requireRiddleRelease],
+    title: 'En manchettes — Le Jour de l’AI',
+    loadComponent: () =>
+      import('./features/manchettes/manchettes-page').then((module) => module.ManchettesPage),
+  },
+  {
+    path: 'enigmes/salle-arcade',
+    canMatch: [requireRiddleRelease],
+    title: 'Salle d’arcade — Le Jour de l’AI',
+    loadComponent: () =>
+      import('./features/arcade/arcade-page').then((module) => module.ArcadePage),
   },
   {
     path: 'enigmes',

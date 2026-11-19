@@ -68,4 +68,10 @@ export const AI_QUOTES: readonly Quote[] = [
     href: null,
     author: 'AI',
   },
+  {
+    id: 'ai-jour-de-lampe',
+    text: 'Franchement. Le JouR de LAmpe... allumez!',
+    href: null,
+    author: 'AI',
+  },
 ];

@@ -15,7 +15,8 @@
     - Définition gauche/droite avec croisement au milieu
     - Puzzle sur une mécanique de jeu?
     - Zebra puzzle?
-    - 4-5 jeux logiques
+    - Blokus?
+    - 4 jeux logiques (avec braille, morse, pigpen, atbash, etc)
     - Genre de puzzle de variation de mots, mécanique de changement de lettre qui reste encore valide après.
     - Crossword dans une fleur?
     - Énigmes pour les enfants x4?

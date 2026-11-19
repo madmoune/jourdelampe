@@ -1,0 +1,100 @@
+<section class="console" arcadeControls (gameInput)="input($event)" tabindex="0" aria-label="Diablo 10">
+  <div class="crypt" data-arcade-playfield>
+    <svg viewBox="0 0 500 245" aria-hidden="true">
+      <defs>
+        <radialGradient id="crypt-ember">
+          <stop stop-color="#fffbd9"/>
+          <stop offset=".45" stop-color="#ffd677"/>
+          <stop offset="1" stop-color="#dc4929"/>
+        </radialGradient>
+        <g id="crypt-golem">
+          <ellipse rx="27" ry="8" fill="#0e0b0a" opacity=".75"/>
+          <image href="/images/arcade/golem.webp" x="-33" y="-78" width="66" height="82"
+            preserveAspectRatio="xMidYMax meet"/>
+        </g>
+      </defs>
+      <ng-template #knight>
+        <g [attr.transform]="'translate(' + hero().x + ' ' + hero().y + ') scale(' + game().facing + ' 1)'">
+          <ellipse rx="15" ry="5" fill="#08080b" opacity=".63"/>
+          <image href="/images/arcade/knight.webp" x="-26" y="-60" width="52" height="63"
+            preserveAspectRatio="xMidYMax meet" [class.walking]="walking()"
+            [attr.visibility]="pose() ? 'hidden' : 'visible'"/>
+          @for (attack of attacks; track attack) {
+            <svg x="-55" y="-83" width="110" height="100" overflow="hidden"
+              [attr.viewBox]="pose()?.viewBox ?? '0 0 110 100'"
+              [attr.visibility]="pose()?.effect === attack ? 'visible' : 'hidden'"
+              [attr.data-action]="attack">
+              <image [attr.href]="'/images/arcade/knight-' + attack + '.webp'" width="330" height="100"/>
+            </svg>
+          }
+        </g>
+      </ng-template>
+      @if (game().windup) {
+        <ellipse class="warning" [attr.cx]="golem().x" [attr.cy]="golem().y" rx="44" ry="14"/>
+      }
+      @if (hero().y < golem().y) {
+        <ng-container *ngTemplateOutlet="knight"/>
+      }
+      @if (game().enemy || game().hit) {
+        <use href="#crypt-golem" [class.hurt]="game().hit > 0" [class.charge]="game().windup > 0"
+          [attr.opacity]="game().enemy ? 1 : impact()?.opacity"
+          [attr.transform]="'translate(' + golem().x + ' ' + golem().y + ')'"/>
+      }
+      @if (hero().y >= golem().y) {
+        <ng-container *ngTemplateOutlet="knight"/>
+      }
+      @if (projectile(); as ember) {
+        <circle class="ember" [attr.cx]="ember.x" [attr.cy]="ember.y" [attr.r]="ember.radius" fill="url(#crypt-ember)"/>
+      }
+      @if (impact(); as burst) {
+        <g class="impact" [class.ember-impact]="game().effect === 'spell'"
+          [attr.transform]="burst.transform" [attr.opacity]="burst.opacity">
+          <path d="M0-13 3-4 12-7 6 1 13 7 4 5 0 13-3 5-12 8-6 0-11-6-3-4Z"/>
+          <circle cx="-16" cy="-3" r="1.5"/>
+          <circle cx="15" cy="-10" r="1.4"/>
+          <circle cx="9" cy="13" r="1.6"/>
+        </g>
+      }
+      @if (damagePopup(); as damage) {
+        <text class="damage-popup" [class.spell-damage]="damage.spell"
+          [attr.x]="damage.x" [attr.y]="damage.y" [attr.opacity]="damage.opacity"
+          [style.--rise]="damage.rise + 'px'">{{ damage.code }}</text>
+      }
+    </svg>
+    <div class="golem-health">
+      <label>Golem de cendre
+        <progress [value]="game().enemy" [max]="enemyMax"></progress>
+      </label>
+    </div>
+    @if (game().status !== 'playing' && !animating()) {
+      <div class="result">
+        <strong>{{ game().status === 'win' ? 'Victoire' : 'Défaite' }}</strong>
+        <button type="button" (click)="restart()">Réessayer</button>
+      </div>
+    }
+    <div class="vitals">
+      <div class="orb life" role="progressbar" aria-label="Vie du chevalier" aria-valuemin="0"
+        [attr.aria-valuenow]="game().hp" [attr.aria-valuemax]="hpMax"
+        [style.--level]="game().hp / hpMax * 100 + '%'">
+        <span aria-hidden="true">PV</span>
+      </div>
+      <div class="orb mana" role="progressbar" aria-label="Mana du chevalier" aria-valuemin="0"
+        [attr.aria-valuenow]="game().mana" [attr.aria-valuemax]="manaMax"
+        [style.--level]="game().mana / manaMax * 100 + '%'">
+        <span aria-hidden="true">PM</span>
+      </div>
+    </div>
+  </div>
+  <p class="last-attack" role="status">
+    @if (game().effect; as attack) {
+      {{ attack === 'strike' ? 'Frappe' : 'Sort' }} · <code>{{ binary(attackDamage[attack], 8) }}</code>
+    } @else {
+      Dernière attaque · —
+    }
+  </p>
+  <app-arcade-gamepad [labelA]="game().status === 'playing' ? 'Frapper' : 'Réessayer'"
+    labelB="Sort" (control)="input($event)"/>
+  @if (game().message; as message) {
+    <p class="verdict" role="status">{{ message }}</p>
+  }
+</section>

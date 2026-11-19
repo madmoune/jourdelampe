@@ -5,9 +5,44 @@ import { ParticipantStore } from './participant-store';
 import { PlayerProgress } from './player-progress';
 import { RiddleAnswer } from './riddle-answer';
 import { RiddleSpoiler } from './riddle-spoiler';
-import { META_ID, RIDDLE_COUNT, RIDDLE_PAGES } from './riddle-pages';
+import {
+  ARCADE_ID,
+  MANCHETTES_ID,
+  META_ID,
+  PIGPEN_ID,
+  RIDDLE_COUNT,
+  RIDDLE_PAGES,
+  SUDOKU_ID,
+} from './riddle-pages';
 import { RIDDLE_PREVIEW, RIDDLE_PREVIEW_PATH } from './riddle-release';
 import { RiddleResults } from './riddle-results';
+
+const PREVIEW_RIDDLES = [
+  {
+    id: PIGPEN_ID,
+    title: 'La porcherie',
+    prompt: 'Sept enclos à remplir. Aperçu des grilles; la réponse finale n’est pas encore configurée.',
+    order: 3,
+  },
+  {
+    id: SUDOKU_ID,
+    title: 'La vigie',
+    prompt: 'Un sudoku et neuf poses à déchiffrer. Aperçu du dossier.',
+    order: 4,
+  },
+  {
+    id: MANCHETTES_ID,
+    title: 'En manchettes',
+    prompt: 'Des mots croisés et un terrain miné. Aperçu du dossier.',
+    order: 5,
+  },
+  {
+    id: ARCADE_ID,
+    title: 'Salle d’arcade',
+    prompt: 'Quatre jeux, quatre objectifs. Aperçu du dossier.',
+    order: 6,
+  },
+];
 
 @Component({
   selector: 'app-riddle-game',
@@ -18,16 +53,31 @@ import { RiddleResults } from './riddle-results';
 })
 export class RiddleGame {
   readonly canPlay = input(false);
-  protected readonly pagePrefix = inject(RIDDLE_PREVIEW) ? RIDDLE_PREVIEW_PATH : '';
+  private readonly preview = inject(RIDDLE_PREVIEW);
+  protected readonly pagePrefix = this.preview ? RIDDLE_PREVIEW_PATH : '';
   protected readonly game = inject(GameStore);
   protected readonly progress = inject(PlayerProgress);
   private readonly participants = inject(ParticipantStore);
   protected readonly pages = RIDDLE_PAGES;
   protected readonly metaId = META_ID;
   protected readonly total = computed(() => Math.max(RIDDLE_COUNT, this.progress.riddles().length));
-  protected readonly slots = computed(() =>
-    Array.from({ length: this.total() }, (_, index) => this.progress.riddles().at(index) ?? null),
-  );
+  protected readonly slots = computed(() => {
+    const riddles = this.progress.riddles();
+    const slots = Array.from({ length: this.total() }, (_, index) => riddles.at(index) ?? null);
+    if (this.preview) {
+      for (const draft of PREVIEW_RIDDLES) {
+        if (slots.at(-1) !== null || riddles.some((riddle) => riddle.id === draft.id)) continue;
+        slots.splice(draft.order, 0, {
+          ...draft,
+          solutions: [],
+          solvedByMe: false,
+          infoUnlocked: false,
+        });
+        slots.pop();
+      }
+    }
+    return slots;
+  });
   protected readonly revealContext = computed(
     () => `${this.participants.participant()?.id}:${this.game.round()?.id}:${this.game.mode()}`,
   );

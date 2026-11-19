@@ -25,7 +25,7 @@ import { RIDDLE_PREVIEW, RIDDLE_PREVIEW_PATH } from './riddle-release';
 export class RiddlePage {
   readonly riddleId = input.required<string>();
   readonly title = input.required<string>();
-  readonly flavorText = input.required<string>();
+  readonly flavorText = input('');
   readonly number = input('');
   readonly answerLabel = input('Réponse');
   readonly answerHint = input('');

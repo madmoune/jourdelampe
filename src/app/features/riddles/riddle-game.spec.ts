@@ -7,7 +7,14 @@ import { GameStore } from './game-store';
 import { GameMode, GameRiddle, RiddleSolution } from './game.model';
 import { ParticipantStore } from './participant-store';
 import { RiddleGame } from './riddle-game';
-import { FOURCHETTE_ID, MATCHMAKER_ID, META_ID, RIDDLE_COUNT, ZEBRA_ID } from './riddle-pages';
+import {
+  FOURCHETTE_ID,
+  MATCHMAKER_ID,
+  META_ID,
+  PIGPEN_ID,
+  RIDDLE_COUNT,
+  ZEBRA_ID,
+} from './riddle-pages';
 import { RIDDLE_PREVIEW } from './riddle-release';
 
 describe('liens du catalogue des énigmes', () => {
@@ -19,6 +26,7 @@ describe('liens du catalogue des énigmes', () => {
       { id: ZEBRA_ID, title: 'Nostalgie', prompt: '', order: 0, solutions: [] },
       { id: FOURCHETTE_ID, title: 'La Fourchette', prompt: '', order: 1, solutions: [] },
       { id: MATCHMAKER_ID, title: 'Le début de la fin', prompt: '', order: 2, solutions: [] },
+      { id: PIGPEN_ID, title: 'La porcherie', prompt: '', order: 3, solutions: [] },
     ];
     await TestBed.configureTestingModule({
       imports: [RiddleGame],
@@ -43,7 +51,7 @@ describe('liens du catalogue des énigmes', () => {
     await fixture.whenStable();
     const page = fixture.nativeElement as HTMLElement;
     const links = page.querySelectorAll<HTMLAnchorElement>('.puzzle-link');
-    expect(links).toHaveLength(3);
+    expect(links).toHaveLength(preview ? 7 : 4);
     expect(links[0].getAttribute('href')).toBe(path);
     expect(links[1].getAttribute('href')).toBe(
       `${preview ? '/apercu-ia' : ''}/enigmes/la-fourchette`,
@@ -51,10 +59,20 @@ describe('liens du catalogue des énigmes', () => {
     expect(links[2].getAttribute('href')).toBe(
       `${preview ? '/apercu-ia' : ''}/enigmes/le-debut-de-la-fin`,
     );
+    expect(links[3].getAttribute('href')).toBe(
+      `${preview ? '/apercu-ia' : ''}/enigmes/la-porcherie`,
+    );
+    expect(links[4]?.getAttribute('href')).toBe(preview ? '/apercu-ia/enigmes/la-vigie' : undefined);
+    expect(links[5]?.getAttribute('href')).toBe(
+      preview ? '/apercu-ia/enigmes/en-manchettes' : undefined,
+    );
+    expect(links[6]?.getAttribute('href')).toBe(
+      preview ? '/apercu-ia/enigmes/salle-arcade' : undefined,
+    );
     expect(page.querySelectorAll('.riddle')).toHaveLength(8);
     expect(
-      [...page.querySelectorAll('.riddle h3')].slice(0, 3).map((title) => title.textContent),
-    ).toEqual(['Nostalgie', 'La Fourchette', 'Le début de la fin']);
+      [...page.querySelectorAll('.riddle h3')].slice(0, 4).map((title) => title.textContent),
+    ).toEqual(['Nostalgie', 'La Fourchette', 'Le début de la fin', 'La porcherie']);
     expect(page.querySelector('.riddle:last-child')?.textContent).toContain('À venir');
     expect(page.querySelector('.meta-status')?.textContent).toContain('Verrouillé');
   });

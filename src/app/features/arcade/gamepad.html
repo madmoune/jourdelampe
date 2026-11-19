@@ -1,0 +1,25 @@
+<div class="case" role="group" aria-label="Manette"
+  (pointerup)="end($event.pointerId)" (pointercancel)="end($event.pointerId)"
+  (lostpointercapture)="end($event.pointerId)" (contextmenu)="$event.preventDefault()">
+  <div class="cross">
+    @for (key of keys; track key.id) {
+      <button type="button" [class]="key.id" [class.active]="active().has(key.id)"
+        [disabled]="!vertical() && (key.id === 'up' || key.id === 'down')"
+        [attr.aria-label]="key.label" (pointerdown)="begin($event, key.id)"
+        (click)="click($event, key.id)">{{ key.icon }}</button>
+    }
+    <span aria-hidden="true"></span>
+  </div>
+  <div class="actions">
+    <div class="action b">
+      <button type="button" [class.active]="active().has('b')" [attr.aria-label]="'B · ' + labelB()"
+        (pointerdown)="begin($event, 'b')" (click)="click($event, 'b')">B</button>
+      <span>{{ labelB() }}</span>
+    </div>
+    <div class="action a">
+      <button type="button" [class.active]="active().has('a')" [attr.aria-label]="'A · ' + labelA()"
+        (pointerdown)="begin($event, 'a')" (click)="click($event, 'a')">A</button>
+      <span>{{ labelA() }}</span>
+    </div>
+  </div>
+</div>

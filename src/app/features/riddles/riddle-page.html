@@ -18,7 +18,9 @@
             <span>{{ number() }}</span>
           }
         </h1>
-        <p class="flavor-text">{{ flavorText() }}</p>
+        @if (flavorText(); as flavor) {
+          <p class="flavor-text">{{ flavor }}</p>
+        }
       </div>
       @if (participants.loading()) {
         <p class="access-notice" role="status">Chargement de l’énigme…</p>

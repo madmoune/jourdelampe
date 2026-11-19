@@ -94,7 +94,7 @@ export const SEMAPHORE_SIGNALS: readonly SemaphoreSignal[] = [
   signal('F', 1, 'out', 'down'),
   signal('G', 1, 'low', 'down'),
   signal('H', 2, 'across-low', 'out'),
-  signal('I', 2, 'across-low', 'up'),
+  signal('I', 2, 'across-low', 'high'),
   signal('J', 5, 'out', 'up'),
   signal('K', 2, 'up', 'low'),
   signal('L', 2, 'high', 'low'),

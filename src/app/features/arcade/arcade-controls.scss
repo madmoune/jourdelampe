@@ -1,0 +1,49 @@
+:host {
+  display: block;
+}
+
+p {
+  margin: 0 0 12px;
+  color: #dfd0ec;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+button {
+  min-height: 43px;
+  padding: 7px 12px;
+  border: 1px solid #9b84af;
+  background: #352744;
+  color: #f5e9fc;
+  font-weight: 700;
+  touch-action: manipulation;
+}
+
+button:hover:not(:disabled),
+button[aria-pressed='true'] {
+  border-color: #cee797;
+  background: #39482b;
+}
+
+button:disabled {
+  opacity: 0.55;
+}
+
+.verdict {
+  min-height: 22px;
+  margin-bottom: 0;
+  color: #e2edaf;
+  margin-top: 8px;
+}
+
+.console:focus-visible {
+  outline: 2px solid #dcff79;
+  outline-offset: 5px;
+}

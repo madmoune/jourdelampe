@@ -1,0 +1,108 @@
+:host {
+  display: block;
+}
+
+.arcade {
+  max-width: 1000px;
+  container-type: inline-size;
+}
+
+.answer-pattern {
+  margin: 0;
+  color: #efdfbd;
+  font: 700 clamp(15px, 2.4cqi, 20px)/1.4 monospace;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+
+h2 {
+  margin: 0 0 14px;
+  color: #efdfbd;
+  font: clamp(24px, 4vw, 34px)/1.15 Georgia, serif;
+}
+
+.cabinets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 175px), 1fr));
+  gap: 8px;
+}
+
+.cabinet-choice {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cabinets button {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #877098;
+  border-radius: 6px;
+  background: #2a1e38;
+  color: #f1e7f5;
+  text-align: left;
+}
+
+.cabinet-art {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #21192f center / cover no-repeat;
+
+  &[data-art='morsio'] { background-image: url('./covers/cabinet-morsio.webp'); }
+  &[data-art='trainers'] { background-image: url('./covers/cabinet-trainers.webp'); }
+  &[data-art='diablo'] { background-image: url('./covers/cabinet-diablo.webp'); }
+  &[data-art='fantaceasar'] { background-image: url('./covers/cabinet-fantaceasar.webp'); }
+}
+
+.cabinets button strong {
+  box-sizing: border-box;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-top: 1px solid #877098;
+}
+
+.cabinets button:hover {
+  border-color: #d0b9dc;
+  background: #36284a;
+}
+
+.cabinets button:focus-visible {
+  outline: 2px solid #efdfbd;
+  outline-offset: 2px;
+}
+
+.cabinets button[aria-pressed='true'] {
+  border-color: #c7de85;
+  background: #333d24;
+}
+
+.cabinets button[aria-pressed='true'] strong {
+  border-color: #8b9b65;
+}
+
+.cabinet-screen {
+  padding: clamp(12px, 3cqi, 24px);
+  margin-top: 12px;
+  border: 1px solid #877098;
+  background: #191329;
+}
+
+@container (max-width: 475px) {
+  .cabinets {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cabinets button strong {
+    padding: 7px 8px;
+    font-size: 13px;
+  }
+}

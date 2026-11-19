@@ -31,9 +31,9 @@ describe('catalogues distincts dans la gestion', () => {
     const tabs = page.querySelectorAll<HTMLButtonElement>('.catalog-switch button');
     tabs[1].click();
     fixture.detectChanges();
-    expect(page.querySelectorAll('.quote-card.ai')).toHaveLength(10);
+    expect(page.querySelectorAll('.quote-card.ai')).toHaveLength(11);
     expect(page.querySelector('.catalog-description')?.textContent).toContain('Une chance sur dix');
-    expect(page.querySelector('.count')?.textContent).toContain('10 répliques actives');
+    expect(page.querySelector('.count')?.textContent).toContain('11 répliques actives');
     page.querySelectorAll<HTMLButtonElement>('.tabs button')[1].click();
     fixture.detectChanges();
     expect(page.querySelectorAll('.quote-card')).toHaveLength(1);

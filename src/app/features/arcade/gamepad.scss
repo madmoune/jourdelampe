@@ -1,0 +1,95 @@
+:host {
+  display: block;
+  container-type: inline-size;
+}
+
+.case {
+  box-sizing: border-box;
+  width: min(100%, 610px);
+  margin: 0 auto;
+  padding: clamp(6px, 3cqi, 22px);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 7px 7px 27px 14px;
+  border: 1px solid #ebe0d6;
+  background: linear-gradient(165deg, #d8d0cb, #aea7b0 65%, #c9bdc4);
+  box-shadow: inset 0 -5px #37304737, 0 4px 9px #0a0714;
+  user-select: none;
+}
+
+button {
+  padding: 0;
+  border: 0;
+  font: 800 16px/1 system-ui, sans-serif;
+  touch-action: none;
+  -webkit-touch-callout: none;
+  cursor: pointer;
+}
+
+button:focus-visible {
+  outline: 3px solid #244cb3;
+  outline-offset: 2px;
+}
+
+.cross {
+  --key: 44px;
+  display: grid;
+  flex: none;
+  grid-template: repeat(3, var(--key)) / repeat(3, var(--key));
+  filter: drop-shadow(0 2px 2px #3f343e);
+
+  button, span {
+    background: #302f39;
+    color: #bcbac9;
+    box-shadow: inset 0 3px #fff2, inset 0 -3px #0004;
+  }
+
+  .up { grid-area: 1 / 2; border-radius: 7px 7px 0 0; }
+  .left { grid-area: 2 / 1; border-radius: 7px 0 0 7px; }
+  .right { grid-area: 2 / 3; border-radius: 0 7px 7px 0; }
+  .down { grid-area: 3 / 2; border-radius: 0 0 7px 7px; }
+  span { grid-area: 2 / 2; box-shadow: none; background: radial-gradient(circle, #28252f 33%, #302f39 38%); }
+  button:disabled { color: #777480; cursor: default; }
+  .active { background: #181722; box-shadow: inset 0 3px 5px #000a; }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 2cqi, 14px);
+  padding: 8px 0;
+}
+
+.action {
+  display: grid;
+  width: clamp(44px, 15cqi, 70px);
+  justify-items: center;
+  gap: 7px;
+  color: #3e294a;
+  font: 700 10px/1.2 system-ui, sans-serif;
+  text-align: center;
+  overflow-wrap: anywhere;
+
+  button {
+    width: clamp(44px, 10cqi, 58px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #b74568, #7e2449);
+    box-shadow: 0 3px #4d1934, 0 4px 5px #43273e80, inset 0 1px #fff4;
+    color: #fff6f9;
+  }
+
+  button.active {
+    transform: translateY(3px);
+    box-shadow: inset 0 2px 4px #41132b;
+  }
+}
+
+.b { margin-top: 24px; }
+
+@container (min-width: 620px) {
+  .cross { --key: 48px; }
+  .case { padding-inline: 32px; }
+}

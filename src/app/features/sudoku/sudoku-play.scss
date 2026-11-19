@@ -1,0 +1,145 @@
+:host {
+  display: block;
+}
+
+.vigie {
+  display: grid;
+  grid-template-columns: minmax(0, 460px) minmax(0, 360px);
+  align-items: start;
+  gap: clamp(18px, 4vw, 42px);
+}
+
+h2 {
+  margin: 0 0 10px;
+  color: #efdfbd;
+  font: 30px/1.1 Georgia, serif;
+}
+
+p {
+  margin: 0 0 14px;
+  color: #d5c7df;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.file-label,
+.signal-label {
+  color: #bcd583;
+  font: 11px/1.4 monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border: 2px solid #ad96bd;
+  background: #171124;
+}
+
+td {
+  padding: 0;
+  border: 1px solid #6b587e;
+}
+
+td.box-right {
+  border-right: 2px solid #ad96bd;
+}
+
+td.box-bottom {
+  border-bottom: 2px solid #ad96bd;
+}
+
+input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #dcff79;
+  font: 700 clamp(15px, 3.6vw, 23px)/1 monospace;
+  text-align: center;
+}
+
+.given input {
+  background: #30233d;
+  color: #f3e3bb;
+}
+
+input:focus {
+  position: relative;
+  outline: 2px solid #dcff79;
+  outline-offset: -2px;
+  background: #3a3048;
+}
+
+.grid-status {
+  margin: 12px 0 0;
+}
+
+.grid-status.valid {
+  color: #dcff79;
+}
+
+.semaphore {
+  min-width: 0;
+  padding: clamp(13px, 2.5vw, 22px);
+  border: 1px solid #78628e;
+  background: #23192f;
+}
+
+.signal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0 0 15px;
+  padding: 0;
+  list-style: none;
+}
+
+.signal-grid li {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 7px 2px;
+  border: 1px solid #58466b;
+  background: #171124;
+  color: #f3e3bb;
+}
+
+.pose {
+  display: block;
+  width: min(100%, 66px);
+}
+
+.pose-grid {
+  fill: none;
+  stroke: #58466b;
+}
+
+.pose-arm {
+  stroke: #f3e3bb;
+  stroke-width: 2.5px;
+}
+
+.pose-center,
+.pose-flag {
+  fill: #dcff79;
+}
+
+.semaphore a {
+  color: #dcff79;
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 740px) {
+  .vigie {
+    grid-template-columns: minmax(0, 460px);
+  }
+}

@@ -1,0 +1,170 @@
+.battleframe {
+  max-width: 740px;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 3px ridge #b9a5bb;
+  border-radius: 9px 9px 3px 3px;
+  box-shadow: 0 4px 10px #090813;
+  background: #191d3a;
+}
+
+.arena {
+  position: relative;
+  background: url('/images/arcade/ruins.webp') center 65% / cover, #425474;
+}
+
+.arena > svg { display: block; width: 100%; }
+.fallen { opacity: .27; filter: grayscale(1); }
+.acting-ring { fill: #f5d38e22; stroke: #ffe7a0; stroke-width: .9; }
+.party-fighter.lunge { animation: lunge 280ms ease-in both; }
+.party-fighter.recover { animation: recover 205ms ease-out both; }
+.party-fighter.hit { animation: party-recoil 235ms ease-out both; }
+.enemy-fighter.hit { animation: enemy-recoil 235ms ease-out both; }
+.enemy-fighter.fatal { animation: enemy-fade 235ms ease-out both; }
+
+.impact {
+  fill: #fcf1d8;
+  stroke: #292036;
+  stroke-width: 1.6;
+  paint-order: stroke;
+  font: 800 24px system-ui, sans-serif;
+  text-anchor: middle;
+  animation: rise 235ms ease-out both;
+}
+
+.bolt {
+  color: #91ceff;
+  fill: #ecf8ff;
+  filter: drop-shadow(0 0 5px currentColor);
+  animation: flight 330ms ease-in both;
+
+  &.counter { color: #f3a85a; fill: #ffe6a8; animation-duration: 225ms; }
+  .halo { fill: currentColor; opacity: .56; }
+  .core { fill: #fff7df; }
+}
+
+.impact-mark {
+  fill: #f9ddb0;
+  filter: drop-shadow(0 0 4px #dd7b3e);
+  animation: flare 235ms ease-out both;
+
+  &.magic { fill: #d5ecff; filter: drop-shadow(0 0 5px #8b9cf4); }
+  &.enemy-mark { fill: #ffd480; }
+}
+
+@keyframes lunge {
+  from { transform: translateX(6px); }
+  75%, to { transform: translate(var(--lunge-x), var(--lunge-y)); }
+}
+
+@keyframes recover {
+  from { transform: translate(var(--lunge-x), var(--lunge-y)); }
+}
+
+@keyframes party-recoil {
+  25% { transform: translate(9px, -3px); filter: brightness(1.4); }
+}
+
+@keyframes enemy-recoil {
+  25% { transform: translate(-9px, -3px); filter: brightness(1.45); }
+}
+
+@keyframes enemy-fade {
+  from { filter: brightness(1.4); }
+  to { transform: translate(-8px, 6px); opacity: 0; }
+}
+
+@keyframes flight {
+  from { transform: scale(.28); }
+  35% { transform: scale(.85); }
+  to { transform: translate(var(--flight-x), var(--flight-y)) scale(1.2); }
+}
+
+@keyframes flare {
+  from { transform: scale(.55); }
+  to { transform: scale(1.5); opacity: 0; }
+}
+
+@keyframes rise {
+  to { transform: translateY(-15px); opacity: .4; }
+}
+
+.boss-hp {
+  position: absolute;
+  inset: 3% auto auto 26.4%;
+  translate: -50%;
+  min-width: 54px;
+  color: #f7edd9;
+  font: 700 clamp(10px, 2.7vw, 15px) Georgia, serif;
+  text-shadow: 0 2px 4px #0b121c, 0 0 6px #0b121c;
+  text-align: center;
+
+  progress { width: 100%; accent-color: #a34e57; }
+}
+
+progress { display: block; height: 5px; }
+
+.result {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  gap: 6px;
+  text-align: center;
+  background: #150e2b59;
+  color: #fff3c7;
+}
+
+.result strong {
+  font: 700 clamp(25px, 6vw, 59px)/1.1 Georgia, serif;
+  text-shadow: 0 3px 3px #0b0926;
+}
+
+.panels { display: grid; grid-template-columns: minmax(102px, 1fr) minmax(0, 2fr); }
+
+.commands,
+.status {
+  box-sizing: border-box;
+  padding: clamp(4px, 2vw, 12px);
+  border: 3px double #c5cadc;
+  border-radius: 6px;
+  background: linear-gradient(155deg, #394772, #1a2147 65%, #212842);
+  color: #fffae8;
+}
+
+.commands button {
+  display: block;
+  width: 100%;
+  min-height: 29px;
+  padding: 4px 3px;
+  border: 0;
+  background: transparent;
+  font: 700 clamp(10px, 2.5vw, 15px)/1.2 system-ui, sans-serif;
+  text-align: left;
+
+  &.chosen, &:hover:not(:disabled) { color: #ffecb1; background: #b9ace529; }
+  &::before { content: '▸'; visibility: hidden; padding-right: 3px; }
+  &.chosen::before { visibility: visible; }
+  small { white-space: nowrap; }
+}
+
+.status { display: grid; gap: 5px; align-content: center; }
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) 1fr auto;
+  gap: 3px;
+  padding: 3px 4px;
+  align-items: center;
+  font: 700 clamp(10px, 2.4vw, 15px)/1.25 system-ui, sans-serif;
+
+  &.active { color: #ffeab3; background: #d2bef224; }
+  small { color: #e0d9f6; font-size: .74em; }
+  span { white-space: nowrap; }
+  progress { grid-column: 1 / -1; width: 100%; accent-color: #9ac7ea; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .party-fighter.lunge, .party-fighter.recover, .party-fighter.hit, .enemy-fighter.hit,
+  .enemy-fighter.fatal, .impact, .impact-mark, .bolt { animation: none; }
+}

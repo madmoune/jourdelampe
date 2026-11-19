@@ -7,10 +7,10 @@ import {
 } from './quote-catalog';
 
 describe('catalogue des citations', () => {
-  it('importe les six citations et les onze répliques de l’AI avec le lien YouTube', () => {
+  it('importe les six citations et les douze répliques de l’AI avec le lien YouTube', () => {
     const quotes = parseQuoteCatalog(initialQuoteCatalog());
     expect(activeQuotes(quotes, 'regular')).toHaveLength(6);
-    expect(activeQuotes(quotes, 'ai')).toHaveLength(11);
+    expect(activeQuotes(quotes, 'ai')).toHaveLength(12);
     expect(quotes.find((quote) => quote.id === 'remi')?.href).toBe(
       'https://www.youtube.com/watch?v=pv1kirNU8n4',
     );
@@ -37,7 +37,7 @@ describe('catalogue des citations', () => {
       ai: { ...catalog.ai, bad: catalog.items!['photon'] },
     });
     expect(activeQuotes(mixed, 'regular')).toHaveLength(6);
-    expect(activeQuotes(mixed, 'ai')).toHaveLength(11);
+    expect(activeQuotes(mixed, 'ai')).toHaveLength(12);
   });
 
   it('normalise les espaces et refuse les textes vides ou trop longs', () => {

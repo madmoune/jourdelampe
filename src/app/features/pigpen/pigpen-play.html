@@ -1,0 +1,94 @@
+<section class="porcherie" aria-labelledby="pens-title">
+  <header class="pen-intro">
+    <div>
+      <h2 id="pens-title">Les sept enclos</h2>
+      <p>
+        Les nombres indiquent les groupes de cochons consécutifs dans chaque ligne et colonne,
+        dans l’ordre. Deux groupes sont séparés par au moins une case sans cochon. Un 0 indique
+        qu’il n’y a aucun cochon sur la ligne ou la colonne.
+      </p>
+    </div>
+    <p class="pen-progress" role="status">{{ completedCount() }} / {{ puzzles.length }} enclos complétés</p>
+  </header>
+  <ul class="mark-guide" aria-label="Cycle des cases">
+    <li>Clic 1 : cochon</li>
+    <li>Clic 2 : barrée</li>
+    <li>Clic 3 : vide</li>
+  </ul>
+
+  <div class="pens">
+    @for (puzzle of puzzles; track $index; let pen = $index) {
+      <section class="pen" [class.complete]="completed()[pen]" [attr.aria-labelledby]="'pen-title-' + pen">
+        <div class="pen-heading">
+          <h3 [id]="'pen-title-' + pen">Enclos {{ pen + 1 }}</h3>
+          @if (completed()[pen]) {
+            <span>✓ Complet</span>
+          }
+        </div>
+        <div class="fence">
+          <table [attr.aria-labelledby]="'pen-title-' + pen">
+            <thead>
+              <tr>
+                <td class="clue-corner" aria-hidden="true"></td>
+                @for (clues of puzzle.columns; track $index) {
+                  <th scope="col" class="column-clue">
+                    @for (clue of (clues.length ? clues : [0]); track $index) {
+                      <span>{{ clue }}</span>
+                    }
+                  </th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (clues of puzzle.rows; track $index; let row = $index) {
+                <tr>
+                  <th scope="row" class="row-clue">{{ clues.length ? clues.join(' ') : '0' }}</th>
+                  @for (columnClues of puzzle.columns; track $index; let column = $index) {
+                    @let index = row * size + column;
+                    @let mark = boards()[pen][index];
+                    <td class="stall">
+                      <button
+                        type="button"
+                        class="cell"
+                        [id]="'pen-' + pen + '-cell-' + index"
+                        [class.pig]="mark === 'pig'"
+                        [class.cross]="mark === 'cross'"
+                        [attr.aria-label]="cellLabel(pen, row, column)"
+                        [attr.tabindex]="focused()[pen] === index ? 0 : -1"
+                        (click)="cycle(pen, index)"
+                        (focus)="focusCell(pen, index)"
+                        (keydown)="moveFocus($event, pen, row, column)"
+                      >
+                        @switch (mark) {
+                          @case ('pig') {
+                            <svg class="pig-face" viewBox="0 0 32 32" aria-hidden="true">
+                              <path
+                                d="M7 14C4 10 4 5 7 5c3 0 5 2 6 4h6c1-2 3-4 6-4 3 0 3 5 0 9 1 2 2 4 2 6 0 6-5 9-11 9S5 26 5 20c0-2 1-4 2-6Z"
+                                fill="#ffd1db"
+                                stroke="#632638"
+                                stroke-width="1.4"
+                              />
+                              <circle cx="11" cy="16" r="1.3" fill="#632638" />
+                              <circle cx="21" cy="16" r="1.3" fill="#632638" />
+                              <ellipse cx="16" cy="21.5" rx="6.2" ry="4" fill="#f38da5" />
+                              <circle cx="14" cy="21.5" r="0.95" fill="#632638" />
+                              <circle cx="18" cy="21.5" r="0.95" fill="#632638" />
+                            </svg>
+                          }
+                          @case ('cross') {
+                            <span aria-hidden="true">×</span>
+                          }
+                        }
+                      </button>
+                    </td>
+                  }
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+    }
+  </div>
+  <p class="pen-hint">Lis les sept motifs dans l’ordre des enclos.</p>
+</section>
