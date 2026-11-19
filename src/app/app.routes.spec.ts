@@ -40,6 +40,7 @@ describe('ouverture publique et liens de prévisualisation', () => {
   it.each(puzzlePaths)(
     'autorise %s avant la date quand l’accès anticipé est actif',
     async (path) => {
+      TestBed.overrideProvider(RIDDLE_OPEN_EARLY, { useValue: true });
       const harness = await RouterTestingHarness.create();
       await harness.navigateByUrl(path, RouteProbe);
       expect(TestBed.inject(Router).url).toBe(path);
@@ -47,9 +48,8 @@ describe('ouverture publique et liens de prévisualisation', () => {
   );
 
   it.each(puzzlePaths)(
-    'redirige le lien %s avant l’ouverture quand la restriction est active',
+    'redirige le lien public %s avant l’ouverture',
     async (path) => {
-      TestBed.overrideProvider(RIDDLE_OPEN_EARLY, { useValue: false });
       const harness = await RouterTestingHarness.create();
       await harness.navigateByUrl(path, RouteProbe);
       expect(TestBed.inject(Router).url).toBe('/');
@@ -59,7 +59,6 @@ describe('ouverture publique et liens de prévisualisation', () => {
   it.each(puzzlePaths)(
     'autorise %s dès 17 h à Montréal, soit 22 h UTC',
     async (path) => {
-      TestBed.overrideProvider(RIDDLE_OPEN_EARLY, { useValue: false });
       vi.mocked(Date.now).mockReturnValue(Date.parse('2026-12-31T22:00:00Z'));
       const released = await RouterTestingHarness.create();
       await released.navigateByUrl(path, RouteProbe);

@@ -258,7 +258,8 @@ describe('prise de contrôle de l’AI', () => {
     expect(page.textContent).not.toContain('mon père');
   });
 
-  it('affiche un seul lien vers les énigmes dès la révélation du portail, même avant la date', () => {
+  it('affiche un seul lien avant la date quand l’accès anticipé est actif', () => {
+    TestBed.overrideProvider(RIDDLE_OPEN_EARLY, { useValue: true });
     vi.setSystemTime(new Date('2026-12-31T16:59:00-05:00'));
     createPage();
     expect(page.querySelector('a[href="/enigmes"]')).toBeNull();
@@ -282,7 +283,6 @@ describe('prise de contrôle de l’AI', () => {
   });
 
   it('cache les énigmes, le profil, les résultats et leurs annonces avant le 31 décembre à 17 h', () => {
-    TestBed.overrideProvider(RIDDLE_OPEN_EARLY, { useValue: false });
     vi.setSystemTime(new Date('2026-12-31T16:59:00-05:00'));
     TestBed.overrideProvider(GameStore, {
       useFactory: () => {
@@ -312,8 +312,7 @@ describe('prise de contrôle de l’AI', () => {
     }
   });
 
-  it('révèle automatiquement les sections à 17 h à Montréal sans recharger la page', () => {
-    TestBed.overrideProvider(RIDDLE_OPEN_EARLY, { useValue: false });
+  it('affiche automatiquement le lien à 17 h à Montréal sans recharger la page', () => {
     vi.setSystemTime(new Date('2026-12-31T16:59:59-05:00'));
     reducedMotion = true;
     createPage();
@@ -331,7 +330,6 @@ describe('prise de contrôle de l’AI', () => {
 
   it('ouvre directement la prévisualisation avec les énigmes avant la date et permet la rediffusion', () => {
     vi.setSystemTime(new Date('2026-10-28T12:00:00-04:00'));
-    TestBed.overrideProvider(RIDDLE_OPEN_EARLY, { useValue: false });
     TestBed.overrideProvider(RIDDLE_PREVIEW, { useValue: true });
     createPage();
     expect(page.querySelector('.original-site')).toBeNull();

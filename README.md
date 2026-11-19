@@ -76,10 +76,9 @@ Il n’y a aucun accès mémorisé dans `sessionStorage`; un rechargement comple
 rallume les ampoules et revient à l’accueil original. Le titre de l’onglet et
 les métadonnées de partage présentent le Jour de Lampe avant la révélation.
 
-L’accès anticipé aux énigmes est actif (`EVENT.riddlesOpenEarly`) : le lien vers
-`/enigmes` s’affiche dès la révélation du Jour de l’AI et les routes sont accessibles.
-Une fois ce réglage désactivé, les liens et les routes s’ouvrent automatiquement le
+Le lien vers `/enigmes` et les routes publiques s’ouvrent automatiquement le
 **31 décembre 2026 à 17 h, heure de Montréal** (`EVENT.riddlesOpenAt`).
+L’accès anticipé public (`EVENT.riddlesOpenEarly`) est désactivé.
 
 La route **`/apercu-ia`** ouvre directement le même portail avec les énigmes
 visibles, sans résoudre les ampoules ni attendre la date. Aucun lien public ne
