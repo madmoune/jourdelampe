@@ -67,7 +67,7 @@ export class SudokuPlay {
   protected editCell(event: Event, index: number): void {
     const input = event.target as HTMLInputElement;
     if (this.notesMode()) {
-      const value = this.normalizeNotes(input.value);
+      const value = this.toggleRepeatedNote(this.notes()[index], input.value);
       input.value = value;
       if (this.notes()[index] !== value) {
         const notes = [...this.notes()];
@@ -182,5 +182,27 @@ export class SudokuPlay {
 
   private normalizeNotes(value: string): string {
     return [...new Set(value.match(/[1-9]/gu) ?? [])].sort().join('');
+  }
+
+  private toggleRepeatedNote(previous: string, next: string): string {
+    const added = this.addedDigits(previous, next);
+    if (added.length === 1 && previous.includes(added[0])) {
+      return previous.replace(added[0], '');
+    }
+    return this.normalizeNotes(next);
+  }
+
+  private addedDigits(previous: string, next: string): string[] {
+    const previousCounts = new Map<string, number>();
+    for (const digit of previous) {
+      previousCounts.set(digit, (previousCounts.get(digit) ?? 0) + 1);
+    }
+    const nextCounts = new Map<string, number>();
+    for (const digit of next.match(/[1-9]/gu) ?? []) {
+      nextCounts.set(digit, (nextCounts.get(digit) ?? 0) + 1);
+    }
+    return [...nextCounts.entries()].flatMap(([digit, count]) =>
+      Array.from({ length: Math.max(0, count - (previousCounts.get(digit) ?? 0)) }, () => digit),
+    );
   }
 }

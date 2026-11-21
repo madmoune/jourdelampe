@@ -157,6 +157,45 @@ describe('interface de La vigie', () => {
     expect(JSON.parse(localStorage.getItem(storageKey)!).board[0]).toBe(3);
   });
 
+  it('retire un candidat lorsqu’il est saisi une deuxième fois', () => {
+    const fixture = TestBed.createComponent(SudokuPlay);
+    fixture.detectChanges();
+    const page: HTMLElement = fixture.nativeElement;
+    const blank = page.querySelector<HTMLInputElement>('#sudoku-cell-0')!;
+    page.querySelector<HTMLButtonElement>('.notes-toggle')!.click();
+    fixture.detectChanges();
+
+    blank.value = '3';
+    blank.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+    expect(blank.value).toBe('3');
+
+    blank.value = '33';
+    blank.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+    expect(blank.value).toBe('');
+    expect(JSON.parse(localStorage.getItem(storageKey)!).notes[0]).toBe('');
+  });
+
+  it('permet aussi de retirer un candidat quand les neuf sont déjà présents', () => {
+    const fixture = TestBed.createComponent(SudokuPlay);
+    fixture.detectChanges();
+    const page: HTMLElement = fixture.nativeElement;
+    const blank = page.querySelector<HTMLInputElement>('#sudoku-cell-0')!;
+    page.querySelector<HTMLButtonElement>('.notes-toggle')!.click();
+    fixture.detectChanges();
+
+    blank.value = '123456789';
+    blank.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+    expect(blank.value).toBe('123456789');
+
+    blank.value = '1234567891';
+    blank.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+    expect(blank.value).toBe('23456789');
+  });
+
   it('active et désactive le mode notes avec la touche plus', () => {
     const fixture = TestBed.createComponent(SudokuPlay);
     fixture.detectChanges();

@@ -34,7 +34,7 @@
                   spellcheck="false"
                   [id]="'sudoku-cell-' + cell"
                   [value]="notesMode() && !digit ? candidates : digit || ''"
-                  [maxLength]="notesMode() ? size : 1"
+                  [maxLength]="notesMode() ? size * 2 : 1"
                   [class.notes]="!digit && candidates"
                   [readOnly]="!!givens[cell] || (notesMode() && !!digit)"
                   [attr.aria-label]="
