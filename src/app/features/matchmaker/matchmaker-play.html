@@ -24,16 +24,24 @@
           </div>
           <label class="artist-field" role="cell">
             <span class="mobile-field-label" aria-hidden="true">Artiste</span>
-            <span class="sr-only">Artiste de l’extrait {{ rowNumbers[index] }}</span>
-            <input
-              type="text"
-              autocomplete="off"
-              autocorrect="off"
-              spellcheck="false"
-              [value]="song.artist"
-              placeholder="Artiste"
-              (input)="updateSong(index, 'artist', $any($event.target).value)"
-            />
+            <span class="artist-entry">
+              <input
+                type="text"
+                autocomplete="off"
+                autocorrect="off"
+                spellcheck="false"
+                [attr.aria-label]="'Artiste de l’extrait ' + rowNumbers[index]"
+                [value]="song.artist"
+                placeholder="Artiste"
+                (input)="updateSong(index, 'artist', $any($event.target).value)"
+              />
+              <span class="artist-mark" role="status">
+                @if (correctArtists()[index]) {
+                  <span aria-hidden="true">✓</span>
+                  <span class="sr-only">Artiste correct</span>
+                }
+              </span>
+            </span>
           </label>
           <label class="letter-field" role="cell">
             <span class="mobile-field-label" aria-hidden="true">Début</span>

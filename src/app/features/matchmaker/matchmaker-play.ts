@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, HostListener, signal } from '@angular/core';
-import { MATCHMAKER_CLUES, MATCHMAKER_DECOYS } from './matchmaker-clues';
+import { ChangeDetectionStrategy, Component, computed, HostListener, signal } from '@angular/core';
+import { normalizeAnswer } from '../riddles/game.model';
+import { MATCHMAKER_ARTISTS, MATCHMAKER_CLUES, MATCHMAKER_DECOYS } from './matchmaker-clues';
 
 export interface MatchmakerSongEntry {
   readonly excerpt: string;
@@ -9,7 +10,7 @@ export interface MatchmakerSongEntry {
   readonly secondLetter: string;
 }
 
-export const MATCHMAKER_COUNT = MATCHMAKER_CLUES.length;
+export const MATCHMAKER_COUNT = MATCHMAKER_ARTISTS.length;
 
 export const MATCHMAKER_SONGS: readonly string[] = Array.from(
   { length: MATCHMAKER_COUNT },
@@ -41,6 +42,11 @@ export class MatchmakerPlay {
       firstLetter: '',
       secondLetter: '',
     })),
+  );
+  protected readonly correctArtists = computed(() =>
+    this.songs().map(({ artist }, index) =>
+      MATCHMAKER_ARTISTS[index].includes(normalizeAnswer(artist)),
+    ),
   );
   protected readonly pairs = signal<readonly MatchmakerPair[]>([]);
   protected readonly selectedLeft = signal<number | null>(null);

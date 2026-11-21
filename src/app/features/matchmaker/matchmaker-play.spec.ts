@@ -30,6 +30,47 @@ describe('gabarit Matchmaker', () => {
     expect(audio[0]?.controls).toBe(true);
   });
 
+  it('confirme le bon artiste pour chaque extrait et retire le crochet après une modification', async () => {
+    const { fixture, page } = await setup();
+    const fields = [...page.querySelectorAll('.artist-field')];
+    const artists = [
+      ' la  chicane ',
+      'The Offspring',
+      'Martin Deschamps',
+      'Sum-41',
+      'Britney Spears',
+      'Garou',
+      'Eminem',
+      'Limp Bizkit',
+      'ERIC LAPOINTE',
+      '3 Doors Down',
+      'Red Hot Chili Peppers',
+      'Musiq Soulchild',
+      'Louise Attaque',
+      'Linkin Park',
+    ];
+    const enterArtist = (index: number, name: string) => {
+      const field = fields[index].querySelector('input')!;
+      field.value = name;
+      field.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+    const marks = () =>
+      fields.map((field) => field.querySelector('.artist-mark [aria-hidden]')?.textContent ?? '');
+
+    expect(marks()).toEqual(Array(artists.length).fill(''));
+    artists.forEach((artist, index) => enterArtist(index, artist));
+    await fixture.whenStable();
+    expect(marks()).toEqual(Array(artists.length).fill('✓'));
+    expect(fields[0].querySelector('[role="status"] .sr-only')?.textContent).toBe('Artiste correct');
+
+    enterArtist(0, 'The Offspring');
+    enterArtist(1, '');
+    enterArtist(11, 'Musiq');
+    await fixture.whenStable();
+    expect(marks().slice(0, 2)).toEqual(['', '']);
+    expect(marks().slice(2)).toEqual(Array(artists.length - 2).fill('✓'));
+  });
+
   it('affiche 14 débuts et 14 fins, dont la phrase de Britney Spears', async () => {
     const { page } = await setup();
     const starts = page.querySelectorAll('.match-left .match-text');

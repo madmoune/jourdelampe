@@ -1,4 +1,7 @@
+import { normalizeAnswer } from '../riddles/game.model';
+
 interface TrackClue {
+  readonly artists: readonly string[];
   readonly start: string;
   readonly end: string;
   readonly indices: readonly [number, number];
@@ -7,61 +10,121 @@ interface TrackClue {
 // Dans l’ordre des extraits.
 // Pour la fin, seuls les mots du chant principal sont retenus.
 const TRACK_CLUES: readonly TrackClue[] = [
-  // La Chicane — Juste pour voir le monde
+  // Juste pour voir le monde
   // https://www.paroles.net/la-chicane/paroles-juste-pour-voir-le-monde
-  { start: 'C’est plus l’temps de reculer', end: 'pas moé qui va changer', indices: [3, 1] },
-  // The Offspring — Original Prankster
+  {
+    artists: ['La Chicane'],
+    start: 'C’est plus l’temps de reculer',
+    end: 'pas moé qui va changer',
+    indices: [3, 1],
+  },
+  // Original Prankster
   // https://www.lyricdown.com/lrc/the-offspring-original-prankster-official-music-video-16397183
-  { start: 'You can do it! Until', end: 'what the main man say', indices: [4, 6] },
-  // Martin Deschamps — Quand?
+  {
+    artists: ['The Offspring'],
+    start: 'You can do it! Until',
+    end: 'what the main man say',
+    indices: [4, 6],
+  },
+  // Quand?
   // https://www.paroles-musique.com/paroles-Martin-Deschamps-Quand-lyrics,p356033
-  { start: 'Tu m’regardes d’une drôle de', end: 'moé qui va te retenir', indices: [1, 12] },
-  // Sum 41 — Makes No Difference
+  {
+    artists: ['Martin Deschamps'],
+    start: 'Tu m’regardes d’une drôle de',
+    end: 'moé qui va te retenir',
+    indices: [1, 12],
+  },
+  // Makes No Difference
   // https://sum41.fandom.com/wiki/Makes_No_Difference
-  { start: 'You’re running fast and missing', end: 'makes no difference to me', indices: [3, 4] },
-  // Britney Spears — Oops!... I Did It Again
+  {
+    artists: ['Sum 41'],
+    start: 'You’re running fast and missing',
+    end: 'makes no difference to me',
+    indices: [3, 4],
+  },
+  // Oops!... I Did It Again
   // https://www.lyricdown.com/lrc/spears-britney-oops-i-did-it-again-1778062
-  { start: 'I think I did it again', end: 'above, I’m not that innocent', indices: [6, 10] },
-  // Garou — Seul
+  {
+    artists: ['Britney Spears'],
+    start: 'I think I did it again',
+    end: 'above, I’m not that innocent',
+    indices: [6, 10],
+  },
+  // Seul
   // https://garouofficiel.com/musique/seul/
   {
+    artists: ['Garou'],
     start: 'Tant de fois j’ai tenté',
     end: 'seulement aimer? Peut-il jamais aimer',
     indices: [5, 2],
   },
-  // Eminem — The Real Slim Shady (version clean)
+  // The Real Slim Shady (version clean)
   // https://readdork.com/lyrics/eminem-the-real-slim-shady-clean
-  { start: 'May I have your attention', end: 'us? Let’s all stand up', indices: [4, 1] },
-  // Limp Bizkit — Rollin’ (Air Raid Vehicle)
+  {
+    artists: ['Eminem'],
+    start: 'May I have your attention',
+    end: 'us? Let’s all stand up',
+    indices: [4, 1],
+  },
+  // Rollin’ (Air Raid Vehicle)
   // https://www.lyricdown.com/lrc/limp-bizkit-rollin-air-raid-vehicle-468159
   {
+    artists: ['Limp Bizkit'],
     start: 'Alright, partner, keep on rollin’',
     end: 'Keep rollin’, rollin’, rollin’, rollin’',
     indices: [4, 6],
   },
-  // Éric Lapointe — Mon ange
+  // Mon ange
   // https://www.paroles-musique.com/paroles-Eric-Lapointe-Mon-Ange-lyrics,p33528
-  { start: 'Ce monde s’ra jamais beau', end: 'du fond de mon armure', indices: [8, 12] },
-  // 3 Doors Down — Kryptonite
+  {
+    artists: ['Éric Lapointe'],
+    start: 'Ce monde s’ra jamais beau',
+    end: 'du fond de mon armure',
+    indices: [8, 12],
+  },
+  // Kryptonite
   // https://readdork.com/lyrics/3-doors-down-kryptonite
-  { start: 'Well, I took a walk', end: 'with my superhuman might, Kryptonite', indices: [10, 4] },
-  // Red Hot Chili Peppers — Californication
+  {
+    artists: ['3 Doors Down'],
+    start: 'Well, I took a walk',
+    end: 'with my superhuman might, Kryptonite',
+    indices: [10, 4],
+  },
+  // Californication
   // https://www.youtube.com/watch?v=YlUKcNNmywk
   {
+    artists: ['Red Hot Chili Peppers'],
     start: 'Psychic spies from China try',
     end: 'of Californication, dream of Californication',
     indices: [6, 3],
   },
-  // Musiq — Just Friends (Sunny)
+  // Just Friends (Sunny)
   // https://www.lyricdown.com/lrc/musiq-soulchild-just-friends-sunny-23219973
-  { start: 'Girl, I know this might', end: 'you need me to, baby', indices: [5, 5] },
-  // Louise Attaque — Tu dis rien
+  {
+    artists: ['Musiq', 'Musiq Soulchild'],
+    start: 'Girl, I know this might',
+    end: 'you need me to, baby',
+    indices: [5, 5],
+  },
+  // Tu dis rien
   // https://www.paroles.net/louise-attaque/paroles-tu-dis-rien
-  { start: 'Tu penses quoi toi, tu', end: 'penses quoi? Tu dis rien', indices: [3, 12] },
-  // Linkin Park — One Step Closer
+  {
+    artists: ['Louise Attaque'],
+    start: 'Tu penses quoi toi, tu',
+    end: 'penses quoi? Tu dis rien',
+    indices: [3, 12],
+  },
+  // One Step Closer
   // https://www.youtube.com/watch?v=4qlCC1GOwFw
-  { start: 'I cannot take this anymore', end: 'And I’m about to break', indices: [2, 6] },
+  {
+    artists: ['Linkin Park'],
+    start: 'I cannot take this anymore',
+    end: 'And I’m about to break',
+    indices: [2, 6],
+  },
 ];
+
+export const MATCHMAKER_ARTISTS = TRACK_CLUES.map(({ artists }) => artists.map(normalizeAnswer));
 
 // Ordre des débuts. Les pistes et rangées commencent à 0, et les positions X sont en %.
 const BOARD_LAYOUT: readonly {
@@ -85,11 +148,10 @@ const BOARD_LAYOUT: readonly {
   { track: 9, endRow: 10, indexColumns: [21, 67] },
 ];
 
-export const MATCHMAKER_CLUES = BOARD_LAYOUT.map(({ track, endRow, indexColumns }) => ({
-  ...TRACK_CLUES[track],
-  endRow,
-  indexColumns,
-}));
+export const MATCHMAKER_CLUES = BOARD_LAYOUT.map(({ track, endRow, indexColumns }) => {
+  const { start, end, indices } = TRACK_CLUES[track];
+  return { start, end, indices, endRow, indexColumns };
+});
 
 // Positions en % choisies à l’écart des 14 bonnes lignes, même à la largeur minimale.
 export const MATCHMAKER_DECOYS = [

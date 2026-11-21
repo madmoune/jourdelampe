@@ -121,8 +121,26 @@ input {
   font-size: 16px;
 }
 
-.artist-field input {
-  padding: 8px 10px;
+.artist-entry {
+  position: relative;
+}
+
+.artist-entry input {
+  display: block;
+  padding: 8px 32px 8px 10px;
+}
+
+.artist-mark {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 10px;
+  display: grid;
+  place-items: center;
+  color: #d9f58a;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
 }
 
 .letter-field input {
