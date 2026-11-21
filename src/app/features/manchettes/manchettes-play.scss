@@ -339,4 +339,25 @@ h3 {
   .clues button {
     min-height: 44px;
   }
+
+  .mine-tools {
+    // Le bouton peut se fixer sur toute la hauteur de la section du démineur.
+    display: contents;
+  }
+
+  .mine-tools button,
+  .mine-crash {
+    margin-block-end: 14px;
+  }
+
+  .mine-tools button[aria-pressed] {
+    margin-inline-end: 8px;
+  }
+
+  .mine-tools button[aria-pressed]:not(:disabled) {
+    position: sticky;
+    inset-block-start: calc(8px + env(safe-area-inset-top, 0px));
+    z-index: 2;
+    box-shadow: 0 2px 8px #090610;
+  }
 }
