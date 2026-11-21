@@ -170,3 +170,34 @@ progress {
   &.chosen, &:hover:not(:disabled) { border-color: #51635c; background: #c5d7b1; }
   &.chosen::before { content: '▸ '; }
 }
+
+@media (pointer: coarse) {
+  .console {
+    container-type: inline-size;
+  }
+
+  .handheld {
+    // La hauteur du sentier (112/160) sert de base au cadre des deux scènes.
+    block-size: max(15rem, calc(min(70cqi, 350px) + 3.75rem));
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  .map {
+    height: 100%;
+  }
+
+  .battle-layout {
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .battle > svg {
+    min-height: 0;
+  }
+
+  .textbox {
+    max-block-size: 7rem;
+    overflow-y: auto;
+    align-content: safe center;
+  }
+}
