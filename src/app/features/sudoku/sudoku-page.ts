@@ -9,8 +9,7 @@ import { SudokuPlay } from './sudoku-play';
   template: `
     <app-riddle-page
       [riddleId]="riddleId"
-      title="Sudoquoi?"
-      flavorTextHtml="Quand on est dans de beaux <strong>draps</strong>, faut pas y laisser sa <strong>peau</strong>."
+      flavorTextHtml="Quand on est dans de beaux <strong>draps</strong>, il ne faut pas y laisser sa <strong>peau</strong>."
       answerLabel="Réponse (9 lettres)"
     >
       <ng-template>

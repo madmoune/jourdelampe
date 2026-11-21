@@ -49,15 +49,17 @@ describe('page dédiée aux énigmes', () => {
     const page = harness.routeNativeElement!;
     expect(page.querySelector('h1')?.textContent).toContain('Puzzle Hunt');
     expect(page.textContent).toContain(
-      "Montrez que vous avez un tant soit peu d'intelligence et je laisserai votre party tranquille.",
+      'Montrez que vous avez un tant soit peu d’intelligence et je laisserai votre party tranquille.',
     );
     expect(page.textContent).toContain(
-      "J'ai confiance en vous. Confiance que vous allez avoir l'air de gros cons.",
+      'J’ai confiance en vous. Je suis sûre que vous allez avoir l’air de gros cons.',
     );
-    expect(page.querySelector('.cheatsheet-link')?.getAttribute('href')).toBe('/cheatsheet');
+    const cheatsheet = page.querySelector<HTMLAnchorElement>('.cheatsheet-link')!;
+    expect(cheatsheet.pathname).toBe('/cheatsheet');
+    expect(new URLSearchParams(cheatsheet.search).get('retour')).toBe('/apercu-ia/enigmes');
     expect(page.querySelector('.cheatsheet-banner h2')?.textContent).toContain('Cheatsheet');
     expect(page.querySelector('.cheatsheet-banner')?.textContent).toContain(
-      "Informations pertinentes à la résolution d'énigmes.",
+      'Astuces, règles de jeu et codes pour résoudre les énigmes.',
     );
     expect(
       page.querySelector('.puzzle-play > app-riddle-access + .cheatsheet-banner'),
@@ -89,7 +91,7 @@ describe('page dédiée aux énigmes', () => {
     expect(seventh.querySelector('.puzzle-link')?.getAttribute('href')).toBe(
       '/apercu-ia/enigmes/salle-arcade',
     );
-    expect(page.querySelector('#dossiers-title')).toBeNull();
+    expect(page.querySelector('#dossiers-title')?.textContent).toBe('Les énigmes');
     expect(page.querySelector('.reveal-help')).toBeNull();
     expect(page.querySelector('.progress')).toBeNull();
     expect(page.querySelector('.riddle .file-label')).toBeNull();

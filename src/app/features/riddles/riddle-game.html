@@ -5,8 +5,10 @@
 } @else {
   <ol class="riddle-grid">
     @for (riddle of slots(); track riddle?.id ?? $index; let number = $index) {
+      @let page = riddle ? pageFor(riddle.id) : undefined;
+      @let title = page?.title ?? riddle?.title ?? 'Énigme ' + (number + 1);
       <li class="riddle" [class.solved]="riddle?.infoUnlocked">
-        <h3>{{ riddle?.title ?? 'Énigme ' + (number + 1) }}</h3>
+        <h3>{{ title }}</h3>
         @if (riddle) {
           <p class="riddle-status">
             {{
@@ -20,13 +22,14 @@
           @if (canPlay() && riddle.infoUnlocked) {
             <app-riddle-results [solutions]="riddle.solutions" />
           }
-          @if (pages[riddle.id]; as page) {
+          @if (page) {
             <a
               class="puzzle-link"
-              [routerLink]="pagePrefix + page"
-              [attr.aria-label]="'Ouvrir l’énigme : ' + riddle.title"
-              >Ouvrir l’énigme →</a
+              [routerLink]="pagePrefix + page.path"
+              [attr.aria-label]="'Ouvrir l’énigme « ' + title + ' »'"
             >
+              Ouvrir l’énigme <span aria-hidden="true">→</span>
+            </a>
           } @else if (canPlay()) {
             <app-riddle-answer [riddleId]="riddle.id" [showSolvedAnswer]="false" />
           }

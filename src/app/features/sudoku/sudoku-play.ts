@@ -56,7 +56,12 @@ export class SudokuPlay {
 
   protected selectCell(event: FocusEvent, index: number): void {
     this.focused.set(index);
-    (event.target as HTMLInputElement).select();
+    const input = event.target as HTMLInputElement;
+    if (this.notesMode()) {
+      input.setSelectionRange(input.value.length, input.value.length);
+    } else {
+      input.select();
+    }
   }
 
   protected editCell(event: Event, index: number): void {
@@ -69,16 +74,16 @@ export class SudokuPlay {
         notes[index] = value;
         this.save({ board: [...this.board()], notes });
       }
-    } else {
-      const value = this.givens[index] || Number(input.value.match(/[1-9]/u)?.[0] ?? '0');
-      input.value = value ? String(value) : '';
-      if (this.board()[index] !== value || this.notes()[index]) {
-        const board = [...this.board()];
-        const notes = [...this.notes()];
-        board[index] = value;
-        notes[index] = '';
-        this.save({ board, notes });
-      }
+      return;
+    }
+    const value = this.givens[index] || Number(input.value.match(/[1-9]/u)?.[0] ?? '0');
+    input.value = value ? String(value) : '';
+    if (this.board()[index] !== value || this.notes()[index]) {
+      const board = [...this.board()];
+      const notes = [...this.notes()];
+      board[index] = value;
+      notes[index] = '';
+      this.save({ board, notes });
     }
     input.select();
   }
@@ -89,8 +94,16 @@ export class SudokuPlay {
 
   protected toggleNotesFromHotkey(event: KeyboardEvent): void {
     if (event.key !== '+' && event.code !== 'NumpadAdd') return;
+    if (event.ctrlKey || event.metaKey || event.altKey || event.defaultPrevented) return;
+    const target = event.target;
+    if (
+      target instanceof HTMLElement &&
+      target.closest('input, textarea, [contenteditable]') &&
+      !this.host.nativeElement.contains(target)
+    )
+      return;
     event.preventDefault();
-    this.toggleNotesMode();
+    if (!event.repeat) this.toggleNotesMode();
   }
 
   protected moveFocus(event: KeyboardEvent, row: number, column: number): void {

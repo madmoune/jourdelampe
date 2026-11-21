@@ -29,7 +29,16 @@ export class ArcadeRoom {
   protected select(cabinet: Cabinet): void {
     this.selected.set(cabinet);
     afterNextRender({
-      write: () => this.screen().nativeElement.querySelector<HTMLElement>('[arcadeControls]')?.focus({ preventScroll: true }),
+      earlyRead: () => {
+        const screen = this.screen().nativeElement;
+        const viewportHeight = screen.ownerDocument.defaultView?.innerHeight ?? 0;
+        return viewportHeight > 0 && screen.getBoundingClientRect().top > viewportHeight / 2;
+      },
+      write: (belowFold) => {
+        const screen = this.screen().nativeElement;
+        screen.querySelector<HTMLElement>('[arcadeControls]')?.focus({ preventScroll: true });
+        if (belowFold) screen.scrollIntoView({ block: 'start' });
+      },
     }, { injector: this.injector });
   }
 }

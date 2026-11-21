@@ -9,18 +9,18 @@
             @if (fight.enemy || rivalHit()) {
               <g class="rival-sprite" [class.lunge]="phase() === 'rival-lunge'" [class.recover]="phase() === 'hero-impact'"
                 [class.impact]="rivalHit()">
-                <image [attr.href]="'/images/arcade/' + active.creature + '.webp'"
+                <image [attr.href]="'images/arcade/' + active.creature + '.webp'"
                   x="92" y="19" width="49" height="41" preserveAspectRatio="xMidYMax meet"/>
               </g>
             }
             @if (fight.hp || phase() === 'hero-impact') {
               <g class="hero-sprite" [class.lunge]="phase() === 'charge-lunge'" [class.recover]="phase() === 'charge-impact'"
                 [class.impact]="phase() === 'hero-impact'">
-                <image href="/images/arcade/braisillon.webp" x="20" y="51" width="52" height="41"
+                <image href="images/arcade/braisillon.webp" x="20" y="51" width="52" height="41"
                   preserveAspectRatio="xMidYMax meet" [attr.visibility]="attackPose() ? 'hidden' : 'visible'"/>
                 <svg class="attack-sprite" x="18" y="38" width="56" height="54" overflow="hidden"
                   [attr.viewBox]="attackPose() ?? '0 0 56 54'" [attr.visibility]="attackPose() ? 'visible' : 'hidden'">
-                  <image href="/images/arcade/braisillon-attacks.webp" width="168" height="54"/>
+                  <image href="images/arcade/braisillon-attacks.webp" width="168" height="54"/>
                 </svg>
               </g>
             }
@@ -59,7 +59,7 @@
               @let activeMember = index === fight.active && fight.enemy > 0;
               <li [class.empty]="!member" [class.ko]="member && defeatedMember" [class.active]="activeMember">
                 @if (member) {
-                  <img [src]="'/images/arcade/' + member.creature + '.webp'"
+                  <img [src]="'images/arcade/' + member.creature + '.webp'"
                     [alt]="creatures[member.creature] + (defeatedMember ? ' · K.O.' : activeMember ? ' · au combat' : '')" />
                 } @else {
                   <span class="slot-description">Case vide</span>

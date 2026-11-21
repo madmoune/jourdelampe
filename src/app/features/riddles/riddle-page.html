@@ -1,21 +1,30 @@
-<div class="puzzle-world" style="background-image: url('images/ai/stars.svg')">
-  <a class="skip-link" [routerLink]="[]" fragment="puzzle-content">Aller au puzzle</a>
+<div class="puzzle-world">
+  <a class="skip-link" [routerLink]="[]" queryParamsHandling="preserve" fragment="puzzle-content">
+    Aller à l’énigme
+  </a>
   <div class="puzzle-shell">
-    <header>
+    <header class="puzzle-header">
       <a [routerLink]="listPath">← Retour aux énigmes</a>
       <span>LE JOUR DE L’AI</span>
     </header>
-    <main id="puzzle-content">
+    <main id="puzzle-content" class="puzzle-main" tabindex="-1">
       <div class="puzzle-heading">
-        <h1>{{ title() }}</h1>
+        <h1>{{ pageTitle() }}</h1>
         @if (flavorTextHtml(); as flavor) {
           <p class="flavor-text" [innerHTML]="flavor"></p>
         } @else if (flavorText(); as flavor) {
           <p class="flavor-text">{{ flavor }}</p>
         }
       </div>
-      <a class="cheatsheet-link" routerLink="/cheatsheet" target="_blank" rel="noopener">
-        Consulter la cheatsheet ↗
+      <a
+        class="cheatsheet-link"
+        routerLink="/cheatsheet"
+        [queryParams]="{ retour: router.url }"
+        target="_blank"
+        rel="noopener"
+        aria-label="Consulter la cheatsheet (nouvel onglet)"
+      >
+        Consulter la cheatsheet <span aria-hidden="true">↗</span>
       </a>
       @if (participants.loading()) {
         <p class="access-notice" role="status">Chargement de l’énigme…</p>
@@ -25,7 +34,7 @@
             [riddleId]="riddleId()"
             [answerLabel]="answerLabel()"
             [hint]="answerHint()"
-            [previewTitle]="title()"
+            [previewTitle]="pageTitle()"
           />
           @if (game.error()) {
             <p class="game-error" role="alert">{{ game.error() }}</p>
@@ -37,15 +46,12 @@
       } @else {
         <section class="access-notice" aria-label="Accès à l’énigme">
           <p>
-            {{
-              participants.error() ||
-                'Entre ton nom dans la page des énigmes pour accéder à cette énigme.'
-            }}
+            {{ participants.error() || 'Enregistre ton nom sur la page des énigmes pour jouer.' }}
           </p>
           <a [routerLink]="listPath" fragment="profil">Aller au profil</a>
         </section>
       }
     </main>
-    <footer>UNE ÉNIGME DE L’AI · DES NEURONES? PROUVEZ-LE.</footer>
+    <footer class="puzzle-footer">UNE ÉNIGME DE L’AI · DES NEURONES? PROUVEZ-LE.</footer>
   </div>
 </div>

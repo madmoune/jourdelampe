@@ -2,13 +2,20 @@
   display: block;
 }
 .puzzle-link {
-  display: inline-block;
-  padding: 12px 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 14px;
   color: #202a12;
   background: #d5ed8b;
   border: 2px outset #d5ed8b;
   font-weight: bold;
   text-decoration: none;
+}
+.puzzle-link:hover {
+  background: #e4ffa2;
 }
 .puzzle-link:focus-visible {
   outline: 2px solid #dcff79;
@@ -27,7 +34,7 @@
   padding: 16px;
   border: 1px solid #6b5b83;
   background: #100c23;
-  font-size: 12px;
+  font-size: 14px;
   overflow-wrap: anywhere;
 }
 .riddle.solved {
@@ -80,4 +87,10 @@ h3 {
 }
 .solved .riddle-status {
   color: #dcff79;
+}
+
+@media (max-width: 600px) {
+  .puzzle-link {
+    width: 100%;
+  }
 }

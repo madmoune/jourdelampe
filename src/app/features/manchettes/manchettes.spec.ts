@@ -116,12 +116,11 @@ describe('interaction d’En manchettes', () => {
     expect(page.querySelectorAll('.clues button')).toHaveLength(28);
     expect(page.querySelectorAll('.file-label')).toHaveLength(0);
     expect(page.querySelector('.extraction')).toBeNull();
-    expect(page.querySelector('[aria-pressed]')).toBeNull();
     expect(page.querySelector('.mine-tools span')).toBeNull();
     expect(page.textContent).not.toContain('Un nombre indique combien de mines');
     expect(page.textContent).not.toContain('Annuler');
-    expect(page.querySelectorAll('.mine-tools button')).toHaveLength(1);
-    expect(page.querySelector<HTMLButtonElement>('.mine-tools button')?.textContent).toContain(
+    expect(page.querySelectorAll('.mine-tools button')).toHaveLength(2);
+    expect(page.querySelector('.mine-tools button:not([aria-pressed])')?.textContent).toContain(
       'Recommencer le démineur',
     );
     const first = EXTRACTION_CELLS[0];
@@ -156,7 +155,31 @@ describe('interaction d’En manchettes', () => {
     const page: HTMLElement = fixture.nativeElement;
     expect(page.querySelector('.mine-section')?.classList.contains('solved')).toBe(true);
     expect(page.querySelector('.mine-section .board-status')).toBeNull();
-    expect(page.querySelector('.mine-complete')?.textContent).toContain('Démineur complété');
+    expect(page.querySelector('.mine-complete')?.textContent).toContain('Terrain déminé');
+  });
+
+  it('pose et retire un drapeau par simple pression sans ouvrir la case', () => {
+    const fixture = TestBed.createComponent(ManchettesPlay);
+    fixture.detectChanges();
+    const page: HTMLElement = fixture.nativeElement;
+    const toggle = page.querySelector<HTMLButtonElement>('.mine-tools [aria-pressed]')!;
+    const mine = page.querySelector<HTMLButtonElement>(`#mine-cell-${[...MINES][0]}`)!;
+
+    toggle.click();
+    fixture.detectChanges();
+    expect(toggle.getAttribute('aria-pressed')).toBe('true');
+    mine.click();
+    fixture.detectChanges();
+    expect(mine.classList.contains('flagged')).toBe(true);
+    mine.click();
+    fixture.detectChanges();
+    expect(mine.classList.contains('flagged')).toBe(false);
+    expect(mine.classList.contains('hit')).toBe(false);
+
+    toggle.click();
+    mine.click();
+    fixture.detectChanges();
+    expect(mine.classList.contains('hit')).toBe(true);
   });
 
   it('révèle les cases voisines quand les drapeaux correspondent au chiffre', () => {
@@ -221,7 +244,7 @@ describe('interaction d’En manchettes', () => {
     safe.click();
     fixture.detectChanges();
     expect(safe.classList.contains('clear')).toBe(false);
-    page.querySelector<HTMLButtonElement>('.mine-tools button')!.click();
+    page.querySelector<HTMLButtonElement>('.mine-tools button:not([aria-pressed])')!.click();
     fixture.detectChanges();
     expect(button.classList.contains('hit')).toBe(false);
     expect(letter.value).toBe('A');

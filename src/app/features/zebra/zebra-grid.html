@@ -1,19 +1,18 @@
-<div class="grid-toolbar">
-  <div class="grid-actions">
-    <button
-      type="button"
-      class="clear-grid"
-      title="Effacer les associations et les exclusions"
-      [disabled]="locked() || !hasMarks()"
-      (click)="clear()"
-    >
-      Vider
-    </button>
-  </div>
-</div>
 <div class="grid-workspace">
   <ng-content select="[grid-sidebar]" />
   <div class="grid-main">
+    <div class="grid-toolbar">
+      <p class="scroll-hint">Fais défiler la grille de gauche à droite.</p>
+      <button
+        type="button"
+        class="clear-grid"
+        title="Effacer les associations et les exclusions"
+        [disabled]="locked() || !hasMarks()"
+        (click)="clear()"
+      >
+        Vider la grille
+      </button>
+    </div>
     <div
       class="grid-scroll"
       role="region"

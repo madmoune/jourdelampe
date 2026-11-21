@@ -1,6 +1,6 @@
 :host {
   display: block;
-  margin: 18px 0 28px;
+  margin: 0 0 20px;
 }
 
 .player-profile {
@@ -35,10 +35,12 @@
   pointer-events: none;
 }
 
-h3 {
+h2 {
   margin: 0 0 8px;
-  color: #dcff79;
-  font-size: 15px;
+  color: #efdfbd;
+  font:
+    24px/1.2 Georgia,
+    serif;
 }
 
 p {
@@ -65,6 +67,7 @@ input {
   flex: 1 1 160px;
   min-width: 0;
   width: 100%;
+  min-height: 44px;
   padding: 10px;
   border: 2px solid;
   border-color: #675775 #d9cce7 #d9cce7 #675775;
@@ -174,7 +177,7 @@ button:focus-visible,
 }
 
 .profile-view .text-button {
-  min-height: 40px;
+  min-height: 44px;
   padding: 8px 12px;
   border: 1px solid #806a99;
   background: #241a32;
@@ -189,19 +192,8 @@ button:focus-visible,
   color: #fff5ff;
 }
 
-.profile-view .access-note {
-  margin: 17px 0 0;
-  padding: 13px 0 0 58px;
-  border-top: 1px solid #4d3a62;
-}
-
 strong {
   color: #dcff79;
-}
-
-.access-note {
-  margin: 10px 0 0;
-  font-size: 11px;
 }
 
 .feedback {
@@ -230,7 +222,12 @@ strong {
     margin-left: 58px;
   }
 
-  .profile-view .access-note {
-    padding-left: 0;
+  .name-controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .name-controls input {
+    flex: auto;
   }
 }

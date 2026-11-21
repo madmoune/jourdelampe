@@ -1,6 +1,9 @@
 import { DOCUMENT } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { isRiddlePath, RIDDLE_LIST_PATH } from '../riddles/riddle-pages';
+import { RIDDLE_PREVIEW_PATH } from '../riddles/riddle-release';
 
 type SemaphorePosition = 'up' | 'high' | 'out' | 'low' | 'down' | 'across-high' | 'across-low';
 type SemaphoreSide = 'left' | 'right';
@@ -239,8 +242,14 @@ const ARM_ANGLES: Record<SemaphoreSide, Record<SemaphorePosition, number>> = {
   },
 };
 
-const RIDDLE_ROUTE = /^\/(?:apercu-ia\/)?enigmes(?:\/[^/]+)?$/u;
-const FALLBACK_BACK_LINK = '/enigmes';
+const REFERENCE_SECTIONS = [
+  { id: 'hunt-rules', label: 'Les bases' },
+  { id: 'codes', label: 'Codes' },
+  { id: 'zebra', label: 'Zebra' },
+  { id: 'nonograms', label: 'Nonogrammes' },
+  { id: 'sudoku', label: 'Sudoku' },
+  { id: 'minesweeper', label: 'Démineur' },
+];
 
 const signal = (
   letter: string,
@@ -277,27 +286,49 @@ export const SEMAPHORE_SIGNALS: readonly SemaphoreSignal[] = [
   signal('Z', 'out', 'across-low'),
 ];
 
-export function resolveCheatsheetBackLink(referrer: string, origin: string): string {
-  try {
-    const url = new URL(referrer, origin);
-    const path = url.pathname.replace(/\/+$/u, '') || '/';
-    if (url.origin !== origin || !RIDDLE_ROUTE.test(path)) {
-      return FALLBACK_BACK_LINK;
+export function resolveCheatsheetBackLink(
+  referrer: string,
+  baseUri: string,
+  returnTo = '',
+): string {
+  const base = new URL(baseUri);
+  const basePath = base.pathname.replace(/\/+$/u, '');
+
+  for (const value of [returnTo, referrer]) {
+    if (!value) continue;
+    try {
+      const url = new URL(value, base.origin);
+      if (url.origin !== base.origin) continue;
+
+      const pathname = url.pathname.replace(/\/+$/u, '');
+      const path = pathname.startsWith(`${basePath}/`) ? pathname.slice(basePath.length) : pathname;
+      const riddlePath = path.startsWith(`${RIDDLE_PREVIEW_PATH}/`)
+        ? path.slice(RIDDLE_PREVIEW_PATH.length)
+        : path;
+
+      if (isRiddlePath(riddlePath)) return `${path}${url.search}${url.hash}`;
+    } catch {
+      // Une URL de provenance invalide laisse la place au lien de secours.
     }
-    return `${path}${url.search}${url.hash}`;
-  } catch {
-    return FALLBACK_BACK_LINK;
   }
+  return RIDDLE_LIST_PATH;
 }
 
 @Component({
   selector: 'app-cheatsheet',
+  imports: [RouterLink],
   templateUrl: './cheatsheet.html',
-  styleUrl: './cheatsheet.scss',
+  styleUrls: ['../riddles/riddle-layout.scss', './cheatsheet.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Cheatsheet {
   private readonly document = inject(DOCUMENT);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly params = toSignal(this.route.queryParamMap, {
+    initialValue: this.route.snapshot.queryParamMap,
+  });
+  protected readonly sections = REFERENCE_SECTIONS;
   protected readonly nonogramExample = NONOGRAM_EXAMPLE;
   protected readonly nonogramRowClues = NONOGRAM_ROW_CLUES;
   protected readonly nonogramColumnClues = NONOGRAM_COLUMN_CLUES;
@@ -308,13 +339,19 @@ export class Cheatsheet {
   protected readonly caesarCodes = CAESAR_CODES;
   protected readonly pigpenGrids = PIGPEN_GRIDS;
   protected readonly signals = SEMAPHORE_SIGNALS;
-  protected readonly backLink = resolveCheatsheetBackLink(
-    this.document.referrer,
-    this.document.location.origin,
+  private readonly backPath = computed(() =>
+    resolveCheatsheetBackLink(
+      this.document.referrer,
+      this.document.baseURI,
+      this.params().get('retour') ?? '',
+    ),
   );
-  protected readonly backLabel = this.backLink.includes('/enigmes/')
-    ? 'Retour à l’énigme'
-    : 'Retour aux énigmes';
+  protected readonly backLink = computed(() => this.router.parseUrl(this.backPath()));
+  protected readonly backLabel = computed(() =>
+    this.backPath().split(/[?#]/u, 1)[0].includes(`${RIDDLE_LIST_PATH}/`)
+      ? 'Retour à l’énigme'
+      : 'Retour aux énigmes',
+  );
 
   protected armAngle(position: SemaphorePosition, side: SemaphoreSide): string {
     return `rotate(${ARM_ANGLES[side][position]}deg)`;

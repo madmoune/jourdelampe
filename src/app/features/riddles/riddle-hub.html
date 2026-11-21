@@ -1,40 +1,47 @@
-<div class="puzzle-world" style="background-image: url('images/ai/stars.svg')">
-  <a class="skip-link" [routerLink]="[]" fragment="dossiers">Aller aux dossiers</a>
+<div class="puzzle-world">
+  <a class="skip-link" [routerLink]="[]" queryParamsHandling="preserve" fragment="dossiers">
+    Aller aux énigmes
+  </a>
   <div class="puzzle-shell">
-    <header>
+    <header class="puzzle-header">
       <a [routerLink]="homePath" (click)="portal.revealed.set(true)">← Le Jour de l’AI</a>
-      <span>LE JOUR DE L’AI <b>/</b> OPÉRATION : SAUVER LE PARTY</span>
+      <span>OPÉRATION SAUVER LE PARTY</span>
     </header>
-    <main>
+    <main class="puzzle-main">
       <div class="puzzle-heading">
         <h1>Puzzle Hunt</h1>
         <p class="flavor-text">
-          Montrez que vous avez un tant soit peu d'intelligence et je laisserai votre party tranquille.
-          <br /><br />
-          J'ai confiance en vous. Confiance que vous allez avoir l'air de gros cons.
+          Montrez que vous avez un tant soit peu d’intelligence et je laisserai votre party
+          tranquille.
+        </p>
+        <p class="flavor-text">
+          J’ai confiance en vous. Je suis sûre que vous allez avoir l’air de gros cons.
         </p>
       </div>
       <div class="puzzle-play">
-        <app-riddle-access id="profil" #profile />
+        <app-riddle-access id="profil" #profile tabindex="-1" />
         <aside class="cheatsheet-banner" aria-labelledby="cheatsheet-banner-title">
           <div>
             <h2 id="cheatsheet-banner-title">Cheatsheet</h2>
-            <p>Informations pertinentes à la résolution d'énigmes.</p>
+            <p>Astuces, règles de jeu et codes pour résoudre les énigmes.</p>
           </div>
           <a
             class="cheatsheet-link"
             routerLink="/cheatsheet"
+            [queryParams]="{ retour: router.url }"
             target="_blank"
             rel="noopener"
+            aria-label="Consulter la cheatsheet (nouvel onglet)"
           >
-            Ouvrir la cheatsheet
+            Consulter la cheatsheet <span aria-hidden="true">↗</span>
           </a>
         </aside>
-        <section id="dossiers" aria-label="Dossiers à résoudre">
+        <section id="dossiers" aria-labelledby="dossiers-title" tabindex="-1">
+          <h2 id="dossiers-title">Les énigmes</h2>
           <app-riddle-game [canPlay]="!!profile.participantName()" />
         </section>
       </div>
     </main>
-    <footer>OPÉRATION : SAUVER LE PARTY · LE JOUR DE L’AI</footer>
+    <footer class="puzzle-footer">OPÉRATION SAUVER LE PARTY · LE JOUR DE L’AI</footer>
   </div>
 </div>

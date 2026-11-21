@@ -71,7 +71,7 @@ describe('accès aux énigmes par un nom', () => {
 
   it('ne crée pas le composant d’énigme tant qu’aucun nom n’est enregistré', async () => {
     await createPage();
-    expect(page.textContent).toContain('Avant de jouer, présente-toi.');
+    expect(page.textContent).toContain('Enregistre ton nom pour jouer.');
     expect(puzzleCreations).toBe(0);
     expect(page.querySelector('[aria-label="Réponse à l’énigme"]')).toBeNull();
     await enterName('   ');

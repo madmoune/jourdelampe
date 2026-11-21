@@ -233,7 +233,7 @@ describe('résolution de la grille Zebra', () => {
     await completeGrid(page);
     await fixture.whenStable();
     const error = page.querySelector('.grid-error')!;
-    expect(error.textContent).toContain('Grille non valide');
+    expect(error.textContent).toContain('Grille incorrecte');
     expect(
       error.compareDocumentPosition(page.querySelector('app-zebra-grid')!) &
         Node.DOCUMENT_POSITION_FOLLOWING,

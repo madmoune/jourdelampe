@@ -28,6 +28,8 @@
                   [name]="'surname-' + name.id"
                   type="text"
                   autocomplete="off"
+                  autocorrect="off"
+                  spellcheck="false"
                   maxlength="200"
                   [value]="surnameDraft(name.id)"
                   [readonly]="surnameResult(name.id)?.correct === true"
@@ -58,11 +60,11 @@
                       >×</span
                     >
                   }
-                  @if (check.error) {
-                    <p class="surname-error" role="alert">{{ check.error }}</p>
-                  }
                 }
               </div>
+              @if (surnameResult(name.id)?.error; as error) {
+                <p class="surname-error" role="alert">{{ error }}</p>
+              }
             </div>
           }
         </div>
@@ -70,7 +72,7 @@
     } @else {
       <div class="grid-error" role="alert" aria-live="assertive">
         <p>
-          <strong>Grille non valide.</strong> Revois tes associations avant de passer à
+          <strong>Grille incorrecte.</strong> Revois tes associations avant de passer à
           l’extraction.
         </p>
       </div>

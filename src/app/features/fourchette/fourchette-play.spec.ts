@@ -97,7 +97,7 @@ describe('grille interactive de La Fourchette', () => {
     expect(page.querySelector('.verify-grid')).toBeNull();
     expect(page.textContent).not.toContain('Vérifier la grille');
     expect(page.querySelector('.wordsearch-help')?.textContent).toContain(
-      'Chaque caractère n’est utilisé qu’une seule fois.',
+      'Chaque lettre de la grille ne sert qu’une fois.',
     );
     expect(page.querySelector('.wordsearch-help')?.textContent).not.toContain('vérifie');
     expect(checkGrid).not.toHaveBeenCalled();
@@ -155,7 +155,7 @@ describe('grille interactive de La Fourchette', () => {
       '1' + '0'.repeat(109),
       FOURCHETTE_GRID_VERSION,
     );
-    expect(page.querySelector('.grid-error')?.textContent).toContain('Grille non valide');
+    expect(page.querySelector('.grid-error')?.textContent).toContain('Grille incorrecte');
     expect(page.querySelector('.grid-success')).toBeNull();
     expect(submit).not.toHaveBeenCalled();
   });

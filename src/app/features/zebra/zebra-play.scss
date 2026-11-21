@@ -69,12 +69,12 @@
 .surname-input {
   flex: 1;
   min-width: 0;
-  min-height: 40px;
+  min-height: 44px;
   padding: 8px 10px;
   border: 1px solid #8d769f;
   background: #151022;
   color: #f0e9f4;
-  font: inherit;
+  font-size: 16px;
 }
 .surname-input:focus-visible {
   outline: 2px solid #dcff79;
@@ -108,7 +108,8 @@
   font-size: 18px;
 }
 .surname-error {
-  margin: 6px 0 0;
+  grid-column: 2;
+  margin: 0;
   color: #ffacb4;
   font-size: 12px;
   line-height: 1.5;
@@ -218,6 +219,9 @@ button:focus-visible {
   .surname-entry {
     grid-template-columns: 1fr;
     gap: 6px;
+  }
+  .surname-error {
+    grid-column: 1;
   }
   .puzzle-information {
     padding: 22px;

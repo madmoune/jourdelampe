@@ -12,5 +12,5 @@ import { ZebraPlay } from './zebra-play';
 export class ZebraPage {
   protected readonly riddleId = ZEBRA_ID;
   protected readonly flavorText =
-    "Le nom de famille d'une personne nous dit bien des choses sur celle-ci, surtout lorsqu'on connait ses positions.";
+    'Le nom de famille d’une personne nous dit bien des choses sur celle-ci, surtout lorsqu’on connaît ses positions.';
 }

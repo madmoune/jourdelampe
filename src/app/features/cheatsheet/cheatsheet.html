@@ -1,56 +1,81 @@
-<div class="cheatsheet-world">
-  <a class="skip-link" href="#cheatsheet-content">Aller au contenu</a>
-  <div class="cheatsheet-shell">
-    <header class="sheet-header">
-      <a [href]="backLink" class="home-link">← {{ backLabel }}</a>
-      <span>FICHE DE RÉFÉRENCE / JOUEURS</span>
+<div class="puzzle-world">
+  <a
+    class="skip-link"
+    [routerLink]="[]"
+    queryParamsHandling="preserve"
+    fragment="cheatsheet-content"
+  >
+    Aller au contenu
+  </a>
+  <div class="puzzle-shell">
+    <header class="puzzle-header">
+      <a [routerLink]="backLink()">← {{ backLabel() }}</a>
+      <span>LE JOUR DE L’AI</span>
     </header>
 
-    <main id="cheatsheet-content" class="sheet-content">
-      <div class="sheet-heading">
+    <main id="cheatsheet-content" class="puzzle-main" tabindex="-1">
+      <div class="puzzle-heading">
         <h1>Cheatsheet</h1>
-        <p class="sheet-intro">Informations pertinentes à la résolution d'énigmes.</p>
+        <p class="flavor-text">Astuces, règles de jeu et codes pour résoudre les énigmes.</p>
       </div>
+      <nav class="reference-nav" aria-label="Sections de la cheatsheet">
+        @for (section of sections; track section.id) {
+          <a [routerLink]="[]" [fragment]="section.id" queryParamsHandling="preserve">
+            {{ section.label }}
+          </a>
+        }
+      </nav>
 
       <section
         id="hunt-rules"
         class="reference-section hunt-rules-reference"
         aria-labelledby="hunt-rules-title"
       >
-        <div class="section-heading">
-          <div>
-            <p class="section-kicker">Puzzle hunt</p>
-            <h2 id="hunt-rules-title">Les bases d’un Puzzle Hunt</h2>
-          </div>
-        </div>
+        <h2 id="hunt-rules-title">Les bases de la chasse aux énigmes</h2>
         <div class="hunt-rules-copy">
           <ul>
-            <li><strong>Observe :</strong> Le titre, le texte, les nombres et les détails inhabituels peuvent cacher des indices.</li>
-            <li><strong>Déduis :</strong> Les instructions sont rarement explicites. Découvrir la mécanique fait partie du défi!</li>
-            <li><strong>Adapte-toi :</strong> Les règles des jeux classiques ne s’appliquent pas toujours : l’énigme peut les détourner.</li>
-            <li><strong>Explore :</strong> N’hésite pas à fouiller sur Internet! Google, Wikipédia et d’autres outils peuvent être essentiels.</li>
-            <li><strong>Résous :</strong> Utilise la logique, tes connaissances et les indices pour compléter l’énigme.</li>
-            <li><strong>Extrais :</strong> La résolution mène généralement à un mot ou une expression (acrostiche, indexation, codes secrets, etc.).</li>
-            <li><strong>Combine :</strong> Les réponses peuvent servir à résoudre une méta-énigme finale.</li>
+            <li>
+              <strong>Observe.</strong> Le titre, le texte, les nombres et les détails inhabituels
+              peuvent cacher des indices.
+            </li>
+            <li>
+              <strong>Déduis.</strong> Les consignes sont rarement explicites. Découvrir le
+              fonctionnement fait partie du défi!
+            </li>
+            <li>
+              <strong>Adapte-toi.</strong> L’énigme peut détourner les règles des jeux classiques.
+            </li>
+            <li>
+              <strong>Explore.</strong> Fouille sur Internet. Google, Wikipédia et d’autres outils
+              peuvent t’aider.
+            </li>
+            <li>
+              <strong>Résous.</strong> Appuie-toi sur la logique, tes connaissances et les indices.
+            </li>
+            <li>
+              <strong>Extrais.</strong> Cherche le mot ou l’expression à dégager à l’aide d’un
+              acrostiche, de positions de lettres ou de codes secrets.
+            </li>
+            <li>
+              <strong>Combine.</strong> Les réponses peuvent servir à résoudre la méta-énigme.
+            </li>
           </ul>
-          <p class="hunt-rules-takeaway"><strong>À retenir :</strong> Tout peut être un indice, et résoudre le puzzle n’est pas toujours la dernière étape!</p>
+          <p class="hunt-rules-takeaway">
+            <strong>À retenir.</strong> Tout peut être un indice. Cherche quoi faire du résultat!
+          </p>
         </div>
       </section>
 
       <section id="codes" class="reference-section code-reference" aria-labelledby="codes-title">
-        <div class="section-heading">
-          <div>
-            <p class="section-kicker">Codes</p>
-            <h2 id="codes-title">Les alphabets à décoder.</h2>
-          </div>
-        </div>
+        <h2 id="codes-title">Codes et alphabets</h2>
         <div class="code-reference-grid">
           <article class="code-card" aria-labelledby="morse-title">
             <div class="code-card-heading">
-              <h3 id="morse-title" class="section-kicker">Morse</h3>
+              <h3 id="morse-title">Morse</h3>
             </div>
             <p class="code-card-copy">
-              Un point est court, un tiret est long. Sépare les lettres par des espaces.
+              Un point représente un signal court et un tiret, un signal long. Sépare les lettres
+              par des espaces.
             </p>
             <div class="code-table" role="list">
               @for (code of morseCodes; track code.letter) {
@@ -64,7 +89,7 @@
 
           <article class="code-card" aria-labelledby="braille-title">
             <div class="code-card-heading">
-              <h3 id="braille-title" class="section-kicker">Braille</h3>
+              <h3 id="braille-title">Braille</h3>
             </div>
             <p class="code-card-copy">Chaque caractère correspond à une cellule braille.</p>
             <div class="code-table braille-table" role="list">
@@ -87,10 +112,10 @@
 
           <article class="code-card" aria-labelledby="binary-title">
             <div class="code-card-heading">
-              <h3 id="binary-title" class="section-kicker">Binaire</h3>
+              <h3 id="binary-title">Binaire</h3>
             </div>
             <p class="code-card-copy">
-              Les lettres majuscules sont écrites en ASCII, sur huit chiffres.
+              Ici, chaque majuscule est représentée par son code ASCII sur huit bits.
             </p>
             <div class="code-table" role="list">
               @for (code of binaryCodes; track code.letter) {
@@ -104,12 +129,12 @@
 
           <article class="code-card" aria-labelledby="caesar-title">
             <div class="code-card-heading">
-              <h3 id="caesar-title" class="section-kicker">César</h3>
+              <h3 id="caesar-title">César</h3>
             </div>
             <p class="code-card-copy">
-              Le nombre de décalage est une clé : chaque lettre est remplacée par celle située N
-              positions plus loin, en bouclant après Z. Le tableau montre seulement un exemple en +3
-              ; ce n'est pas toujours la clé. Pour décoder, recule du même nombre.
+              Remplace chaque lettre par celle qui se trouve plus loin dans l’alphabet, en revenant
+              à A après Z. Le tableau montre un décalage de 3. Pour décoder, recule du nombre de
+              positions indiqué par la clé.
             </p>
             <div class="code-table" role="list">
               @for (code of caesarCodes; track code.letter) {
@@ -123,12 +148,13 @@
 
           <article class="code-card pigpen-card" aria-labelledby="pigpen-title">
             <div class="code-card-heading">
-              <h3 id="pigpen-title" class="section-kicker">Pigpen</h3>
+              <h3 id="pigpen-title">Pigpen</h3>
             </div>
             <p class="code-card-copy">
-              Chaque symbole reprend les traits de la case qui l'entoure. A à I utilisent la première
-              grille, J à R les mêmes formes avec un point, puis S à V et W à Z les deux croix. Dans
-              la Porcherie, lis les motifs des enclos dans l'ordre avec cette clé.
+              Chaque symbole reprend les traits qui entourent sa lettre. Les lettres de A à I
+              utilisent la première grille et celles de J à R reprennent ses formes avec un point.
+              Les autres lettres utilisent les deux croix. Dans La porcherie, lis les motifs des
+              enclos dans l’ordre avec cette clé.
             </p>
             <div class="pigpen-grids" role="list" aria-label="Grilles Pigpen">
               @for (grid of pigpenGrids; track grid.label) {
@@ -164,11 +190,11 @@
 
           <article class="code-card semaphore-card" aria-labelledby="semaphore-title">
             <div class="code-card-heading">
-              <h3 id="semaphore-title" class="section-kicker">Sémaphore</h3>
+              <h3 id="semaphore-title">Sémaphore</h3>
             </div>
             <p class="code-card-copy">
-              Le sémaphore utilise deux drapeaux placés à différents angles pour représenter chaque
-              lettre. G et D désignent les bras du signaleur; les figures sont dessinées de face.
+              Deux drapeaux orientés à différents angles représentent chaque lettre. Les figures
+              sont vues de face. Le bras gauche du signaleur apparaît à droite sur le dessin.
             </p>
             <div class="signal-grid">
               @for (signal of signals; track signal.letter) {
@@ -198,23 +224,19 @@
       </section>
 
       <section id="zebra" class="reference-section zebra-reference" aria-labelledby="zebra-title">
-        <div class="section-heading">
-          <div>
-            <h2 id="zebra-title" class="section-kicker">Zebra</h2>
-          </div>
-        </div>
+        <h2 id="zebra-title">Zebra</h2>
         <div class="zebra-copy">
           <p>
-            Un zebra puzzle est une énigme de logique où l'on associe des éléments de plusieurs
-            catégories à partir d'indices.
+            Une grille Zebra est une énigme de logique où l’on associe des éléments de plusieurs
+            catégories à partir d’indices.
           </p>
           <p>
-            Chaque élément n'apparaît qu'une fois par catégorie. Les indices permettent de confirmer
-            des associations, d'en éliminer d'autres et de croiser les lignes et les colonnes.
+            Chaque élément n’apparaît qu’une fois par catégorie. Croise les lignes et les colonnes
+            pour confirmer ou écarter des associations.
           </p>
           <p>
-            Le but est de compléter la grille par déductions, jusqu'à ce qu'il ne reste qu'une
-            solution cohérente.
+            Le but est de remplir la grille par déduction, jusqu’à ce qu’il ne reste qu’une solution
+            cohérente.
           </p>
         </div>
         <figure class="visual-example zebra-example">
@@ -253,14 +275,10 @@
         class="reference-section nonogram-reference"
         aria-labelledby="nonograms-title"
       >
-        <div class="section-heading">
-          <div>
-            <h2 id="nonograms-title" class="section-kicker">Nonograms</h2>
-          </div>
-        </div>
+        <h2 id="nonograms-title">Nonogrammes</h2>
         <div class="nonogram-copy">
           <p>
-            Un nonogram est une grille logique où les cases remplies révèlent progressivement une
+            Un nonogramme est une grille logique où les cases remplies révèlent progressivement une
             image.
           </p>
           <p>
@@ -268,8 +286,8 @@
             cases remplies et leur ordre.
           </p>
           <p>
-            Les groupes sont séparés par au moins une case vide. Un 0 indique qu'aucune case ne doit
-            être remplie.
+            Les groupes sont séparés par au moins une case vide. Le chiffre 0 indique qu’aucune case
+            ne doit être remplie.
           </p>
         </div>
         <figure class="visual-example">
@@ -306,11 +324,7 @@
         class="reference-section sudoku-reference"
         aria-labelledby="sudoku-cheatsheet-title"
       >
-        <div class="section-heading">
-          <div>
-            <h2 id="sudoku-cheatsheet-title" class="section-kicker">Sudoku</h2>
-          </div>
-        </div>
+        <h2 id="sudoku-cheatsheet-title">Sudoku</h2>
         <div class="sudoku-copy">
           <p>
             Place les chiffres de 1 à 9 une seule fois par ligne, par colonne et par bloc de 3 × 3.
@@ -323,11 +337,7 @@
         class="reference-section minesweeper-reference"
         aria-labelledby="minesweeper-title"
       >
-        <div class="section-heading">
-          <div>
-            <h2 id="minesweeper-title" class="section-kicker">Démineur</h2>
-          </div>
-        </div>
+        <h2 id="minesweeper-title">Démineur</h2>
         <div class="minesweeper-copy">
           <p>
             Ouvre les cases une à une pour dégager le terrain sans toucher aux mines. Les cases déjà
@@ -339,8 +349,8 @@
               voisines, diagonales comprises.
             </li>
             <li>
-              <strong>Un drapeau</strong> marque une case que tu soupçonnes d’être minée. Utilise le
-              clic droit ou la touche F.
+              <strong>Un drapeau</strong> marque une case que tu soupçonnes d’être minée. Active le
+              mode drapeau, utilise le clic droit ou appuie sur la touche F.
             </li>
             <li>
               <strong>L’objectif</strong> est d’ouvrir toutes les cases sûres et de déduire la
@@ -372,13 +382,13 @@
             }
           </div>
           <p class="visual-example-note">
-            Un chiffre compte les mines dans ses huit cases voisines. Un drapeau marque une mine
-            soupçonnée; les cases foncées sont encore cachées.
+            Les cases foncées sont encore cachées. Une case sans mine voisine affiche un 0 dans cet
+            exemple.
           </p>
         </figure>
       </section>
     </main>
 
-    <footer>FICHE DE RÉFÉRENCE · À GARDER SOUS LE COUDE</footer>
+    <footer class="puzzle-footer">FICHE DE RÉFÉRENCE · À GARDER SOUS LE COUDE</footer>
   </div>
 </div>

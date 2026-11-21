@@ -10,12 +10,12 @@
             <ellipse rx="47" ry="10" fill="#0a101b" opacity=".66"/>
             <g class="enemy-fighter" [class.hit]="cue?.phase === 'boss-impact'" [class.fatal]="!battle().enemy">
               <g transform="scale(-1 1)">
-                <image href="/images/arcade/caesar.webp" x="-74" y="-142" width="148" height="147"
+                <image href="images/arcade/caesar.webp" x="-74" y="-142" width="148" height="147"
                   preserveAspectRatio="xMidYMax meet" [attr.visibility]="countering ? 'hidden' : 'visible'"/>
                 <svg x="-76" y="-149" width="152" height="154" overflow="hidden"
                   [attr.viewBox]="cue?.phase === 'counter-ready' ? '0 0 152 154' : '152 0 152 154'"
                   [attr.visibility]="countering ? 'visible' : 'hidden'" class="counter-sprite">
-                  <image href="/images/arcade/caesar-attacks.webp" width="304" height="154"/>
+                  <image href="images/arcade/caesar-attacks.webp" width="304" height="154"/>
                 </svg>
               </g>
             </g>
@@ -36,14 +36,14 @@
               [style.--lunge-y]="(boss.y + 8 - position.y) + 'px'">
               <ellipse rx="24" ry="7" fill="#101323" opacity=".63"/>
               <g transform="scale(-1 1)">
-                <image [attr.href]="'/images/arcade/' + position.sprite + '.webp'"
+                <image [attr.href]="'images/arcade/' + position.sprite + '.webp'"
                   [attr.x]="-position.width / 2" [attr.y]="4 - position.height"
                   [attr.width]="position.width" [attr.height]="position.height" preserveAspectRatio="xMidYMax meet"
                   [attr.visibility]="acting ? 'hidden' : 'visible'"/>
                 <svg x="-76" y="-149" width="152" height="154" overflow="hidden" class="attack-sprite"
                   [attr.viewBox]="cue?.command === 'spell' ? '152 0 152 154' : '0 0 152 154'"
                   [attr.visibility]="acting ? 'visible' : 'hidden'">
-                  <image [attr.href]="'/images/arcade/' + position.sprite + '-attacks.webp'" width="304" height="154"/>
+                  <image [attr.href]="'images/arcade/' + position.sprite + '-attacks.webp'" width="304" height="154"/>
                 </svg>
               </g>
             </g>

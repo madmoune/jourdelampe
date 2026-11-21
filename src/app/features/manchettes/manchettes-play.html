@@ -1,7 +1,7 @@
 <section aria-labelledby="crossword-title">
   <h2 id="crossword-title">Mots croisés</h2>
   <p class="instructions">
-    Une case par lettre, sans espace ni accent. Clique sur une définition pour aller au mot.
+    Écris une lettre par case, sans espace ni accent. Sélectionne une définition pour aller au mot.
   </p>
   <div class="crossword-layout">
     <div>
@@ -14,7 +14,8 @@
           {{ clue.text }}
         </p>
       }
-      <div class="scroll-grid" role="region" aria-label="Grille de mots croisés">
+      <p class="scroll-hint">Fais défiler la grille de gauche à droite.</p>
+      <div class="scroll-grid" role="region" aria-label="Grille de mots croisés" tabindex="0">
         <div class="board crossword" [style.--columns]="width">
           @for (cell of cells; track cell.index) {
             @if (cell.open) {
@@ -71,13 +72,34 @@
 
 <section class="mine-section" [class.solved]="won()" aria-labelledby="mine-title">
   <h2 id="mine-title">Démineur</h2>
+  <p class="instructions" id="mine-help">
+    Active le mode drapeau pour marquer les cases. Tu peux aussi utiliser le clic droit ou la touche
+    F.
+  </p>
   <div class="mine-tools">
+    <button
+      type="button"
+      [attr.aria-pressed]="flagMode()"
+      [disabled]="crashed() || won()"
+      (click)="toggleFlagMode()"
+    >
+      Mode drapeau
+    </button>
     <button type="button" (click)="resetMines()">Recommencer le démineur</button>
     @if (crashed()) {
-      <p class="mine-crash" role="alert">Mine déclenchée. Recommence le démineur pour repartir du début.</p>
+      <p class="mine-crash" role="alert">
+        Mine déclenchée. Recommence le démineur pour repartir du début.
+      </p>
     }
   </div>
-  <div class="scroll-grid" role="region" aria-label="Grille du démineur">
+  <p class="scroll-hint">Fais défiler la grille de gauche à droite.</p>
+  <div
+    class="scroll-grid"
+    role="region"
+    aria-label="Grille du démineur"
+    aria-describedby="mine-help"
+    tabindex="0"
+  >
     <div class="board minefield" [style.--columns]="width">
       @for (cell of cells; track cell.index; let index = $index) {
         @let mark = progress().mines[index];
@@ -117,7 +139,7 @@
     </div>
   </div>
   @if (won()) {
-    <p class="mine-complete" role="status">Démineur complété</p>
+    <p class="mine-complete" role="status">Terrain déminé</p>
   } @else {
     <p class="board-status" role="status">
       {{ foundCount() }} / {{ extracted().length }} cases d’extraction trouvées

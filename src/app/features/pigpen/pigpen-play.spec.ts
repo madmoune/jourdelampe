@@ -29,7 +29,9 @@ describe('jeu des nonogrammes', () => {
     const buttons = page.querySelectorAll<HTMLButtonElement>('.cell');
     expect(buttons).toHaveLength(7 * 7 * 7);
     expect(page.querySelector('.pen-heading')).toBeNull();
-    expect(page.querySelectorAll('.pen[aria-label="Grille de nonogramme"]')).toHaveLength(7);
+    expect([...page.querySelectorAll('.pen')].map((pen) => pen.getAttribute('aria-label'))).toEqual(
+      ['Enclos 1', 'Enclos 2', 'Enclos 3', 'Enclos 4', 'Enclos 5', 'Enclos 6', 'Enclos 7'],
+    );
     expect(page.querySelector('.nonogram-link')).toBeNull();
     const [first, neighbour] = buttons;
     expect(first.getAttribute('aria-label')).toContain('vide');

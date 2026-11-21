@@ -9,10 +9,9 @@
     <p class="feedback error" role="alert">{{ store.error() }}</p>
     <button type="button" (click)="store.retry()">Réessayer la connexion</button>
   } @else if (!store.participant() || editing()) {
-    <h3>{{ store.participant() ? 'Changer ton nom' : 'Avant de jouer, présente-toi.' }}</h3>
+    <h2>{{ store.participant() ? 'Modifier ton nom' : 'Ton profil' }}</h2>
     <p id="player-name-help">
-      Entre ton nom pour accéder aux énigmes. Tu pourras le modifier sans perdre tes énigmes
-      résolues.
+      Enregistre ton nom pour jouer. Tu pourras le modifier et garder ta progression.
     </p>
     <form (ngSubmit)="submit()" [attr.aria-busy]="store.saving()">
       <label for="player-name">Ton nom</label>
@@ -23,7 +22,8 @@
           name="playerName"
           type="text"
           autocomplete="name"
-          placeholder="Ex. : Alex"
+          enterkeyhint="done"
+          placeholder="Alex"
           [maxlength]="nameMaxLength"
           [ngModel]="name()"
           (ngModelChange)="name.set($event); error.set('')"
@@ -40,8 +40,6 @@
         <button class="text-button" type="button" (click)="cancel()" [disabled]="store.saving()">
           Annuler
         </button>
-      } @else {
-        <p class="access-note">Un nom enregistré est obligatoire pour répondre aux énigmes.</p>
       }
     </form>
   } @else {
@@ -51,7 +49,7 @@
           {{ store.participant()!.name.slice(0, 1).toUpperCase() }}
         </span>
         <p>
-          <span class="profile-kicker">Profil joueur</span>
+          <span class="profile-kicker">Ton profil</span>
           <span class="profile-copy">
             Tu joues sous le nom <strong>{{ store.participant()!.name }}</strong>
           </span>

@@ -9,8 +9,7 @@ import { ManchettesPlay } from './manchettes-play';
   template: `
     <app-riddle-page
       [riddleId]="riddleId"
-      title="Crossword Démineur (ne jamais oublier le word)"
-      flavorText="C'est super d'être posé."
+      flavorText="C’est super d’être posé."
       answerLabel="Réponse (14 lettres)"
     >
       <ng-template>

@@ -1,0 +1,125 @@
+:host {
+  display: block;
+}
+
+.puzzle-world {
+  --puzzle-gutter: clamp(12px, 3.6vw, 40px);
+  --puzzle-title: #efdfbd;
+  --puzzle-text: #ece4f3;
+  --puzzle-muted: #c9bad8;
+  --puzzle-accent: #dcff79;
+  --puzzle-border: #78628e;
+  --puzzle-divider: #655078;
+  --puzzle-panel: #23192f;
+  min-height: 100svh;
+  padding: clamp(8px, 2vw, 28px) clamp(8px, 1.5vw, 18px) clamp(28px, 4.5vw, 60px);
+  background: #100c23 url('../../../../public/images/ai/stars.svg');
+  color: var(--puzzle-text);
+  font:
+    1rem/1.55 Arial,
+    sans-serif;
+}
+
+.puzzle-shell {
+  max-width: 1480px;
+  margin-inline: auto;
+  border: 1px solid var(--puzzle-border);
+  background: #191124f5;
+  box-shadow: 6px 6px 0 #090610;
+}
+
+.puzzle-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0 16px;
+  padding: 4px var(--puzzle-gutter);
+  border-bottom: 1px solid var(--puzzle-divider);
+  background: #342641;
+}
+
+.puzzle-header a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: #e4eabf;
+  font-size: 14px;
+}
+
+.puzzle-header a:hover {
+  text-decoration: underline;
+}
+
+.puzzle-header > span {
+  color: #d1bfdc;
+  font: 11px/1.4 monospace;
+  letter-spacing: 0.08em;
+}
+
+.puzzle-main {
+  min-width: 0;
+  padding: clamp(24px, 4vw, 46px) var(--puzzle-gutter) clamp(28px, 4vw, 46px);
+}
+
+.puzzle-heading {
+  margin-bottom: clamp(18px, 3vw, 30px);
+}
+
+.puzzle-heading h1 {
+  max-width: 24ch;
+  margin: 0;
+  color: var(--puzzle-title);
+  font:
+    clamp(36px, 5.5vw, 68px) / 1.08 Georgia,
+    serif;
+  letter-spacing: -0.035em;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.flavor-text {
+  max-width: 70ch;
+  margin: 12px 0 0;
+  color: var(--puzzle-muted);
+  font-size: 15px;
+  line-height: 1.65;
+  white-space: pre-line;
+}
+
+.cheatsheet-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #88739e;
+  background: #241a32;
+  color: var(--puzzle-accent);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.cheatsheet-link:hover {
+  background: #342542;
+}
+
+.puzzle-footer {
+  padding: 16px var(--puzzle-gutter);
+  border-top: 1px solid var(--puzzle-divider);
+  color: #a998b6;
+  font: 10px/1.6 monospace;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+
+.skip-link {
+  background: var(--puzzle-accent);
+  color: #151024;
+}
+
+a:focus-visible {
+  outline: 2px solid var(--puzzle-accent);
+  outline-offset: 3px;
+}

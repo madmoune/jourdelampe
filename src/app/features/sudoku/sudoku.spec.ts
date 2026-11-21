@@ -138,6 +138,8 @@ describe('interface de La vigie', () => {
     fixture.detectChanges();
 
     expect(blank.value).toBe('135');
+    expect(blank.selectionStart).toBe(3);
+    expect(blank.selectionEnd).toBe(3);
     expect(JSON.parse(localStorage.getItem(storageKey)!)).toEqual(
       expect.objectContaining({ board: expect.arrayContaining([0]), notes: expect.any(Array) }),
     );
@@ -146,6 +148,8 @@ describe('interface de La vigie', () => {
     toggle.click();
     fixture.detectChanges();
     expect(toggle.getAttribute('aria-pressed')).toBe('false');
+    expect(blank.value).toBe('');
+    expect(blank.parentElement?.querySelector('.candidates')?.textContent).toContain('135');
     blank.value = '3';
     blank.dispatchEvent(new Event('input', { bubbles: true }));
     fixture.detectChanges();

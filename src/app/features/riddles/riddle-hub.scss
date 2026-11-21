@@ -2,70 +2,32 @@
   max-width: 1120px;
 }
 
-.puzzle-heading h1 {
-  font-size: clamp(42px, 8vw, 72px);
-}
-
 .cheatsheet-banner {
   display: flex;
-  align-items: flex-start;
-  flex-direction: column;
-  gap: 14px;
-  margin: 0 0 28px;
-  padding: 18px 20px;
-  border: 1px solid #8c769e;
-  background: #2a2037;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  margin-bottom: 28px;
+  padding: clamp(12px, 3vw, 20px);
+  border: 1px solid var(--puzzle-border);
+  background: var(--puzzle-panel);
 }
 
-.cheatsheet-banner h2 {
-  margin: 0 0 6px;
-  color: #efdfbd;
+h2 {
+  margin: 0 0 10px;
+  color: var(--puzzle-title);
   font:
-    24px/1.2 Georgia,
+    26px/1.2 Georgia,
     serif;
 }
 
-.cheatsheet-banner p:last-child {
+.cheatsheet-banner h2 {
+  margin-bottom: 4px;
+}
+
+.cheatsheet-banner p {
   margin: 0;
-  color: #c9bad8;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.cheatsheet-link {
-  flex: 0 0 auto;
-  padding: 12px 16px;
-  border: 2px outset #d5ed8b;
-  background: #d5ed8b;
-  color: #202a12;
-  font-weight: bold;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.cheatsheet-link:hover {
-  background: #e4ffa2;
-  color: #202a12;
-}
-
-.cheatsheet-link:focus-visible {
-  outline: 2px solid #dcff79;
-  outline-offset: 3px;
-}
-
-@media (max-width: 600px) {
-  .cheatsheet-banner {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 14px;
-    padding: 16px;
-  }
-
-  .cheatsheet-link {
-    align-self: flex-start;
-  }
-}
-
-app-riddle-access {
-  display: block;
+  color: var(--puzzle-muted);
+  font-size: 14px;
 }

@@ -11,7 +11,7 @@
       >
         {{ notesMode() ? 'Désactiver les notes' : 'Activer les notes' }}
       </button>
-      <span>Raccourci clavier : <kbd>+</kbd></span>
+      <span class="notes-shortcut">Touche <kbd>+</kbd></span>
     </div>
 
     <table aria-labelledby="sudoku-title">
@@ -20,6 +20,8 @@
           <tr>
             @for (column of positions; track column) {
               @let cell = row * size + column;
+              @let digit = board()[cell];
+              @let candidates = notes()[cell];
               <td
                 [class.given]="givens[cell]"
                 [class.box-right]="(column + 1) % boxSize === 0 && column < size - 1"
@@ -28,21 +30,34 @@
                 <input
                   type="text"
                   inputmode="numeric"
-                  maxlength="1"
                   autocomplete="off"
+                  spellcheck="false"
                   [id]="'sudoku-cell-' + cell"
-                  [value]="
-                    notesMode() && !board()[cell] ? notes()[cell] : board()[cell] || ''
-                  "
+                  [value]="notesMode() && !digit ? candidates : digit || ''"
                   [maxLength]="notesMode() ? size : 1"
-                  [class.notes]="notesMode() && !board()[cell] && !givens[cell]"
-                  [readOnly]="!!givens[cell] || (notesMode() && !!board()[cell])"
-                  [attr.aria-label]="'Ligne ' + (row + 1) + ', colonne ' + (column + 1)"
+                  [class.notes]="!digit && candidates"
+                  [readOnly]="!!givens[cell] || (notesMode() && !!digit)"
+                  [attr.aria-label]="
+                    'Ligne ' +
+                    (row + 1) +
+                    ', colonne ' +
+                    (column + 1) +
+                    (!notesMode() && candidates ? ', notes ' + candidates : '')
+                  "
                   [tabIndex]="focused() === cell ? 0 : -1"
                   (focus)="selectCell($event, cell)"
                   (input)="editCell($event, cell)"
                   (keydown)="moveFocus($event, row, column)"
                 />
+                @if (!digit && candidates) {
+                  <span class="candidates" aria-hidden="true">
+                    @for (position of positions; track position) {
+                      <span>{{
+                        candidates.includes((position + 1).toString()) ? position + 1 : ''
+                      }}</span>
+                    }
+                  </span>
+                }
               </td>
             }
           </tr>

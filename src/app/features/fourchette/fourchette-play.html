@@ -38,11 +38,18 @@
             </p>
           } @else {
             <p class="grid-status grid-error" role="alert">
-              <strong>Grille non valide.</strong> Revois les lettres sélectionnées.
+              <strong>Grille incorrecte.</strong> Revois les lettres sélectionnées.
             </p>
           }
         }
       </div>
+      <p id="wordsearch-help" class="wordsearch-help">
+        Chaque lettre de la grille ne sert qu’une fois. Sélectionne les lettres et coche chaque mot
+        que tu trouves.
+      </p>
+      <p class="scroll-hint">
+        Fais défiler la grille de gauche à droite pour voir toutes les lettres.
+      </p>
       <div class="grid-scroll" role="region" aria-label="Grille de mots cachés" tabindex="0">
         <table aria-describedby="wordsearch-help">
           <caption>
@@ -94,8 +101,4 @@
       </div>
     </div>
   </div>
-  <p id="wordsearch-help" class="wordsearch-help">
-    Chaque caractère n’est utilisé qu’une seule fois. Clique sur une case pour sélectionner ou
-    désélectionner sa lettre. Clique sur un mot pour le marquer comme trouvé.
-  </p>
 </section>

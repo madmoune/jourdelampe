@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import {
   BRAILLE_CODES,
   BRAILLE_VISUALS,
@@ -16,19 +17,23 @@ import {
   Cheatsheet,
 } from './cheatsheet';
 
+beforeEach(() => TestBed.configureTestingModule({ providers: [provideRouter([])] }));
+
 describe('règles de base du puzzle hunt', () => {
   it('rappelle les réflexes utiles pour résoudre une énigme', () => {
     const fixture = TestBed.createComponent(Cheatsheet);
     fixture.detectChanges();
     const section = fixture.nativeElement.querySelector('#hunt-rules') as HTMLElement | null;
 
-    expect(section?.querySelector('h2')?.textContent).toBe('Les bases d’un Puzzle Hunt');
+    expect(section?.querySelector('h2')?.textContent).toBe('Les bases de la chasse aux énigmes');
     expect(section?.querySelectorAll('li')).toHaveLength(7);
-    expect(section?.textContent).toContain('Découvrir la mécanique');
-    expect(section?.textContent).toContain('Les règles des jeux classiques ne s’appliquent pas toujours');
-    expect(section?.textContent).toContain('fouiller sur Internet');
+    expect(section?.textContent).toContain('Découvrir le fonctionnement');
+    expect(section?.textContent).toContain(
+      'L’énigme peut détourner les règles des jeux classiques',
+    );
+    expect(section?.textContent).toContain('Fouille sur Internet');
     expect(section?.textContent).toContain('codes secrets');
-    expect(section?.textContent).toContain('méta-énigme finale');
+    expect(section?.textContent).toContain('méta-énigme');
     expect(section?.querySelector('.hunt-rules-takeaway')?.textContent).toContain('À retenir');
   });
 });
@@ -42,12 +47,12 @@ describe('explications des puzzles', () => {
     expect(section?.querySelector('h2')?.textContent).toBe('Zebra');
     expect(section?.querySelectorAll('li')).toHaveLength(0);
     expect(section?.textContent).toContain('énigme de logique');
-    expect(section?.textContent).toContain('compléter la grille par déductions');
+    expect(section?.textContent).toContain('remplir la grille par déduction');
     expect(section?.querySelector('.zebra-demo')).not.toBeNull();
     expect(section?.querySelector('.zebra-demo')?.getAttribute('role')).toBe('img');
   });
 
-  it('définit le nonogram de façon générale', () => {
+  it('définit le nonogramme de façon générale', () => {
     const fixture = TestBed.createComponent(Cheatsheet);
     fixture.detectChanges();
     const section = fixture.nativeElement.querySelector('#nonograms') as HTMLElement | null;
@@ -169,5 +174,19 @@ describe('lien de retour de la cheatsheet', () => {
   it('ignore une provenance inconnue ou externe', () => {
     expect(resolveCheatsheetBackLink('https://example.com/autre-page', origin)).toBe('/enigmes');
     expect(resolveCheatsheetBackLink('', origin)).toBe('/enigmes');
+  });
+
+  it('retire le chemin de base GitHub Pages du lien de provenance', () => {
+    const base = 'https://madmoune.github.io/jourdelampe/';
+    expect(resolveCheatsheetBackLink(`${base}apercu-ia/enigmes/la-vigie`, base)).toBe(
+      '/apercu-ia/enigmes/la-vigie',
+    );
+  });
+
+  it('utilise le retour explicite et valide quand un nouvel onglet omet le référent', () => {
+    const back = '/apercu-ia/enigmes?vue=dossiers#dossiers';
+    expect(resolveCheatsheetBackLink('', `${origin}/jourdelampe/`, back)).toBe(back);
+    expect(resolveCheatsheetBackLink('', origin, '//example.com/enigmes')).toBe('/enigmes');
+    expect(resolveCheatsheetBackLink('', origin, '/enigmes/route-inconnue')).toBe('/enigmes');
   });
 });

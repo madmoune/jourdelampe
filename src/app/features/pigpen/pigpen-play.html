@@ -4,17 +4,21 @@
       <h2 id="pens-title">Les sept enclos</h2>
     </div>
     <p class="pen-progress" role="status">
-      {{ completedCount() }} / {{ puzzles.length }} enclos complétés
+      {{ completedCount() }} / {{ puzzles.length }} enclos validés
     </p>
   </header>
   <ul class="mark-guide" aria-label="Commandes des cases">
-    <li>Clic gauche : cochon, barrée, vide</li>
-    <li>Clic droit : barrée</li>
+    <li>Sélectionne une case pour alterner entre cochon, case barrée et case vide.</li>
+    <li class="mouse-hint">Le clic droit barre une case directement.</li>
   </ul>
 
   <div class="pens">
     @for (puzzle of puzzles; track $index; let pen = $index) {
-      <section class="pen" [class.complete]="completed()[pen]" aria-label="Grille de nonogramme">
+      <section
+        class="pen"
+        [class.complete]="completed()[pen]"
+        [attr.aria-label]="'Enclos ' + (pen + 1)"
+      >
         @if (completed()[pen]) {
           <p class="completion-badge" role="status">
             <span aria-hidden="true">✓</span>

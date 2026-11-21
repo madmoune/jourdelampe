@@ -74,6 +74,7 @@ export class ManchettesPlay {
   protected readonly orders = EXTRACTION_ORDERS;
   protected readonly letterFocus = signal(CROSSWORD_START);
   protected readonly mineFocus = signal(0);
+  protected readonly flagMode = signal(false);
   private readonly direction = signal<Direction>('across');
   protected readonly activeClue = computed(
     () =>
@@ -149,6 +150,10 @@ export class ManchettesPlay {
   protected playMine(cell: number): void {
     const state = this.progress();
     if (this.won() || this.crashed()) return;
+    if (this.flagMode()) {
+      this.toggleFlag(cell);
+      return;
+    }
     if (state.mines[cell] === 'clear') {
       const neighbors = NEIGHBORS[cell];
       const flags = neighbors.filter((neighbor) => state.mines[neighbor] === 'flagged').length;
@@ -178,7 +183,12 @@ export class ManchettesPlay {
   }
 
   protected resetMines(): void {
+    this.flagMode.set(false);
     this.save({ ...this.progress(), mines: initialMinefield() });
+  }
+
+  protected toggleFlagMode(): void {
+    this.flagMode.update((active) => !active);
   }
 
   protected coordinates(cell: number): string {
@@ -193,7 +203,8 @@ export class ManchettesPlay {
     if (state === 'hit') return `${prefix} : mine déclenchée`;
     const order = this.orders.get(cell);
     if (order) return `${prefix} : lettre ${order} à extraire`;
-    return `${prefix} : ${this.counts[cell]} mines voisines`;
+    const mines = this.counts[cell];
+    return `${prefix} : ${mines} ${mines > 1 ? 'mines voisines' : 'mine voisine'}`;
   }
 
   private toggleFlag(cell: number): void {

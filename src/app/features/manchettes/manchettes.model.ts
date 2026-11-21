@@ -55,7 +55,7 @@ const CLUE_DATA: readonly ClueData[] = [
   { number: 14, direction: 'down', start: 182, length: 8, text: 'Nom de famille du rocker québécois Éric, interprète de « Mon ange ».' },
   { number: 15, direction: 'across', start: 199, length: 10, text: 'Nom de famille d’Alphonse, fondateur du mouvement québécois de caisses populaires.' },
   { number: 16, direction: 'down', start: 238, length: 9, text: 'Film de Michel Jetté consacré au monde des gangs de motards.' },
-  { number: 17, direction: 'across', start: 264, length: 9, text: 'Nom de Simon, triathlonien canadien médaillé d’or aux Jeux olympiques.' },
+  { number: 17, direction: 'across', start: 264, length: 9, text: 'Nom de Simon, médaillé d’or canadien en triathlon aux Jeux olympiques.' },
   { number: 18, direction: 'across', start: 274, length: 10, text: 'Nom du pilote allemand Michael, sept fois champion du monde de Formule 1.' },
   { number: 19, direction: 'down', start: 294, length: 9, text: 'Film de Denis Villeneuve dont l’histoire est racontée par un poisson.' },
   { number: 20, direction: 'down', start: 306, length: 7, text: 'Émission satirique animée par Jean-René Dufort.' },

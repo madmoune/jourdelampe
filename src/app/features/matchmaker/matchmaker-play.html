@@ -1,10 +1,7 @@
 <section class="matchmaker" aria-label="Matchmaker">
   <section class="songs" aria-labelledby="songs-title">
     <div class="section-heading">
-      <div>
-        <p class="eyebrow">01 / LES EXTRAITS</p>
-        <h2 id="songs-title">Artistes préférés</h2>
-      </div>
+      <h2 id="songs-title">Artistes préférés</h2>
     </div>
 
     <div class="songs-table" role="table" aria-label="Extraits de chansons">
@@ -31,6 +28,8 @@
             <input
               type="text"
               autocomplete="off"
+              autocorrect="off"
+              spellcheck="false"
               [value]="song.artist"
               placeholder="Artiste"
               (input)="updateSong(index, 'artist', $any($event.target).value)"
@@ -44,6 +43,8 @@
               maxlength="1"
               inputmode="text"
               autocomplete="off"
+              autocapitalize="characters"
+              spellcheck="false"
               [value]="song.firstLetter"
               (input)="updateSong(index, 'firstLetter', $any($event.target).value)"
             />
@@ -56,6 +57,8 @@
               maxlength="1"
               inputmode="text"
               autocomplete="off"
+              autocapitalize="characters"
+              spellcheck="false"
               [value]="song.secondLetter"
               (input)="updateSong(index, 'secondLetter', $any($event.target).value)"
             />
@@ -67,13 +70,10 @@
 
   <section class="pairing" aria-labelledby="pairing-title">
     <div class="section-heading">
-      <div>
-        <p class="eyebrow">02 / LE MATCHMAKER</p>
-        <h2 id="pairing-title">Matchmaker</h2>
-      </div>
+      <h2 id="pairing-title">Matchmaker</h2>
       <p class="section-note">
-        Choisis un début à gauche, puis sa fin à droite. Note les indices traversés. Pour effacer
-        un lien, sélectionne une de ses extrémités.
+        Choisis un début à gauche, puis sa fin à droite. Note les indices que la ligne traverse.
+        Pour effacer un lien, sélectionne une de ses extrémités.
       </p>
     </div>
 
@@ -109,7 +109,9 @@
           <span class="match-number">{{ rowNumbers[index].toString().padStart(2, '0') }}</span>
           <span class="match-text">{{ text }}</span>
           @if (pair) {
-            <span class="connection-number">↔ {{ (pair.right + 1).toString().padStart(2, '0') }}</span>
+            <span class="connection-number"
+              >↔ {{ (pair.right + 1).toString().padStart(2, '0') }}</span
+            >
           }
           <span class="match-dot" aria-hidden="true"></span>
         </button>
@@ -128,7 +130,9 @@
           <span class="match-number">{{ rowNumbers[index].toString().padStart(2, '0') }}</span>
           <span class="match-text">{{ text }}</span>
           @if (pair) {
-            <span class="connection-number">{{ (pair.left + 1).toString().padStart(2, '0') }} ↔</span>
+            <span class="connection-number"
+              >{{ (pair.left + 1).toString().padStart(2, '0') }} ↔</span
+            >
           }
           <span class="match-dot" aria-hidden="true"></span>
         </button>
@@ -141,7 +145,7 @@
         [disabled]="pairs().length === 0"
         (click)="clearPairs()"
       >
-        Vider tous les liens
+        Effacer tous les liens
       </button>
     </div>
   </section>

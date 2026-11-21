@@ -2,21 +2,25 @@ $block-border: 3px solid #a68eb8;
 
 :host {
   display: block;
+  --row-group-width: 34px;
+  --row-label-width: 164px;
 }
 .grid-toolbar {
   display: flex;
-  justify-content: flex-end;
-  gap: 24px;
-  margin-bottom: 20px;
-}
-.grid-actions {
-  display: flex;
   align-items: center;
-  flex-shrink: 0;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-bottom: 10px;
+}
+.scroll-hint {
+  display: none;
+  margin: 0;
+  color: #e8f3af;
+  font-size: 14px;
 }
 .clear-grid {
-  min-height: 40px;
+  min-height: 44px;
+  margin-inline-start: auto;
   padding: 8px 14px;
   border: 1px solid #a68eb8;
   background: #241b30;
@@ -38,6 +42,7 @@ $block-border: 3px solid #a68eb8;
   gap: 32px;
 }
 .grid-main {
+  container-type: inline-size;
   flex: 1;
   min-width: 0;
   max-width: 100%;
@@ -82,7 +87,7 @@ td {
   border-right: $block-border;
 }
 .corner {
-  min-width: 198px;
+  min-width: calc(var(--row-group-width) + var(--row-label-width));
   background: #1b1426;
   border: 0;
 }
@@ -124,8 +129,8 @@ td {
   position: sticky;
   left: 0;
   z-index: 2;
-  min-width: 34px;
-  width: 34px;
+  min-width: var(--row-group-width);
+  width: var(--row-group-width);
   background: #372847;
   color: #f0dba7;
   text-transform: uppercase;
@@ -141,10 +146,10 @@ td {
 }
 .row-label {
   position: sticky;
-  left: 34px;
+  left: var(--row-group-width);
   z-index: 2;
-  width: 164px;
-  min-width: 164px;
+  width: var(--row-label-width);
+  min-width: var(--row-label-width);
   padding: 0 12px;
   background: #241b30;
   font-weight: 500;
@@ -215,19 +220,21 @@ button:focus-visible,
   }
 }
 @media (max-width: 600px) {
-  .grid-toolbar {
-    flex-direction: column;
-    gap: 12px;
-  }
-  .grid-actions {
-    align-self: stretch;
-    justify-content: space-between;
-  }
-  .corner {
-    min-width: 172px;
+  :host {
+    --row-group-width: 24px;
+    --row-label-width: 96px;
   }
   .row-label {
-    min-width: 138px;
-    width: 138px;
+    padding-inline: 6px;
+    overflow-wrap: anywhere;
+  }
+  .row-group span {
+    padding: 6px 2px;
+  }
+}
+
+@container (width < 900px) {
+  .scroll-hint {
+    display: block;
   }
 }

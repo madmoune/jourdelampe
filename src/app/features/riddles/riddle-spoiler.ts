@@ -18,7 +18,7 @@ import { FirebaseRest } from '../../core/services/firebase-rest';
       margin-top: 14px;
     }
     button {
-      min-height: 40px;
+      min-height: 44px;
       padding: 7px 12px;
       border: 1px solid #9a83ac;
       background: #2c2039;

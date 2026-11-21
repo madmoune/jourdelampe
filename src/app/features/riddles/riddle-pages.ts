@@ -10,12 +10,29 @@ export const ARCADE_ID = 'arcade-01';
 export const RIDDLE_LIST_PATH = '/enigmes';
 export const META_ID = 'meta';
 export const RIDDLE_COUNT = 8;
-export const RIDDLE_PAGES: Readonly<Record<string, string>> = {
-  [ZEBRA_ID]: '/enigmes/zebra',
-  [FOURCHETTE_ID]: '/enigmes/la-fourchette',
-  [MATCHMAKER_ID]: '/enigmes/le-debut-de-la-fin',
-  [PIGPEN_ID]: '/enigmes/la-porcherie',
-  [SUDOKU_ID]: '/enigmes/la-vigie',
-  [MANCHETTES_ID]: '/enigmes/en-manchettes',
-  [ARCADE_ID]: '/enigmes/salle-arcade',
-};
+export const RIDDLE_PAGES = {
+  [ZEBRA_ID]: { path: '/enigmes/zebra', title: ZEBRA_TITLE },
+  [FOURCHETTE_ID]: { path: '/enigmes/la-fourchette', title: 'La Fourchette' },
+  [MATCHMAKER_ID]: { path: '/enigmes/le-debut-de-la-fin', title: 'Le début de la fin' },
+  [PIGPEN_ID]: { path: '/enigmes/la-porcherie', title: 'La porcherie' },
+  [SUDOKU_ID]: { path: '/enigmes/la-vigie', title: 'Sudoquoi?' },
+  [MANCHETTES_ID]: {
+    path: '/enigmes/en-manchettes',
+    title: 'Crossword Démineur (ne jamais oublier le word)',
+  },
+  [ARCADE_ID]: { path: '/enigmes/salle-arcade', title: 'Arcade' },
+} as const;
+
+export function riddlePage(
+  id: string,
+): { readonly path: string; readonly title: string } | undefined {
+  return Object.hasOwn(RIDDLE_PAGES, id)
+    ? RIDDLE_PAGES[id as keyof typeof RIDDLE_PAGES]
+    : undefined;
+}
+
+export function isRiddlePath(path: string): boolean {
+  return (
+    path === RIDDLE_LIST_PATH || Object.values(RIDDLE_PAGES).some((page) => page.path === path)
+  );
+}

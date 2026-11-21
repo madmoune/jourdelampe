@@ -9,8 +9,7 @@ import { PigpenPlay } from './pigpen-play';
   template: `
     <app-riddle-page
       [riddleId]="riddleId"
-      title="La porcherie"
-      flavorText="C'est nono les cochons."
+      flavorText="C’est nono, les cochons."
       answerLabel="Réponse (7 lettres)"
     >
       <ng-template>

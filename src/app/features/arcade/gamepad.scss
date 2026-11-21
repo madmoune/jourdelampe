@@ -89,6 +89,12 @@ button:focus-visible {
 
 .b { margin-top: 24px; }
 
+@container (max-width: 255px) {
+  .case { gap: 5px; }
+  .cross { --key: clamp(30px, calc((100cqi - 114px) / 3), 44px); }
+  .actions { gap: 4px; }
+}
+
 @container (min-width: 620px) {
   .cross { --key: 48px; }
   .case { padding-inline: 32px; }
