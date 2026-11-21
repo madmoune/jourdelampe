@@ -11,14 +11,33 @@ describe('gabarit Matchmaker', () => {
     return { fixture, page: fixture.nativeElement as HTMLElement };
   }
 
-  it('affiche les quatorze extraits avec un artiste et deux lettres', async () => {
+  it('affiche les quatorze extraits avec les champs artiste, début et fin', async () => {
     const { page } = await setup();
     expect(page.querySelectorAll('.song-row')).toHaveLength(14);
     expect(page.querySelectorAll('.song-excerpt audio')).toHaveLength(14);
     expect(page.querySelectorAll('.artist-field input')).toHaveLength(14);
-    expect(page.querySelectorAll('.letter-field input')).toHaveLength(28);
+    expect(page.querySelectorAll('.letter-field input:not([maxlength])')).toHaveLength(28);
     expect(page.querySelector('.artist-field input')?.getAttribute('placeholder')).toBe('Artiste');
-    expect(page.querySelector('.letter-field input')?.getAttribute('maxlength')).toBe('1');
+  });
+
+  it('conserve toute la saisie et le texte collé dans les champs début et fin', async () => {
+    const { fixture, page } = await setup();
+    const [start, end, nextStart, nextEnd] =
+      page.querySelectorAll<HTMLInputElement>('.letter-field input');
+    start.value = 'A';
+    start.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText' }));
+    await fixture.whenStable();
+
+    start.value = 'AB';
+    start.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText' }));
+    end.value = 'Un bout de phrase collé en entier.';
+    end.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertFromPaste' }));
+    await fixture.whenStable();
+
+    expect(start.value).toBe('AB');
+    expect(end.value).toBe('Un bout de phrase collé en entier.');
+    expect(nextStart.value).toBe('');
+    expect(nextEnd.value).toBe('');
   });
 
   it('associe chaque ligne à son fichier audio public', async () => {

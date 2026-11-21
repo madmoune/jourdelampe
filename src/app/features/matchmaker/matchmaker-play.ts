@@ -6,8 +6,8 @@ export interface MatchmakerSongEntry {
   readonly excerpt: string;
   readonly audioSrc: string;
   readonly artist: string;
-  readonly firstLetter: string;
-  readonly secondLetter: string;
+  readonly startEntry: string;
+  readonly endEntry: string;
 }
 
 export const MATCHMAKER_COUNT = MATCHMAKER_ARTISTS.length;
@@ -39,8 +39,8 @@ export class MatchmakerPlay {
       excerpt,
       audioSrc: MATCHMAKER_AUDIO_PATHS[index] ?? '',
       artist: '',
-      firstLetter: '',
-      secondLetter: '',
+      startEntry: '',
+      endEntry: '',
     })),
   );
   protected readonly correctArtists = computed(() =>
@@ -71,13 +71,13 @@ export class MatchmakerPlay {
 
   protected updateSong(
     index: number,
-    field: 'artist' | 'firstLetter' | 'secondLetter',
+    field: 'artist' | 'startEntry' | 'endEntry',
     value: string,
   ): void {
     const next = [...this.songs()];
     const entry = next[index];
     if (!entry) return;
-    next[index] = { ...entry, [field]: field === 'artist' ? value : value.slice(-1) };
+    next[index] = { ...entry, [field]: value };
     this.songs.set(next);
   }
 

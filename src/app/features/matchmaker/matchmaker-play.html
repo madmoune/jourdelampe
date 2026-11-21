@@ -45,30 +45,28 @@
           </label>
           <label class="letter-field" role="cell">
             <span class="mobile-field-label" aria-hidden="true">Début</span>
-            <span class="sr-only">Lettre de début pour l’extrait {{ rowNumbers[index] }}</span>
+            <span class="sr-only">Début de l’extrait {{ rowNumbers[index] }}</span>
             <input
               type="text"
-              maxlength="1"
               inputmode="text"
               autocomplete="off"
               autocapitalize="characters"
               spellcheck="false"
-              [value]="song.firstLetter"
-              (input)="updateSong(index, 'firstLetter', $any($event.target).value)"
+              [value]="song.startEntry"
+              (input)="updateSong(index, 'startEntry', $any($event.target).value)"
             />
           </label>
           <label class="letter-field" role="cell">
             <span class="mobile-field-label" aria-hidden="true">Fin</span>
-            <span class="sr-only">Lettre de fin pour l’extrait {{ rowNumbers[index] }}</span>
+            <span class="sr-only">Fin de l’extrait {{ rowNumbers[index] }}</span>
             <input
               type="text"
-              maxlength="1"
               inputmode="text"
               autocomplete="off"
               autocapitalize="characters"
               spellcheck="false"
-              [value]="song.secondLetter"
-              (input)="updateSong(index, 'secondLetter', $any($event.target).value)"
+              [value]="song.endEntry"
+              (input)="updateSong(index, 'endEntry', $any($event.target).value)"
             />
           </label>
         </div>

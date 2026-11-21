@@ -66,8 +66,8 @@ Le Matchmaker utilise l’identifiant `matchmaker-01`. Son entrée dans
 `game/catalog/matchmaker-01` contient le titre « Le début de la fin », le `prompt`
 provisoire « À venir » et l’ordre `2`. La réponse sera configurée dans
 `riddleSecrets/matchmaker-01/{answer, normalizedAnswer}` lorsque le contenu sera fourni.
-La page réserve quatorze lignes d’extraits avec un champ artiste et deux champs d’une
-lettre, puis quatorze phrases de chaque côté. Un point gauche puis un point droit
+La page affiche quatorze extraits avec les champs « Artiste », « Début » et « Fin »,
+puis quatorze phrases de chaque côté. Un point gauche puis un point droit
 créent une association et la connexion est conservée dans l’interface.
 
 La section **Joueurs enregistrés** suit en temps réel tous les profils de
