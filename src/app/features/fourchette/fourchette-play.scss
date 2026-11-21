@@ -1,3 +1,7 @@
+$grid-columns: 22;
+$min-grid-width: $grid-columns * 30px;
+$landscape-min-grid-width: $grid-columns * 24px;
+
 :host {
   display: block;
   min-width: 0;
@@ -105,7 +109,7 @@ ul {
 }
 table {
   width: 100%;
-  min-width: calc(22 * 30px);
+  min-width: $min-grid-width;
   border-collapse: collapse;
   table-layout: fixed;
 }
@@ -199,9 +203,26 @@ button:focus-visible,
   color: #e8f3af;
 }
 
-@container (width < 660px) {
+@container (width < #{$min-grid-width}) {
   .scroll-hint {
     display: block;
+  }
+}
+
+@media (orientation: landscape) and (pointer: coarse) and (min-width: #{$landscape-min-grid-width}) {
+  .grid-main {
+    // Récupère au besoin une partie des marges de la page.
+    width: clamp(100%, #{$landscape-min-grid-width}, 100% + 2 * (var(--puzzle-gutter, 8px) - 8px));
+  }
+
+  table {
+    min-width: $landscape-min-grid-width;
+  }
+
+  @container (width >= #{$landscape-min-grid-width}) {
+    .scroll-hint {
+      display: none;
+    }
   }
 }
 
