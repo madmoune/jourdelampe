@@ -161,14 +161,27 @@ button:focus-visible,
   outline: 2px solid #dcff79;
   outline-offset: -2px;
 }
-.grid-status {
-  margin: 0 0 24px;
-  padding: 14px 18px;
-  border-left: 4px solid #8d769f;
-  background: #23192f;
+.verification-feedback {
+  display: grid;
+  margin-bottom: 8px;
+}
+.wordsearch-help,
+.grid-status,
+.scroll-hint {
   color: #c4b6d1;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.55;
+}
+.wordsearch-help,
+.grid-status {
+  grid-area: 1 / 1;
+  margin: 0;
+  padding: 8px 12px;
+  border-inline-start: 4px solid transparent;
+}
+.has-verdict .wordsearch-help {
+  // L’aide garde sa place dans la mise en page pendant l’affichage du verdict.
+  visibility: hidden;
 }
 .grid-success {
   border-color: #d9f58a;
@@ -180,16 +193,9 @@ button:focus-visible,
   background: #40242f;
   color: #ffd5d6;
 }
-.wordsearch-help,
-.scroll-hint {
-  margin: 0 0 8px;
-  color: #c4b6d1;
-  font-size: 14px;
-  line-height: 1.55;
-}
-
 .scroll-hint {
   display: none;
+  margin: 0 0 8px;
   color: #e8f3af;
 }
 

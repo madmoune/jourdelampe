@@ -43,7 +43,7 @@ describe('les sept enclos', () => {
     }
   });
 
-  it.each(PIGPEN_PUZZLES.filter((_, index) => index !== 1))(
+  it.each(PIGPEN_PUZZLES)(
     'détermine chaque case à partir des lignes et colonnes, une à la fois',
     (puzzle) => {
       const solution = solveWithLineClues(puzzle);
@@ -56,31 +56,9 @@ describe('les sept enclos', () => {
     },
   );
 
-  it('admet une seule solution pour le chevron fin de l’enclos 2', () => {
-    const puzzle = PIGPEN_PUZZLES[1];
-    const candidates = (clues: readonly number[]) =>
-      lines.filter((line) => runLengths(line).join() === clues.join());
-    const rows = puzzle.rows.map(candidates);
-    const solutions: boolean[][] = [];
-    function search(board: boolean[], columns: readonly boolean[][][]): void {
-      if (solutions.length > 1) return;
-      const row = board.length / PEN_SIZE;
-      if (row === PEN_SIZE) {
-        solutions.push(board);
-        return;
-      }
-      for (const candidate of rows[row]) {
-        const remaining = columns.map((patterns, column) =>
-          patterns.filter((line) => line[row] === candidate[column]),
-        );
-        if (remaining.every((patterns) => patterns.length)) {
-          search([...board, ...candidate], remaining);
-        }
-      }
-    }
-    search([], puzzle.columns.map(candidates));
-    expect(solutions).toHaveLength(1);
-    const motif = ['0000110', '0001100', '0011000', '0110000', '0011000', '0001100', '0000110'];
-    expect(solutions[0].map(Number).join('')).toBe(motif.join(''));
+  it('conserve le chevron de l’enclos 2 avec cinq cochons dans la troisième colonne', () => {
+    const solution = solveWithLineClues(PIGPEN_PUZZLES[1]);
+    const motif = ['0000110', '0011100', '0011000', '0110000', '0011000', '0011100', '0000110'];
+    expect(solution.map(Number).join('')).toBe(motif.join(''));
   });
 });

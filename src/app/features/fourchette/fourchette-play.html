@@ -26,10 +26,18 @@
       </div>
     </aside>
     <div class="grid-main">
-      <div class="verification-feedback" aria-live="polite" aria-atomic="true">
-        @if (checking()) {
-          <p class="grid-status" role="status">Vérification de la grille…</p>
-        } @else if (currentVerdict(); as result) {
+      @let result = currentVerdict();
+      <div
+        class="verification-feedback"
+        [class.has-verdict]="!!result"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        <p id="wordsearch-help" class="wordsearch-help">
+          Chaque lettre de la grille ne sert qu’une fois. Sélectionne les lettres et coche chaque mot
+          que tu trouves.
+        </p>
+        @if (result) {
           @if (result.error) {
             <p class="grid-status grid-error" role="alert">{{ result.error }}</p>
           } @else if (result.correct) {
@@ -43,10 +51,6 @@
           }
         }
       </div>
-      <p id="wordsearch-help" class="wordsearch-help">
-        Chaque lettre de la grille ne sert qu’une fois. Sélectionne les lettres et coche chaque mot
-        que tu trouves.
-      </p>
       <p class="scroll-hint">
         Fais défiler la grille de gauche à droite pour voir toutes les lettres.
       </p>

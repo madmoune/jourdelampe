@@ -308,6 +308,10 @@ describe('grille interactive de La Fourchette', () => {
     );
     cell('A01').click();
     await waitForCheck();
+    const feedback = page.querySelector('.verification-feedback')!;
+    const guide = feedback.querySelector('#wordsearch-help');
+    expect(guide).not.toBeNull();
+    expect(feedback.querySelector('.grid-status')).toBeNull();
     cell('A02').click();
     cell('A03').click();
     await fixture.whenStable();
@@ -320,7 +324,8 @@ describe('grille interactive de La Fourchette', () => {
       '111' + '0'.repeat(107),
       FOURCHETTE_GRID_VERSION,
     );
-    expect(page.querySelector('.grid-success')).not.toBeNull();
+    expect(feedback.querySelector('.grid-success')).not.toBeNull();
+    expect(feedback.querySelector('#wordsearch-help')).toBe(guide);
   });
 
   it('refuse le stockage corrompu et ignore les mots inconnus ou répétés', () => {

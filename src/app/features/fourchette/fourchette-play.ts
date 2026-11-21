@@ -92,7 +92,6 @@ export class FourchettePlay {
     () => this.progress().selection.includes('1') || this.foundCount() > 0,
   );
   protected readonly allFound = computed(() => this.foundCount() === this.wordCount);
-  protected readonly checking = signal(false);
   protected readonly extractionReady = computed(() => {
     const code = this.validatedGridCode();
     const selection = this.progress().selection;
@@ -123,7 +122,6 @@ export class FourchettePlay {
       const key = this.storageKey();
       const verifiedCode = this.verifiedCode();
       this.requestId++;
-      this.checking.set(false);
       this.verdict.set(null);
       this.gridValidation.set(verifiedCode ? { key, code: verifiedCode } : null);
       this.state.set({ key, progress: this.readProgress(key) });
@@ -136,7 +134,6 @@ export class FourchettePlay {
       const alreadyValid = this.extractionReady();
       const requestId = ++this.requestId;
       let timer: ReturnType<typeof setTimeout> | undefined;
-      this.checking.set(false);
       onCleanup(() => {
         clearTimeout(timer);
         if (this.requestId === requestId) this.requestId++;
@@ -178,14 +175,12 @@ export class FourchettePlay {
   protected clearGrid(): void {
     if (this.locked()) return;
     this.requestId++;
-    this.checking.set(false);
     this.gridValidation.set(null);
     this.saveProgress(emptyFourchetteProgress());
   }
 
   private async checkGrid(key: string, code: string, requestId: number): Promise<boolean> {
     if (requestId !== this.requestId) return false;
-    this.checking.set(true);
     this.verdict.set(null);
     try {
       const correct = await this.submissions.checkGrid(
@@ -214,8 +209,6 @@ export class FourchettePlay {
         });
         return true;
       }
-    } finally {
-      if (this.requestId === requestId) this.checking.set(false);
     }
     return false;
   }
