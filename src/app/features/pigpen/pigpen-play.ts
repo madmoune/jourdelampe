@@ -14,7 +14,6 @@ import { CellMark, matchesClues, PEN_SIZE, PIGPEN_PUZZLES } from './pigpen.model
 
 const NEXT_MARK: Record<CellMark, CellMark> = { '': 'pig', pig: 'cross', cross: '' };
 const MARK_LABEL: Record<CellMark, string> = { '': 'vide', pig: 'cochon', cross: 'barrée' };
-const PIG_ROTATION_BY_PEN: readonly number[] = [0, 90, 0, 0, 0, 270, 0];
 
 @Component({
   selector: 'app-pigpen-play',
@@ -55,10 +54,6 @@ export class PigpenPlay {
   protected cellLabel(pen: number, row: number, column: number): string {
     const label = MARK_LABEL[this.boards()[pen][row * this.size + column]];
     return `Ligne ${row + 1}, colonne ${column + 1} : ${label}`;
-  }
-
-  protected pigRotation(pen: number): number {
-    return PIG_ROTATION_BY_PEN[pen] ?? 0;
   }
 
   protected focusCell(pen: number, cell: number): void {

@@ -70,22 +70,22 @@ describe('jeu des nonogrammes', () => {
     expect(neighbour.getAttribute('aria-label')).toContain('vide');
   });
 
-  it('tourne le même dessin de cochon dans les enclos triangulaires', () => {
-    const boards = Array.from({ length: 7 }, () => Array(49).fill(''));
-    boards[1][0] = 'pig';
-    boards[5][0] = 'pig';
+  it('garde les cochons droits dans les sept enclos', () => {
+    const boards = Array.from({ length: 7 }, () =>
+      Array.from({ length: 49 }, (_, cell) => (cell === 0 ? 'pig' : '')),
+    );
     localStorage.setItem(storageKey, JSON.stringify(boards));
 
     const fixture = TestBed.createComponent(PigpenPlay);
     fixture.detectChanges();
     const page: HTMLElement = fixture.nativeElement;
 
-    expect(page.querySelector('#pen-1-cell-0 .pig-face')?.getAttribute('style')).toContain(
-      'rotate(90deg)',
-    );
-    expect(page.querySelector('#pen-5-cell-0 .pig-face')?.getAttribute('style')).toContain(
-      'rotate(270deg)',
-    );
+    const pigs = page.querySelectorAll<SVGSVGElement>('.pig-face');
+    expect(pigs).toHaveLength(7);
+    for (const pig of pigs) {
+      expect(pig.style.transform).toBe('');
+      expect(pig.hasAttribute('transform')).toBe(false);
+    }
   });
 
   it('se parcourt aux flèches en conservant un seul arrêt de tabulation par enclos', () => {
