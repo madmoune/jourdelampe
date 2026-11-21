@@ -58,9 +58,9 @@ bord ne propose ni ajout ni modification. Les pages intégrées sont **Zebra Pre
 (Zebra, `/enigmes/zebra`), **La Fourchette** (`/enigmes/la-fourchette`),
 **Le début de la fin** (Matchmaker, `/enigmes/le-debut-de-la-fin`), **La
 porcherie** (`/enigmes/la-porcherie`), **La vigie** (`/enigmes/la-vigie`), **En
-manchettes** (`/enigmes/en-manchettes`) et **Arcade**
-(`/enigmes/salle-arcade`). La gestion indique « À définir » tant que la réponse
-finale privée n’a pas été fournie.
+manchettes** (`/enigmes/en-manchettes`), **Arcade** (`/enigmes/salle-arcade`) et
+**Sens Dessus Dessous (in english!)** (`/enigmes/sens-dessus-dessous`). La gestion
+indique « À définir » tant que la réponse finale privée n’a pas été fournie.
 
 Le Matchmaker utilise l’identifiant `matchmaker-01`. Son entrée dans
 `game/catalog/matchmaker-01` contient le titre « Le début de la fin », le `prompt`
@@ -191,11 +191,14 @@ un autre. Tant que les huit dossiers ne sont pas publiés et résolus selon le
 mode actif, la carte du méta reste verrouillée. Une remise à zéro la verrouille
 immédiatement; un changement de mode recalcule l’accès, sans effacer les réussites.
 
-Pour publier le méta, configurer `game/catalog/meta` (titre, énoncé, ordre) et
-`riddleSecrets/meta` (réponse, réponse normalisée). La carte finale ne compte
-pas dans la progression des huit énigmes et affiche son énoncé et son formulaire
-après déverrouillage. Le tableau de bord suit aussi l’accès au méta en fonction
-des huit dossiers.
+La carte finale ouvre `/enigmes/meta` après déverrouillage. La grille accueille
+les réponses des huit énigmes et conserve la saisie dans le navigateur, par profil
+et par partie. Pour activer la validation finale, configurer `game/catalog/meta`
+(titre, énoncé, ordre) et `riddleSecrets/meta` (réponse, réponse normalisée).
+Le méta ne compte pas dans la progression des huit énigmes.
+
+L’aperçu `/apercu-ia/enigmes/meta` est temporairement accessible sans réussir les
+huit énigmes. Le réglage `META_PREVIEW_UNLOCKED` se trouve dans `riddle-release.ts`.
 
 ## Intégration publique
 

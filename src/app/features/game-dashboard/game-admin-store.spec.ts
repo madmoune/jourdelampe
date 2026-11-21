@@ -95,7 +95,7 @@ describe('gestion du jeu et suivi des joueurs', () => {
       'Sudoquoi?',
       'Crossword Démineur (ne jamais oublier le word)',
       'Arcade',
-      'Énigme 8',
+      'Sens Dessus Dessous (in english!)',
     ]);
     expect(
       store

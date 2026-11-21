@@ -288,7 +288,7 @@ Publier les nouvelles règles Firebase avant d’utiliser cette version.
 La page `/enigmes` présente huit dossiers, avec un état « À venir » pour ceux qui
 ne sont pas encore publiés. Après résolution, la réponse se révèle au clic, selon
 le mode de jeu. Le méta est à part, verrouillé jusqu’à la résolution des huit
-énigmes. Son contenu reste à ajouter.
+énigmes. Sa grille est temporairement accessible à `/apercu-ia/enigmes/meta`.
 Le premier puzzle Zebra propose une grille cliquable avec
 huit positions, quatre noms, quatre occupations et quatre nourritures.
 Voir `src/app/features/zebra/README.md` pour activer ses énoncés et validations.

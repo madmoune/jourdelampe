@@ -52,7 +52,7 @@
       [class.solved]="progress.meta()?.infoUnlocked"
     >
       @let meta = progress.meta();
-      @if (!progress.metaUnlocked()) {
+      @if (!metaUnlocked()) {
         <span
           class="lock-indicator"
           role="img"
@@ -62,8 +62,8 @@
           🔒
         </span>
       }
-      <h3 id="meta-title">{{ meta?.title ?? 'Le méta' }}</h3>
-      @if (progress.metaUnlocked()) {
+      <h3 id="meta-title">{{ meta?.title ?? metaPage.title }}</h3>
+      @if (metaUnlocked()) {
         <p class="riddle-status">
           {{
             meta?.solvedByMe
@@ -73,22 +73,18 @@
                 : 'Déverrouillé · Non résolu'
           }}
         </p>
-        @if (meta) {
-          @if (canPlay() && meta.infoUnlocked) {
-            <app-riddle-results [solutions]="meta.solutions" />
-          }
+        @if (meta && meta.infoUnlocked && canPlay()) {
+          <app-riddle-results [solutions]="meta.solutions" />
+        }
+        <a class="puzzle-link" [routerLink]="pagePrefix + metaPage.path">
+          Ouvrir le méta <span aria-hidden="true">→</span>
+        </a>
+        @if (meta?.infoUnlocked) {
           @if (canPlay()) {
-            <app-riddle-answer [riddleId]="metaId" [showSolvedAnswer]="false" />
+            <app-riddle-spoiler [riddleId]="metaId" [context]="revealContext()" />
+          } @else {
+            <p class="answer-locked">Enregistre ton nom pour révéler la réponse.</p>
           }
-          @if (meta.infoUnlocked) {
-            @if (canPlay()) {
-              <app-riddle-spoiler [riddleId]="metaId" [context]="revealContext()" />
-            } @else {
-              <p class="answer-locked">Enregistre ton nom pour révéler la réponse.</p>
-            }
-          }
-        } @else {
-          <p>Le méta sera accessible ici dès sa mise en ligne.</p>
         }
       } @else {
         <p class="riddle-status">Verrouillé</p>

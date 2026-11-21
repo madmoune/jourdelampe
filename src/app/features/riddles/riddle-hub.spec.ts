@@ -118,5 +118,31 @@ describe('page dédiée aux énigmes', () => {
     expect(
       harness.routeNativeElement?.querySelectorAll('app-arcade-room .cabinets button'),
     ).toHaveLength(4);
+    await harness.navigateByUrl('/apercu-ia/enigmes/sens-dessus-dessous');
+    const eighth = harness.routeNativeElement!;
+    const title = eighth.querySelector('h1')?.textContent ?? '';
+    const flavor = eighth.querySelector('.flavor-text')?.textContent ?? '';
+    const baseTitle = 'Sens Dessus Dessous';
+    const letters = (text: string) => text.toLowerCase().replace(/[^a-z]/g, '');
+    expect(title).toBe(`${baseTitle} (in english!)`);
+    expect(letters(flavor)).not.toBe(letters(baseTitle));
+    expect([...letters(flavor)].sort()).toEqual([...letters(baseTitle)].sort());
+
+    expect([...eighth.querySelectorAll('.phrase-list li')].map((row) => row.textContent)).toEqual([
+      'MY RICE JAR',
+      'CAN I DRAG YA',
+      'MERMAN OF ANGER',
+      'A PERIODICAL DONOR',
+      'BIG MELONS',
+      'BESTIAL JUROR',
+      'A SEVERE NUKE',
+    ]);
+    const titleGroups = [...eighth.querySelectorAll('.title-group')];
+    expect(titleGroups.map((group) => group.children.length)).toEqual([4, 4, 3, 5, 3, 3, 5]);
+    const firstTitles = titleGroups.map((group) => group.firstElementChild?.textContent ?? '');
+    expect(firstTitles).toEqual(
+      [...firstTitles].sort((left, right) => left.localeCompare(right, 'en')),
+    );
+    expect(eighth.querySelector('.title-group strong')).toBeNull();
   });
 });

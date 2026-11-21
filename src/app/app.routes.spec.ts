@@ -21,6 +21,8 @@ const puzzlePaths = [
   '/enigmes/la-vigie',
   '/enigmes/en-manchettes',
   '/enigmes/salle-arcade',
+  '/enigmes/sens-dessus-dessous',
+  '/enigmes/meta',
 ];
 
 function probeRoutes(config: Routes): Routes {

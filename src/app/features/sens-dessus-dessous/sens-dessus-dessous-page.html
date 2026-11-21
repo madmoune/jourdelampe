@@ -1,0 +1,20 @@
+<app-riddle-page [riddleId]="riddleId" flavorText="Sens sous des dessus !">
+  <ng-template>
+    <div class="riddle-content">
+      <ul class="phrase-list" aria-label="Phrases" role="list">
+        @for (phrase of phrases; track phrase) {
+          <li lang="en">{{ phrase }}</li>
+        }
+      </ul>
+      <div class="title-grid" aria-label="Grille de titres" role="group">
+        @for (group of titleGroups; track group[0]) {
+          <ul class="title-group" lang="en" role="list">
+            @for (title of group; track title) {
+              <li>{{ title }}</li>
+            }
+          </ul>
+        }
+      </div>
+    </div>
+  </ng-template>
+</app-riddle-page>

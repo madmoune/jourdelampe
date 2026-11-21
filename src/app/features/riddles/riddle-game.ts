@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from '@an
 import { RouterLink } from '@angular/router';
 import { GameStore } from './game-store';
 import { ParticipantStore } from './participant-store';
-import { PlayerProgress } from './player-progress';
+import { injectMetaUnlocked, PlayerProgress } from './player-progress';
 import { RiddleAnswer } from './riddle-answer';
 import { RiddleSpoiler } from './riddle-spoiler';
 import {
@@ -13,6 +13,7 @@ import {
   RIDDLE_COUNT,
   RIDDLE_PAGES,
   riddlePage,
+  SENS_DESSUS_DESSOUS_ID,
   SUDOKU_ID,
 } from './riddle-pages';
 import { RIDDLE_PREVIEW, RIDDLE_PREVIEW_PATH } from './riddle-release';
@@ -44,6 +45,12 @@ const PREVIEW_RIDDLES = [
     prompt: 'Quatre jeux, quatre objectifs. Aperçu du dossier.',
     order: 6,
   },
+  {
+    id: SENS_DESSUS_DESSOUS_ID,
+    title: RIDDLE_PAGES[SENS_DESSUS_DESSOUS_ID].title,
+    prompt: '',
+    order: 7,
+  },
 ];
 
 @Component({
@@ -62,6 +69,8 @@ export class RiddleGame {
   private readonly participants = inject(ParticipantStore);
   protected readonly pageFor = riddlePage;
   protected readonly metaId = META_ID;
+  protected readonly metaPage = RIDDLE_PAGES[META_ID];
+  protected readonly metaUnlocked = injectMetaUnlocked();
   protected readonly total = computed(() => Math.max(RIDDLE_COUNT, this.progress.riddles().length));
   protected readonly slots = computed(() => {
     const riddles = this.progress.riddles();

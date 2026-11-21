@@ -30,6 +30,7 @@ export class RiddlePage {
   readonly flavorTextHtml = input('');
   readonly answerLabel = input('Réponse');
   readonly answerHint = input('');
+  readonly accessNotice = input('');
   protected readonly pageTitle = computed(
     () => this.title() || riddlePage(this.riddleId())?.title || 'Énigme',
   );

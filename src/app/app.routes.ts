@@ -6,9 +6,11 @@ import {
   FOURCHETTE_ID,
   MANCHETTES_ID,
   MATCHMAKER_ID,
+  META_ID,
   PIGPEN_ID,
   RIDDLE_LIST_PATH,
   RIDDLE_PAGES,
+  SENS_DESSUS_DESSOUS_ID,
   SUDOKU_ID,
   ZEBRA_ID,
 } from './features/riddles/riddle-pages';
@@ -41,6 +43,12 @@ const riddleRoutes: Routes = [
   puzzleRoute(ARCADE_ID, () =>
     import('./features/arcade/arcade-page').then((module) => module.ArcadePage),
   ),
+  puzzleRoute(SENS_DESSUS_DESSOUS_ID, () =>
+    import('./features/sens-dessus-dessous/sens-dessus-dessous-page').then(
+      (module) => module.SensDessusDessousPage,
+    ),
+  ),
+  puzzleRoute(META_ID, () => import('./features/meta/meta-page').then((module) => module.MetaPage)),
   {
     path: RIDDLE_LIST_PATH.slice(1),
     title: 'Les énigmes — Le Jour de l’AI',

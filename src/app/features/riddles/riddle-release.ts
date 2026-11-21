@@ -8,6 +8,11 @@ export const RIDDLE_PREVIEW = new InjectionToken<boolean>('RIDDLE_PREVIEW', {
 });
 export const RIDDLE_PREVIEW_PATH = '/apercu-ia';
 
+export const META_PREVIEW_UNLOCKED = new InjectionToken<boolean>('META_PREVIEW_UNLOCKED', {
+  providedIn: 'root',
+  factory: () => true,
+});
+
 export const RIDDLE_OPEN_EARLY = new InjectionToken<boolean>('RIDDLE_OPEN_EARLY', {
   providedIn: 'root',
   factory: () => EVENT.riddlesOpenEarly,

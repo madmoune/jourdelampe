@@ -19,6 +19,8 @@ import {
   META_ID,
   PIGPEN_ID,
   RIDDLE_COUNT,
+  RIDDLE_PAGES,
+  SENS_DESSUS_DESSOUS_ID,
   SUDOKU_ID,
   ZEBRA_ID,
   ZEBRA_TITLE,
@@ -58,7 +60,12 @@ const FALLBACK_RIDDLES: readonly GameRiddle[] = [
     prompt: 'Quatre jeux, quatre objectifs. Aperçu du dossier.',
     order: 6,
   },
-  { id: 'riddle-slot-08', title: 'Énigme 8', prompt: 'À venir', order: 7 },
+  {
+    id: SENS_DESSUS_DESSOUS_ID,
+    title: RIDDLE_PAGES[SENS_DESSUS_DESSOUS_ID].title,
+    prompt: 'À venir',
+    order: 7,
+  },
 ];
 
 const FALLBACK_IDS = new Set(FALLBACK_RIDDLES.map((riddle) => riddle.id));

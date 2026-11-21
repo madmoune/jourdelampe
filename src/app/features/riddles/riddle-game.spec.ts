@@ -15,7 +15,7 @@ import {
   RIDDLE_COUNT,
   ZEBRA_ID,
 } from './riddle-pages';
-import { RIDDLE_PREVIEW } from './riddle-release';
+import { META_PREVIEW_UNLOCKED, RIDDLE_PREVIEW } from './riddle-release';
 
 describe('liens du catalogue des énigmes', () => {
   it.each([
@@ -39,6 +39,7 @@ describe('liens du catalogue des énigmes', () => {
       providers: [
         provideRouter([]),
         { provide: RIDDLE_PREVIEW, useValue: preview },
+        { provide: META_PREVIEW_UNLOCKED, useValue: true },
         { provide: ParticipantStore, useValue: { participant: signal(null) } },
         {
           provide: GameStore,
@@ -57,7 +58,7 @@ describe('liens du catalogue des énigmes', () => {
     await fixture.whenStable();
     const page = fixture.nativeElement as HTMLElement;
     const links = page.querySelectorAll<HTMLAnchorElement>('.puzzle-link');
-    expect(links).toHaveLength(preview ? 7 : 4);
+    expect(links).toHaveLength(preview ? 9 : 4);
     expect(links[0].getAttribute('href')).toBe(path);
     expect(links[1].getAttribute('href')).toBe(
       `${preview ? '/apercu-ia' : ''}/enigmes/la-fourchette`,
@@ -77,15 +78,24 @@ describe('liens du catalogue des énigmes', () => {
     expect(links[6]?.getAttribute('href')).toBe(
       preview ? '/apercu-ia/enigmes/salle-arcade' : undefined,
     );
+    expect(links[7]?.getAttribute('href')).toBe(
+      preview ? '/apercu-ia/enigmes/sens-dessus-dessous' : undefined,
+    );
     expect(page.querySelectorAll('.riddle')).toHaveLength(9);
     expect(page.querySelector('.prompt')).toBeNull();
     expect(
       [...page.querySelectorAll('.riddle h3')].slice(0, 4).map((title) => title.textContent),
     ).toEqual(['Zebra Pretzel', 'La Fourchette', 'Le début de la fin', 'La porcherie']);
-    expect(page.querySelectorAll('.riddle')[7]?.textContent).toContain('À venir');
-    expect(page.querySelector('.meta-status')?.textContent).toContain('Verrouillé');
-    expect(page.querySelector('.lock-indicator')?.getAttribute('aria-label')).toBe(
-      'Énigme verrouillée',
+    expect(page.querySelectorAll('.riddle')[7]?.textContent).toContain(
+      preview ? 'Sens Dessus Dessous (in english!)' : 'À venir',
+    );
+    const meta = page.querySelector('.meta-status')!;
+    expect(meta.textContent).toContain(preview ? 'Déverrouillé' : 'Verrouillé');
+    expect(meta.querySelector('.lock-indicator')?.getAttribute('aria-label')).toBe(
+      preview ? undefined : 'Énigme verrouillée',
+    );
+    expect(meta.querySelector('.puzzle-link')?.getAttribute('href')).toBe(
+      preview ? '/apercu-ia/enigmes/meta' : undefined,
     );
     expect(page.textContent).not.toContain('Réponse masquée jusqu’à la résolution.');
   });
@@ -126,6 +136,9 @@ describe('liens du catalogue des énigmes', () => {
     riddles.set(buildRiddles(RIDDLE_COUNT));
     await fixture.whenStable();
     expect(page.querySelector('.meta-status')?.textContent).toContain('Déverrouillé');
+    expect(page.querySelector('.meta-status .puzzle-link')?.getAttribute('href')).toBe(
+      '/enigmes/meta',
+    );
     expect(page.querySelector('.lock-indicator')).toBeNull();
     expect(page.querySelector('.prompt')).toBeNull();
   });

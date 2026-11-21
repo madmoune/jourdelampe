@@ -1,0 +1,29 @@
+<p class="scroll-hint">Fais défiler la grille de gauche à droite pour voir toutes les cases.</p>
+<div class="scroll-grid" role="region" aria-label="Grille du méta">
+  @for (context of [storageKey()]; track context) {
+    <div class="board" [style.--columns]="width">
+      @for (capacity of capacities; track $index; let index = $index) {
+        @if (capacity) {
+          <input
+            #cell
+            [id]="'meta-cell-' + index"
+            class="cell entry"
+            type="text"
+            [maxLength]="capacity"
+            autocomplete="off"
+            autocapitalize="characters"
+            spellcheck="false"
+            [value]="letters()[index]"
+            [tabIndex]="focused() === index ? 0 : -1"
+            [attr.aria-label]="describeCell(index, capacity)"
+            (focus)="selectCell(cell, index)"
+            (input)="editCell($event, index, capacity)"
+            (keydown)="moveFocus($event, index)"
+          />
+        } @else {
+          <span class="cell" aria-hidden="true"></span>
+        }
+      }
+    </div>
+  }
+</div>

@@ -7,6 +7,7 @@ export const PIGPEN_ID = 'pigpen-01';
 export const SUDOKU_ID = 'sudoku-01';
 export const MANCHETTES_ID = 'manchettes-01';
 export const ARCADE_ID = 'arcade-01';
+export const SENS_DESSUS_DESSOUS_ID = 'sens-dessus-dessous-01';
 export const RIDDLE_LIST_PATH = '/enigmes';
 export const META_ID = 'meta';
 export const RIDDLE_COUNT = 8;
@@ -21,6 +22,11 @@ export const RIDDLE_PAGES = {
     title: 'Crossword Démineur (ne jamais oublier le word)',
   },
   [ARCADE_ID]: { path: '/enigmes/salle-arcade', title: 'Arcade' },
+  [SENS_DESSUS_DESSOUS_ID]: {
+    path: '/enigmes/sens-dessus-dessous',
+    title: 'Sens Dessus Dessous (in english!)',
+  },
+  [META_ID]: { path: '/enigmes/meta', title: 'Le méta' },
 } as const;
 
 export function riddlePage(

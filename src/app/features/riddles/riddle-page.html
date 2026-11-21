@@ -26,7 +26,9 @@
       >
         Consulter la cheatsheet <span aria-hidden="true">↗</span>
       </a>
-      @if (participants.loading()) {
+      @if (accessNotice(); as notice) {
+        <p class="access-notice" role="status">{{ notice }}</p>
+      } @else if (participants.loading()) {
         <p class="access-notice" role="status">Chargement de l’énigme…</p>
       } @else if (participants.canSolve()) {
         <div class="puzzle-play">

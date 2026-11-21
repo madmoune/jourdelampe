@@ -2,6 +2,7 @@ import { computed, inject, Injectable } from '@angular/core';
 import { GameStore } from './game-store';
 import { ParticipantStore } from './participant-store';
 import { META_ID, RIDDLE_COUNT } from './riddle-pages';
+import { META_PREVIEW_UNLOCKED, RIDDLE_PREVIEW } from './riddle-release';
 
 /** Accès au méta et aux informations débloquées, sans attribuer les réussites des autres. */
 @Injectable({ providedIn: 'root' })
@@ -35,4 +36,10 @@ export class PlayerProgress {
       this.riddles().length >= RIDDLE_COUNT &&
       this.solvedCount() === this.riddles().length,
   );
+}
+
+export function injectMetaUnlocked() {
+  const previewUnlocked = inject(RIDDLE_PREVIEW) && inject(META_PREVIEW_UNLOCKED);
+  const progress = inject(PlayerProgress);
+  return computed(() => previewUnlocked || progress.metaUnlocked());
 }
