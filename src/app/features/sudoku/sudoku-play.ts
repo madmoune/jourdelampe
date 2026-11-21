@@ -18,6 +18,11 @@ import {
   SUDOKU_SIZE,
 } from './sudoku.model';
 
+interface SudokuProgress {
+  readonly board: number[];
+  readonly notes: string[];
+}
+
 @Component({
   selector: 'app-sudoku-play',
   templateUrl: './sudoku-play.html',
@@ -38,10 +43,13 @@ export class SudokuPlay {
   protected readonly positions = Array.from({ length: SUDOKU_SIZE }, (_, index) => index);
   protected readonly givens = SUDOKU_GIVENS;
   protected readonly flagDigits = FLAG_DIGITS;
-  protected readonly board = linkedSignal({
+  protected readonly progress = linkedSignal({
     source: this.storageKey,
     computation: (key) => this.restore(key),
   });
+  protected readonly board = computed(() => this.progress().board);
+  protected readonly notes = computed(() => this.progress().notes);
+  protected readonly notesMode = signal(false);
   protected readonly focused = signal(this.givens.findIndex((digit) => digit === 0));
   protected readonly complete = computed(() => isCompleteSudoku(this.board()));
   protected readonly filledCount = computed(() => this.board().filter(Boolean).length);
@@ -53,17 +61,36 @@ export class SudokuPlay {
 
   protected editCell(event: Event, index: number): void {
     const input = event.target as HTMLInputElement;
-    const value = this.givens[index] || Number(input.value.match(/[1-9]/u)?.[0] ?? '0');
-    input.value = value ? String(value) : '';
-    if (this.board()[index] !== value) {
-      const updated = [...this.board()];
-      updated[index] = value;
-      this.board.set(updated);
-      try {
-        this.browser?.localStorage.setItem(this.storageKey(), JSON.stringify(updated));
-      } catch {}
+    if (this.notesMode()) {
+      const value = this.normalizeNotes(input.value);
+      input.value = value;
+      if (this.notes()[index] !== value) {
+        const notes = [...this.notes()];
+        notes[index] = value;
+        this.save({ board: [...this.board()], notes });
+      }
+    } else {
+      const value = this.givens[index] || Number(input.value.match(/[1-9]/u)?.[0] ?? '0');
+      input.value = value ? String(value) : '';
+      if (this.board()[index] !== value || this.notes()[index]) {
+        const board = [...this.board()];
+        const notes = [...this.notes()];
+        board[index] = value;
+        notes[index] = '';
+        this.save({ board, notes });
+      }
     }
     input.select();
+  }
+
+  protected toggleNotesMode(): void {
+    this.notesMode.update((enabled) => !enabled);
+  }
+
+  protected toggleNotesFromHotkey(event: KeyboardEvent): void {
+    if (event.key !== '+' && event.code !== 'NumpadAdd') return;
+    event.preventDefault();
+    this.toggleNotesMode();
   }
 
   protected moveFocus(event: KeyboardEvent, row: number, column: number): void {
@@ -89,20 +116,58 @@ export class SudokuPlay {
       ?.focus();
   }
 
-  private restore(key: string): number[] {
+  private save(progress: SudokuProgress): void {
+    this.progress.set(progress);
+    try {
+      this.browser?.localStorage.setItem(this.storageKey(), JSON.stringify(progress));
+    } catch {}
+  }
+
+  private restore(key: string): SudokuProgress {
     try {
       const stored: unknown = JSON.parse(this.browser?.localStorage.getItem(key) ?? 'null');
-      if (
-        Array.isArray(stored) &&
-        stored.length === this.givens.length &&
-        stored.every(
-          (digit) =>
-            typeof digit === 'number' && Number.isInteger(digit) && digit >= 0 && digit <= 9,
-        )
-      ) {
-        return this.givens.map((digit, index) => digit || stored[index]);
+      const boardValue = Array.isArray(stored)
+        ? stored
+        : stored && typeof stored === 'object' && 'board' in stored
+          ? stored.board
+          : undefined;
+      if (this.isBoard(boardValue)) {
+        const board = this.givens.map((digit, index) => digit || boardValue[index]);
+        const notesValue =
+          stored && typeof stored === 'object' && 'notes' in stored ? stored.notes : undefined;
+        const notes = this.isNotes(notesValue)
+          ? notesValue.map((note, index) =>
+              this.givens[index] || board[index] ? '' : this.normalizeNotes(note),
+            )
+          : Array<string>(this.givens.length).fill('');
+        return { board, notes };
       }
     } catch {}
-    return [...this.givens];
+    return {
+      board: [...this.givens],
+      notes: Array<string>(this.givens.length).fill(''),
+    };
+  }
+
+  private isBoard(value: unknown): value is number[] {
+    return (
+      Array.isArray(value) &&
+      value.length === this.givens.length &&
+      value.every(
+        (digit) => typeof digit === 'number' && Number.isInteger(digit) && digit >= 0 && digit <= 9,
+      )
+    );
+  }
+
+  private isNotes(value: unknown): value is string[] {
+    return (
+      Array.isArray(value) &&
+      value.length === this.givens.length &&
+      value.every((note) => typeof note === 'string' && /^[1-9]*$/u.test(note))
+    );
+  }
+
+  private normalizeNotes(value: string): string {
+    return [...new Set(value.match(/[1-9]/gu) ?? [])].sort().join('');
   }
 }

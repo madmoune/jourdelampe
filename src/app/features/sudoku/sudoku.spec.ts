@@ -120,7 +120,52 @@ describe('interface de La vigie', () => {
     blank.dispatchEvent(new Event('input', { bubbles: true }));
     fixture.detectChanges();
     expect(blank.value).toBe('3');
-    expect(JSON.parse(localStorage.getItem(storageKey)!)[0]).toBe(3);
+    expect(JSON.parse(localStorage.getItem(storageKey)!).board[0]).toBe(3);
+  });
+
+  it('permet de saisir des candidats sans modifier la grille', () => {
+    const fixture = TestBed.createComponent(SudokuPlay);
+    fixture.detectChanges();
+    const page: HTMLElement = fixture.nativeElement;
+    const blank = page.querySelector<HTMLInputElement>('#sudoku-cell-0')!;
+    const toggle = page.querySelector<HTMLButtonElement>('.notes-toggle')!;
+
+    toggle.click();
+    fixture.detectChanges();
+    expect(toggle.getAttribute('aria-pressed')).toBe('true');
+    blank.value = '5315';
+    blank.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(blank.value).toBe('135');
+    expect(JSON.parse(localStorage.getItem(storageKey)!)).toEqual(
+      expect.objectContaining({ board: expect.arrayContaining([0]), notes: expect.any(Array) }),
+    );
+    expect(JSON.parse(localStorage.getItem(storageKey)!).board[0]).toBe(0);
+
+    toggle.click();
+    fixture.detectChanges();
+    expect(toggle.getAttribute('aria-pressed')).toBe('false');
+    blank.value = '3';
+    blank.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+    expect(blank.value).toBe('3');
+    expect(JSON.parse(localStorage.getItem(storageKey)!).board[0]).toBe(3);
+  });
+
+  it('active et désactive le mode notes avec la touche plus', () => {
+    const fixture = TestBed.createComponent(SudokuPlay);
+    fixture.detectChanges();
+    const page: HTMLElement = fixture.nativeElement;
+    const toggle = page.querySelector<HTMLButtonElement>('.notes-toggle')!;
+    const event = new KeyboardEvent('keydown', { key: '+', cancelable: true });
+
+    window.dispatchEvent(event);
+    fixture.detectChanges();
+    expect(toggle.getAttribute('aria-pressed')).toBe('true');
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: '+', cancelable: true }));
+    fixture.detectChanges();
+    expect(toggle.getAttribute('aria-pressed')).toBe('false');
   });
 
   it('restaure la grille et conserve les paires de chiffres', () => {

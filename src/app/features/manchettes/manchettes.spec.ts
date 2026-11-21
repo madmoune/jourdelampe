@@ -135,10 +135,28 @@ describe('interaction d’En manchettes', () => {
     );
     page.querySelector<HTMLButtonElement>(`#mine-cell-${first}`)!.click();
     fixture.detectChanges();
-    expect(page.querySelector('.target-order')?.textContent).toBe('1');
+    const extractionCell = page.querySelector<HTMLButtonElement>(`#mine-cell-${first}`)!;
+    expect(extractionCell.querySelector('.target-order')?.textContent).toBe('1');
+    expect(extractionCell.querySelector('.target-order')?.tagName).toBe('SPAN');
+    expect(extractionCell.textContent?.trim()).toBe('1');
     expect(page.querySelector('.board-status')?.textContent).toContain(
       '1 / 14 cases d’extraction trouvées',
     );
+  });
+
+  it('signale visuellement une grille résolue', () => {
+    const mines = Array<MineMark>(GRID_SIZE).fill('clear');
+    for (const mine of MINES) mines[mine] = 'flagged';
+    localStorage.setItem(
+      key,
+      JSON.stringify({ letters: Array<string>(GRID_SIZE).fill(''), mines }),
+    );
+    const fixture = TestBed.createComponent(ManchettesPlay);
+    fixture.detectChanges();
+    const page: HTMLElement = fixture.nativeElement;
+    expect(page.querySelector('.mine-section')?.classList.contains('solved')).toBe(true);
+    expect(page.querySelector('.mine-section .board-status')).toBeNull();
+    expect(page.querySelector('.mine-complete')?.textContent).toContain('Démineur complété');
   });
 
   it('révèle les cases voisines quand les drapeaux correspondent au chiffre', () => {

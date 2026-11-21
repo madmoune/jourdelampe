@@ -192,7 +192,8 @@ export class ManchettesPlay {
     if (state === 'flagged') return `${prefix} : drapeau`;
     if (state === 'hit') return `${prefix} : mine déclenchée`;
     const order = this.orders.get(cell);
-    return `${prefix} : ${this.counts[cell]} mines voisines${order ? `, lettre ${order} à extraire` : ''}`;
+    if (order) return `${prefix} : lettre ${order} à extraire`;
+    return `${prefix} : ${this.counts[cell]} mines voisines`;
   }
 
   private toggleFlag(cell: number): void {

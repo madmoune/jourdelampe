@@ -1,6 +1,18 @@
-<div class="vigie">
+<div class="vigie" (window:keydown)="toggleNotesFromHotkey($event)">
   <section class="sudoku" aria-labelledby="sudoku-title">
     <h2 id="sudoku-title">Sudoku</h2>
+
+    <div class="sudoku-tools">
+      <button
+        type="button"
+        class="notes-toggle"
+        [attr.aria-pressed]="notesMode()"
+        (click)="toggleNotesMode()"
+      >
+        {{ notesMode() ? 'Désactiver les notes' : 'Activer les notes' }}
+      </button>
+      <span>Raccourci clavier : <kbd>+</kbd></span>
+    </div>
 
     <table aria-labelledby="sudoku-title">
       <tbody>
@@ -19,8 +31,12 @@
                   maxlength="1"
                   autocomplete="off"
                   [id]="'sudoku-cell-' + cell"
-                  [value]="board()[cell] || ''"
-                  [readOnly]="!!givens[cell]"
+                  [value]="
+                    notesMode() && !board()[cell] ? notes()[cell] : board()[cell] || ''
+                  "
+                  [maxLength]="notesMode() ? size : 1"
+                  [class.notes]="notesMode() && !board()[cell] && !givens[cell]"
+                  [readOnly]="!!givens[cell] || (notesMode() && !!board()[cell])"
                   [attr.aria-label]="'Ligne ' + (row + 1) + ', colonne ' + (column + 1)"
                   [tabIndex]="focused() === cell ? 0 : -1"
                   (focus)="selectCell($event, cell)"

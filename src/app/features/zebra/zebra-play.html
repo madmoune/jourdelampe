@@ -16,13 +16,7 @@
           finale.
         </p>
       </div>
-      <section class="surname-extraction" aria-labelledby="surname-extraction-title">
-        <div class="surname-heading">
-          <h3 id="surname-extraction-title">Les noms de famille</h3>
-          <p>
-            Associe un nom de famille à chaque prénom. Les réponses sont vérifiées automatiquement.
-          </p>
-        </div>
+      <section class="surname-extraction" aria-label="Noms de famille">
         <div class="surname-grid">
           @for (name of surnameTargets; track name.id) {
             <div class="surname-entry" [attr.data-name-target]="name.id">

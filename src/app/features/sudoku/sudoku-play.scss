@@ -5,7 +5,7 @@
 .vigie {
   display: grid;
   grid-template-columns: minmax(0, 460px) minmax(0, 360px);
-  grid-template-rows: auto auto auto;
+  grid-template-rows: auto auto auto auto;
   align-items: start;
   gap: clamp(18px, 4vw, 42px);
 }
@@ -19,14 +19,19 @@
   grid-row: 1;
 }
 
-.sudoku table {
+.sudoku .sudoku-tools {
   grid-column: 1;
   grid-row: 2;
 }
 
-.sudoku .grid-status {
+.sudoku table {
   grid-column: 1;
   grid-row: 3;
+}
+
+.sudoku .grid-status {
+  grid-column: 1;
+  grid-row: 4;
 }
 
 h2 {
@@ -42,6 +47,39 @@ p {
   color: #d5c7df;
   font-size: 13px;
   line-height: 1.65;
+}
+
+.sudoku-tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px 12px;
+  margin: 0 0 12px;
+  color: #d5c7df;
+  font-size: 12px;
+}
+
+.notes-toggle {
+  min-height: 38px;
+  padding: 7px 11px;
+  border: 1px solid #927da4;
+  background: #30253e;
+  color: #f3e5fb;
+  font: inherit;
+}
+
+.notes-toggle[aria-pressed='true'] {
+  border-color: #dcff79;
+  background: #dfff8a;
+  color: #211b30;
+}
+
+kbd {
+  padding: 1px 5px;
+  border: 1px solid #78628e;
+  background: #23192f;
+  color: #e8f3af;
+  font: 700 11px/1.4 monospace;
 }
 
 .file-label {
@@ -96,6 +134,13 @@ input:focus {
   outline: 2px solid #dcff79;
   outline-offset: -2px;
   background: #3a3048;
+}
+
+input.notes {
+  padding: 0 1px;
+  color: #d5c7df;
+  font-size: clamp(7px, 1.8vw, 9px);
+  letter-spacing: 0;
 }
 
 .grid-status {
@@ -193,6 +238,6 @@ input:focus {
 
   .semaphore {
     grid-column: 1;
-    grid-row: 4;
+    grid-row: 5;
   }
 }

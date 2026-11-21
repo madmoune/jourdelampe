@@ -41,19 +41,6 @@
   border: 1px solid #7d688c;
   background: #23192f;
 }
-.surname-heading h3 {
-  margin: 0 0 8px;
-  color: #efdfbd;
-  font-size: 22px;
-}
-.surname-heading p {
-  max-width: none;
-  margin: 0 0 18px;
-  color: #c4b6d1;
-  font-size: 13px;
-  line-height: 1.7;
-  white-space: nowrap;
-}
 .surname-grid {
   display: grid;
   grid-template-columns: minmax(0, 760px);

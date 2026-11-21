@@ -8,7 +8,7 @@ Identifiant Firebase : `zebra-01`. Les pages sont reliées manuellement dans
 `riddle-pages.ts`, sans interface d’ajout dynamique.
 
 La page utilise le gabarit commun `RiddlePage` : titre **Zebra Pretzel**, flavortext
-« Le nom de famille d’une personne nous dit bien des choses sur celle-ci, surtout lorsqu’on connait sa position. », champ de réponse,
+« Le nom de famille d’une personne nous dit bien des choses sur celle-ci, surtout lorsqu’on connait ses positions. », champ de réponse,
 puis énoncés et grille. Un seul champ de réponse est affiché, en haut du jeu.
 Les énoncés restent à gauche de la grille. Au-dessus de celle-ci, le verdict de
 vérification est affiché dès que les 36 associations sont complètes. Une grille

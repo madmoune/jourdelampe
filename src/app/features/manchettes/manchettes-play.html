@@ -69,7 +69,7 @@
   </div>
 </section>
 
-<section class="mine-section" aria-labelledby="mine-title">
+<section class="mine-section" [class.solved]="won()" aria-labelledby="mine-title">
   <h2 id="mine-title">Démineur</h2>
   <div class="mine-tools">
     <button type="button" (click)="resetMines()">Recommencer le démineur</button>
@@ -89,7 +89,6 @@
           [class.clear]="mark === 'clear'"
           [class.flagged]="mark === 'flagged'"
           [class.hit]="mark === 'hit'"
-          [class.target]="order"
           [disabled]="crashed() || won()"
           [attr.aria-label]="mineLabel(index)"
           [tabIndex]="mineFocus() === index ? 0 : -1"
@@ -100,11 +99,10 @@
         >
           @switch (mark) {
             @case ('clear') {
-              @if (counts[index]) {
-                {{ counts[index] }}
-              }
               @if (order) {
-                <small class="target-order">{{ order }}</small>
+                <span class="target-order">{{ order }}</span>
+              } @else if (counts[index]) {
+                {{ counts[index] }}
               }
             }
             @case ('flagged') {
@@ -118,11 +116,11 @@
       }
     </div>
   </div>
-  <p class="board-status" role="status">
-    @if (won()) {
-      Terrain déminé. Relis les lettres extraites dans l’ordre.
-    } @else {
+  @if (won()) {
+    <p class="mine-complete" role="status">Démineur complété</p>
+  } @else {
+    <p class="board-status" role="status">
       {{ foundCount() }} / {{ extracted().length }} cases d’extraction trouvées
-    }
-  </p>
+    </p>
+  }
 </section>
