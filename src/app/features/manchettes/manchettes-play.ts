@@ -150,10 +150,6 @@ export class ManchettesPlay {
   protected playMine(cell: number): void {
     const state = this.progress();
     if (this.won() || this.crashed()) return;
-    if (this.flagMode()) {
-      this.toggleFlag(cell);
-      return;
-    }
     if (state.mines[cell] === 'clear') {
       const neighbors = NEIGHBORS[cell];
       const flags = neighbors.filter((neighbor) => state.mines[neighbor] === 'flagged').length;
@@ -164,6 +160,10 @@ export class ManchettesPlay {
         mines = openCell(mines, neighbor);
       }
       this.saveMinefield(state, mines);
+      return;
+    }
+    if (this.flagMode()) {
+      this.toggleFlag(cell);
       return;
     }
     if (state.mines[cell] !== 'hidden') return;

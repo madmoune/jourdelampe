@@ -182,37 +182,50 @@ describe('interaction d’En manchettes', () => {
     expect(mine.classList.contains('hit')).toBe(true);
   });
 
-  it('révèle les cases voisines quand les drapeaux correspondent au chiffre', () => {
-    const fixture = TestBed.createComponent(ManchettesPlay);
-    fixture.detectChanges();
-    const page: HTMLElement = fixture.nativeElement;
-    const initial = initialMinefield();
-    const target = MINE_COUNTS.findIndex(
-      (count, cell) =>
-        initial[cell] === 'clear' &&
-        count > 0 &&
-        NEIGHBORS[cell].some((neighbor) => initial[neighbor] === 'hidden') &&
-        NEIGHBORS[cell].some((neighbor) => initial[neighbor] === 'hidden' && !MINES.has(neighbor)),
-    );
-    expect(target).toBeGreaterThanOrEqual(0);
-    const mineNeighbors = NEIGHBORS[target].filter((neighbor) => MINES.has(neighbor));
-    const safeNeighbors = NEIGHBORS[target].filter(
-      (neighbor) => initial[neighbor] === 'hidden' && !MINES.has(neighbor),
-    );
-    for (const mine of mineNeighbors) {
-      page
-        .querySelector<HTMLButtonElement>(`#mine-cell-${mine}`)!
-        .dispatchEvent(new MouseEvent('contextmenu', { cancelable: true, bubbles: true }));
+  it.each([false, true])(
+    'révèle les cases voisines quand les drapeaux correspondent au chiffre (mode drapeau %s)',
+    (flagMode) => {
+      const fixture = TestBed.createComponent(ManchettesPlay);
       fixture.detectChanges();
-    }
-    page.querySelector<HTMLButtonElement>(`#mine-cell-${target}`)!.click();
-    fixture.detectChanges();
-    expect(
-      safeNeighbors.every((neighbor) =>
-        page.querySelector(`#mine-cell-${neighbor}`)?.classList.contains('clear'),
-      ),
-    ).toBe(true);
-  });
+      const page: HTMLElement = fixture.nativeElement;
+      const button = (cell: number) => page.querySelector<HTMLButtonElement>(`#mine-cell-${cell}`)!;
+      const toggle = page.querySelector<HTMLButtonElement>('.mine-tools [aria-pressed]')!;
+      const initial = initialMinefield();
+      const target = MINE_COUNTS.findIndex(
+        (count, cell) =>
+          initial[cell] === 'clear' &&
+          count > 0 &&
+          NEIGHBORS[cell].some((neighbor) => initial[neighbor] === 'hidden' && !MINES.has(neighbor)),
+      );
+      expect(target).toBeGreaterThanOrEqual(0);
+      const mineNeighbors = NEIGHBORS[target].filter((neighbor) => MINES.has(neighbor));
+      const safeNeighbors = NEIGHBORS[target].filter(
+        (neighbor) => initial[neighbor] === 'hidden' && !MINES.has(neighbor),
+      );
+
+      if (flagMode) toggle.click();
+      button(target).click();
+      fixture.detectChanges();
+      for (const neighbor of safeNeighbors) {
+        expect(button(neighbor).getAttribute('aria-label')).toContain('masquée');
+      }
+
+      for (const mine of mineNeighbors) {
+        if (flagMode) button(mine).click();
+        else {
+          button(mine).dispatchEvent(
+            new MouseEvent('contextmenu', { cancelable: true, bubbles: true }),
+          );
+        }
+      }
+      button(target).click();
+      fixture.detectChanges();
+
+      for (const neighbor of safeNeighbors) expect(button(neighbor).classList).toContain('clear');
+      for (const mine of mineNeighbors) expect(button(mine).classList).toContain('flagged');
+      expect(toggle.getAttribute('aria-pressed')).toBe(String(flagMode));
+    },
+  );
 
   it('montre la mine qui explose avant de permettre de recommencer', () => {
     const fixture = TestBed.createComponent(ManchettesPlay);
