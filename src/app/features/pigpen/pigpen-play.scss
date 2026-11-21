@@ -13,11 +13,12 @@
 h2 {
   margin: 0 0 8px;
   color: #efdfbd;
-  font: 30px/1.1 Georgia, serif;
+  font:
+    30px/1.1 Georgia,
+    serif;
 }
 
-.pen-intro p,
-.pen-hint {
+.pen-intro p {
   max-width: 68ch;
   margin: 0;
   color: #d5c7df;
@@ -61,41 +62,55 @@ h2 {
   padding: clamp(8px, 2vw, 15px);
   border: 1px solid #896548;
   background: #302119;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background 180ms ease;
 }
 
 .pen.complete {
-  border-color: #a3b775;
+  border-color: #eaff9c;
+  background: linear-gradient(145deg, #3d4a27, #302119 42%);
+  box-shadow:
+    0 0 0 3px #eaff9c33,
+    0 0 24px #d9ff6d40;
 }
 
-.pen-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 4px 8px;
-  margin-bottom: 10px;
+.completion-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 10px;
+  padding: 5px 9px;
+  border: 1px solid #eaff9c;
+  background: #eaff9c;
+  color: #202a12;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: uppercase;
 }
 
-.pen-heading h3 {
-  margin: 0;
-  color: #ffe0ac;
-  font: 20px/1.1 Georgia, serif;
-}
-
-.pen-heading span {
-  color: #ddeb9e;
-  font-size: 11px;
-  font-weight: 700;
+.completion-badge span {
+  font-size: 16px;
+  line-height: 0.8;
 }
 
 .fence {
   position: relative;
   border: 5px solid #a97445;
   border-style: ridge;
-  background:
-    repeating-linear-gradient(4deg, #ffffff07 0 1px, transparent 1px 5px),
-    #744b30;
+  background: repeating-linear-gradient(4deg, #ffffff07 0 1px, transparent 1px 5px), #744b30;
   box-shadow: 0 3px 0 #22150d;
+}
+
+.pen.complete .fence {
+  border-color: #eaff9c;
+  box-shadow:
+    0 0 0 2px #eaff9c99,
+    0 3px 0 #22150d,
+    0 0 18px #d9ff6d4d;
 }
 
 .fence::before,
@@ -157,9 +172,7 @@ th {
   place-items: center;
   padding: 0;
   border: 0;
-  background:
-    repeating-linear-gradient(153deg, transparent 0 7px, #79511c17 8px 9px),
-    #e0ba76;
+  background: repeating-linear-gradient(153deg, transparent 0 7px, #79511c17 8px 9px), #e0ba76;
   color: #552e2b;
 }
 
@@ -187,8 +200,5 @@ th {
 .pig-face {
   width: 90%;
   max-width: 31px;
-}
-
-.pen-hint {
-  margin-top: 20px;
+  transform-origin: center;
 }

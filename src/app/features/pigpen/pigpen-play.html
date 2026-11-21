@@ -2,37 +2,33 @@
   <header class="pen-intro">
     <div>
       <h2 id="pens-title">Les sept enclos</h2>
-      <p>
-        Les nombres indiquent les groupes de cochons consécutifs dans chaque ligne et colonne,
-        dans l’ordre. Deux groupes sont séparés par au moins une case sans cochon. Un 0 indique
-        qu’il n’y a aucun cochon sur la ligne ou la colonne.
-      </p>
     </div>
-    <p class="pen-progress" role="status">{{ completedCount() }} / {{ puzzles.length }} enclos complétés</p>
+    <p class="pen-progress" role="status">
+      {{ completedCount() }} / {{ puzzles.length }} enclos complétés
+    </p>
   </header>
-  <ul class="mark-guide" aria-label="Cycle des cases">
-    <li>Clic 1 : cochon</li>
-    <li>Clic 2 : barrée</li>
-    <li>Clic 3 : vide</li>
+  <ul class="mark-guide" aria-label="Commandes des cases">
+    <li>Clic gauche : cochon, barrée, vide</li>
+    <li>Clic droit : barrée</li>
   </ul>
 
   <div class="pens">
     @for (puzzle of puzzles; track $index; let pen = $index) {
-      <section class="pen" [class.complete]="completed()[pen]" [attr.aria-labelledby]="'pen-title-' + pen">
-        <div class="pen-heading">
-          <h3 [id]="'pen-title-' + pen">Enclos {{ pen + 1 }}</h3>
-          @if (completed()[pen]) {
-            <span>✓ Complet</span>
-          }
-        </div>
+      <section class="pen" [class.complete]="completed()[pen]" aria-label="Grille de nonogramme">
+        @if (completed()[pen]) {
+          <p class="completion-badge" role="status">
+            <span aria-hidden="true">✓</span>
+            Enclos valide
+          </p>
+        }
         <div class="fence">
-          <table [attr.aria-labelledby]="'pen-title-' + pen">
+          <table aria-label="Grille de nonogramme">
             <thead>
               <tr>
                 <td class="clue-corner" aria-hidden="true"></td>
                 @for (clues of puzzle.columns; track $index) {
                   <th scope="col" class="column-clue">
-                    @for (clue of (clues.length ? clues : [0]); track $index) {
+                    @for (clue of clues.length ? clues : [0]; track $index) {
                       <span>{{ clue }}</span>
                     }
                   </th>
@@ -56,12 +52,18 @@
                         [attr.aria-label]="cellLabel(pen, row, column)"
                         [attr.tabindex]="focused()[pen] === index ? 0 : -1"
                         (click)="cycle(pen, index)"
+                        (contextmenu)="markCross($event, pen, index)"
                         (focus)="focusCell(pen, index)"
                         (keydown)="moveFocus($event, pen, row, column)"
                       >
                         @switch (mark) {
                           @case ('pig') {
-                            <svg class="pig-face" viewBox="0 0 32 32" aria-hidden="true">
+                            <svg
+                              class="pig-face"
+                              viewBox="0 0 32 32"
+                              [style.transform]="'rotate(' + pigRotation(pen) + 'deg)'"
+                              aria-hidden="true"
+                            >
                               <path
                                 d="M7 14C4 10 4 5 7 5c3 0 5 2 6 4h6c1-2 3-4 6-4 3 0 3 5 0 9 1 2 2 4 2 6 0 6-5 9-11 9S5 26 5 20c0-2 1-4 2-6Z"
                                 fill="#ffd1db"
@@ -90,5 +92,4 @@
       </section>
     }
   </div>
-  <p class="pen-hint">Lis les sept motifs dans l’ordre des enclos.</p>
 </section>

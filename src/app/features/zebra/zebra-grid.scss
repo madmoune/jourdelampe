@@ -32,14 +32,6 @@ $block-border: 3px solid #a68eb8;
   opacity: 0.45;
   cursor: default;
 }
-.progress {
-  flex-shrink: 0;
-  margin: 0;
-  text-align: right;
-  color: #c5b5d5;
-  font-size: 12px;
-  font-variant-numeric: tabular-nums;
-}
 .grid-workspace {
   display: flex;
   align-items: flex-start;
@@ -48,8 +40,10 @@ $block-border: 3px solid #a68eb8;
 .grid-main {
   flex: 1;
   min-width: 0;
+  max-width: 100%;
 }
 .grid-scroll {
+  max-width: 100%;
   overflow-x: auto;
   padding-bottom: 12px;
   overscroll-behavior-x: contain;
@@ -214,7 +208,7 @@ button:focus-visible,
   outline: 2px solid #dcff79;
   outline-offset: 3px;
 }
-@media (max-width: 1100px) {
+@media (max-width: 1300px) {
   .grid-workspace {
     flex-direction: column;
     align-items: stretch;

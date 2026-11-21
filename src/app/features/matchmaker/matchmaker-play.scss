@@ -47,24 +47,24 @@ h2 {
   text-align: right;
 }
 
-.songs-table {
-  overflow-x: auto;
-}
-
 .songs-header,
 .song-row {
   display: grid;
-  grid-template-columns: minmax(260px, 1fr) minmax(180px, 0.8fr) 76px 76px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr) 76px 76px;
   align-items: center;
-  min-width: 620px;
+  gap: 10px;
 }
 
 .songs-header {
-  padding: 0 10px 8px;
+  padding-bottom: 8px;
   color: #bda8c9;
   font: 11px/1.2 monospace;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.songs-header span:first-child {
+  padding-inline-start: 10px;
 }
 
 .songs-header span:nth-child(n + 3) {
@@ -74,7 +74,6 @@ h2 {
 .song-row {
   min-height: 54px;
   border-top: 1px solid #574663;
-  gap: 10px;
 }
 
 .song-excerpt {
@@ -83,8 +82,14 @@ h2 {
   gap: 12px;
   min-width: 0;
   padding: 8px 10px;
-  color: #f1dfb7;
-  font-size: 14px;
+}
+
+.song-excerpt audio {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: min(100%, 260px);
+  height: 40px;
 }
 
 .row-number,
@@ -96,7 +101,16 @@ h2 {
 
 .artist-field,
 .letter-field {
-  display: block;
+  display: grid;
+  min-width: 0;
+}
+
+.letter-field {
+  justify-items: center;
+}
+
+.mobile-field-label {
+  display: none;
 }
 
 input {
@@ -116,7 +130,6 @@ input {
 
 .letter-field input {
   width: 44px;
-  margin-inline: auto;
   padding: 8px 4px;
   text-align: center;
   text-transform: uppercase;
@@ -133,26 +146,41 @@ input:focus-visible,
 }
 
 .pairing-board {
-  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 320px) minmax(0, 1fr);
-  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) clamp(6.25rem, 32%, 22rem) minmax(0, 1fr);
+  // L’axe des lignes et des indices suit le milieu de chaque rangée.
+  grid-template-rows: auto repeat(var(--match-row-count), minmax(3.25rem, 1fr));
 }
 
-.match-side {
-  position: relative;
-  z-index: 1;
+.pairing-labels {
+  grid-column: 2;
+  grid-row: 1;
   display: grid;
-  gap: 7px;
+  grid-template-columns: 1fr 1fr;
+  background: #342641;
+  color: #efdfbd;
+  font: bold 0.875rem/1.2 Arial, sans-serif;
+  text-align: center;
+}
+
+.pairing-labels span {
+  padding-block: 8px;
+}
+
+.pairing-labels span + span {
+  border-inline-start: 1px solid #655078;
 }
 
 .match-item {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 8px;
   min-width: 0;
-  min-height: 42px;
-  padding: 7px 8px;
+  min-height: 44px;
+  margin-block: 3px;
+  padding: 7px 12px;
   border: 1px solid #574663;
   background: #191124;
   color: #ece4f3;
@@ -161,52 +189,30 @@ input:focus-visible,
   cursor: pointer;
 }
 
-.match-item:hover,
 .match-item.selected {
   border-color: #b7cf7f;
   background: #2e3e22;
+}
+
+@media (hover: hover) {
+  .match-item:hover {
+    border-color: #b7cf7f;
+    background: #2e3e22;
+  }
 }
 
 .match-item.connected {
   border-color: #806d43;
 }
 
-.match-right .match-item {
+.match-left {
+  grid-column: 1;
+}
+
+.match-right {
+  grid-column: 3;
+  flex-direction: row-reverse;
   text-align: right;
-}
-
-.match-left .match-dot {
-  order: 4;
-  margin-left: auto;
-}
-
-.match-left .match-number {
-  order: 1;
-}
-
-.match-left .match-text {
-  order: 2;
-}
-
-.match-left .connection-number {
-  order: 3;
-}
-
-.match-right .match-dot {
-  order: 1;
-  margin-right: auto;
-}
-
-.match-right .connection-number {
-  order: 2;
-}
-
-.match-right .match-text {
-  order: 3;
-}
-
-.match-right .match-number {
-  order: 4;
 }
 
 .match-text {
@@ -216,11 +222,25 @@ input:focus-visible,
 }
 
 .match-dot {
-  flex: 0 0 10px;
-  width: 10px;
-  height: 10px;
+  position: absolute;
+  top: 50%;
+  width: 0.625rem;
+  height: 0.625rem;
+  box-sizing: border-box;
   border: 2px solid #bed582;
   border-radius: 50%;
+  background: #191124;
+  pointer-events: none;
+}
+
+.match-left .match-dot {
+  right: -1px;
+  transform: translate(50%, -50%);
+}
+
+.match-right .match-dot {
+  left: -1px;
+  transform: translate(-50%, -50%);
 }
 
 .selected .match-dot,
@@ -237,33 +257,48 @@ input:focus-visible,
 
 .pairing-center {
   position: relative;
-  z-index: 2;
-  display: grid;
-  place-items: center;
-  color: #9f8eaf;
-  font-size: 22px;
+  grid-column: 2;
+  grid-row: 2 / -1;
+  background: linear-gradient(90deg, #1c1429 50%, #21182d 50%);
+}
+
+.pairing-center::before {
+  position: absolute;
+  inset-block: 0;
+  left: 50%;
+  border-inline-start: 1px solid #574663;
+  content: '';
+  pointer-events: none;
 }
 
 .pair-lines {
   position: absolute;
   inset: 0;
-  z-index: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
 }
 
 .pair-lines line {
-  stroke: #9ebd5b;
-  stroke-width: 0.35;
+  stroke: #bed582;
+  stroke-width: 2;
   vector-effect: non-scaling-stroke;
 }
 
-.pairing-status {
-  margin: 14px 0 0;
-  color: #c2b0d0;
-  font: 12px/1.4 monospace;
-  text-align: center;
+.pair-index {
+  position: absolute;
+  display: grid;
+  width: 1.375rem;
+  height: 1.375rem;
+  box-sizing: border-box;
+  place-items: center;
+  transform: translate(-50%, -50%);
+  border: 1px solid #9278a5;
+  border-radius: 50%;
+  background: #342641;
+  color: #efdfbd;
+  font: bold 0.8125rem/1 monospace;
+  pointer-events: none;
 }
 
 .pairing-actions {
@@ -304,7 +339,7 @@ input:focus-visible,
   border: 0;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 760px) {
   .section-heading {
     align-items: start;
     flex-direction: column;
@@ -315,19 +350,57 @@ input:focus-visible,
     text-align: left;
   }
 
-  .pairing-board {
-    grid-template-columns: minmax(0, 1fr) minmax(92px, 140px) minmax(0, 1fr);
-    gap: 6px;
+  .songs-header {
+    display: none;
+  }
+
+  .song-row {
+    grid-template-columns: minmax(0, 1fr) repeat(2, 3rem);
+    align-items: end;
+    gap: 6px 8px;
+    padding-block: 10px;
+  }
+
+  .song-excerpt {
+    grid-column: 1 / -1;
+    padding: 0;
+  }
+
+  .mobile-field-label {
+    display: block;
+    margin-bottom: 4px;
+    color: #bda8c9;
+    font: 0.8125rem/1.2 monospace;
+  }
+
+  .pairing {
+    padding-inline: clamp(10px, 2.5vw, 18px);
   }
 
   .match-item {
-    gap: 5px;
-    padding: 6px 4px;
-    font-size: 11px;
+    padding: 7px 8px;
+    font-size: 0.875rem;
+    line-height: 1.3;
   }
 
-  .match-number,
-  .connection-number {
-    font-size: 9px;
+  .match-item .match-number,
+  .match-item .connection-number {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .pairing {
+    margin-inline: -20px;
+    padding-inline: 7px;
+  }
+
+  .match-item {
+    padding-inline: 6px;
   }
 }

@@ -3,25 +3,30 @@
     <div class="section-heading">
       <div>
         <p class="eyebrow">01 / LES EXTRAITS</p>
-        <h2 id="songs-title">Qui chante?</h2>
+        <h2 id="songs-title">Artistes préférés</h2>
       </div>
-      <p class="section-note">Trouve l’artiste de chaque extrait, puis note les deux lettres à extraire.</p>
     </div>
 
     <div class="songs-table" role="table" aria-label="Extraits de chansons">
       <div class="songs-header" role="row">
         <span role="columnheader">Extrait</span>
         <span role="columnheader">Artiste</span>
-        <span role="columnheader">Lettre 1</span>
-        <span role="columnheader">Lettre 2</span>
+        <span role="columnheader">Début</span>
+        <span role="columnheader">Fin</span>
       </div>
       @for (song of songs(); track $index; let index = $index) {
         <div class="song-row" role="row">
           <div class="song-excerpt" role="cell">
             <span class="row-number">{{ rowNumbers[index].toString().padStart(2, '0') }}</span>
-            <span>{{ song.excerpt }}</span>
+            <audio
+              controls
+              preload="metadata"
+              [src]="song.audioSrc"
+              [attr.aria-label]="'Lire l’extrait ' + rowNumbers[index]"
+            ></audio>
           </div>
           <label class="artist-field" role="cell">
+            <span class="mobile-field-label" aria-hidden="true">Artiste</span>
             <span class="sr-only">Artiste de l’extrait {{ rowNumbers[index] }}</span>
             <input
               type="text"
@@ -32,26 +37,26 @@
             />
           </label>
           <label class="letter-field" role="cell">
-            <span class="sr-only">Première lettre à extraire pour l’extrait {{ rowNumbers[index] }}</span>
+            <span class="mobile-field-label" aria-hidden="true">Début</span>
+            <span class="sr-only">Lettre de début pour l’extrait {{ rowNumbers[index] }}</span>
             <input
               type="text"
               maxlength="1"
               inputmode="text"
               autocomplete="off"
               [value]="song.firstLetter"
-              aria-label="Première lettre à extraire"
               (input)="updateSong(index, 'firstLetter', $any($event.target).value)"
             />
           </label>
           <label class="letter-field" role="cell">
-            <span class="sr-only">Deuxième lettre à extraire pour l’extrait {{ rowNumbers[index] }}</span>
+            <span class="mobile-field-label" aria-hidden="true">Fin</span>
+            <span class="sr-only">Lettre de fin pour l’extrait {{ rowNumbers[index] }}</span>
             <input
               type="text"
               maxlength="1"
               inputmode="text"
               autocomplete="off"
               [value]="song.secondLetter"
-              aria-label="Deuxième lettre à extraire"
               (input)="updateSong(index, 'secondLetter', $any($event.target).value)"
             />
           </label>
@@ -64,73 +69,71 @@
     <div class="section-heading">
       <div>
         <p class="eyebrow">02 / LE MATCHMAKER</p>
-        <h2 id="pairing-title">Relie les phrases</h2>
+        <h2 id="pairing-title">Matchmaker</h2>
       </div>
-      <p class="section-note" aria-live="polite">
-        @if (selectedLeft() !== null) {
-          Choisis maintenant le point correspondant à droite. Clique ailleurs pour annuler.
-        } @else {
-          Choisis un point à gauche, puis le point correspondant à droite. Recliquer sur une
-          connexion l’efface.
-        }
+      <p class="section-note">
+        Choisis un début à gauche, puis sa fin à droite. Note les indices traversés. Pour effacer
+        un lien, sélectionne une de ses extrémités.
       </p>
     </div>
 
-    <div class="pairing-board">
-      <svg class="pair-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-        @for (pair of pairs(); track pair.left) {
-          <line
-            x1="34"
-            [attr.y1]="lineY(pair.left)"
-            x2="66"
-            [attr.y2]="lineY(pair.right)"
-          />
-        }
-      </svg>
-      <div class="match-side match-left" aria-label="Phrases de gauche">
-        @for (text of leftTexts; track $index; let index = $index) {
-          @let pair = pairForLeft(index);
-          <button
-            type="button"
-            class="match-item"
-            [class.selected]="selectedLeft() === index"
-            [class.connected]="pair"
-            [attr.aria-pressed]="selectedLeft() === index"
-            (click)="selectLeft(index)"
-          >
-            <span class="match-dot" aria-hidden="true"></span>
-            <span class="match-number">{{ rowNumbers[index].toString().padStart(2, '0') }}</span>
-            <span class="match-text">{{ text }}</span>
-            @if (pair) {
-              <span class="connection-number">↔ {{ (pair.right + 1).toString().padStart(2, '0') }}</span>
-            }
-          </button>
-        }
+    <div class="pairing-board" [style.--match-row-count]="rowNumbers.length">
+      <div class="pairing-labels">
+        <span>Début</span>
+        <span>Fin</span>
       </div>
       <div class="pairing-center" aria-hidden="true">
-        <span>↔</span>
-      </div>
-      <div class="match-side match-right" aria-label="Phrases de droite">
-        @for (text of rightTexts; track $index; let index = $index) {
-          @let pair = pairForRight(index);
-          <button
-            type="button"
-            class="match-item"
-            [class.connected]="pair"
-            [attr.aria-pressed]="!!pair"
-            (click)="selectRight(index)"
-          >
-            @if (pair) {
-              <span class="connection-number">{{ (pair.left + 1).toString().padStart(2, '0') }} ↔</span>
-            }
-            <span class="match-number">{{ rowNumbers[index].toString().padStart(2, '0') }}</span>
-            <span class="match-text">{{ text }}</span>
-            <span class="match-dot" aria-hidden="true"></span>
-          </button>
+        <svg class="pair-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
+          @for (pair of pairs(); track pair.left) {
+            <line x1="0" [attr.y1]="lineY(pair.left)" x2="100" [attr.y2]="lineY(pair.right)" />
+          }
+        </svg>
+        @for (marker of indexMarkers; track $index) {
+          <span class="pair-index" [style.left.%]="marker.x" [style.top.%]="marker.y">
+            {{ marker.value }}
+          </span>
         }
       </div>
+      @for (text of leftTexts; track $index; let index = $index) {
+        @let pair = pairForLeft(index);
+        <button
+          type="button"
+          class="match-item match-left"
+          [style.grid-row]="index + 2"
+          [class.selected]="selectedLeft() === index"
+          [class.connected]="pair"
+          [attr.aria-pressed]="selectedLeft() === index"
+          (click)="selectLeft(index)"
+        >
+          <span class="sr-only">Début </span>
+          <span class="match-number">{{ rowNumbers[index].toString().padStart(2, '0') }}</span>
+          <span class="match-text">{{ text }}</span>
+          @if (pair) {
+            <span class="connection-number">↔ {{ (pair.right + 1).toString().padStart(2, '0') }}</span>
+          }
+          <span class="match-dot" aria-hidden="true"></span>
+        </button>
+      }
+      @for (text of rightTexts; track $index; let index = $index) {
+        @let pair = pairForRight(index);
+        <button
+          type="button"
+          class="match-item match-right"
+          [style.grid-row]="index + 2"
+          [class.connected]="pair"
+          [attr.aria-pressed]="!!pair"
+          (click)="selectRight(index)"
+        >
+          <span class="sr-only">Fin </span>
+          <span class="match-number">{{ rowNumbers[index].toString().padStart(2, '0') }}</span>
+          <span class="match-text">{{ text }}</span>
+          @if (pair) {
+            <span class="connection-number">{{ (pair.left + 1).toString().padStart(2, '0') }} ↔</span>
+          }
+          <span class="match-dot" aria-hidden="true"></span>
+        </button>
+      }
     </div>
-    <p class="pairing-status" aria-live="polite">{{ pairs().length }} / {{ rowNumbers.length }} phrases reliées</p>
     <div class="pairing-actions">
       <button
         type="button"

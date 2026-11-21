@@ -2,7 +2,10 @@ import { GameMode, GameRiddle, RiddleSolution } from '../riddles/game.model';
 import { parseParticipant, Participant } from '../riddles/participant';
 import { META_ID, RIDDLE_COUNT } from '../riddles/riddle-pages';
 
-type ProgressRiddle = GameRiddle & { readonly solutions: readonly RiddleSolution[] };
+type ProgressRiddle = GameRiddle & {
+  readonly solutions: readonly RiddleSolution[];
+  readonly configured?: boolean;
+};
 
 export function parseParticipants(value: unknown): readonly Participant[] {
   if (value === null) return [];
@@ -23,7 +26,8 @@ export function summarizePlayers(
 ) {
   const mainRiddles = riddles.filter((riddle) => riddle.id !== META_ID);
   const teamMetaUnlocked =
-    mainRiddles.length >= RIDDLE_COUNT && mainRiddles.every((riddle) => riddle.solutions.length > 0);
+    mainRiddles.length >= RIDDLE_COUNT &&
+    mainRiddles.every((riddle) => riddle.solutions.length > 0);
   return participants
     .map((participant) => {
       const progress = mainRiddles.map((riddle) => {
@@ -31,6 +35,7 @@ export function summarizePlayers(
         return {
           id: riddle.id,
           title: riddle.title,
+          configured: riddle.configured ?? true,
           solution,
           firstForTeam:
             !!solution && riddle.solutions.every((entry) => entry.solvedAt >= solution.solvedAt),

@@ -32,11 +32,12 @@ export class RiddleAnswer {
   readonly riddleId = input.required<string>();
   readonly answerLabel = input('Réponse');
   readonly hint = input('');
+  readonly previewTitle = input('');
   readonly showSolvedAnswer = input(true);
   private readonly browser = inject(DOCUMENT).defaultView;
   protected readonly game = inject(GameStore);
-  protected readonly listPath =
-    (inject(RIDDLE_PREVIEW) ? RIDDLE_PREVIEW_PATH : '') + RIDDLE_LIST_PATH;
+  private readonly preview = inject(RIDDLE_PREVIEW);
+  protected readonly listPath = (this.preview ? RIDDLE_PREVIEW_PATH : '') + RIDDLE_LIST_PATH;
   private readonly participants = inject(ParticipantStore);
   private readonly attempts = inject(RiddleAttempts);
   private readonly submissions = inject(RiddleSubmissions);
@@ -48,8 +49,18 @@ export class RiddleAnswer {
   protected readonly busy = signal(false);
   protected readonly feedback = signal<{ correct: boolean; text: string } | null>(null);
   protected readonly success = signal(false);
-  protected readonly riddle = computed(() =>
-    this.game.riddles().find((riddle) => riddle.id === this.riddleId()),
+  protected readonly riddle = computed(
+    () =>
+      this.game.riddles().find((riddle) => riddle.id === this.riddleId()) ??
+      (this.preview && this.previewTitle()
+        ? {
+            id: this.riddleId(),
+            title: this.previewTitle(),
+            prompt: '',
+            order: 0,
+            solutions: [],
+          }
+        : undefined),
   );
   protected readonly name = computed(() => this.participants.participant()?.name ?? '');
   protected readonly solved = computed(

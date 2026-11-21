@@ -81,8 +81,6 @@ export class DiabloTen {
     return effectTime > 0 || hit > 0 || damage !== null;
   });
   protected readonly walking = signal(false);
-  protected readonly binary = cryptBinary;
-  protected readonly attackDamage = CRYPT_DAMAGE;
   protected readonly hpMax = CRYPT_HP;
   protected readonly manaMax = CRYPT_MANA;
   protected readonly enemyMax = GOLEM_HP;

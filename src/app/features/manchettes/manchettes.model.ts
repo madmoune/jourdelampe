@@ -100,7 +100,14 @@ export const NEIGHBORS = CROSSWORD_CELLS.map(({ index }) => {
   return neighbors;
 });
 
-export const MINES: ReadonlySet<number> = new Set(EXTRACTION_CELLS.flatMap((cell) => NEIGHBORS[cell]));
+const ADDITIONAL_MINES = [
+  118, 119, 138, 139, 140, 141, 159, 160, 162, 183, 200, 202, 204, 216, 243, 326, 344,
+] as const;
+
+export const MINES: ReadonlySet<number> = new Set([
+  ...EXTRACTION_CELLS.flatMap((cell) => NEIGHBORS[cell]),
+  ...ADDITIONAL_MINES,
+]);
 export const MINE_COUNTS = NEIGHBORS.map((neighbors) =>
   neighbors.filter((cell) => MINES.has(cell)).length,
 );

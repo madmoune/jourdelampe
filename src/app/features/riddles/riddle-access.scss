@@ -1,13 +1,38 @@
 :host {
   display: block;
+  margin: 18px 0 28px;
 }
 
 .player-profile {
-  margin: 0 20px 20px;
-  padding: 16px;
-  border: 1px solid #6b5b83;
-  background: #100c23;
-  font-size: 12px;
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  padding: 22px 26px;
+  border: 1px solid #78628e;
+  background: linear-gradient(135deg, #2a2037 0%, #1a132a 72%);
+  box-shadow: 6px 6px 0 #090610;
+  font-size: 13px;
+}
+
+.player-profile::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: #dcff79;
+  content: '';
+}
+
+.player-profile::after {
+  position: absolute;
+  top: -90px;
+  right: -50px;
+  width: 220px;
+  height: 220px;
+  border: 1px solid rgb(220 255 121 / 16%);
+  border-radius: 50%;
+  box-shadow: 0 0 0 18px rgb(220 255 121 / 4%);
+  content: '';
+  pointer-events: none;
 }
 
 h3 {
@@ -92,14 +117,82 @@ button:focus-visible,
 }
 
 .profile-summary {
-  justify-content: space-between;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+}
+
+.profile-view .profile-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.profile-identity {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 14px;
+}
+
+.profile-mark {
+  display: grid;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 1px solid #a6be68;
+  background: #18241a;
+  color: #dcff79;
+  font:
+    bold 20px/1 Georgia,
+    serif;
+  box-shadow: 3px 3px 0 #0b0b13;
+}
+
+.profile-kicker {
+  display: block;
+  margin-bottom: 5px;
+  color: #bed582;
+  font: 10px/1 monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.profile-copy {
+  display: block;
+  color: #eee5f3;
+  font-size: 15px;
+  line-height: 1.45;
 }
 
 .profile-summary p {
-  flex: 1 1 180px;
   min-width: 0;
   margin: 0;
   overflow-wrap: anywhere;
+}
+
+.profile-view .text-button {
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid #806a99;
+  background: #241a32;
+  color: #e1c9fb;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.profile-view .text-button:hover:enabled {
+  border-color: #bca3d5;
+  background: #342542;
+  color: #fff5ff;
+}
+
+.profile-view .access-note {
+  margin: 17px 0 0;
+  padding: 13px 0 0 58px;
+  border-top: 1px solid #4d3a62;
 }
 
 strong {
@@ -121,4 +214,23 @@ strong {
 
 .success {
   color: #dcff79;
+}
+
+@media (max-width: 600px) {
+  .player-profile {
+    padding: 20px 18px;
+  }
+
+  .profile-view .profile-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-view .text-button {
+    justify-self: start;
+    margin-left: 58px;
+  }
+
+  .profile-view .access-note {
+    padding-left: 0;
+  }
 }

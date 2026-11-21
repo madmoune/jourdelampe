@@ -1,4 +1,8 @@
-<section class="player-profile" aria-label="Ton profil pour les énigmes">
+<section
+  class="player-profile"
+  [class.profile-view]="!!store.participant() && !editing()"
+  aria-label="Ton profil pour les énigmes"
+>
   @if (store.loading()) {
     <p role="status">Chargement de ton profil…</p>
   } @else if (store.error()) {
@@ -42,12 +46,19 @@
     </form>
   } @else {
     <div class="profile-summary" #profileSummary tabindex="-1">
-      <p>
-        Tu joues sous le nom <strong>{{ store.participant()!.name }}</strong>
-      </p>
+      <div class="profile-identity">
+        <span class="profile-mark" aria-hidden="true">
+          {{ store.participant()!.name.slice(0, 1).toUpperCase() }}
+        </span>
+        <p>
+          <span class="profile-kicker">Profil joueur</span>
+          <span class="profile-copy">
+            Tu joues sous le nom <strong>{{ store.participant()!.name }}</strong>
+          </span>
+        </p>
+      </div>
       <button class="text-button" type="button" (click)="edit()">Modifier mon nom</button>
     </div>
-    <p class="access-note">Ton profil est conservé dans ce navigateur.</p>
   }
   <div id="player-feedback" aria-live="polite" aria-atomic="true">
     @if (error()) {

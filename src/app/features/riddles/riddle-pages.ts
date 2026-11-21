@@ -1,5 +1,6 @@
 /** Les pages sont intégrées à la main, indépendamment du catalogue de suivi Firebase. */
 export const ZEBRA_ID = 'zebra-01';
+export const ZEBRA_TITLE = 'Zebra Pretzel';
 export const FOURCHETTE_ID = 'fourchette-01';
 export const MATCHMAKER_ID = 'matchmaker-01';
 export const PIGPEN_ID = 'pigpen-01';

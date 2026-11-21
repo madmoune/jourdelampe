@@ -7,19 +7,30 @@
     </header>
     <main>
       <div class="puzzle-heading">
-        <p class="eyebrow">Les dossiers de l’AI</p>
-        <h1>Les énigmes</h1>
+        <h1>Puzzle Hunt</h1>
         <p class="flavor-text">
-          Huit énigmes. Un méta. Ton réveillon tient à peu de chose.
+          Montrez que vous avez un tant soit peu d'intelligence et je laisserai votre party tranquille.
+          <br /><br />
+          J'ai confiance en vous. Confiance que vous allez avoir l'air de gros cons.
         </p>
       </div>
       <div class="puzzle-play">
         <app-riddle-access id="profil" #profile />
-        <section id="dossiers" aria-labelledby="dossiers-title">
-          <h2 id="dossiers-title">Dossiers à résoudre</h2>
-          <p class="reveal-help">
-            Quand une énigme est résolue, tu peux cliquer sur « Révéler la réponse ».
-          </p>
+        <aside class="cheatsheet-banner" aria-labelledby="cheatsheet-banner-title">
+          <div>
+            <h2 id="cheatsheet-banner-title">Cheatsheet</h2>
+            <p>Informations pertinentes à la résolution d'énigmes.</p>
+          </div>
+          <a
+            class="cheatsheet-link"
+            routerLink="/cheatsheet"
+            target="_blank"
+            rel="noopener"
+          >
+            Ouvrir la cheatsheet
+          </a>
+        </aside>
+        <section id="dossiers" aria-label="Dossiers à résoudre">
           <app-riddle-game [canPlay]="!!profile.participantName()" />
         </section>
       </div>

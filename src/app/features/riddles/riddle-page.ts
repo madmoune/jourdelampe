@@ -26,7 +26,7 @@ export class RiddlePage {
   readonly riddleId = input.required<string>();
   readonly title = input.required<string>();
   readonly flavorText = input('');
-  readonly number = input('');
+  readonly flavorTextHtml = input('');
   readonly answerLabel = input('Réponse');
   readonly answerHint = input('');
   protected readonly content = contentChild.required(TemplateRef<unknown>);

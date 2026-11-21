@@ -1,4 +1,4 @@
-# Salle d’arcade · dossier 07
+# Arcade · dossier 07
 
 L’aperçu est disponible à `/apercu-ia/enigmes/salle-arcade`. Le lien public est
 `/enigmes/salle-arcade`. L’accès aux jeux utilise le profil des énigmes.
@@ -17,7 +17,7 @@ fonctionnent simultanément pour sauter en mouvement dans Paper Morsio et
 combattre dans Diablo 10. La musique originale de Final Fantaceasar est
 activée par le joueur et s’arrête à la fin du combat ou lorsqu’il quitte la borne.
 
-Les quatre jeux donnent des indices pour la réponse de la salle d’arcade.
+Les quatre jeux donnent des indices pour la réponse de l’arcade.
 Chaque groupe du format `??? ??? ?? ???` figure sous le bouton du jeu correspondant.
 
 Dans Paper Morsio, les balises séparent les groupes de trous au-dessus de la
@@ -32,7 +32,7 @@ Attaquer et Magie ont leurs propres animations. Chaque attaque et chaque
 riposte infligent neuf dégâts à chaque cible touchée.
 
 Si le dossier doit être publié, sa fiche `game/catalog/arcade-01` portera le titre
-« Salle d’arcade » et l’ordre 6. La réponse finale à valider reste à définir.
+« Arcade » et l’ordre 6. La réponse finale à valider reste à définir.
 
 ## Illustrations
 

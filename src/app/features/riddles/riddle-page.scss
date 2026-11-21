@@ -39,10 +39,6 @@ header span {
   letter-spacing: 0.14em;
   color: #d1bfdc;
 }
-header b {
-  padding: 0 8px;
-  color: #b4cf76;
-}
 .puzzle-heading {
   padding: 40px 40px 12px;
 }
@@ -60,20 +56,23 @@ h1 {
   color: #f1dfb7;
   letter-spacing: -0.04em;
 }
-h1 span {
-  display: inline-block;
-  margin-left: 16px;
-  vertical-align: top;
-  color: #9f87b4;
-  font: 16px/1.4 monospace;
-  letter-spacing: 0;
-}
 .puzzle-heading > p:last-child {
   margin: 0;
   color: #c2b0d0;
   font-size: 14px;
   line-height: 1.7;
   white-space: pre-line;
+}
+.cheatsheet-link {
+  display: inline-block;
+  margin: 0 40px 28px;
+  color: #dcff79;
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.cheatsheet-link:hover {
+  color: #f0ffc0;
 }
 .puzzle-play {
   padding: 0 40px 40px;
@@ -134,6 +133,9 @@ a:focus-visible {
   }
   .access-notice {
     margin: 0 22px 28px;
+  }
+  .cheatsheet-link {
+    margin: 0 22px 24px;
   }
   .puzzle-play {
     padding: 0 22px 28px;

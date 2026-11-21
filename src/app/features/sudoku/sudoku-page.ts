@@ -9,9 +9,8 @@ import { SudokuPlay } from './sudoku-play';
   template: `
     <app-riddle-page
       [riddleId]="riddleId"
-      title="La vigie"
-      number="05"
-      flavorText="Je vous ai laissé quelques chiffres. Pour le reste, levez les yeux vers les drapeaux."
+      title="Sudoquoi?"
+      flavorTextHtml="Quand on est dans de beaux <strong>draps</strong>, faut pas y laisser sa <strong>peau</strong>."
       answerLabel="Réponse (9 lettres)"
     >
       <ng-template>

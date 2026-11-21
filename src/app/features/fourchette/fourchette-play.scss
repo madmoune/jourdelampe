@@ -97,13 +97,12 @@ ul {
   cursor: default;
 }
 .grid-scroll {
-  overflow-x: auto;
+  overflow: hidden;
   padding: 20px;
   background: transparent;
-  overscroll-behavior-x: contain;
 }
 table {
-  width: auto;
+  width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
 }
@@ -116,21 +115,22 @@ caption {
   white-space: nowrap;
 }
 td {
-  width: 44px;
-  min-width: 44px;
+  width: 4.5454545%;
+  min-width: 0;
   border: 1px solid #675675;
   padding: 0;
 }
 .letter {
   display: block;
-  width: 42px;
-  height: 42px;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
   padding: 0;
   border: 0;
   border-radius: 50%;
   background: transparent;
   color: #e7e7e7;
-  font: 600 20px/1 monospace;
+  font: 600 clamp(12px, 2.1vw, 20px) / 1 monospace;
   font-variant-numeric: slashed-zero;
   cursor: pointer;
 }

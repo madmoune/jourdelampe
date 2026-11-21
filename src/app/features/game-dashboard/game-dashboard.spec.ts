@@ -45,6 +45,9 @@ describe('tableau de bord protégé et confirmations de remise à zéro', () => 
         ],
       },
     ]);
+    const dashboardRiddles = computed(() =>
+      riddles().map((riddle) => ({ ...riddle, configured: true })),
+    );
     const store = {
       session: { authorized: access },
       login: vi.fn(async () => {
@@ -57,6 +60,13 @@ describe('tableau de bord protégé et confirmations de remise à zéro', () => 
       error: signal(''),
       loading: signal(false),
       secrets: signal({ a: { answer: 'Réponse secrète', normalizedAnswer: 'REPONSESECRETE' } }),
+      riddles: dashboardRiddles,
+      riddleCount: computed(() => dashboardRiddles().length),
+      solvedCount: computed(
+        () => dashboardRiddles().filter((riddle) => riddle.solutions.length > 0).length,
+      ),
+      teamMetaUnlocked: signal(true),
+      individualMetaCount: signal(1),
       players: computed(() => summarizePlayers(participants(), riddles(), mode(), true)),
       game: {
         ready: signal(true),

@@ -9,8 +9,8 @@ import { ArcadeRoom } from './arcade-room';
   template: `
     <app-riddle-page
       [riddleId]="riddleId"
-      title="Salle d’arcade"
-      number="07"
+      title="Arcade"
+      flavorText="J'adore ces jeux presqu'autant que j'ai aimé Cypherpunk 2077."
     >
       <ng-template><app-arcade-room /></ng-template>
     </app-riddle-page>

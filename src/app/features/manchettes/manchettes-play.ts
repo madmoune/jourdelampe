@@ -23,6 +23,7 @@ import {
   initialMinefield,
   MINE_COUNTS,
   MINES,
+  NEIGHBORS,
   type MineMark,
   openCell,
 } from './manchettes.model';
@@ -33,7 +34,6 @@ const ARROWS: Readonly<Record<string, readonly [number, number]>> = {
   ArrowLeft: [0, -1],
   ArrowRight: [0, 1],
 };
-const NUMBER_OF_LETTERS = CROSSWORD_CELLS.filter((cell) => cell.open).length;
 const CROSSWORD_START = CLUES[0].start;
 const CLUES_BY_CELL = CROSSWORD_CELLS.map(({ index }) =>
   CLUES.filter((clue) => clue.cells.includes(index)),
@@ -65,7 +65,6 @@ export class ManchettesPlay {
   });
   protected readonly width = GRID_WIDTH;
   protected readonly height = GRID_HEIGHT;
-  protected readonly lettersTotal = NUMBER_OF_LETTERS;
   protected readonly cells = CROSSWORD_CELLS;
   protected readonly clueGroups = [
     { label: 'Horizontalement', list: CLUES.filter((clue) => clue.direction === 'across') },
@@ -73,10 +72,8 @@ export class ManchettesPlay {
   ];
   protected readonly counts = MINE_COUNTS;
   protected readonly orders = EXTRACTION_ORDERS;
-  protected readonly mineCount = MINES.size;
   protected readonly letterFocus = signal(CROSSWORD_START);
   protected readonly mineFocus = signal(0);
-  protected readonly flagMode = signal(false);
   private readonly direction = signal<Direction>('across');
   protected readonly activeClue = computed(
     () =>
@@ -84,13 +81,11 @@ export class ManchettesPlay {
       CLUES_BY_CELL[this.letterFocus()][0],
   );
   protected readonly activeCells = computed(() => new Set(this.activeClue()?.cells));
-  protected readonly letterCount = computed(() => this.progress().letters.filter(Boolean).length);
-  protected readonly flags = computed(
-    () => this.progress().mines.filter((mark) => mark === 'flagged').length,
-  );
-  protected readonly lost = computed(() => this.progress().mines.includes('hit'));
+  protected readonly crashed = computed(() => this.progress().mines.some((mark) => mark === 'hit'));
   protected readonly won = computed(
-    () => this.progress().mines.filter((mark) => mark === 'clear').length === GRID_SIZE - MINES.size,
+    () =>
+      !this.crashed() &&
+      this.progress().mines.filter((mark) => mark === 'clear').length === GRID_SIZE - MINES.size,
   );
   protected readonly extracted = computed(() =>
     EXTRACTION_CELLS.map((cell) => {
@@ -99,7 +94,9 @@ export class ManchettesPlay {
       return { found, letter: found ? state.letters[cell] : '' };
     }),
   );
-  protected readonly foundCount = computed(() => this.extracted().filter((item) => item.found).length);
+  protected readonly foundCount = computed(
+    () => this.extracted().filter((item) => item.found).length,
+  );
 
   protected chooseClue(clue: CrosswordClue): void {
     this.direction.set(clue.direction);
@@ -114,10 +111,7 @@ export class ManchettesPlay {
 
   protected enterLetter(event: Event, cell: number): void {
     const input = event.target as HTMLInputElement;
-    const letter = input.value
-      .normalize('NFD')
-      .toUpperCase()
-      .match(/[A-Z]/u)?.[0] ?? '';
+    const letter = input.value.normalize('NFD').toUpperCase().match(/[A-Z]/u)?.[0] ?? '';
     input.value = letter;
     const state = this.progress();
     if (state.letters[cell] !== letter) {
@@ -153,13 +147,22 @@ export class ManchettesPlay {
   }
 
   protected playMine(cell: number): void {
-    if (this.flagMode()) {
-      this.toggleFlag(cell);
+    const state = this.progress();
+    if (this.won() || this.crashed()) return;
+    if (state.mines[cell] === 'clear') {
+      const neighbors = NEIGHBORS[cell];
+      const flags = neighbors.filter((neighbor) => state.mines[neighbor] === 'flagged').length;
+      if (flags !== this.counts[cell]) return;
+      let mines = [...state.mines];
+      for (const neighbor of neighbors) {
+        if (mines[neighbor] !== 'hidden') continue;
+        mines = openCell(mines, neighbor);
+      }
+      this.saveMinefield(state, mines);
       return;
     }
-    const state = this.progress();
-    if (this.lost() || this.won() || state.mines[cell] !== 'hidden') return;
-    this.save({ ...state, mines: openCell(state.mines, cell) });
+    if (state.mines[cell] !== 'hidden') return;
+    this.saveMinefield(state, openCell(state.mines, cell));
   }
 
   protected markMine(event: MouseEvent, cell: number): void {
@@ -176,7 +179,6 @@ export class ManchettesPlay {
 
   protected resetMines(): void {
     this.save({ ...this.progress(), mines: initialMinefield() });
-    this.flagMode.set(false);
   }
 
   protected coordinates(cell: number): string {
@@ -195,7 +197,7 @@ export class ManchettesPlay {
 
   private toggleFlag(cell: number): void {
     const state = this.progress();
-    if (this.lost() || this.won()) return;
+    if (this.won() || this.crashed()) return;
     const mark = state.mines[cell];
     if (mark !== 'hidden' && mark !== 'flagged') return;
     const mines = [...state.mines];
@@ -232,6 +234,16 @@ export class ManchettesPlay {
     } catch {}
   }
 
+  private saveMinefield(state: Progress, mines: readonly MineMark[]): void {
+    if (mines.some((mark) => mark === 'hit')) {
+      this.progress.set({ ...state, mines });
+      return;
+    }
+    if (mines.some((mark, index) => mark !== state.mines[index])) {
+      this.save({ ...state, mines });
+    }
+  }
+
   private restore(key: string): Progress {
     try {
       const stored = JSON.parse(this.browser?.localStorage.getItem(key) ?? 'null');
@@ -247,10 +259,10 @@ export class ManchettesPlay {
         stored.mines.length === GRID_SIZE &&
         stored.mines.every(
           (mark: unknown, cell: number) =>
-            mark === 'hidden' || mark === 'flagged' ||
-            (MINES.has(cell) ? mark === 'hit' : mark === 'clear'),
+            mark === 'hidden' || mark === 'flagged' || (!MINES.has(cell) && mark === 'clear'),
         )
-      ) return { letters: stored.letters, mines: stored.mines };
+      )
+        return { letters: stored.letters, mines: stored.mines };
     } catch {}
     return { letters: Array<string>(GRID_SIZE).fill(''), mines: initialMinefield() };
   }

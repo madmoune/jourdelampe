@@ -15,12 +15,7 @@ import { RiddleAttempts } from '../riddles/riddle-attempts';
 import { ZEBRA_ID } from '../riddles/riddle-pages';
 import { RiddleSubmissions } from '../riddles/riddle-submissions';
 import { ZebraGrid } from './zebra-grid';
-import {
-  decodeCompleteGrid,
-  ZEBRA_ASSOCIATION_COUNT,
-  ZEBRA_NAME_TARGETS,
-  type ZebraNameTarget,
-} from './zebra.model';
+import { decodeCompleteGrid, ZEBRA_NAME_TARGETS, type ZebraNameTarget } from './zebra.model';
 
 interface SurnameCheck {
   readonly code: string;
@@ -51,7 +46,6 @@ export class ZebraPlay {
   protected readonly game = inject(GameStore);
   private readonly attempts = inject(RiddleAttempts);
   private readonly submissions = inject(RiddleSubmissions);
-  protected readonly totalAssociations = ZEBRA_ASSOCIATION_COUNT;
   protected readonly surnameTargets = ZEBRA_NAME_TARGETS;
   protected readonly riddle = computed(() =>
     this.game.riddles().find((item) => item.id === ZEBRA_ID),

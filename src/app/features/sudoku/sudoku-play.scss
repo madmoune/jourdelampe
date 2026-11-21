@@ -5,14 +5,36 @@
 .vigie {
   display: grid;
   grid-template-columns: minmax(0, 460px) minmax(0, 360px);
+  grid-template-rows: auto auto auto;
   align-items: start;
   gap: clamp(18px, 4vw, 42px);
+}
+
+.sudoku {
+  display: contents;
+}
+
+.sudoku h2 {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.sudoku table {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.sudoku .grid-status {
+  grid-column: 1;
+  grid-row: 3;
 }
 
 h2 {
   margin: 0 0 10px;
   color: #efdfbd;
-  font: 30px/1.1 Georgia, serif;
+  font:
+    30px/1.1 Georgia,
+    serif;
 }
 
 p {
@@ -22,8 +44,7 @@ p {
   line-height: 1.65;
 }
 
-.file-label,
-.signal-label {
+.file-label {
   color: #bcd583;
   font: 11px/1.4 monospace;
   letter-spacing: 0.08em;
@@ -86,6 +107,10 @@ input:focus {
 }
 
 .semaphore {
+  box-sizing: border-box;
+  grid-column: 2;
+  grid-row: 2;
+  align-self: stretch;
   min-width: 0;
   padding: clamp(13px, 2.5vw, 22px);
   border: 1px solid #78628e;
@@ -95,51 +120,79 @@ input:focus {
 .signal-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 6px;
-  margin: 0 0 15px;
+  grid-auto-rows: minmax(0, 1fr);
+  gap: 8px;
+  height: 100%;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .signal-grid li {
   display: grid;
+  min-width: 0;
+  min-height: 0;
+  align-content: start;
   justify-items: center;
-  gap: 4px;
-  padding: 7px 2px;
+  gap: 7px;
+  padding: 9px 6px;
   border: 1px solid #58466b;
   background: #171124;
-  color: #f3e3bb;
 }
 
-.pose {
+.signal-flags {
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  gap: 13px;
+  min-height: 72px;
+}
+
+.digit-flag {
+  position: relative;
   display: block;
-  width: min(100%, 66px);
+  width: 29px;
+  height: 60px;
 }
 
-.pose-grid {
-  fill: none;
-  stroke: #58466b;
+.flag-pole {
+  position: absolute;
+  bottom: 0;
+  left: 3px;
+  width: 2px;
+  height: 47px;
+  background: #9a87a9;
 }
 
-.pose-arm {
-  stroke: #f3e3bb;
-  stroke-width: 2.5px;
+.flag-cloth {
+  position: absolute;
+  top: 3px;
+  left: 5px;
+  display: grid;
+  width: 24px;
+  height: 20px;
+  place-items: center;
+  clip-path: polygon(0 0, 100% 12%, 84% 100%, 0 88%);
+  background: #796887;
+  color: #f3e3bb;
+  font: 700 13px/1 monospace;
 }
 
-.pose-center,
-.pose-flag {
-  fill: #dcff79;
+.digit-flag:first-child .flag-cloth {
+  transform: rotate(-4deg);
 }
 
-.semaphore a {
-  color: #dcff79;
-  font-size: 13px;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+.digit-flag:last-child .flag-cloth {
+  transform: rotate(4deg);
 }
 
 @media (max-width: 740px) {
   .vigie {
     grid-template-columns: minmax(0, 460px);
+  }
+
+  .semaphore {
+    grid-column: 1;
+    grid-row: 4;
   }
 }

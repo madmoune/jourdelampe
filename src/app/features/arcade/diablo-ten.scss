@@ -55,22 +55,6 @@ progress {
 .life { --fluid: #a02b41; }
 .mana { --fluid: #375eb6; }
 
-.last-attack {
-  box-sizing: border-box;
-  max-width: 610px;
-  margin: 0 auto;
-  padding: 4px 10px;
-  background: #29202a;
-  border: 1px solid #72595f;
-  color: #ffe6bd;
-  text-align: center;
-}
-
-.last-attack code {
-  letter-spacing: .15em;
-  font-weight: 700;
-}
-
 .warning { fill: #cb391c38; stroke: #ffac69; stroke-width: 1.4; stroke-dasharray: 5 2; }
 .hurt { filter: brightness(1.65) drop-shadow(0 0 2px #fb8a54); }
 .charge { filter: drop-shadow(0 0 4px #e35c28); }

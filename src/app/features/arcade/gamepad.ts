@@ -59,6 +59,7 @@ export class HeldButtons {
 
 @Directive({
   selector: '[arcadeControls]',
+  standalone: true,
   host: {
     '(keydown)': 'press($event)',
     '(keyup)': 'release($event)',

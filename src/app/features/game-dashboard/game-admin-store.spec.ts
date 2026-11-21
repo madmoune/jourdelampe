@@ -85,6 +85,26 @@ describe('gestion du jeu et suivi des joueurs', () => {
     );
   });
 
+  it('complète le suivi avec les huit dossiers prévus quand le catalogue est incomplet', () => {
+    expect(store.riddleCount()).toBe(8);
+    expect(store.riddles().map((riddle) => riddle.title)).toEqual([
+      'Zebra Pretzel',
+      'La Fourchette',
+      'Le début de la fin',
+      'La porcherie',
+      'Sudoquoi?',
+      'Crossword Démineur (ne jamais oublier le word)',
+      'Arcade',
+      'Énigme 8',
+    ]);
+    expect(
+      store
+        .riddles()
+        .slice(3)
+        .every((riddle) => !riddle.configured),
+    ).toBe(true);
+  });
+
   it('conserve le réglage lors de la remise à zéro', async () => {
     await store.reset();
     const [path, patch, auth] = update.mock.calls[0];

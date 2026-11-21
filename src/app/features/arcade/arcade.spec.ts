@@ -189,6 +189,7 @@ it('affiche les poses et les dégâts binaires de Diablo et présente les jauges
     const console = page.querySelector('.console')!;
     const gauges = [...page.querySelectorAll('.golem-health, .orb')];
     expect(gauges.map((gauge) => gauge.textContent?.trim())).toEqual(['Golem de cendre', 'PV', 'PM']);
+    expect(page.querySelector('.last-attack')).toBeNull();
 
     page.querySelector<HTMLButtonElement>('[aria-label="A · Frapper"]')!.click();
     tick(100);
@@ -199,7 +200,6 @@ it('affiche les poses et les dégâts binaires de Diablo et présente les jauges
     for (let time = 120; time <= 220; time += 20) tick(time);
     fixture.detectChanges();
     expect(swing()?.getAttribute('viewBox')).toBe('110 0 110 100');
-    expect(page.querySelector('.last-attack')?.textContent).toContain('01000011');
     expect(page.querySelector('.damage-popup')).toBeNull();
 
     for (let time = 240; time <= 500; time += 20) tick(time);
@@ -211,7 +211,6 @@ it('affiche les poses et les dégâts binaires de Diablo et présente les jauges
     expect(swing()?.getAttribute('visibility')).toBe('hidden');
     expect(page.querySelector('[data-action="spell"]')?.getAttribute('visibility')).toBe('visible');
     expect(page.querySelector('.ember')).not.toBeNull();
-    expect(page.querySelector('.last-attack')?.textContent).toContain('01001011');
     for (let time = 540; time <= 1260; time += 20) tick(time);
     fixture.detectChanges();
     expect(page.querySelector('.damage-popup')?.textContent).toBe('01001011');
@@ -220,7 +219,6 @@ it('affiche les poses et les dégâts binaires de Diablo et présente les jauges
     page.querySelector<HTMLButtonElement>('[aria-label="A · Frapper"]')!.click();
     tick(1280);
     fixture.detectChanges();
-    expect(page.querySelector('.last-attack')?.textContent).toContain('01000011');
     expect(page.querySelector('.damage-popup')?.textContent).toBe('01001011');
     for (let time = 1300; time <= 1420; time += 20) tick(time);
     fixture.detectChanges();

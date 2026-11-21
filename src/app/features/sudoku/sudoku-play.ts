@@ -8,26 +8,18 @@ import {
   linkedSignal,
   signal,
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { GameStore } from '../riddles/game-store';
 import { ParticipantStore } from '../riddles/participant-store';
-import { BOX_SIZE, flagCells, FLAG_DIGITS, isCompleteSudoku, SUDOKU_GIVENS, SUDOKU_SIZE } from './sudoku.model';
-
-const DIRECTIONS = [
-  'en haut à gauche',
-  'en haut',
-  'en haut à droite',
-  'à gauche',
-  '',
-  'à droite',
-  'en bas à gauche',
-  'en bas',
-  'en bas à droite',
-];
+import {
+  BOX_SIZE,
+  FLAG_DIGITS,
+  isCompleteSudoku,
+  SUDOKU_GIVENS,
+  SUDOKU_SIZE,
+} from './sudoku.model';
 
 @Component({
   selector: 'app-sudoku-play',
-  imports: [RouterLink],
   templateUrl: './sudoku-play.html',
   styleUrl: './sudoku-play.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -53,18 +45,6 @@ export class SudokuPlay {
   protected readonly focused = signal(this.givens.findIndex((digit) => digit === 0));
   protected readonly complete = computed(() => isCompleteSudoku(this.board()));
   protected readonly filledCount = computed(() => this.board().filter(Boolean).length);
-  protected readonly poses = computed(() =>
-    this.complete()
-      ? this.flagDigits.map((_, box) =>
-          flagCells(this.board(), box).map((cell) => ({
-            cell,
-            x: 9 + (cell % this.boxSize) * 24,
-            y: 9 + Math.floor(cell / this.boxSize) * 24,
-            direction: DIRECTIONS[cell],
-          })),
-        )
-      : [],
-  );
 
   protected selectCell(event: FocusEvent, index: number): void {
     this.focused.set(index);
@@ -116,7 +96,8 @@ export class SudokuPlay {
         Array.isArray(stored) &&
         stored.length === this.givens.length &&
         stored.every(
-          (digit) => typeof digit === 'number' && Number.isInteger(digit) && digit >= 0 && digit <= 9,
+          (digit) =>
+            typeof digit === 'number' && Number.isInteger(digit) && digit >= 0 && digit <= 9,
         )
       ) {
         return this.givens.map((digit, index) => digit || stored[index]);

@@ -53,29 +53,42 @@ describe('données des mots croisés et du démineur', () => {
       return true;
     };
     for (let step = 0; step < GRID_SIZE && unknown().length; step++) {
-      if (apply(unknown(), MINES.size - state.filter((mark) => mark === 'flagged').length)) continue;
+      if (apply(unknown(), MINES.size - state.filter((mark) => mark === 'flagged').length))
+        continue;
       const constraints = indices.flatMap((cell) => {
         if (state[cell] !== 'clear') return [];
         const neighbors = NEIGHBORS[cell];
         const unmarked = neighbors.filter((index) => state[index] === 'hidden');
         if (!unmarked.length) return [];
-        return [{
-          cells: unmarked,
-          count: MINE_COUNTS[cell] - neighbors.filter((index) => state[index] === 'flagged').length,
-        }];
+        return [
+          {
+            cells: unmarked,
+            count:
+              MINE_COUNTS[cell] - neighbors.filter((index) => state[index] === 'flagged').length,
+          },
+        ];
       });
       if (constraints.some(({ cells, count }) => apply(cells, count))) continue;
       if (
-        !constraints.some((narrow) => constraints.some((wide) =>
-          narrow.cells.length < wide.cells.length &&
-          narrow.cells.every((cell) => wide.cells.includes(cell)) &&
-          apply(wide.cells.filter((cell) => !narrow.cells.includes(cell)), wide.count - narrow.count),
-        ))
-      ) break;
+        !constraints.some((narrow) =>
+          constraints.some(
+            (wide) =>
+              narrow.cells.length < wide.cells.length &&
+              narrow.cells.every((cell) => wide.cells.includes(cell)) &&
+              apply(
+                wide.cells.filter((cell) => !narrow.cells.includes(cell)),
+                wide.count - narrow.count,
+              ),
+          ),
+        )
+      )
+        break;
     }
     expect(state).not.toContain('hidden');
     expect(state).not.toContain('hit');
-    expect(indices.filter((cell) => state[cell] === 'flagged')).toEqual([...MINES].sort((a, b) => a - b));
+    expect(indices.filter((cell) => state[cell] === 'flagged')).toEqual(
+      [...MINES].sort((a, b) => a - b),
+    );
   });
 });
 
@@ -94,51 +107,115 @@ describe('interaction d’En manchettes', () => {
   });
   afterEach(() => localStorage.removeItem(key));
 
-  it('remplit l’extraction uniquement après ouverture de la case correspondante', () => {
+  it('conserve l’extraction dans l’état du démineur sans bloc dédié', () => {
     const fixture = TestBed.createComponent(ManchettesPlay);
     fixture.detectChanges();
     const page: HTMLElement = fixture.nativeElement;
     expect(page.querySelectorAll('.crossword input')).toHaveLength(194);
     expect(page.querySelectorAll('.mine-square')).toHaveLength(504);
     expect(page.querySelectorAll('.clues button')).toHaveLength(28);
+    expect(page.querySelectorAll('.file-label')).toHaveLength(0);
+    expect(page.querySelector('.extraction')).toBeNull();
+    expect(page.querySelector('[aria-pressed]')).toBeNull();
+    expect(page.querySelector('.mine-tools span')).toBeNull();
+    expect(page.textContent).not.toContain('Un nombre indique combien de mines');
+    expect(page.textContent).not.toContain('Annuler');
+    expect(page.querySelectorAll('.mine-tools button')).toHaveLength(1);
+    expect(page.querySelector<HTMLButtonElement>('.mine-tools button')?.textContent).toContain(
+      'Recommencer le démineur',
+    );
     const first = EXTRACTION_CELLS[0];
     const letter = page.querySelector<HTMLInputElement>(`#word-cell-${first}`)!;
     letter.value = 'é';
     letter.dispatchEvent(new Event('input', { bubbles: true }));
     fixture.detectChanges();
     expect(letter.value).toBe('E');
-    expect(page.querySelector('.extraction li strong')?.textContent).toBe('·');
+    expect(page.querySelector('.board-status')?.textContent).toContain(
+      '0 / 14 cases d’extraction trouvées',
+    );
     page.querySelector<HTMLButtonElement>(`#mine-cell-${first}`)!.click();
     fixture.detectChanges();
     expect(page.querySelector('.target-order')?.textContent).toBe('1');
-    expect(page.querySelector('.extraction li strong')?.textContent).toBe('E');
+    expect(page.querySelector('.board-status')?.textContent).toContain(
+      '1 / 14 cases d’extraction trouvées',
+    );
   });
 
-  it('pose un drapeau, déclenche une mine sans lui, puis réinitialise seulement le démineur', () => {
+  it('révèle les cases voisines quand les drapeaux correspondent au chiffre', () => {
+    const fixture = TestBed.createComponent(ManchettesPlay);
+    fixture.detectChanges();
+    const page: HTMLElement = fixture.nativeElement;
+    const initial = initialMinefield();
+    const target = MINE_COUNTS.findIndex(
+      (count, cell) =>
+        initial[cell] === 'clear' &&
+        count > 0 &&
+        NEIGHBORS[cell].some((neighbor) => initial[neighbor] === 'hidden') &&
+        NEIGHBORS[cell].some((neighbor) => initial[neighbor] === 'hidden' && !MINES.has(neighbor)),
+    );
+    expect(target).toBeGreaterThanOrEqual(0);
+    const mineNeighbors = NEIGHBORS[target].filter((neighbor) => MINES.has(neighbor));
+    const safeNeighbors = NEIGHBORS[target].filter(
+      (neighbor) => initial[neighbor] === 'hidden' && !MINES.has(neighbor),
+    );
+    for (const mine of mineNeighbors) {
+      page
+        .querySelector<HTMLButtonElement>(`#mine-cell-${mine}`)!
+        .dispatchEvent(new MouseEvent('contextmenu', { cancelable: true, bubbles: true }));
+      fixture.detectChanges();
+    }
+    page.querySelector<HTMLButtonElement>(`#mine-cell-${target}`)!.click();
+    fixture.detectChanges();
+    expect(
+      safeNeighbors.every((neighbor) =>
+        page.querySelector(`#mine-cell-${neighbor}`)?.classList.contains('clear'),
+      ),
+    ).toBe(true);
+  });
+
+  it('montre la mine qui explose avant de permettre de recommencer', () => {
     const fixture = TestBed.createComponent(ManchettesPlay);
     fixture.detectChanges();
     const page: HTMLElement = fixture.nativeElement;
     const mine = [...MINES][0];
     const button = page.querySelector<HTMLButtonElement>(`#mine-cell-${mine}`)!;
-    button.dispatchEvent(new MouseEvent('contextmenu', { cancelable: true, bubbles: true }));
-    fixture.detectChanges();
-    expect(button.classList.contains('flagged')).toBe(true);
-    button.click();
-    fixture.detectChanges();
-    expect(button.classList.contains('hit')).toBe(false);
-    button.dispatchEvent(new KeyboardEvent('keydown', { key: 'f', cancelable: true, bubbles: true }));
-    button.click();
-    fixture.detectChanges();
-    expect(button.classList.contains('hit')).toBe(true);
     const letter = page.querySelector<HTMLInputElement>('.crossword input')!;
     letter.value = 'A';
     letter.dispatchEvent(new Event('input', { bubbles: true }));
-    page.querySelectorAll<HTMLButtonElement>('.mine-tools button')[1].click();
+    fixture.detectChanges();
+    button.click();
+    fixture.detectChanges();
+    expect(page.querySelectorAll('.mine-square.hit')).toHaveLength(1);
+    expect(page.querySelectorAll('.mine-square.flagged')).toHaveLength(0);
+    expect(button.classList.contains('clear')).toBe(false);
+    expect(button.classList.contains('hit')).toBe(true);
+    expect(button.querySelector('.mine-explosion')?.textContent).toBe('💥');
+    expect(page.textContent).toContain('Mine déclenchée.');
+    expect(page.textContent).not.toContain('Annuler');
+    expect(letter.value).toBe('A');
+    const storedAfterCrash: { letters: string[]; mines: MineMark[] } = JSON.parse(
+      localStorage.getItem(key)!,
+    );
+    expect(storedAfterCrash.mines).toEqual(initialMinefield());
+
+    const safeCell = EXTRACTION_CELLS[0];
+    const safe = page.querySelector<HTMLButtonElement>(`#mine-cell-${safeCell}`)!;
+    safe.click();
+    fixture.detectChanges();
+    expect(safe.classList.contains('clear')).toBe(false);
+    page.querySelector<HTMLButtonElement>('.mine-tools button')!.click();
     fixture.detectChanges();
     expect(button.classList.contains('hit')).toBe(false);
     expect(letter.value).toBe('A');
+    const storedAfterRestart: { letters: string[]; mines: MineMark[] } = JSON.parse(
+      localStorage.getItem(key)!,
+    );
+    expect(storedAfterRestart.mines).toEqual(initialMinefield());
+    safe.click();
+    fixture.detectChanges();
+    expect(safe.classList.contains('clear')).toBe(true);
     const stored: { letters: string[]; mines: MineMark[] } = JSON.parse(localStorage.getItem(key)!);
     expect(stored.letters).toContain('A');
-    expect(stored.mines).toEqual(initialMinefield());
+    expect(stored.mines[safeCell]).toBe('clear');
   });
 });

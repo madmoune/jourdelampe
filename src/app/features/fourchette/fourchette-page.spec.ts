@@ -83,6 +83,7 @@ describe('La Fourchette et le gabarit commun des énigmes', () => {
       expect(flavor.compareDocumentPosition(input) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
       expect(input.compareDocumentPosition(puzzle) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
       expect(page.querySelector('label')?.textContent).toBe('Réponse (12 lettres)');
+      expect(page.querySelector('.cheatsheet-link')?.getAttribute('href')).toBe('/cheatsheet');
       expect(flavor.textContent).toBe(
         'On ne doit jamais faire cavalier seul, sauf si on est solide comme le roque (ou un personnage de Pokemon).',
       );

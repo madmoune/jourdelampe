@@ -1,27 +1,24 @@
 import { ChangeDetectionStrategy, Component, HostListener, signal } from '@angular/core';
+import { MATCHMAKER_CLUES, MATCHMAKER_DECOYS } from './matchmaker-clues';
 
 export interface MatchmakerSongEntry {
   readonly excerpt: string;
+  readonly audioSrc: string;
   readonly artist: string;
   readonly firstLetter: string;
   readonly secondLetter: string;
 }
 
-export const MATCHMAKER_COUNT = 14;
+export const MATCHMAKER_COUNT = MATCHMAKER_CLUES.length;
 
 export const MATCHMAKER_SONGS: readonly string[] = Array.from(
   { length: MATCHMAKER_COUNT },
   (_, index) => `Extrait de chanson ${String(index + 1).padStart(2, '0')}`,
 );
 
-export const MATCHMAKER_LEFT_TEXTS: readonly string[] = Array.from(
+export const MATCHMAKER_AUDIO_PATHS: readonly string[] = Array.from(
   { length: MATCHMAKER_COUNT },
-  (_, index) => `Texte de gauche ${String(index + 1).padStart(2, '0')}`,
-);
-
-export const MATCHMAKER_RIGHT_TEXTS: readonly string[] = Array.from(
-  { length: MATCHMAKER_COUNT },
-  (_, index) => `Texte de droite ${String(index + 1).padStart(2, '0')}`,
+  (_, index) => `audio/matchmaker/5s/${index + 1}.mp3`,
 );
 
 interface MatchmakerPair {
@@ -37,13 +34,34 @@ interface MatchmakerPair {
 })
 export class MatchmakerPlay {
   protected readonly songs = signal<readonly MatchmakerSongEntry[]>(
-    MATCHMAKER_SONGS.map((excerpt) => ({ excerpt, artist: '', firstLetter: '', secondLetter: '' })),
+    MATCHMAKER_SONGS.map((excerpt, index) => ({
+      excerpt,
+      audioSrc: MATCHMAKER_AUDIO_PATHS[index] ?? '',
+      artist: '',
+      firstLetter: '',
+      secondLetter: '',
+    })),
   );
   protected readonly pairs = signal<readonly MatchmakerPair[]>([]);
   protected readonly selectedLeft = signal<number | null>(null);
-  protected readonly leftTexts = MATCHMAKER_LEFT_TEXTS;
-  protected readonly rightTexts = MATCHMAKER_RIGHT_TEXTS;
+  protected readonly leftTexts = MATCHMAKER_CLUES.map((clue) => clue.start);
+  protected readonly rightTexts = [...MATCHMAKER_CLUES]
+    .sort((a, b) => a.endRow - b.endRow)
+    .map((clue) => clue.end);
   protected readonly rowNumbers = Array.from({ length: MATCHMAKER_COUNT }, (_, index) => index + 1);
+  protected readonly indexMarkers = [
+    ...MATCHMAKER_CLUES.flatMap(({ indices, endRow, indexColumns }, startRow) => {
+      const startY = this.lineY(startRow);
+      const endY = this.lineY(endRow);
+
+      return indexColumns.map((x, column) => ({
+        value: indices[column],
+        x,
+        y: startY + ((endY - startY) * x) / 100,
+      }));
+    }),
+    ...MATCHMAKER_DECOYS,
+  ].sort((a, b) => a.y - b.y || a.x - b.x);
 
   protected updateSong(
     index: number,

@@ -8,7 +8,7 @@ import { RiddleSubmissions } from '../riddles/riddle-submissions';
 import { ZebraPage } from './zebra-page';
 import { ZEBRA_BLOCKS, ZEBRA_CATEGORIES } from './zebra.model';
 
-describe('indication partielle pour la grille complète', () => {
+describe('résolution de la grille Zebra', () => {
   async function setup(
     answerReady = true,
     gridReady = true,
@@ -97,17 +97,22 @@ describe('indication partielle pour la grille complète', () => {
     expect(title.compareDocumentPosition(flavor) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(flavor.compareDocumentPosition(input) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(input.compareDocumentPosition(grid) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    const clues = page.querySelector('.clues')!;
     const information = page.querySelector('.puzzle-information')!;
-    expect(grid.contains(clues)).toBe(true);
-    expect(grid.querySelector('.grid-workspace')!.firstElementChild).toBe(clues);
+    const clues = page.querySelector('.clues')!;
+    expect(clues.querySelector('h3')?.textContent).toBe('Les énoncés');
+    expect(clues.querySelectorAll('li')).toHaveLength(10);
+    expect(
+      grid.querySelector('.grid-workspace')!.firstElementChild?.classList.contains('clues'),
+    ).toBe(true);
+    expect(grid.querySelector('.grid-workspace > .grid-main')).not.toBeNull();
     expect(
       grid.compareDocumentPosition(information) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
-    expect(information.querySelector('.grid-help')).not.toBeNull();
-    expect(information.querySelector('.deduction-notes')).not.toBeNull();
+    expect(information.querySelector('.grid-help')).toBeNull();
+    expect(information.querySelector('.deduction-notes')).toBeNull();
     expect(information.querySelector('.legend')).not.toBeNull();
     expect(grid.querySelector('.grid-help')).toBeNull();
+    expect(grid.querySelector('table')?.getAttribute('aria-describedby')).toBeNull();
     expect(page.querySelector('#grid-title')).toBeNull();
     expect(page.querySelectorAll('input[name="answer"]')).toHaveLength(1);
     expect(page.querySelector('.history')).toBeNull();
@@ -175,10 +180,8 @@ describe('indication partielle pour la grille complète', () => {
     expect(page.querySelector('dialog')!.open).toBe(false);
     page.querySelector<HTMLButtonElement>('.clear-grid')!.click();
     await fixture.whenStable();
-    expect(page.querySelector('.grid-status')?.textContent).toContain(
-      'Complète les 36 associations',
-    );
-    expect(page.querySelector('.grid-status')?.textContent).not.toContain('Ta grille est correcte');
+    expect(page.querySelector('.grid-status')).toBeNull();
+    expect(page.textContent).not.toContain('Ta grille est correcte');
     expect(page.querySelector('.grid-success')).toBeNull();
     expect(page.querySelectorAll('.cell.yes')).toHaveLength(0);
     expect(checkGrid).toHaveBeenCalledTimes(1);
@@ -292,7 +295,7 @@ describe('indication partielle pour la grille complète', () => {
     await fixture.whenStable();
     page.querySelector<HTMLButtonElement>('.cell button')!.click();
     await fixture.whenStable();
-    expect(page.querySelector('.grid-status')?.textContent).not.toContain('Ta grille est correcte');
+    expect(page.textContent).not.toContain('Ta grille est correcte');
     expect(page.querySelector('.grid-success')).toBeNull();
     round.set({ id: 'two', resetAt: 2 });
     await fixture.whenStable();

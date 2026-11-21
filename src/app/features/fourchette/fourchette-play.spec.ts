@@ -137,7 +137,15 @@ describe('grille interactive de La Fourchette', () => {
     expect(cell('A02').getAttribute('aria-pressed')).toBe('true');
   });
 
-  it('vérifie automatiquement les cases dès les dix mots cochés, sans résoudre la réponse finale', async () => {
+  it('affiche la validation dès que les bonnes lettres sont trouvées, sans exiger les mots cochés', async () => {
+    const { page, cell, waitForCheck } = await setup();
+    cell('A01').click();
+    await waitForCheck();
+    expect(page.querySelectorAll('.word-button.found')).toHaveLength(0);
+    expect(page.querySelector('.grid-success')).not.toBeNull();
+  });
+
+  it('vérifie automatiquement les cases cochées sans résoudre la réponse finale', async () => {
     const { page, cell, checkWords, waitForCheck, checkGrid, submit } = await setup(false);
     cell('A01').click();
     await checkWords();
@@ -154,6 +162,7 @@ describe('grille interactive de La Fourchette', () => {
 
   it('conserve la validation et le focus pendant la sélection de l’extraction', async () => {
     const { fixture, page, checkWords, waitForCheck, cell, checkGrid, submit } = await setup();
+    cell('A01').click();
     await checkWords();
     await waitForCheck();
     const message = page.querySelector('.grid-success')!;
@@ -269,7 +278,7 @@ describe('grille interactive de La Fourchette', () => {
   });
 
   it('ignore une vérification reçue après une remise à zéro', async () => {
-    const { fixture, page, checkGrid, checkWords, waitForCheck, round } = await setup();
+    const { fixture, page, cell, checkGrid, checkWords, waitForCheck, round } = await setup();
     let resolve!: (value: boolean) => void;
     checkGrid.mockImplementationOnce(
       () =>
@@ -277,6 +286,7 @@ describe('grille interactive de La Fourchette', () => {
           resolve = done;
         }),
     );
+    cell('A01').click();
     await checkWords();
     await waitForCheck();
     round.set({ id: 'two', resetAt: 2 });
@@ -288,7 +298,7 @@ describe('grille interactive de La Fourchette', () => {
   });
 
   it('regroupe les clics rapprochés et ne perd pas une modification pendant une validation', async () => {
-    const { fixture, cell, page, checkWords, waitForCheck, checkGrid } = await setup();
+    const { fixture, cell, page, waitForCheck, checkGrid } = await setup();
     let resolve!: (value: boolean) => void;
     checkGrid.mockImplementationOnce(
       () =>
@@ -296,9 +306,8 @@ describe('grille interactive de La Fourchette', () => {
           resolve = done;
         }),
     );
-    await checkWords();
-    await waitForCheck();
     cell('A01').click();
+    await waitForCheck();
     cell('A02').click();
     cell('A03').click();
     await fixture.whenStable();

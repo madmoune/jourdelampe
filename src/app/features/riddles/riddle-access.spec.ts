@@ -88,6 +88,7 @@ describe('accès aux énigmes par un nom', () => {
     submit();
     await fixture.whenStable();
     expect(page.textContent).toContain('Tu joues sous le nom Chloé');
+    expect(page.textContent).not.toContain('Ton profil est conservé dans ce navigateur.');
     expect(puzzleCreations).toBe(1);
     page.querySelector<HTMLButtonElement>('.profile-summary button')!.click();
     await fixture.whenStable();

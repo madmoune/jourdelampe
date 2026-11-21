@@ -10,7 +10,7 @@ export const routes: Routes = [
     children: [
       {
         path: 'enigmes/zebra',
-        title: 'Nostalgie — Le Jour de l’AI',
+        title: 'Zebra Pretzel — Le Jour de l’AI',
         loadComponent: () =>
           import('./features/zebra/zebra-page').then((module) => module.ZebraPage),
       },
@@ -34,19 +34,19 @@ export const routes: Routes = [
       },
       {
         path: 'enigmes/la-vigie',
-        title: 'La vigie — Le Jour de l’AI',
+        title: 'Sudoquoi? — Le Jour de l’AI',
         loadComponent: () =>
           import('./features/sudoku/sudoku-page').then((module) => module.SudokuPage),
       },
       {
         path: 'enigmes/en-manchettes',
-        title: 'En manchettes — Le Jour de l’AI',
+        title: 'Crossword Démineur (ne jamais oublier le word) — Le Jour de l’AI',
         loadComponent: () =>
           import('./features/manchettes/manchettes-page').then((module) => module.ManchettesPage),
       },
       {
         path: 'enigmes/salle-arcade',
-        title: 'Salle d’arcade — Le Jour de l’AI',
+        title: 'Arcade — Le Jour de l’AI',
         loadComponent: () =>
           import('./features/arcade/arcade-page').then((module) => module.ArcadePage),
       },
@@ -66,7 +66,7 @@ export const routes: Routes = [
   {
     path: 'enigmes/zebra',
     canMatch: [requireRiddleRelease],
-    title: 'Nostalgie — Le Jour de l’AI',
+    title: 'Zebra Pretzel — Le Jour de l’AI',
     loadComponent: () => import('./features/zebra/zebra-page').then((module) => module.ZebraPage),
   },
   {
@@ -93,21 +93,21 @@ export const routes: Routes = [
   {
     path: 'enigmes/la-vigie',
     canMatch: [requireRiddleRelease],
-    title: 'La vigie — Le Jour de l’AI',
+    title: 'Sudoquoi? — Le Jour de l’AI',
     loadComponent: () =>
       import('./features/sudoku/sudoku-page').then((module) => module.SudokuPage),
   },
   {
     path: 'enigmes/en-manchettes',
     canMatch: [requireRiddleRelease],
-    title: 'En manchettes — Le Jour de l’AI',
+    title: 'Crossword Démineur (ne jamais oublier le word) — Le Jour de l’AI',
     loadComponent: () =>
       import('./features/manchettes/manchettes-page').then((module) => module.ManchettesPage),
   },
   {
     path: 'enigmes/salle-arcade',
     canMatch: [requireRiddleRelease],
-    title: 'Salle d’arcade — Le Jour de l’AI',
+    title: 'Arcade — Le Jour de l’AI',
     loadComponent: () =>
       import('./features/arcade/arcade-page').then((module) => module.ArcadePage),
   },
@@ -115,8 +115,7 @@ export const routes: Routes = [
     path: 'enigmes',
     canMatch: [requireRiddleRelease],
     title: 'Les énigmes — Le Jour de l’AI',
-    loadComponent: () =>
-      import('./features/riddles/riddle-hub').then((module) => module.RiddleHub),
+    loadComponent: () => import('./features/riddles/riddle-hub').then((module) => module.RiddleHub),
   },
   {
     path: 'gestion-enigmes',

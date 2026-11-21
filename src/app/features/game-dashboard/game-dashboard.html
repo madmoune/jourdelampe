@@ -82,24 +82,20 @@
     </section>
     <div class="summary" aria-live="polite">
       <div class="panel">
-        <strong>{{ store.game.solvedCount() }} / {{ store.game.riddleCount() }}</strong
+        <strong>{{ store.solvedCount() }} / {{ store.riddleCount() }}</strong
         ><span>énigmes résolues au moins une fois</span>
       </div>
       <div
         class="panel"
         [class.unlocked]="
-          store.game.mode() === 'team'
-            ? store.game.teamMetaUnlocked()
-            : store.game.individualMetaCount() > 0
+          store.game.mode() === 'team' ? store.teamMetaUnlocked() : store.individualMetaCount() > 0
         "
       >
         @if (store.game.mode() === 'team') {
-          <strong>{{
-            store.game.teamMetaUnlocked() ? 'Méta déverrouillé' : 'Méta verrouillé'
-          }}</strong>
+          <strong>{{ store.teamMetaUnlocked() ? 'Méta déverrouillé' : 'Méta verrouillé' }}</strong>
           <span>Chaque énigme doit avoir au moins une résolution dans l’équipe.</span>
         } @else {
-          <strong>{{ store.game.individualMetaCount() }} accès au méta</strong>
+          <strong>{{ store.individualMetaCount() }} accès au méta</strong>
           <span>Nombre de joueurs ayant personnellement résolu toutes les énigmes.</span>
         }
       </div>
@@ -138,7 +134,7 @@
                 <div>
                   <dt>Progression personnelle</dt>
                   <dd>
-                    <strong>{{ player.solvedCount }} / {{ store.game.riddleCount() }}</strong>
+                    <strong>{{ player.solvedCount }} / {{ store.riddleCount() }}</strong>
                     énigmes · {{ player.percentage }} %
                   </dd>
                 </div>
@@ -154,7 +150,7 @@
               </dl>
               <progress
                 [value]="player.solvedCount"
-                [max]="store.game.riddleCount() || 1"
+                [max]="store.riddleCount() || 1"
                 [attr.aria-label]="'Progression personnelle de ' + player.name"
               >
                 {{ player.percentage }} %
@@ -186,7 +182,9 @@
                               solution.solvedAt | gameTime
                             }}</time>
                           } @else {
-                            <span class="muted">À résoudre</span>
+                            <span class="muted">{{
+                              riddle.configured ? 'À résoudre' : 'À venir'
+                            }}</span>
                           }
                         </div>
                       </li>
@@ -209,11 +207,19 @@
           utilisé lors de la réussite.
         </p>
         <div class="riddle-list">
-          @for (riddle of store.game.riddles(); track riddle.id) {
+          @for (riddle of store.riddles(); track riddle.id) {
             <article class="panel riddle-card" [class.solved]="riddle.solutions.length > 0">
               <div class="card-heading">
                 <h3>{{ riddle.title }}</h3>
-                <span class="badge">{{ riddle.solutions.length ? 'Résolue' : 'Non résolue' }}</span>
+                <span class="badge">
+                  {{
+                    riddle.solutions.length
+                      ? 'Résolue'
+                      : riddle.configured
+                        ? 'Non résolue'
+                        : 'À venir'
+                  }}
+                </span>
               </div>
               <p class="secret-answer">
                 <span>Réponse</span
@@ -231,7 +237,13 @@
                   }
                 </ul>
               } @else {
-                <p class="muted">Personne n’a encore résolu cette énigme.</p>
+                <p class="muted">
+                  {{
+                    riddle.configured
+                      ? 'Personne n’a encore résolu cette énigme.'
+                      : 'Cette énigme n’est pas encore configurée.'
+                  }}
+                </p>
               }
             </article>
           } @empty {

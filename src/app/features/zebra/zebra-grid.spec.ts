@@ -28,7 +28,7 @@ describe('grille Zebra cliquable et sauvegardée', () => {
     button('Bob / Position 11 :').click();
     await fixture.whenStable();
     expect(page.querySelectorAll('.cell.yes')).toHaveLength(2);
-    expect(page.querySelector('.progress')?.textContent).toContain('2 / 36');
+    expect(page.querySelector('.progress')).toBeNull();
     expect(button('Bob / Position 1 :').disabled).toBe(true);
     expect(button('Jean-Lou / Position 11 :').disabled).toBe(true);
     expect(button('Bob / Position 2 :').disabled).toBe(false);
@@ -194,7 +194,7 @@ describe('grille Zebra cliquable et sauvegardée', () => {
     clearButton.click();
     await fixture.whenStable();
     expect(page.querySelectorAll('.cell.yes, .cell.no, .cell.blocked')).toHaveLength(0);
-    expect(page.querySelector('.progress')?.textContent).toContain('0 / 36');
+    expect(page.querySelector('.progress')).toBeNull();
     expect(clearButton.disabled).toBe(true);
     expect(JSON.parse(localStorage.getItem('grid-player-one')!)).toEqual({});
     expect(localStorage.getItem('grid-player-two')).toBe(otherMarks);

@@ -85,13 +85,6 @@
       </div>
     </div>
   </div>
-  <p class="last-attack" role="status">
-    @if (game().effect; as attack) {
-      {{ attack === 'strike' ? 'Frappe' : 'Sort' }} · <code>{{ binary(attackDamage[attack], 8) }}</code>
-    } @else {
-      Dernière attaque · —
-    }
-  </p>
   <app-arcade-gamepad [labelA]="game().status === 'playing' ? 'Frapper' : 'Réessayer'"
     labelB="Sort" (control)="input($event)"/>
   @if (game().message; as message) {

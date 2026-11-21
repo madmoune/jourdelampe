@@ -5,7 +5,7 @@ de 12 lettres, puis contenu. Le texte d’ambiance et les cinq lignes de vingt-d
 reprennent les éléments fournis, y compris la distinction entre O et 0.
 
 - Identifiant stable : `fourchette-01`.
-- Page publique : `/enigmes/la-fourchette`, à la même date d’ouverture que Nostalgie.
+- Page publique : `/enigmes/la-fourchette`, à la même date d’ouverture que Zebra Pretzel.
 - Aperçu : `/apercu-ia/enigmes/la-fourchette`.
 - Catalogue Firebase : `game/catalog/fourchette-01` (titre, description, ordre 1).
 - Réponse privée à ajouter : `riddleSecrets/fourchette-01/{answer, normalizedAnswer}`.
@@ -18,9 +18,10 @@ monospace.
 Chaque case et chaque mot sont des boutons à
 bascule accessibles au clavier. Marquer un mot ne sélectionne pas ses lettres.
 
-La grille est vérifiée automatiquement lorsque les dix mots sont cochés, puis
+La grille est vérifiée automatiquement dès qu’une lettre est sélectionnée, puis
 après chaque modification de la sélection, avec un délai de 300 ms pour regrouper
-les clics rapprochés. Aucun bouton ni consigne de vérification n’est affiché.
+les clics rapprochés. Les mots n’ont pas besoin d’être cochés pour valider les
+bonnes lettres. Aucun bouton ni consigne de vérification n’est affiché.
 La vérification soumet un masque de 110 caractères (1 = sélection, 0 = case restante)
 à la validation privée `riddleSecrets/fourchette-01/gridAnswer`. Le serveur
 compare les cases, et pas seulement le nombre de mots cochés. Le verdict est

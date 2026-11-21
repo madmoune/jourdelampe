@@ -38,7 +38,7 @@ describe('page dédiée aux énigmes', () => {
             mode: signal('team'),
             round: signal(null),
             riddles: signal([
-              { id: ZEBRA_ID, title: 'Nostalgie', prompt: '', order: 0, solutions: [] },
+              { id: ZEBRA_ID, title: 'Zebra Pretzel', prompt: '', order: 0, solutions: [] },
             ]),
           },
         },
@@ -47,29 +47,54 @@ describe('page dédiée aux énigmes', () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/apercu-ia/enigmes', RiddleHub);
     const page = harness.routeNativeElement!;
-    expect(page.querySelector('h1')?.textContent).toContain('Les énigmes');
+    expect(page.querySelector('h1')?.textContent).toContain('Puzzle Hunt');
+    expect(page.textContent).toContain(
+      "Montrez que vous avez un tant soit peu d'intelligence et je laisserai votre party tranquille.",
+    );
+    expect(page.textContent).toContain(
+      "J'ai confiance en vous. Confiance que vous allez avoir l'air de gros cons.",
+    );
+    expect(page.querySelector('.cheatsheet-link')?.getAttribute('href')).toBe('/cheatsheet');
+    expect(page.querySelector('.cheatsheet-banner h2')?.textContent).toContain('Cheatsheet');
+    expect(page.querySelector('.cheatsheet-banner')?.textContent).toContain(
+      "Informations pertinentes à la résolution d'énigmes.",
+    );
+    expect(
+      page.querySelector('.puzzle-play > app-riddle-access + .cheatsheet-banner'),
+    ).not.toBeNull();
     expect(page.querySelector('app-riddle-access form')).not.toBeNull();
-    expect(page.querySelectorAll('.riddle')).toHaveLength(8);
-    expect(page.querySelector('.puzzle-link')?.getAttribute('href')).toBe('/apercu-ia/enigmes/zebra');
+    expect(page.querySelectorAll('.riddle')).toHaveLength(9);
+    expect(page.querySelector('.puzzle-link')?.getAttribute('href')).toBe(
+      '/apercu-ia/enigmes/zebra',
+    );
     const fourth = page.querySelectorAll('.riddle')[3];
     expect(fourth.querySelector('h3')?.textContent).toBe('La porcherie');
     expect(fourth.querySelector('.puzzle-link')?.getAttribute('href')).toBe(
       '/apercu-ia/enigmes/la-porcherie',
     );
     const fifth = page.querySelectorAll('.riddle')[4];
-    expect(fifth.querySelector('h3')?.textContent).toBe('La vigie');
-    expect(fifth.querySelector('.puzzle-link')?.getAttribute('href')).toBe('/apercu-ia/enigmes/la-vigie');
+    expect(fifth.querySelector('h3')?.textContent).toBe('Sudoquoi?');
+    expect(fifth.querySelector('.puzzle-link')?.getAttribute('href')).toBe(
+      '/apercu-ia/enigmes/la-vigie',
+    );
     const sixth = page.querySelectorAll('.riddle')[5];
-    expect(sixth.querySelector('h3')?.textContent).toBe('En manchettes');
+    expect(sixth.querySelector('h3')?.textContent).toBe(
+      'Crossword Démineur (ne jamais oublier le word)',
+    );
     expect(sixth.querySelector('.puzzle-link')?.getAttribute('href')).toBe(
       '/apercu-ia/enigmes/en-manchettes',
     );
     const seventh = page.querySelectorAll('.riddle')[6];
-    expect(seventh.querySelector('h3')?.textContent).toBe('Salle d’arcade');
+    expect(seventh.querySelector('h3')?.textContent).toBe('Arcade');
     expect(seventh.querySelector('.puzzle-link')?.getAttribute('href')).toBe(
       '/apercu-ia/enigmes/salle-arcade',
     );
-    expect(page.querySelector('.progress')?.textContent).toContain('0 / 8');
+    expect(page.querySelector('#dossiers-title')).toBeNull();
+    expect(page.querySelector('.reveal-help')).toBeNull();
+    expect(page.querySelector('.progress')).toBeNull();
+    expect(page.querySelector('.riddle .file-label')).toBeNull();
+    expect(page.querySelector('.meta-status .file-label')).toBeNull();
+    expect(page.querySelector('.riddle-grid > .meta-status')).not.toBeNull();
     expect(page.querySelector('.riddle-status')?.textContent).toContain('Non résolue');
     expect(page.querySelector('app-riddle-spoiler')).toBeNull();
     participant.set({ id: 'alice', name: 'Alice', updatedAt: 1 });
@@ -80,10 +105,16 @@ describe('page dédiée aux énigmes', () => {
     await harness.navigateByUrl('/apercu-ia/enigmes/la-porcherie');
     expect(harness.routeNativeElement?.querySelectorAll('app-pigpen-play .pen')).toHaveLength(7);
     await harness.navigateByUrl('/apercu-ia/enigmes/la-vigie');
-    expect(harness.routeNativeElement?.querySelectorAll('app-sudoku-play table input')).toHaveLength(81);
+    expect(
+      harness.routeNativeElement?.querySelectorAll('app-sudoku-play table input'),
+    ).toHaveLength(81);
     await harness.navigateByUrl('/apercu-ia/enigmes/en-manchettes');
-    expect(harness.routeNativeElement?.querySelectorAll('app-manchettes-play .mine-square')).toHaveLength(504);
+    expect(
+      harness.routeNativeElement?.querySelectorAll('app-manchettes-play .mine-square'),
+    ).toHaveLength(504);
     await harness.navigateByUrl('/apercu-ia/enigmes/salle-arcade');
-    expect(harness.routeNativeElement?.querySelectorAll('app-arcade-room .cabinets button')).toHaveLength(4);
+    expect(
+      harness.routeNativeElement?.querySelectorAll('app-arcade-room .cabinets button'),
+    ).toHaveLength(4);
   });
 });

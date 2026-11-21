@@ -9,9 +9,8 @@ import { ManchettesPlay } from './manchettes-play';
   template: `
     <app-riddle-page
       [riddleId]="riddleId"
-      title="En manchettes"
-      number="06"
-      flavorText="Actualité, culture, sport et divertissement : des références à retrouver. Attention où tu mets les pieds."
+      title="Crossword Démineur (ne jamais oublier le word)"
+      flavorText="C'est super d'être posé."
       answerLabel="Réponse (14 lettres)"
     >
       <ng-template>

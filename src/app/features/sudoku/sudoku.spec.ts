@@ -1,6 +1,5 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
 import { SEMAPHORE_SIGNALS } from '../cheatsheet/cheatsheet';
 import { GameStore } from '../riddles/game-store';
 import { ParticipantStore } from '../riddles/participant-store';
@@ -21,7 +20,11 @@ const solveBySingles = () => {
 
   for (let step = 0; step < board.length && board.includes(0); step++) {
     const candidates = board.map((digit, cell) =>
-      digit ? [] : digits.filter((next) => cellUnits[cell].every((unit) => unit.every((index) => board[index] !== next))),
+      digit
+        ? []
+        : digits.filter((next) =>
+            cellUnits[cell].every((unit) => unit.every((index) => board[index] !== next)),
+          ),
     );
     const single = candidates.findIndex((list) => list.length === 1);
     if (single !== -1) {
@@ -83,7 +86,6 @@ describe('interface de La vigie', () => {
     TestBed.configureTestingModule({
       imports: [SudokuPlay],
       providers: [
-        provideRouter([]),
         { provide: GameStore, useValue: { round } },
         { provide: ParticipantStore, useValue: { participant: signal({ id: 'alice' }) } },
       ],
@@ -99,8 +101,14 @@ describe('interface de La vigie', () => {
     const cells = page.querySelectorAll<HTMLInputElement>('table input');
     expect(cells).toHaveLength(81);
     expect(page.querySelectorAll('input[readonly]')).toHaveLength(31);
+    expect(page.querySelector('#sudoku-guide')).toBeNull();
+    expect(page.querySelector('table')?.getAttribute('aria-describedby')).toBeNull();
+    expect(page.querySelector('.sudoku .file-label')).toBeNull();
+    expect(page.querySelector('.semaphore .file-label')).toBeNull();
+    expect(page.querySelector('#signals-title')).toBeNull();
     expect(page.querySelectorAll('.signal-grid li')).toHaveLength(9);
-    expect(page.querySelector('.pose')).toBeNull();
+    expect(page.querySelectorAll('.signal-flags')).toHaveLength(9);
+    expect(page.querySelectorAll('.digit-flag')).toHaveLength(18);
     const [blank, given] = cells;
     blank.focus();
     blank.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', cancelable: true }));
@@ -115,17 +123,20 @@ describe('interface de La vigie', () => {
     expect(JSON.parse(localStorage.getItem(storageKey)!)[0]).toBe(3);
   });
 
-  it('restaure la grille et dessine neuf signaux uniquement lorsque la grille est correcte', () => {
+  it('restaure la grille et conserve les paires de chiffres', () => {
     localStorage.setItem(storageKey, JSON.stringify(solveBySingles()));
     const fixture = TestBed.createComponent(SudokuPlay);
     fixture.detectChanges();
     const page: HTMLElement = fixture.nativeElement;
     expect(page.querySelector('.grid-status')?.textContent).toContain('Grille correcte');
-    expect(page.querySelectorAll('.pose')).toHaveLength(9);
-    expect(page.querySelectorAll('.pose-arm')).toHaveLength(18);
+    expect(page.querySelectorAll('.signal-grid li')).toHaveLength(9);
+    expect(page.querySelectorAll('.signal-flags')).toHaveLength(9);
+    expect(page.querySelectorAll('.digit-flag')).toHaveLength(18);
     round.set({ id: 'two' });
     fixture.detectChanges();
-    expect(page.querySelector('.pose')).toBeNull();
-    expect(page.querySelector('.grid-status')?.textContent).toContain('31 / 81');
+    expect(page.querySelectorAll('.signal-grid li')).toHaveLength(9);
+    expect(page.querySelectorAll('.signal-flags')).toHaveLength(9);
+    expect(page.querySelectorAll('.digit-flag')).toHaveLength(18);
+    expect(page.querySelector('.grid-status')).toBeNull();
   });
 });

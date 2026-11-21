@@ -13,6 +13,8 @@ import {
   RIDDLE_COUNT,
   RIDDLE_PAGES,
   SUDOKU_ID,
+  ZEBRA_ID,
+  ZEBRA_TITLE,
 } from './riddle-pages';
 import { RIDDLE_PREVIEW, RIDDLE_PREVIEW_PATH } from './riddle-release';
 import { RiddleResults } from './riddle-results';
@@ -21,24 +23,25 @@ const PREVIEW_RIDDLES = [
   {
     id: PIGPEN_ID,
     title: 'La porcherie',
-    prompt: 'Sept enclos à remplir. Aperçu des grilles; la réponse finale n’est pas encore configurée.',
+    prompt:
+      'Sept enclos à remplir. Aperçu des grilles; la réponse finale n’est pas encore configurée.',
     order: 3,
   },
   {
     id: SUDOKU_ID,
-    title: 'La vigie',
+    title: 'Sudoquoi?',
     prompt: 'Un sudoku et neuf poses à déchiffrer. Aperçu du dossier.',
     order: 4,
   },
   {
     id: MANCHETTES_ID,
-    title: 'En manchettes',
+    title: 'Crossword Démineur (ne jamais oublier le word)',
     prompt: 'Des mots croisés et un terrain miné. Aperçu du dossier.',
     order: 5,
   },
   {
     id: ARCADE_ID,
-    title: 'Salle d’arcade',
+    title: 'Arcade',
     prompt: 'Quatre jeux, quatre objectifs. Aperçu du dossier.',
     order: 6,
   },
@@ -63,7 +66,10 @@ export class RiddleGame {
   protected readonly total = computed(() => Math.max(RIDDLE_COUNT, this.progress.riddles().length));
   protected readonly slots = computed(() => {
     const riddles = this.progress.riddles();
-    const slots = Array.from({ length: this.total() }, (_, index) => riddles.at(index) ?? null);
+    const slots = Array.from({ length: this.total() }, (_, index) => {
+      const riddle = riddles.at(index) ?? null;
+      return riddle?.id === ZEBRA_ID ? { ...riddle, title: ZEBRA_TITLE } : riddle;
+    });
     if (this.preview) {
       for (const draft of PREVIEW_RIDDLES) {
         if (slots.at(-1) !== null || riddles.some((riddle) => riddle.id === draft.id)) continue;

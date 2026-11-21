@@ -28,6 +28,9 @@ describe('jeu des nonogrammes', () => {
     const page: HTMLElement = fixture.nativeElement;
     const buttons = page.querySelectorAll<HTMLButtonElement>('.cell');
     expect(buttons).toHaveLength(7 * 7 * 7);
+    expect(page.querySelector('.pen-heading')).toBeNull();
+    expect(page.querySelectorAll('.pen[aria-label="Grille de nonogramme"]')).toHaveLength(7);
+    expect(page.querySelector('.nonogram-link')).toBeNull();
     const [first, neighbour] = buttons;
     expect(first.getAttribute('aria-label')).toContain('vide');
 
@@ -47,6 +50,40 @@ describe('jeu des nonogrammes', () => {
     fixture.detectChanges();
     expect(first.textContent?.trim()).toBe('');
     expect(first.getAttribute('aria-label')).toContain('vide');
+  });
+
+  it('marque directement une case barrée au clic droit', () => {
+    const fixture = TestBed.createComponent(PigpenPlay);
+    fixture.detectChanges();
+    const page: HTMLElement = fixture.nativeElement;
+    const [first, neighbour] = page.querySelectorAll<HTMLButtonElement>('.cell');
+    const event = new MouseEvent('contextmenu', { bubbles: true, cancelable: true, button: 2 });
+
+    first.dispatchEvent(event);
+    fixture.detectChanges();
+
+    expect(event.defaultPrevented).toBe(true);
+    expect(first.textContent?.trim()).toBe('×');
+    expect(first.getAttribute('aria-label')).toContain('barrée');
+    expect(neighbour.getAttribute('aria-label')).toContain('vide');
+  });
+
+  it('tourne le même dessin de cochon dans les enclos triangulaires', () => {
+    const boards = Array.from({ length: 7 }, () => Array(49).fill(''));
+    boards[1][0] = 'pig';
+    boards[5][0] = 'pig';
+    localStorage.setItem(storageKey, JSON.stringify(boards));
+
+    const fixture = TestBed.createComponent(PigpenPlay);
+    fixture.detectChanges();
+    const page: HTMLElement = fixture.nativeElement;
+
+    expect(page.querySelector('#pen-1-cell-0 .pig-face')?.getAttribute('style')).toContain(
+      'rotate(90deg)',
+    );
+    expect(page.querySelector('#pen-5-cell-0 .pig-face')?.getAttribute('style')).toContain(
+      'rotate(270deg)',
+    );
   });
 
   it('se parcourt aux flèches en conservant un seul arrêt de tabulation par enclos', () => {
@@ -76,5 +113,22 @@ describe('jeu des nonogrammes', () => {
     round.set({ id: 'two' });
     second.detectChanges();
     expect(page.querySelector('.cell.pig')).toBeNull();
+  });
+
+  it('met en évidence un enclos lorsque ses cochons respectent les indices', () => {
+    const solved = Array.from({ length: 49 }, (_, index) =>
+      index < 7 || index % 7 === 0 || index === 24 ? 'pig' : '',
+    );
+    localStorage.setItem(
+      storageKey,
+      JSON.stringify([solved, ...Array.from({ length: 6 }, () => Array(49).fill(''))]),
+    );
+
+    const fixture = TestBed.createComponent(PigpenPlay);
+    fixture.detectChanges();
+
+    const firstPen: HTMLElement = fixture.nativeElement.querySelector('.pen');
+    expect(firstPen.classList).toContain('complete');
+    expect(firstPen.querySelector('.completion-badge')?.textContent).toContain('Enclos valide');
   });
 });

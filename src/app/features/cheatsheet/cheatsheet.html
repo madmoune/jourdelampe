@@ -2,170 +2,380 @@
   <a class="skip-link" href="#cheatsheet-content">Aller au contenu</a>
   <div class="cheatsheet-shell">
     <header class="sheet-header">
-      <a routerLink="/" class="home-link">← Le Jour de Lampe</a>
+      <a [href]="backLink" class="home-link">← {{ backLabel }}</a>
       <span>FICHE DE RÉFÉRENCE / JOUEURS</span>
     </header>
 
     <main id="cheatsheet-content" class="sheet-content">
       <div class="sheet-heading">
-        <p class="eyebrow">Cheatsheet</p>
-        <h1>Le kit de survie des joueurs</h1>
-        <p class="sheet-intro">
-          Les repères utiles pour décoder les signaux et garder le fil du jeu. Cette fiche va
-          s’enrichir au fil des besoins.
-        </p>
+        <h1>Cheatsheet</h1>
+        <p class="sheet-intro">Informations pertinentes à la résolution d'énigmes.</p>
       </div>
 
-      <section class="reference-section" aria-labelledby="semaphore-title">
+      <section
+        id="hunt-rules"
+        class="reference-section hunt-rules-reference"
+        aria-labelledby="hunt-rules-title"
+      >
         <div class="section-heading">
           <div>
-            <p class="section-kicker">01 · Communication</p>
-            <h2 id="semaphore-title">Sémaphore</h2>
+            <p class="section-kicker">Puzzle hunt</p>
+            <h2 id="hunt-rules-title">Les bases d’un Puzzle Hunt</h2>
           </div>
-          <span class="section-stamp">ALPHABET VISUEL</span>
         </div>
+        <div class="hunt-rules-copy">
+          <ul>
+            <li><strong>Observe :</strong> Le titre, le texte, les nombres et les détails inhabituels peuvent cacher des indices.</li>
+            <li><strong>Déduis :</strong> Les instructions sont rarement explicites. Découvrir la mécanique fait partie du défi!</li>
+            <li><strong>Adapte-toi :</strong> Les règles des jeux classiques ne s’appliquent pas toujours : l’énigme peut les détourner.</li>
+            <li><strong>Explore :</strong> N’hésite pas à fouiller sur Internet! Google, Wikipédia et d’autres outils peuvent être essentiels.</li>
+            <li><strong>Résous :</strong> Utilise la logique, tes connaissances et les indices pour compléter l’énigme.</li>
+            <li><strong>Extrais :</strong> La résolution mène généralement à un mot ou une expression (acrostiche, indexation, codes secrets, etc.).</li>
+            <li><strong>Combine :</strong> Les réponses peuvent servir à résoudre une méta-énigme finale.</li>
+          </ul>
+          <p class="hunt-rules-takeaway"><strong>À retenir :</strong> Tout peut être un indice, et résoudre le puzzle n’est pas toujours la dernière étape!</p>
+        </div>
+      </section>
 
-        <div class="semaphore-intro">
-          <div class="explanation-copy">
-            <p>
-              Le sémaphore est un alphabet visuel : une personne tient un drapeau dans chaque main
-              et forme chaque lettre avec une position précise de ses deux bras.
-            </p>
-            <p>
-              Lis une pose immobile à la fois. Les indications <strong>G</strong> et
-              <strong>D</strong> correspondent au bras gauche et au bras droit de la personne qui
-              signale, pas à ton propre point de vue.
-            </p>
-            <div class="rule-box">
-              <strong>Le réflexe à retenir</strong>
-              <span>Une lettre = deux bras. Les bras restent tendus et les drapeaux ne se croisent que lorsqu’une position « intérieure » le demande.</span>
-            </div>
+      <section id="codes" class="reference-section code-reference" aria-labelledby="codes-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Codes</p>
+            <h2 id="codes-title">Les alphabets à décoder.</h2>
           </div>
+        </div>
+        <div class="code-reference-grid">
+          <article class="code-card" aria-labelledby="morse-title">
+            <div class="code-card-heading">
+              <h3 id="morse-title" class="section-kicker">Morse</h3>
+            </div>
+            <p class="code-card-copy">
+              Un point est court, un tiret est long. Sépare les lettres par des espaces.
+            </p>
+            <div class="code-table" role="list">
+              @for (code of morseCodes; track code.letter) {
+                <div class="code-row" role="listitem">
+                  <span class="code-letter">{{ code.letter }}</span>
+                  <code>{{ code.value }}</code>
+                </div>
+              }
+            </div>
+          </article>
 
-          <aside class="orientation-card" aria-labelledby="direction-title">
-            <p class="mini-label" id="direction-title">Légende des positions</p>
-            <div class="direction-grid">
-              @for (direction of directions; track direction.label) {
-                <div class="direction-item">
-                  <span class="direction-glyph" aria-hidden="true">{{ direction.glyph }}</span>
-                  <span>
-                    <strong>{{ direction.label }}</strong>
-                    <small>{{ direction.detail }}</small>
+          <article class="code-card" aria-labelledby="braille-title">
+            <div class="code-card-heading">
+              <h3 id="braille-title" class="section-kicker">Braille</h3>
+            </div>
+            <p class="code-card-copy">Chaque caractère correspond à une cellule braille.</p>
+            <div class="code-table braille-table" role="list">
+              @for (code of brailleVisuals; track code.letter) {
+                <div class="code-row" role="listitem">
+                  <span class="code-letter">{{ code.letter }}</span>
+                  <span
+                    class="braille-cell"
+                    role="img"
+                    [attr.aria-label]="'Braille ' + code.letter + ' : ' + code.value"
+                  >
+                    @for (dot of code.dots; track $index) {
+                      <span class="braille-dot" [class.is-filled]="dot" aria-hidden="true"></span>
+                    }
                   </span>
                 </div>
               }
             </div>
-            <p class="orientation-note">
-              « Extérieur » s’éloigne de l’axe du corps; « intérieur » traverse devant le corps.
+          </article>
+
+          <article class="code-card" aria-labelledby="binary-title">
+            <div class="code-card-heading">
+              <h3 id="binary-title" class="section-kicker">Binaire</h3>
+            </div>
+            <p class="code-card-copy">
+              Les lettres majuscules sont écrites en ASCII, sur huit chiffres.
             </p>
-          </aside>
-        </div>
-
-        <div class="reading-legend" aria-label="Légende de lecture">
-          <span><b>G</b> bras gauche</span>
-          <span><b>D</b> bras droit</span>
-          <span><b>↗</b> diagonale haute</span>
-          <span><b>↘</b> diagonale basse</span>
-          <span><b>h</b> heure sur un cadran</span>
-        </div>
-
-        <div class="circle-guide" aria-label="Cercles d’apprentissage du sémaphore">
-          @for (circle of circles; track circle.number) {
-            <div class="circle-card">
-              <span class="circle-number">{{ circle.number }}</span>
-              <span>
-                <strong>Cercle {{ circle.number }}</strong>
-                <small>{{ circle.letters }}</small>
-              </span>
+            <div class="code-table" role="list">
+              @for (code of binaryCodes; track code.letter) {
+                <div class="code-row" role="listitem">
+                  <span class="code-letter">{{ code.letter }}</span>
+                  <code>{{ code.value }}</code>
+                </div>
+              }
             </div>
-          }
-        </div>
+          </article>
 
-        <div class="alphabet-heading">
+          <article class="code-card" aria-labelledby="caesar-title">
+            <div class="code-card-heading">
+              <h3 id="caesar-title" class="section-kicker">César</h3>
+            </div>
+            <p class="code-card-copy">
+              Le nombre de décalage est une clé : chaque lettre est remplacée par celle située N
+              positions plus loin, en bouclant après Z. Le tableau montre seulement un exemple en +3
+              ; ce n'est pas toujours la clé. Pour décoder, recule du même nombre.
+            </p>
+            <div class="code-table" role="list">
+              @for (code of caesarCodes; track code.letter) {
+                <div class="code-row" role="listitem">
+                  <span class="code-letter">{{ code.letter }}</span>
+                  <code>→ {{ code.value }}</code>
+                </div>
+              }
+            </div>
+          </article>
+
+          <article class="code-card pigpen-card" aria-labelledby="pigpen-title">
+            <div class="code-card-heading">
+              <h3 id="pigpen-title" class="section-kicker">Pigpen</h3>
+            </div>
+            <p class="code-card-copy">
+              Chaque symbole reprend les traits de la case qui l'entoure. A à I utilisent la première
+              grille, J à R les mêmes formes avec un point, puis S à V et W à Z les deux croix. Dans
+              la Porcherie, lis les motifs des enclos dans l'ordre avec cette clé.
+            </p>
+            <div class="pigpen-grids" role="list" aria-label="Grilles Pigpen">
+              @for (grid of pigpenGrids; track grid.label) {
+                <div class="pigpen-grid-set" role="listitem">
+                  <p class="pigpen-grid-label">{{ grid.label }}</p>
+                  <div
+                    class="pigpen-grid"
+                    [class.pigpen-square-grid]="grid.shape === 'square'"
+                    [class.pigpen-cross-grid]="grid.shape === 'cross'"
+                  >
+                    @for (code of grid.cells; track code.letter) {
+                      <div
+                        class="pigpen-grid-cell"
+                        [class.pigpen-dotted-cell]="code.dotted"
+                        role="img"
+                        [attr.aria-label]="
+                          'Grille Pigpen pour ' +
+                          code.letter +
+                          (code.dotted ? ', avec un point' : '')
+                        "
+                      >
+                        <span class="pigpen-grid-letter" aria-hidden="true">{{ code.letter }}</span>
+                        @if (code.dotted) {
+                          <span class="pigpen-grid-dot" aria-hidden="true"></span>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </article>
+
+          <article class="code-card semaphore-card" aria-labelledby="semaphore-title">
+            <div class="code-card-heading">
+              <h3 id="semaphore-title" class="section-kicker">Sémaphore</h3>
+            </div>
+            <p class="code-card-copy">
+              Le sémaphore utilise deux drapeaux placés à différents angles pour représenter chaque
+              lettre. G et D désignent les bras du signaleur; les figures sont dessinées de face.
+            </p>
+            <div class="signal-grid">
+              @for (signal of signals; track signal.letter) {
+                <article class="signal-card" [attr.aria-labelledby]="'signal-' + signal.letter">
+                  <div class="signal-card-heading">
+                    <h4 [id]="'signal-' + signal.letter">{{ signal.letter }}</h4>
+                  </div>
+                  <div class="semaphore-pose" role="img" [attr.aria-label]="signalLabel(signal)">
+                    <span class="pose-head" aria-hidden="true"></span>
+                    <span class="pose-body" aria-hidden="true"></span>
+                    <span
+                      class="pose-arm pose-arm-left"
+                      aria-hidden="true"
+                      [style.transform]="armAngle(signal.right, 'left')"
+                    ></span>
+                    <span
+                      class="pose-arm pose-arm-right"
+                      aria-hidden="true"
+                      [style.transform]="armAngle(signal.left, 'right')"
+                    ></span>
+                  </div>
+                </article>
+              }
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="zebra" class="reference-section zebra-reference" aria-labelledby="zebra-title">
+        <div class="section-heading">
           <div>
-            <p class="section-kicker">La légende complète</p>
-            <h3>Alphabet A–Z</h3>
+            <h2 id="zebra-title" class="section-kicker">Zebra</h2>
           </div>
-          <p>Les heures sont données comme sur un cadran vu par la personne qui signale.</p>
         </div>
-
-        <div class="signal-grid">
-          @for (signal of signals; track signal.letter) {
-            <article class="signal-card" [attr.aria-labelledby]="'signal-' + signal.letter">
-              <div class="signal-card-heading">
-                <h4 [id]="'signal-' + signal.letter">{{ signal.letter }}</h4>
-                <span>Cercle {{ signal.circle }}</span>
-              </div>
-              <div
-                class="semaphore-pose"
-                role="img"
-                [attr.aria-label]="signalLabel(signal)"
-              >
-                <span class="pose-head" aria-hidden="true"></span>
-                <span class="pose-body" aria-hidden="true"></span>
-                <span
-                  class="pose-arm pose-arm-left"
-                  aria-hidden="true"
-                  [style.transform]="armAngle(signal.left, 'left')"
-                ></span>
-                <span
-                  class="pose-arm pose-arm-right"
-                  aria-hidden="true"
-                  [style.transform]="armAngle(signal.right, 'right')"
-                ></span>
-              </div>
-              <div class="signal-positions">
-                <span><b>G</b>{{ positionLabel(signal.left, 'left') }}</span>
-                <span><b>D</b>{{ positionLabel(signal.right, 'right') }}</span>
-              </div>
-            </article>
-          }
+        <div class="zebra-copy">
+          <p>
+            Un zebra puzzle est une énigme de logique où l'on associe des éléments de plusieurs
+            catégories à partir d'indices.
+          </p>
+          <p>
+            Chaque élément n'apparaît qu'une fois par catégorie. Les indices permettent de confirmer
+            des associations, d'en éliminer d'autres et de croiser les lignes et les colonnes.
+          </p>
+          <p>
+            Le but est de compléter la grille par déductions, jusqu'à ce qu'il ne reste qu'une
+            solution cohérente.
+          </p>
         </div>
-
-        <p class="signal-note">
-          <strong>Note :</strong> le D est montré ici avec G bas et D haut. La variante miroir — G
-          haut et D bas — est aussi reconnue.
-        </p>
-
-        <section class="controls-section" aria-labelledby="controls-title">
-          <div class="alphabet-heading controls-heading">
-            <div>
-              <p class="section-kicker">Pour aller plus loin</p>
-              <h3 id="controls-title">Signaux utiles</h3>
-            </div>
-            <p>Les chiffres et les commandes qui ne sont pas des lettres ordinaires.</p>
+        <figure class="visual-example zebra-example">
+          <figcaption class="visual-example-caption">Exemple de grille logique</figcaption>
+          <div
+            class="zebra-demo"
+            role="img"
+            aria-label="Exemple de grille logique avec des associations confirmées, impossibles et à déduire"
+          >
+            <div class="zebra-demo-corner">Nom<br />Catégorie</div>
+            <div class="zebra-demo-heading">Rouge</div>
+            <div class="zebra-demo-heading">Bleu</div>
+            <div class="zebra-demo-heading">Vert</div>
+            <div class="zebra-demo-label">Alex</div>
+            <div class="zebra-demo-cell is-yes">●</div>
+            <div class="zebra-demo-cell is-no">×</div>
+            <div class="zebra-demo-cell is-open">·</div>
+            <div class="zebra-demo-label">Sam</div>
+            <div class="zebra-demo-cell is-no">×</div>
+            <div class="zebra-demo-cell is-open">·</div>
+            <div class="zebra-demo-cell is-no">×</div>
+            <div class="zebra-demo-label">Jo</div>
+            <div class="zebra-demo-cell is-open">·</div>
+            <div class="zebra-demo-cell is-no">×</div>
+            <div class="zebra-demo-cell is-yes">●</div>
           </div>
-          <div class="control-grid">
-            @for (control of controls; track control.title) {
-              <article class="control-card">
-                <div class="control-symbol">{{ control.symbol }}</div>
-                <div class="control-copy">
-                  <h4>{{ control.title }}</h4>
-                  <p>{{ control.description }}</p>
-                  <span class="control-pose">G {{ positionLabel(control.left, 'left') }} · D {{ positionLabel(control.right, 'right') }}</span>
-                </div>
-                <div
-                  class="semaphore-pose small-pose"
-                  role="img"
-                  [attr.aria-label]="controlLabel(control)"
-                >
-                  <span class="pose-head" aria-hidden="true"></span>
-                  <span class="pose-body" aria-hidden="true"></span>
-                  <span
-                    class="pose-arm pose-arm-left"
-                    aria-hidden="true"
-                    [style.transform]="armAngle(control.left, 'left')"
-                  ></span>
-                  <span
-                    class="pose-arm pose-arm-right"
-                    aria-hidden="true"
-                    [style.transform]="armAngle(control.right, 'right')"
-                  ></span>
-                </div>
-              </article>
+          <p class="visual-example-note">
+            <strong>●</strong> association confirmée · <strong>×</strong> association impossible ·
+            <strong>·</strong> possibilité encore ouverte.
+          </p>
+        </figure>
+      </section>
+
+      <section
+        id="nonograms"
+        class="reference-section nonogram-reference"
+        aria-labelledby="nonograms-title"
+      >
+        <div class="section-heading">
+          <div>
+            <h2 id="nonograms-title" class="section-kicker">Nonograms</h2>
+          </div>
+        </div>
+        <div class="nonogram-copy">
+          <p>
+            Un nonogram est une grille logique où les cases remplies révèlent progressivement une
+            image.
+          </p>
+          <p>
+            Les nombres indiquent, pour chaque ligne et chaque colonne, la taille des groupes de
+            cases remplies et leur ordre.
+          </p>
+          <p>
+            Les groupes sont séparés par au moins une case vide. Un 0 indique qu'aucune case ne doit
+            être remplie.
+          </p>
+        </div>
+        <figure class="visual-example">
+          <figcaption class="visual-example-caption">
+            Exemple d’indices et de cases résolues
+          </figcaption>
+          <div
+            class="nonogram-demo"
+            role="img"
+            aria-label="Petit nonogramme résolu avec des indices en haut et à gauche"
+          >
+            <span class="nonogram-corner" aria-hidden="true"></span>
+            @for (clue of nonogramColumnClues; track $index) {
+              <span class="nonogram-column-clue" aria-hidden="true">{{ clue }}</span>
+            }
+            @for (row of nonogramExample; track $index) {
+              <span class="nonogram-row-clue" aria-hidden="true">{{
+                nonogramRowClues[$index]
+              }}</span>
+              @for (filled of row; track $index) {
+                <span class="nonogram-cell" [class.is-filled]="filled" aria-hidden="true"></span>
+              }
             }
           </div>
-        </section>
+          <p class="visual-example-note">
+            Les cases remplies doivent respecter tous les groupes annoncés par les nombres de leur
+            ligne et de leur colonne.
+          </p>
+        </figure>
+      </section>
+
+      <section
+        id="sudoku"
+        class="reference-section sudoku-reference"
+        aria-labelledby="sudoku-cheatsheet-title"
+      >
+        <div class="section-heading">
+          <div>
+            <h2 id="sudoku-cheatsheet-title" class="section-kicker">Sudoku</h2>
+          </div>
+        </div>
+        <div class="sudoku-copy">
+          <p>
+            Place les chiffres de 1 à 9 une seule fois par ligne, par colonne et par bloc de 3 × 3.
+          </p>
+        </div>
+      </section>
+
+      <section
+        id="minesweeper"
+        class="reference-section minesweeper-reference"
+        aria-labelledby="minesweeper-title"
+      >
+        <div class="section-heading">
+          <div>
+            <h2 id="minesweeper-title" class="section-kicker">Démineur</h2>
+          </div>
+        </div>
+        <div class="minesweeper-copy">
+          <p>
+            Ouvre les cases une à une pour dégager le terrain sans toucher aux mines. Les cases déjà
+            révélées donnent les indices nécessaires pour progresser.
+          </p>
+          <ul>
+            <li>
+              <strong>Un chiffre</strong> indique combien de mines se trouvent dans les huit cases
+              voisines, diagonales comprises.
+            </li>
+            <li>
+              <strong>Un drapeau</strong> marque une case que tu soupçonnes d’être minée. Utilise le
+              clic droit ou la touche F.
+            </li>
+            <li>
+              <strong>L’objectif</strong> est d’ouvrir toutes les cases sûres et de déduire la
+              position des mines grâce aux chiffres.
+            </li>
+          </ul>
+        </div>
+        <figure class="visual-example">
+          <figcaption class="visual-example-caption">Exemple de lecture d’une grille</figcaption>
+          <div
+            class="minesweeper-demo"
+            role="img"
+            aria-label="Grille de démineur avec des cases révélées, des chiffres et deux drapeaux"
+          >
+            @for (cell of minesweeperExample; track $index) {
+              <span
+                class="minesweeper-cell"
+                [class.is-number]="cell.kind === 'number'"
+                [class.is-hidden]="cell.kind === 'hidden'"
+                [class.is-flag]="cell.kind === 'flag'"
+                aria-hidden="true"
+              >
+                @if (cell.kind === 'number') {
+                  {{ cell.value }}
+                } @else if (cell.kind === 'flag') {
+                  ⚑
+                }
+              </span>
+            }
+          </div>
+          <p class="visual-example-note">
+            Un chiffre compte les mines dans ses huit cases voisines. Un drapeau marque une mine
+            soupçonnée; les cases foncées sont encore cachées.
+          </p>
+        </figure>
       </section>
     </main>
 

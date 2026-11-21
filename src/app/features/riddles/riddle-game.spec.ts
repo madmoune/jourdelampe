@@ -23,7 +23,13 @@ describe('liens du catalogue des énigmes', () => {
     { preview: true, path: '/apercu-ia/enigmes/zebra' },
   ])('ouvre le bon lien avec le mode aperçu à $preview', async ({ preview, path }) => {
     const catalog = [
-      { id: ZEBRA_ID, title: 'Nostalgie', prompt: '', order: 0, solutions: [] },
+      {
+        id: ZEBRA_ID,
+        title: 'Zebra Pretzel',
+        prompt: 'Description à masquer',
+        order: 0,
+        solutions: [],
+      },
       { id: FOURCHETTE_ID, title: 'La Fourchette', prompt: '', order: 1, solutions: [] },
       { id: MATCHMAKER_ID, title: 'Le début de la fin', prompt: '', order: 2, solutions: [] },
       { id: PIGPEN_ID, title: 'La porcherie', prompt: '', order: 3, solutions: [] },
@@ -62,22 +68,29 @@ describe('liens du catalogue des énigmes', () => {
     expect(links[3].getAttribute('href')).toBe(
       `${preview ? '/apercu-ia' : ''}/enigmes/la-porcherie`,
     );
-    expect(links[4]?.getAttribute('href')).toBe(preview ? '/apercu-ia/enigmes/la-vigie' : undefined);
+    expect(links[4]?.getAttribute('href')).toBe(
+      preview ? '/apercu-ia/enigmes/la-vigie' : undefined,
+    );
     expect(links[5]?.getAttribute('href')).toBe(
       preview ? '/apercu-ia/enigmes/en-manchettes' : undefined,
     );
     expect(links[6]?.getAttribute('href')).toBe(
       preview ? '/apercu-ia/enigmes/salle-arcade' : undefined,
     );
-    expect(page.querySelectorAll('.riddle')).toHaveLength(8);
+    expect(page.querySelectorAll('.riddle')).toHaveLength(9);
+    expect(page.querySelector('.prompt')).toBeNull();
     expect(
       [...page.querySelectorAll('.riddle h3')].slice(0, 4).map((title) => title.textContent),
-    ).toEqual(['Nostalgie', 'La Fourchette', 'Le début de la fin', 'La porcherie']);
-    expect(page.querySelector('.riddle:last-child')?.textContent).toContain('À venir');
+    ).toEqual(['Zebra Pretzel', 'La Fourchette', 'Le début de la fin', 'La porcherie']);
+    expect(page.querySelectorAll('.riddle')[7]?.textContent).toContain('À venir');
     expect(page.querySelector('.meta-status')?.textContent).toContain('Verrouillé');
+    expect(page.querySelector('.lock-indicator')?.getAttribute('aria-label')).toBe(
+      'Énigme verrouillée',
+    );
+    expect(page.textContent).not.toContain('Réponse masquée jusqu’à la résolution.');
   });
 
-  it('garde le méta séparé et ne montre son énoncé qu’après la huitième réussite', async () => {
+  it('place le méta en neuvième carte et le garde verrouillé jusqu’à la huitième réussite', async () => {
     const buildRiddles = (solvedCount: number) =>
       Array.from({ length: RIDDLE_COUNT + 1 }, (_, index) => ({
         id: index === RIDDLE_COUNT ? META_ID : `riddle-${index}`,
@@ -106,19 +119,21 @@ describe('liens du catalogue des énigmes', () => {
     const fixture = TestBed.createComponent(RiddleGame);
     await fixture.whenStable();
     const page: HTMLElement = fixture.nativeElement;
-    expect(page.querySelectorAll('.riddle')).toHaveLength(RIDDLE_COUNT);
+    expect(page.querySelectorAll('.riddle:not(.meta-status)')).toHaveLength(RIDDLE_COUNT);
     expect(page.querySelector('.meta-status')?.textContent).toContain('Verrouillé');
     expect(page.textContent).not.toContain('Énoncé du méta');
+    expect(page.querySelector('.prompt')).toBeNull();
     riddles.set(buildRiddles(RIDDLE_COUNT));
     await fixture.whenStable();
     expect(page.querySelector('.meta-status')?.textContent).toContain('Déverrouillé');
-    expect(page.querySelector('.meta-status')?.textContent).toContain('Énoncé du méta');
+    expect(page.querySelector('.lock-indicator')).toBeNull();
+    expect(page.querySelector('.prompt')).toBeNull();
   });
 
   it('ne charge la réponse qu’au clic et la remasque si le joueur change de mode', async () => {
     const riddle: GameRiddle & { solutions: RiddleSolution[] } = {
       id: ZEBRA_ID,
-      title: 'Nostalgie',
+      title: 'Zebra Pretzel',
       prompt: '',
       order: 0,
       solutions: [
@@ -126,7 +141,7 @@ describe('liens du catalogue des énigmes', () => {
           participantId: 'bob',
           participantName: 'Bob',
           riddleId: ZEBRA_ID,
-          riddleTitle: 'Nostalgie',
+          riddleTitle: 'Zebra Pretzel',
           roundId: 'one',
           solvedAt: 1,
         },
@@ -165,7 +180,9 @@ describe('liens du catalogue des énigmes', () => {
     expect(card.textContent).toContain('Résolue par l’équipe');
     const results = card.querySelector('app-riddle-results');
     expect(results?.querySelector('strong')?.textContent).toBe('Bob');
-    expect(results?.querySelector('time')?.getAttribute('datetime')).toBe('1970-01-01T00:00:00.001Z');
+    expect(results?.querySelector('time')?.getAttribute('datetime')).toBe(
+      '1970-01-01T00:00:00.001Z',
+    );
     expect(card.textContent).not.toContain('Réponse de test');
     expect(reveal.getAttribute('aria-expanded')).toBe('false');
     expect(read).not.toHaveBeenCalled();

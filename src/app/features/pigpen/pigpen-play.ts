@@ -14,6 +14,7 @@ import { CellMark, matchesClues, PEN_SIZE, PIGPEN_PUZZLES } from './pigpen.model
 
 const NEXT_MARK: Record<CellMark, CellMark> = { '': 'pig', pig: 'cross', cross: '' };
 const MARK_LABEL: Record<CellMark, string> = { '': 'vide', pig: 'cochon', cross: 'barrée' };
+const PIG_ROTATION_BY_PEN: readonly number[] = [0, 90, 0, 0, 0, 270, 0];
 
 @Component({
   selector: 'app-pigpen-play',
@@ -43,14 +44,12 @@ export class PigpenPlay {
   protected readonly completedCount = computed(() => this.completed().filter(Boolean).length);
 
   protected cycle(pen: number, cell: number): void {
-    const boards = [...this.boards()];
-    const board = [...boards[pen]];
-    board[cell] = NEXT_MARK[board[cell]];
-    boards[pen] = board;
-    this.boards.set(boards);
-    try {
-      this.browser?.localStorage.setItem(this.progressKey(), JSON.stringify(boards));
-    } catch {}
+    this.setMark(pen, cell, NEXT_MARK[this.boards()[pen][cell]]);
+  }
+
+  protected markCross(event: MouseEvent, pen: number, cell: number): void {
+    event.preventDefault();
+    this.setMark(pen, cell, 'cross');
   }
 
   protected cellLabel(pen: number, row: number, column: number): string {
@@ -58,8 +57,14 @@ export class PigpenPlay {
     return `Ligne ${row + 1}, colonne ${column + 1} : ${label}`;
   }
 
+  protected pigRotation(pen: number): number {
+    return PIG_ROTATION_BY_PEN[pen] ?? 0;
+  }
+
   protected focusCell(pen: number, cell: number): void {
-    this.focused.update((cells) => cells.map((previous, index) => (index === pen ? cell : previous)));
+    this.focused.update((cells) =>
+      cells.map((previous, index) => (index === pen ? cell : previous)),
+    );
   }
 
   protected moveFocus(event: KeyboardEvent, pen: number, row: number, column: number): void {
@@ -81,9 +86,18 @@ export class PigpenPlay {
     }
     event.preventDefault();
     const cell = row * this.size + column;
-    this.host.nativeElement
-      .querySelector<HTMLButtonElement>(`#pen-${pen}-cell-${cell}`)
-      ?.focus();
+    this.host.nativeElement.querySelector<HTMLButtonElement>(`#pen-${pen}-cell-${cell}`)?.focus();
+  }
+
+  private setMark(pen: number, cell: number, mark: CellMark): void {
+    const boards = [...this.boards()];
+    const board = [...boards[pen]];
+    board[cell] = mark;
+    boards[pen] = board;
+    this.boards.set(boards);
+    try {
+      this.browser?.localStorage.setItem(this.progressKey(), JSON.stringify(boards));
+    } catch {}
   }
 
   private loadBoards(key: string): CellMark[][] {

@@ -1,30 +1,212 @@
+import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { inject } from '@angular/core';
 
-type SemaphorePosition =
-  | 'up'
-  | 'high'
-  | 'out'
-  | 'low'
-  | 'down'
-  | 'across-high'
-  | 'across-low';
+type SemaphorePosition = 'up' | 'high' | 'out' | 'low' | 'down' | 'across-high' | 'across-low';
 type SemaphoreSide = 'left' | 'right';
 
 interface SemaphoreSignal {
   readonly letter: string;
-  readonly circle: number;
   readonly left: SemaphorePosition;
   readonly right: SemaphorePosition;
 }
 
-interface SemaphoreControl {
-  readonly title: string;
-  readonly symbol: string;
-  readonly left: SemaphorePosition;
-  readonly right: SemaphorePosition;
-  readonly description: string;
+interface CodeEntry {
+  readonly letter: string;
+  readonly value: string;
 }
+
+type PigpenShape =
+  | 'corner-bottom-right'
+  | 'tee-bottom'
+  | 'corner-bottom-left'
+  | 'tee-right'
+  | 'box'
+  | 'tee-left'
+  | 'corner-top-right'
+  | 'tee-top'
+  | 'corner-top-left'
+  | 'cross-top'
+  | 'cross-left'
+  | 'cross-right'
+  | 'cross-bottom';
+
+interface PigpenCode extends CodeEntry {
+  readonly dotted: boolean;
+  readonly shape: PigpenShape;
+}
+
+interface PigpenGrid {
+  readonly label: string;
+  readonly shape: 'square' | 'cross';
+  readonly cells: readonly PigpenCode[];
+}
+
+const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+export const NONOGRAM_EXAMPLE: readonly (readonly boolean[])[] = [
+  [false, true, false, false, false],
+  [true, true, true, false, false],
+  [false, false, true, false, true],
+  [false, true, true, true, false],
+  [false, false, true, false, false],
+];
+
+export const NONOGRAM_ROW_CLUES = ['1', '3', '1 1', '3', '1'] as const;
+export const NONOGRAM_COLUMN_CLUES = ['1', '2 1', '4', '1', '1'] as const;
+
+type MinesweeperExampleCell = {
+  readonly kind: 'number' | 'hidden' | 'flag';
+  readonly value?: string;
+};
+
+export const MINESWEEPER_EXAMPLE: readonly MinesweeperExampleCell[] = [
+  { kind: 'number', value: '1' },
+  { kind: 'number', value: '1' },
+  { kind: 'number', value: '2' },
+  { kind: 'hidden' },
+  { kind: 'number', value: '1' },
+  { kind: 'number', value: '1' },
+  { kind: 'flag' },
+  { kind: 'number', value: '2' },
+  { kind: 'number', value: '1' },
+  { kind: 'number', value: '1' },
+  { kind: 'number', value: '1' },
+  { kind: 'number', value: '1' },
+  { kind: 'number', value: '2' },
+  { kind: 'number', value: '1' },
+  { kind: 'number', value: '1' },
+  { kind: 'number', value: '0' },
+  { kind: 'number', value: '0' },
+  { kind: 'number', value: '1' },
+  { kind: 'flag' },
+  { kind: 'number', value: '1' },
+  { kind: 'hidden' },
+  { kind: 'hidden' },
+  { kind: 'number', value: '1' },
+  { kind: 'number', value: '1' },
+  { kind: 'number', value: '1' },
+];
+
+export const MORSE_CODES: readonly CodeEntry[] = [
+  { letter: 'A', value: '.-' },
+  { letter: 'B', value: '-...' },
+  { letter: 'C', value: '-.-.' },
+  { letter: 'D', value: '-..' },
+  { letter: 'E', value: '.' },
+  { letter: 'F', value: '..-.' },
+  { letter: 'G', value: '--.' },
+  { letter: 'H', value: '....' },
+  { letter: 'I', value: '..' },
+  { letter: 'J', value: '.---' },
+  { letter: 'K', value: '-.-' },
+  { letter: 'L', value: '.-..' },
+  { letter: 'M', value: '--' },
+  { letter: 'N', value: '-.' },
+  { letter: 'O', value: '---' },
+  { letter: 'P', value: '.--.' },
+  { letter: 'Q', value: '--.-' },
+  { letter: 'R', value: '.-.' },
+  { letter: 'S', value: '...' },
+  { letter: 'T', value: '-' },
+  { letter: 'U', value: '..-' },
+  { letter: 'V', value: '...-' },
+  { letter: 'W', value: '.--' },
+  { letter: 'X', value: '-..-' },
+  { letter: 'Y', value: '-.--' },
+  { letter: 'Z', value: '--..' },
+];
+
+export const BRAILLE_CODES: readonly CodeEntry[] = [
+  { letter: 'A', value: '⠁' },
+  { letter: 'B', value: '⠃' },
+  { letter: 'C', value: '⠉' },
+  { letter: 'D', value: '⠙' },
+  { letter: 'E', value: '⠑' },
+  { letter: 'F', value: '⠋' },
+  { letter: 'G', value: '⠛' },
+  { letter: 'H', value: '⠓' },
+  { letter: 'I', value: '⠊' },
+  { letter: 'J', value: '⠚' },
+  { letter: 'K', value: '⠅' },
+  { letter: 'L', value: '⠇' },
+  { letter: 'M', value: '⠍' },
+  { letter: 'N', value: '⠝' },
+  { letter: 'O', value: '⠕' },
+  { letter: 'P', value: '⠏' },
+  { letter: 'Q', value: '⠟' },
+  { letter: 'R', value: '⠗' },
+  { letter: 'S', value: '⠎' },
+  { letter: 'T', value: '⠞' },
+  { letter: 'U', value: '⠥' },
+  { letter: 'V', value: '⠧' },
+  { letter: 'W', value: '⠺' },
+  { letter: 'X', value: '⠭' },
+  { letter: 'Y', value: '⠽' },
+  { letter: 'Z', value: '⠵' },
+];
+
+const brailleDots = (value: string): readonly boolean[] => {
+  const pattern = (value.codePointAt(0) ?? 0) - 0x2800;
+  // CSS places these six elements row by row; reorder the Braille dot numbers
+  // so the standard layout remains 1-2-3 on the left and 4-5-6 on the right.
+  return [0, 3, 1, 4, 2, 5].map((index) => (pattern & (1 << index)) !== 0);
+};
+
+export const BRAILLE_VISUALS = BRAILLE_CODES.map((code) => ({
+  ...code,
+  dots: brailleDots(code.value),
+}));
+
+export const BINARY_CODES: readonly CodeEntry[] = [...ALPHABET].map((letter) => ({
+  letter,
+  value: letter.charCodeAt(0).toString(2).padStart(8, '0'),
+}));
+
+const CAESAR_SHIFT = 3;
+const shiftLetter = (letter: string, shift: number): string =>
+  ALPHABET[(ALPHABET.indexOf(letter) + shift + ALPHABET.length) % ALPHABET.length];
+
+export const CAESAR_CODES: readonly CodeEntry[] = [...ALPHABET].map((letter) => ({
+  letter,
+  value: shiftLetter(letter, CAESAR_SHIFT),
+}));
+
+export const PIGPEN_CODES: readonly PigpenCode[] = [
+  { letter: 'A', value: '┘', dotted: false, shape: 'corner-bottom-right' },
+  { letter: 'B', value: '⊔', dotted: false, shape: 'tee-bottom' },
+  { letter: 'C', value: '└', dotted: false, shape: 'corner-bottom-left' },
+  { letter: 'D', value: '┤', dotted: false, shape: 'tee-right' },
+  { letter: 'E', value: '□', dotted: false, shape: 'box' },
+  { letter: 'F', value: '├', dotted: false, shape: 'tee-left' },
+  { letter: 'G', value: '┐', dotted: false, shape: 'corner-top-right' },
+  { letter: 'H', value: '⊓', dotted: false, shape: 'tee-top' },
+  { letter: 'I', value: '┌', dotted: false, shape: 'corner-top-left' },
+  { letter: 'J', value: '┘', dotted: true, shape: 'corner-bottom-right' },
+  { letter: 'K', value: '⊔', dotted: true, shape: 'tee-bottom' },
+  { letter: 'L', value: '└', dotted: true, shape: 'corner-bottom-left' },
+  { letter: 'M', value: '┤', dotted: true, shape: 'tee-right' },
+  { letter: 'N', value: '□', dotted: true, shape: 'box' },
+  { letter: 'O', value: '├', dotted: true, shape: 'tee-left' },
+  { letter: 'P', value: '┐', dotted: true, shape: 'corner-top-right' },
+  { letter: 'Q', value: '⊓', dotted: true, shape: 'tee-top' },
+  { letter: 'R', value: '┌', dotted: true, shape: 'corner-top-left' },
+  { letter: 'S', value: '∨', dotted: false, shape: 'cross-top' },
+  { letter: 'T', value: '>', dotted: false, shape: 'cross-left' },
+  { letter: 'U', value: '<', dotted: false, shape: 'cross-right' },
+  { letter: 'V', value: '∧', dotted: false, shape: 'cross-bottom' },
+  { letter: 'W', value: '∨', dotted: true, shape: 'cross-top' },
+  { letter: 'X', value: '>', dotted: true, shape: 'cross-left' },
+  { letter: 'Y', value: '<', dotted: true, shape: 'cross-right' },
+  { letter: 'Z', value: '∧', dotted: true, shape: 'cross-bottom' },
+];
+
+export const PIGPEN_GRIDS: readonly PigpenGrid[] = [
+  { label: 'A–I', shape: 'square', cells: PIGPEN_CODES.slice(0, 9) },
+  { label: 'J–R', shape: 'square', cells: PIGPEN_CODES.slice(9, 18) },
+  { label: 'S–V', shape: 'cross', cells: PIGPEN_CODES.slice(18, 22) },
+  { label: 'W–Z', shape: 'cross', cells: PIGPEN_CODES.slice(22) },
+];
 
 const POSITION_NAMES: Record<SemaphorePosition, string> = {
   up: 'haut',
@@ -34,27 +216,6 @@ const POSITION_NAMES: Record<SemaphorePosition, string> = {
   down: 'bas',
   'across-high': 'haut intérieur',
   'across-low': 'bas intérieur',
-};
-
-const POSITION_CLOCKS: Record<SemaphoreSide, Record<SemaphorePosition, string>> = {
-  left: {
-    up: '12 h',
-    high: '10–11 h',
-    out: '9 h',
-    low: '7–8 h',
-    down: '6 h',
-    'across-high': '1–2 h',
-    'across-low': '4–5 h',
-  },
-  right: {
-    up: '12 h',
-    high: '1–2 h',
-    out: '3 h',
-    low: '4–5 h',
-    down: '6 h',
-    'across-high': '10–11 h',
-    'across-low': '7–8 h',
-  },
 };
 
 const ARM_ANGLES: Record<SemaphoreSide, Record<SemaphorePosition, number>> = {
@@ -78,112 +239,88 @@ const ARM_ANGLES: Record<SemaphoreSide, Record<SemaphorePosition, number>> = {
   },
 };
 
+const RIDDLE_ROUTE = /^\/(?:apercu-ia\/)?enigmes(?:\/[^/]+)?$/u;
+const FALLBACK_BACK_LINK = '/enigmes';
+
 const signal = (
   letter: string,
-  circle: number,
   left: SemaphorePosition,
   right: SemaphorePosition,
-): SemaphoreSignal => ({ letter, circle, left, right });
+): SemaphoreSignal => ({ letter, left, right });
 
 export const SEMAPHORE_SIGNALS: readonly SemaphoreSignal[] = [
-  signal('A', 1, 'down', 'low'),
-  signal('B', 1, 'down', 'out'),
-  signal('C', 1, 'down', 'high'),
-  signal('D', 1, 'down', 'up'),
-  signal('E', 1, 'high', 'down'),
-  signal('F', 1, 'out', 'down'),
-  signal('G', 1, 'low', 'down'),
-  signal('H', 2, 'across-low', 'out'),
-  signal('I', 2, 'across-low', 'high'),
-  signal('J', 5, 'out', 'up'),
-  signal('K', 2, 'up', 'low'),
-  signal('L', 2, 'high', 'low'),
-  signal('M', 2, 'out', 'low'),
-  signal('N', 2, 'low', 'low'),
-  signal('O', 3, 'across-high', 'out'),
-  signal('P', 3, 'up', 'out'),
-  signal('Q', 3, 'high', 'out'),
-  signal('R', 3, 'out', 'out'),
-  signal('S', 3, 'low', 'out'),
-  signal('T', 4, 'up', 'high'),
-  signal('U', 4, 'high', 'high'),
-  signal('V', 5, 'low', 'up'),
-  signal('W', 6, 'out', 'across-high'),
-  signal('X', 6, 'low', 'across-high'),
-  signal('Y', 4, 'out', 'high'),
-  signal('Z', 7, 'out', 'across-low'),
+  signal('A', 'down', 'low'),
+  signal('B', 'down', 'out'),
+  signal('C', 'down', 'high'),
+  signal('D', 'down', 'up'),
+  signal('E', 'high', 'down'),
+  signal('F', 'out', 'down'),
+  signal('G', 'low', 'down'),
+  signal('H', 'across-low', 'out'),
+  signal('I', 'across-low', 'high'),
+  signal('J', 'out', 'up'),
+  signal('K', 'up', 'low'),
+  signal('L', 'high', 'low'),
+  signal('M', 'out', 'low'),
+  signal('N', 'low', 'low'),
+  signal('O', 'across-high', 'out'),
+  signal('P', 'up', 'out'),
+  signal('Q', 'high', 'out'),
+  signal('R', 'out', 'out'),
+  signal('S', 'low', 'out'),
+  signal('T', 'up', 'high'),
+  signal('U', 'high', 'high'),
+  signal('V', 'low', 'up'),
+  signal('W', 'out', 'across-high'),
+  signal('X', 'low', 'across-high'),
+  signal('Y', 'out', 'high'),
+  signal('Z', 'out', 'across-low'),
 ];
 
-export const SEMAPHORE_CIRCLES = [
-  { number: 1, letters: 'A · B · C · D · E · F · G' },
-  { number: 2, letters: 'H · I · K · L · M · N' },
-  { number: 3, letters: 'O · P · Q · R · S' },
-  { number: 4, letters: 'T · U · Y' },
-  { number: 5, letters: 'J · V' },
-  { number: 6, letters: 'W · X' },
-  { number: 7, letters: 'Z' },
-] as const;
-
-export const SEMAPHORE_DIRECTIONS = [
-  { glyph: '↑', label: 'Haut', detail: '12 h' },
-  { glyph: '↗ / ↖', label: 'Haut extérieur', detail: '1–2 h / 10–11 h' },
-  { glyph: '→ / ←', label: 'Horizontal extérieur', detail: '3 h / 9 h' },
-  { glyph: '↘ / ↙', label: 'Bas extérieur', detail: '4–5 h / 7–8 h' },
-  { glyph: '↓', label: 'Bas', detail: '6 h' },
-  { glyph: '↙ / ↘', label: 'Bas intérieur', detail: '7–8 h / 4–5 h' },
-  { glyph: '↖ / ↗', label: 'Haut intérieur', detail: '10–11 h / 1–2 h' },
-] as const;
-
-export const SEMAPHORE_CONTROLS: readonly SemaphoreControl[] = [
-  {
-    title: 'Chiffres',
-    symbol: '123',
-    left: 'high',
-    right: 'up',
-    description: 'Envoie ce signal, puis A = 1, B = 2, …, I = 9 et K = 0.',
-  },
-  {
-    title: 'Retour aux lettres',
-    symbol: 'J',
-    left: 'out',
-    right: 'up',
-    description: 'Le J sert aussi de signal « lettres » pour quitter le mode chiffres.',
-  },
-  {
-    title: 'Annulation',
-    symbol: '×',
-    left: 'low',
-    right: 'high',
-    description: 'Annule le dernier caractère ou le dernier signal envoyé.',
-  },
-];
+export function resolveCheatsheetBackLink(referrer: string, origin: string): string {
+  try {
+    const url = new URL(referrer, origin);
+    const path = url.pathname.replace(/\/+$/u, '') || '/';
+    if (url.origin !== origin || !RIDDLE_ROUTE.test(path)) {
+      return FALLBACK_BACK_LINK;
+    }
+    return `${path}${url.search}${url.hash}`;
+  } catch {
+    return FALLBACK_BACK_LINK;
+  }
+}
 
 @Component({
   selector: 'app-cheatsheet',
-  imports: [RouterLink],
   templateUrl: './cheatsheet.html',
   styleUrl: './cheatsheet.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Cheatsheet {
+  private readonly document = inject(DOCUMENT);
+  protected readonly nonogramExample = NONOGRAM_EXAMPLE;
+  protected readonly nonogramRowClues = NONOGRAM_ROW_CLUES;
+  protected readonly nonogramColumnClues = NONOGRAM_COLUMN_CLUES;
+  protected readonly minesweeperExample = MINESWEEPER_EXAMPLE;
+  protected readonly morseCodes = MORSE_CODES;
+  protected readonly brailleVisuals = BRAILLE_VISUALS;
+  protected readonly binaryCodes = BINARY_CODES;
+  protected readonly caesarCodes = CAESAR_CODES;
+  protected readonly pigpenGrids = PIGPEN_GRIDS;
   protected readonly signals = SEMAPHORE_SIGNALS;
-  protected readonly circles = SEMAPHORE_CIRCLES;
-  protected readonly directions = SEMAPHORE_DIRECTIONS;
-  protected readonly controls = SEMAPHORE_CONTROLS;
-
-  protected positionLabel(position: SemaphorePosition, side: SemaphoreSide): string {
-    return `${POSITION_NAMES[position]} · ${POSITION_CLOCKS[side][position]}`;
-  }
+  protected readonly backLink = resolveCheatsheetBackLink(
+    this.document.referrer,
+    this.document.location.origin,
+  );
+  protected readonly backLabel = this.backLink.includes('/enigmes/')
+    ? 'Retour à l’énigme'
+    : 'Retour aux énigmes';
 
   protected armAngle(position: SemaphorePosition, side: SemaphoreSide): string {
     return `rotate(${ARM_ANGLES[side][position]}deg)`;
   }
 
   protected signalLabel(signalToRead: SemaphoreSignal): string {
-    return `${signalToRead.letter}. Bras gauche : ${this.positionLabel(signalToRead.left, 'left')}. Bras droit : ${this.positionLabel(signalToRead.right, 'right')}.`;
-  }
-
-  protected controlLabel(control: SemaphoreControl): string {
-    return `${control.title}. Bras gauche : ${this.positionLabel(control.left, 'left')}. Bras droit : ${this.positionLabel(control.right, 'right')}.`;
+    return `${signalToRead.letter}. Bras gauche : ${POSITION_NAMES[signalToRead.left]}. Bras droit : ${POSITION_NAMES[signalToRead.right]}.`;
   }
 }

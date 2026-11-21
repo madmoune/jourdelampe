@@ -97,7 +97,6 @@ export class FourchettePlay {
     const code = this.validatedGridCode();
     const selection = this.progress().selection;
     return (
-      this.allFound() &&
       code.length === selection.length &&
       code.split('').every((letter, index) => letter === '0' || selection[index] === '1')
     );
@@ -109,11 +108,12 @@ export class FourchettePlay {
     error?: string;
   } | null>(null);
   protected readonly currentVerdict = computed<{ correct?: boolean; error?: string } | null>(() => {
-    if (!this.allFound()) return null;
     if (this.extractionReady()) return { correct: true };
     const result = this.verdict();
     const code = this.progress().selection;
-    if (result?.key === this.storageKey() && result.code === code) return result;
+    if (result?.key === this.storageKey() && result.code === code) {
+      if (result.correct || result.error || this.allFound()) return result;
+    }
     return this.verifiedCode() === code ? { correct: true } : null;
   });
   private requestId = 0;
@@ -132,7 +132,7 @@ export class FourchettePlay {
       const key = this.storageKey();
       const code = this.progress().selection;
       const eligible =
-        this.allFound() && this.game.ready() && !!this.game.round() && !this.locked();
+        code.includes('1') && this.game.ready() && !!this.game.round() && !this.locked();
       const alreadyValid = this.extractionReady();
       const requestId = ++this.requestId;
       let timer: ReturnType<typeof setTimeout> | undefined;
@@ -165,7 +165,7 @@ export class FourchettePlay {
   }
 
   protected toggleWord(word: string): void {
-    if (this.locked() || this.extractionReady() || !FOURCHETTE_WORDS.includes(word)) return;
+    if (this.locked() || !FOURCHETTE_WORDS.includes(word)) return;
     const progress = this.progress();
     this.saveProgress({
       ...progress,

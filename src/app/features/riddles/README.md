@@ -50,12 +50,17 @@ La connexion est gardée en mémoire : recharger la page demande de se reconnect
 Se connecter à la gestion ne change pas le profil de joueur du même navigateur.
 
 Le tableau affiche le nom de chaque énigme, sa réponse, son état et toutes ses
-résolutions (nom et heure de Montréal, avec les secondes). Les énigmes et leurs
+résolutions (nom et heure de Montréal, avec les secondes). Il réserve les huit
+dossiers prévus même si une entrée manque encore dans `game/catalog`; ces dossiers
+apparaissent alors « À venir » jusqu’à leur configuration. Les énigmes et leurs
 réponses sont configurées manuellement lors de leur intégration; le tableau de
-bord ne propose ni ajout ni modification. Les pages intégrées sont **Nostalgie**
-(Zebra, `/enigmes/zebra`), **La Fourchette** (`/enigmes/la-fourchette`) et
-**Le début de la fin** (Matchmaker, `/enigmes/le-debut-de-la-fin`).
-La gestion indique « À définir » tant que la réponse finale privée n’a pas été fournie.
+bord ne propose ni ajout ni modification. Les pages intégrées sont **Zebra Pretzel**
+(Zebra, `/enigmes/zebra`), **La Fourchette** (`/enigmes/la-fourchette`),
+**Le début de la fin** (Matchmaker, `/enigmes/le-debut-de-la-fin`), **La
+porcherie** (`/enigmes/la-porcherie`), **La vigie** (`/enigmes/la-vigie`), **En
+manchettes** (`/enigmes/en-manchettes`) et **Arcade**
+(`/enigmes/salle-arcade`). La gestion indique « À définir » tant que la réponse
+finale privée n’a pas été fournie.
 
 Le Matchmaker utilise l’identifiant `matchmaker-01`. Son entrée dans
 `game/catalog/matchmaker-01` contient le titre « Le début de la fin », le `prompt`
@@ -209,7 +214,7 @@ continue d’enregistrer les essais dans Firebase, sans historique visible pour 
 ```
 
 `number` est facultatif et ajoute le numéro de dossier dans l’en-tête et le titre.
-`answerLabel` est facultatif, avec « Réponse » par défaut. Nostalgie précise
+`answerLabel` est facultatif, avec « Réponse » par défaut. Zebra Pretzel précise
 « Réponse (8 lettres) », La Fourchette « Réponse (12 lettres) »; les nouvelles
 énigmes peuvent définir leur propre format.
 Le gabarit retourne à la liste publique ou à celle de l’aperçu.

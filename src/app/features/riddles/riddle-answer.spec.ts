@@ -6,11 +6,12 @@ import { ParticipantStore } from './participant-store';
 import { RiddleAnswer } from './riddle-answer';
 import { RiddleAttempt, RiddleAttempts } from './riddle-attempts';
 import { RiddleSubmissions } from './riddle-submissions';
+import { RIDDLE_PREVIEW } from './riddle-release';
 
 describe('réponse finale sans historique et fenêtre de succès', () => {
   afterEach(() => localStorage.clear());
 
-  async function setup(solved = false) {
+  async function setup(solved = false, preview = false, includeRiddle = true) {
     const round = signal({ id: 'one', resetAt: 1 });
     let confirm!: (correct: boolean) => void;
     const submit = vi.fn(
@@ -36,19 +37,24 @@ describe('réponse finale sans historique et fenêtre de succès', () => {
       imports: [RiddleAnswer],
       providers: [
         provideRouter([]),
+        { provide: RIDDLE_PREVIEW, useValue: preview },
         {
           provide: GameStore,
           useValue: {
             ready: signal(true),
             error: signal(''),
             round,
-            riddles: signal([
-              {
-                id: 'a',
-                title: 'Lampe',
-                solutions: solved ? [{ participantId: 'alice' }] : [],
-              },
-            ]),
+            riddles: signal(
+              includeRiddle
+                ? [
+                    {
+                      id: 'a',
+                      title: 'Lampe',
+                      solutions: solved ? [{ participantId: 'alice' }] : [],
+                    },
+                  ]
+                : [],
+            ),
           },
         },
         {
@@ -61,6 +67,7 @@ describe('réponse finale sans historique et fenêtre de succès', () => {
     }).compileComponents();
     const fixture = TestBed.createComponent(RiddleAnswer);
     fixture.componentRef.setInput('riddleId', 'a');
+    fixture.componentRef.setInput('previewTitle', 'Lampe');
     await fixture.whenStable();
     const page = fixture.nativeElement as HTMLElement;
     const input = page.querySelector<HTMLInputElement>('input')!;
@@ -87,6 +94,15 @@ describe('réponse finale sans historique et fenêtre de succès', () => {
     expect(page.querySelector('.history')).toBeNull();
     expect(page.textContent).not.toContain('Tes réponses précédentes');
     expect(page.querySelector('input[name="answer"]')).not.toBeNull();
+  });
+  it('permet de saisir une réponse dans l’aperçu même si le dossier n’est pas encore au catalogue', async () => {
+    const { fixture, page, input } = await setup(false, true, false);
+    expect(input.disabled).toBe(false);
+    input.value = 'Réponse de test';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    await fixture.whenStable();
+    expect(input.value).toBe('Réponse de test');
+    expect(page.querySelector('button')?.disabled).toBe(false);
   });
   it('ouvre le popup uniquement après confirmation d’une bonne réponse et propose le retour aux énigmes', async () => {
     const { fixture, page, send, confirm } = await setup();

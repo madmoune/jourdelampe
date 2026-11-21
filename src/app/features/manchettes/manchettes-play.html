@@ -1,15 +1,16 @@
 <section aria-labelledby="crossword-title">
-  <p class="file-label">01 · Le journal</p>
   <h2 id="crossword-title">Mots croisés</h2>
   <p class="instructions">
     Une case par lettre, sans espace ni accent. Clique sur une définition pour aller au mot.
-    Aux croisements, Entrée change la direction.
   </p>
   <div class="crossword-layout">
     <div>
       @if (activeClue(); as clue) {
         <p class="active-clue">
-          <strong>{{ clue.number }} {{ clue.direction === 'across' ? 'horizontal' : 'vertical' }}.</strong>
+          <strong
+            >{{ clue.number }}
+            {{ clue.direction === 'across' ? 'horizontal' : 'vertical' }}.</strong
+          >
           {{ clue.text }}
         </p>
       }
@@ -29,7 +30,9 @@
                   autocapitalize="characters"
                   spellcheck="false"
                   [value]="progress().letters[cell.index]"
-                  [attr.aria-label]="coordinates(cell.index) + (cell.number ? ', définition ' + cell.number : '')"
+                  [attr.aria-label]="
+                    coordinates(cell.index) + (cell.number ? ', définition ' + cell.number : '')
+                  "
                   [tabIndex]="letterFocus() === cell.index ? 0 : -1"
                   (focus)="selectLetter($event, cell.index)"
                   (input)="enterLetter($event, cell.index)"
@@ -42,7 +45,6 @@
           }
         </div>
       </div>
-      <p class="board-status">{{ letterCount() }} / {{ lettersTotal }} lettres inscrites</p>
     </div>
     <div class="clues">
       @for (group of clueGroups; track group.label) {
@@ -51,7 +53,11 @@
           <ul>
             @for (clue of group.list; track clue.number) {
               <li>
-                <button type="button" [class.current]="activeClue() === clue" (click)="chooseClue(clue)">
+                <button
+                  type="button"
+                  [class.current]="activeClue() === clue"
+                  (click)="chooseClue(clue)"
+                >
                   <strong>{{ clue.number }}.</strong> {{ clue.text }}
                 </button>
               </li>
@@ -64,21 +70,14 @@
 </section>
 
 <section class="mine-section" aria-labelledby="mine-title">
-  <p class="file-label">02 · Le terrain</p>
   <h2 id="mine-title">Démineur</h2>
-  <p class="instructions" id="mine-guide">
-    Un nombre indique combien de mines touchent la case, diagonales comprises.
-    Clique pour ouvrir une case. Pour poser un drapeau, utilise le clic droit, la touche F
-    ou le mode Drapeau. Les deux grilles ont les mêmes dimensions : {{ width }} × {{ height }}.
-  </p>
   <div class="mine-tools">
-    <button type="button" [attr.aria-pressed]="flagMode()" (click)="flagMode.set(!flagMode())">
-      Mode Drapeau : {{ flagMode() ? 'activé' : 'désactivé' }}
-    </button>
     <button type="button" (click)="resetMines()">Recommencer le démineur</button>
-    <span>{{ mineCount }} mines · {{ flags() }} drapeaux</span>
+    @if (crashed()) {
+      <p class="mine-crash" role="alert">Mine déclenchée. Recommence le démineur pour repartir du début.</p>
+    }
   </div>
-  <div class="scroll-grid" role="region" aria-label="Grille du démineur" aria-describedby="mine-guide">
+  <div class="scroll-grid" role="region" aria-label="Grille du démineur">
     <div class="board minefield" [style.--columns]="width">
       @for (cell of cells; track cell.index; let index = $index) {
         @let mark = progress().mines[index];
@@ -91,6 +90,7 @@
           [class.flagged]="mark === 'flagged'"
           [class.hit]="mark === 'hit'"
           [class.target]="order"
+          [disabled]="crashed() || won()"
           [attr.aria-label]="mineLabel(index)"
           [tabIndex]="mineFocus() === index ? 0 : -1"
           (focus)="mineFocus.set(index)"
@@ -107,36 +107,22 @@
                 <small class="target-order">{{ order }}</small>
               }
             }
-            @case ('flagged') { <span aria-hidden="true">⚑</span> }
-            @case ('hit') { <span aria-hidden="true">✹</span> }
+            @case ('flagged') {
+              <span aria-hidden="true">⚑</span>
+            }
+            @case ('hit') {
+              <span class="mine-explosion" aria-hidden="true">💥</span>
+            }
           }
         </button>
       }
     </div>
   </div>
-  <p class="board-status" [class.error]="lost()" role="status">
-    @if (lost()) {
-      Mine déclenchée. Tu peux recommencer le démineur sans effacer tes mots croisés.
-    } @else if (won()) {
+  <p class="board-status" role="status">
+    @if (won()) {
       Terrain déminé. Relis les lettres extraites dans l’ordre.
     } @else {
       {{ foundCount() }} / {{ extracted().length }} cases d’extraction trouvées
     }
   </p>
-
-  <div class="extraction">
-    <h3>03 · Les lettres à extraire</h3>
-    <p class="instructions">
-      Pour chaque case qui indique 8, prends la lettre au même endroit dans les mots croisés.
-      Le petit numéro dans la case te donne l’ordre de lecture.
-    </p>
-    <ol aria-label="Lettres extraites">
-      @for (item of extracted(); track $index) {
-        <li [class.found]="item.found" [attr.aria-label]="'Lettre ' + ($index + 1) + ' : ' + (item.letter || 'manquante')">
-          <small aria-hidden="true">{{ $index + 1 }}</small>
-          <strong aria-hidden="true">{{ item.letter || '·' }}</strong>
-        </li>
-      }
-    </ol>
-  </div>
 </section>

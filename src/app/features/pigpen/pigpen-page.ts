@@ -10,8 +10,7 @@ import { PigpenPlay } from './pigpen-play';
     <app-riddle-page
       [riddleId]="riddleId"
       title="La porcherie"
-      number="04"
-      flavorText="Mes cochons ne parlent pas. Leurs enclos, par contre…"
+      flavorText="C'est nono les cochons."
       answerLabel="Réponse (7 lettres)"
     >
       <ng-template>

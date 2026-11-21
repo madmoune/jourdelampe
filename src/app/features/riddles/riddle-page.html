@@ -3,25 +3,20 @@
   <div class="puzzle-shell">
     <header>
       <a [routerLink]="listPath">← Retour aux énigmes</a>
-      <span
-        >LE JOUR DE L’AI
-        @if (number()) {
-          <b> / </b> DOSSIER {{ number() }}
-        }
-      </span>
+      <span>LE JOUR DE L’AI</span>
     </header>
     <main id="puzzle-content">
       <div class="puzzle-heading">
-        <h1>
-          {{ title() }}
-          @if (number()) {
-            <span>{{ number() }}</span>
-          }
-        </h1>
-        @if (flavorText(); as flavor) {
+        <h1>{{ title() }}</h1>
+        @if (flavorTextHtml(); as flavor) {
+          <p class="flavor-text" [innerHTML]="flavor"></p>
+        } @else if (flavorText(); as flavor) {
           <p class="flavor-text">{{ flavor }}</p>
         }
       </div>
+      <a class="cheatsheet-link" routerLink="/cheatsheet" target="_blank" rel="noopener">
+        Consulter la cheatsheet ↗
+      </a>
       @if (participants.loading()) {
         <p class="access-notice" role="status">Chargement de l’énigme…</p>
       } @else if (participants.canSolve()) {
@@ -30,6 +25,7 @@
             [riddleId]="riddleId()"
             [answerLabel]="answerLabel()"
             [hint]="answerHint()"
+            [previewTitle]="title()"
           />
           @if (game.error()) {
             <p class="game-error" role="alert">{{ game.error() }}</p>

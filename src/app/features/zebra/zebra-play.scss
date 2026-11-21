@@ -126,65 +126,27 @@
   font-size: 12px;
   line-height: 1.5;
 }
-.puzzle-information {
-  margin-top: 36px;
-  padding: 28px;
-  border: 1px solid #7d688c;
-  background: #1b1426;
-}
-.grid-help,
-.deduction-notes p,
-.clues p,
-.clues ol {
-  max-width: 80ch;
-  color: #c4b6d1;
-  font-size: 13px;
-  line-height: 1.7;
-}
-.grid-help {
-  margin: 0 0 28px;
-}
 .clues {
-  flex: 0 0 320px;
+  flex: 0 1 320px;
   min-width: 0;
+  box-sizing: border-box;
+  margin: 0;
   padding: 24px;
   border: 1px solid #7d688c;
   background: #23192f;
-  margin: 0;
 }
-.file-label {
-  color: #b7cf7f;
-  font: 10px/1.5 monospace;
-  letter-spacing: 0.12em;
-  display: block;
-  margin-bottom: 10px;
-}
-h2 {
-  font:
-    28px/1.2 Georgia,
-    serif;
-  color: #efdfbd;
-  margin: 0 0 12px;
-}
-.clues h3,
-.deduction-notes h3 {
-  margin: 0 0 12px;
+.clues h3 {
+  margin: 0 0 16px;
   color: #efdfbd;
   font-size: 24px;
 }
-.clues p,
 .clues ol {
-  font-size: 13px;
-  color: #bfb0ce;
-  line-height: 1.7;
+  max-width: 80ch;
   margin: 0;
-}
-.clues p + p {
-  margin-top: 12px;
-}
-.clues ol {
-  margin-top: 20px;
   padding-left: 24px;
+  color: #bfb0ce;
+  font-size: 13px;
+  line-height: 1.7;
 }
 .clues li {
   padding-left: 6px;
@@ -196,15 +158,11 @@ h2 {
   color: #b7cf7f;
   font-weight: 700;
 }
-.deduction-notes {
-  padding: 24px 0;
-  border-bottom: 1px solid #51405f;
-}
-.deduction-notes p {
-  margin: 0;
-}
-.deduction-notes p + p {
-  margin-top: 12px;
+.puzzle-information {
+  margin-top: 36px;
+  padding: 28px;
+  border: 1px solid #7d688c;
+  background: #1b1426;
 }
 .legend {
   display: flex;
@@ -257,12 +215,16 @@ button:focus-visible {
   outline: 2px solid #dcff79;
   outline-offset: 3px;
 }
-@media (max-width: 1100px) {
+@media (max-width: 1300px) {
   .clues {
     flex-basis: auto;
+    width: 100%;
   }
 }
 @media (max-width: 600px) {
+  .clues {
+    padding: 20px;
+  }
   .surname-grid {
     grid-template-columns: 1fr;
   }
@@ -270,13 +232,7 @@ button:focus-visible {
     grid-template-columns: 1fr;
     gap: 6px;
   }
-  .clues {
-    padding: 20px;
-  }
   .puzzle-information {
     padding: 22px;
-  }
-  h2 {
-    font-size: 25px;
   }
 }
