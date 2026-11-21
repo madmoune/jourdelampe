@@ -11,6 +11,9 @@ describe('répliques de l’AI aux réponses', () => {
       expect(
         current.every((reply) => reply.startsWith('Alice Roy, ce n’est pas la bonne réponse. ')),
       ).toBe(true);
+      expect(current.every((reply) => /party|monde|minuit|décompte|guirlandes/iu.test(reply))).toBe(
+        true,
+      );
       previous = current.at(-1)!;
     }
   });

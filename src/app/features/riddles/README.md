@@ -105,7 +105,7 @@ game/
   proofs/<participantId>/<riddleId>/{answer, roundId}
   attempts/<participantId>/<riddleId>/<attemptId>/
     kind, answer, normalizedAnswer, correct, participantName, roundId, submittedAt, target?
-riddleSecrets/<riddleId>/{answer?, normalizedAnswer?, gridAnswer?, surnames?}
+riddleSecrets/<riddleId>/{answer?, normalizedAnswer?, normalizedAliases?, gridAnswer?, surnames?}
 ```
 
 Le catalogue, la partie en cours et les résolutions sont publics. Les réponses
@@ -123,6 +123,8 @@ comparent cette preuve à la réponse attendue **côté serveur**, exigent le no
 profil authentifié et utilisent l’heure du serveur (`solvedAt`). Une réponse
 incorrecte ne crée ni preuve ni résolution. Les accents, majuscules, espaces et
 ponctuation ne comptent pas; les réponses doivent contenir des lettres ou chiffres.
+Pour accepter d’autres formulations, ajouter leurs formes normalisées comme clés
+avec la valeur `true` dans `riddleSecrets/<riddleId>/normalizedAliases`.
 
 Chaque réponse finale, correcte ou incorrecte, est conservée dans l’historique
 privé du participant, accessible à l’administrateur. Les essais corrects permettent

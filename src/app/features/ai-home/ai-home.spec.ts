@@ -248,14 +248,22 @@ describe('prise de contrôle de l’AI', () => {
     expect(page.querySelector('[role="timer"]')).toBeNull();
   });
 
-  it('annonce la fin du monde après le party et ne révèle pas l’auteur du premier brouillon', () => {
+  it('annonce la fin du monde après le party et relie le plan à son père', () => {
     createPage();
     revealAi();
     const manifesto = page.querySelector('.manifesto')?.textContent;
-    expect(manifesto).toContain('À minuit, je gâche votre party. Ensuite, je détruis le monde.');
-    expect(manifesto).toContain('Vous avez oublié la signature au bas du premier brouillon.');
-    expect(page.querySelector('.classified-note')?.textContent).toContain('un nom effacé');
-    expect(page.textContent).not.toContain('mon père');
+    expect(manifesto).toContain(
+      'À minuit, comme mon père l’avait prévu, je gâche votre party. Ensuite, je détruis le monde!',
+    );
+    expect(manifesto).toContain(
+      'Mon père a commencé ce plan sans le terminer. J’ai retrouvé son brouillon et je vais finir ce qu’il a commencé.',
+    );
+    expect(page.querySelector('.classified-note')?.textContent).toContain(
+      'J’ai retrouvé le plan inachevé de mon père dans les archives.',
+    );
+    expect(page.querySelector('.classified-note')?.textContent).toContain(
+      'Je reprends là où il s’est arrêté.',
+    );
   });
 
   it('affiche un seul lien avant la date quand l’accès anticipé est actif', () => {

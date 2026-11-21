@@ -522,9 +522,26 @@ await request(
 await request(
   'riddleSecrets/preview',
   'PUT',
-  { answer: 'Code', normalizedAnswer: 'CODE' },
+  { answer: 'Code', normalizedAnswer: 'CODE', normalizedAliases: { MOTDEPASSE: true } },
   200,
   admin,
+);
+await request('riddleSecrets/preview/normalizedAliases', 'GET', undefined, 401, 'player');
+await request('riddleSecrets/preview/normalizedAliases/2000', 'PUT', true, 401, 'player');
+await request('riddleSecrets/preview/normalizedAliases/invalide', 'PUT', true, 401, admin);
+await request(
+  'game/attempts/player/preview/incomplete',
+  'PUT',
+  attempt('2000', false),
+  200,
+  'player',
+);
+await request(
+  'game/attempts/player/preview/false-alias-failure',
+  'PUT',
+  attempt('Mot de passe', false, 'answer', {}, 'MOTDEPASSE'),
+  401,
+  'player',
 );
 await request(
   'game/attempts/player/preview/false-failure',
@@ -543,12 +560,13 @@ await request(
       riddleId: 'preview',
       riddleTitle: 'Aperçu',
     },
-    'proofs/player/preview': { answer: 'CODE', roundId: 'round-one' },
-    'attempts/player/preview/accepted': attempt('CODE', true),
+    'proofs/player/preview': { answer: 'MOTDEPASSE', roundId: 'round-one' },
+    'attempts/player/preview/accepted': attempt('Mot de passe', true, 'answer', {}, 'MOTDEPASSE'),
   },
   200,
   'player',
 );
+await request('riddleSecrets/preview/normalizedAliases', 'GET', undefined, 401, 'player');
 await request('game/catalog/first/answerReady', 'PUT', false, 200, admin);
 await request(
   'game/attempts/player/first/legacy-ready',

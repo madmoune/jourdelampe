@@ -8,7 +8,7 @@ export const CONTENT = {
     lumens: "Lumens-en d'la lumière!",
   },
   description:
-    "Cette année, c’est facile, amenez de la lumière! Que ce soit la lampe-table à Max, votre encastrée préférée ou encore les 700,000 frontales de LC qui donnent le goût d’être Ray Charles quand on les reçoit dans face, faisons comme si Jean-Marc Parent était dans place et flashons ça jusqu’à temps que l'épilepsie prenne le dessus!",
+    'Cette année, c’est facile. Apportez de la lumière! Que ce soit la lampe-table à Max, votre encastrée préférée ou encore les 700 000 frontales de LC qui donnent le goût d’être Ray Charles quand on les reçoit dans face, faisons comme si Jean-Marc Parent était dans place et flashons ça jusqu’à temps que l’épilepsie prenne le dessus!',
   quotes: [
     { id: 'dream', text: 'Le plus grand rêve de Louis-Charles', href: null },
     { id: 'photon', text: "J'y crois pas! Photon chez l'yable!", href: null },
@@ -36,8 +36,8 @@ export const CONTENT = {
       activities: [
         'Glissade',
         'Chocolat chaud',
-        'Café baileys',
-        'Bottes humide',
+        'Café au Baileys',
+        'Bottes humides',
         'Souper chez Roy et Dianne',
         'Bruit excessif',
       ],

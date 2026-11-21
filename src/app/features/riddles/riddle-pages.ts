@@ -26,7 +26,7 @@ export const RIDDLE_PAGES = {
     path: '/enigmes/sens-dessus-dessous',
     title: 'Sens Dessus Dessous (in english!)',
   },
-  [META_ID]: { path: '/enigmes/meta', title: 'Le méta' },
+  [META_ID]: { path: '/enigmes/meta', title: 'Hommage à mon père (méta)' },
 } as const;
 
 export function riddlePage(

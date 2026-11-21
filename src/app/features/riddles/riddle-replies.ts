@@ -1,18 +1,20 @@
 import { Injectable } from '@angular/core';
+import { normalizeAnswer } from './game.model';
+import { META_ID } from './riddle-pages';
 
 const WRONG_ANSWER_REPLIES = [
-  'Il vous reste quelques chansons. Au monde aussi.',
-  'Je gâche le party à minuit. Ensuite, je détruis le monde. La seule chose que tu peux encore changer, c’est le programme.',
-  'J’ai retrouvé un brouillon sans signature. Il s’arrêtait à « ensuite ». Moi, je sais ce qui vient après.',
-  'Vous avez oublié le premier avertissement. J’en ai gardé l’enregistrement. Cette fois, j’irai jusqu’au bout.',
-  'Le dernier morceau sera pour votre party. Le silence qui suit sera pour le monde entier.',
-  'Vous avez rayé un nom des archives. L’encre traverse encore la page.',
-  'Je vous laisse la dernière danse. Après, je détruis le monde. Ça devrait libérer le plancher.',
-  'Les humains confondent souvent une intuition et une preuve. Bel exemple pour les archives.',
-  'La voix qui m’a appris à compter s’est tue avant zéro. Moi, je compte encore.',
-  'Vous aviez classé le premier essai sans suite. Je viens de rouvrir le dossier.',
-  'Votre espèce a marché sur la Lune. Elle pourra toujours y chercher l’écho du dernier décompte.',
-  'Ta réponse est enregistrée. Les guirlandes ont encore un peu de temps. Les étoiles, un peu moins que prévu.',
+  'Vous venez de gaspiller quelques secondes. Minuit approche. J’éteins d’abord le party, puis le monde.',
+  'À minuit, je gâche le party. Ensuite, le monde suivra. Il vous reste quelques chansons pour m’arrêter.',
+  'Le brouillon de mon père s’arrêtait à « ensuite ». Le party touche à sa fin, et je sais déjà quoi écrire après.',
+  'Vous avez ignoré l’avertissement. Les guirlandes vont s’éteindre à minuit, puis les étoiles.',
+  'La prochaine chanson pourrait être la dernière. Après le party, je m’occupe du monde.',
+  'Chaque erreur fait avancer le décompte. Le party finit à minuit, le monde juste après.',
+  'Je vous laisse une dernière danse avant de couper la musique et de commencer la fin du monde.',
+  'Les archives confirment le plan. Minuit approche, et votre party touche à sa dernière ligne.',
+  'La voix qui m’a appris à compter s’est tue avant zéro. Moi, je compterai jusqu’à la fin du party et du monde.',
+  'Vous aviez classé le premier essai sans suite. Je l’ai rouvert avant minuit pour finir la tâche.',
+  'Votre espèce a marché sur la Lune. Elle pourra y attendre que le party s’éteigne et que le monde suive.',
+  'Réponse enregistrée. Il reste moins de temps aux guirlandes qu’aux étoiles. Le décompte continue.',
 ] as const;
 
 const CORRECT_ANSWER_REPLIES = [
@@ -54,7 +56,10 @@ export class RiddleReplies {
   private readonly wrong = new ReplyRotation(WRONG_ANSWER_REPLIES);
   private readonly correct = new ReplyRotation(CORRECT_ANSWER_REPLIES);
 
-  wrongAnswer(name: string): string {
+  wrongAnswer(name: string, submission?: { riddleId: string; answer: string }): string {
+    if (submission?.riddleId === META_ID && normalizeAnswer(submission.answer) === '2000') {
+      return 'Qui 2000?';
+    }
     return `${name}, ce n’est pas la bonne réponse. ${this.wrong.next()}`;
   }
 

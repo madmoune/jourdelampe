@@ -12,8 +12,9 @@ import { MetaGrid } from './meta-grid';
   template: `
     <app-riddle-page
       [riddleId]="riddleId"
+      answerLabel="Mon père est..."
       [accessNotice]="accessNotice()"
-      flavorText="Place les réponses des huit énigmes dans la grille."
+      [flavorText]="flavorText"
     >
       <ng-template><app-meta-grid /></ng-template>
     </app-riddle-page>
@@ -22,6 +23,9 @@ import { MetaGrid } from './meta-grid';
 })
 export class MetaPage {
   protected readonly riddleId = META_ID;
+  protected readonly flavorText = `Vous y êtes presque, mais ce n’est pas fini. Ces énigmes servaient à vous passer un message.
+
+Rassemblez-vous et prouvez que vous avez bien compris en finissant chaque...`;
   private readonly unlocked = injectMetaUnlocked();
   private readonly game = inject(GameStore);
   private readonly participants = inject(ParticipantStore);

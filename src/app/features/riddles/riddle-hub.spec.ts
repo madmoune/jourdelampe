@@ -49,10 +49,10 @@ describe('page dédiée aux énigmes', () => {
     const page = harness.routeNativeElement!;
     expect(page.querySelector('h1')?.textContent).toContain('Puzzle Hunt');
     expect(page.textContent).toContain(
-      'Montrez que vous avez un tant soit peu d’intelligence et je laisserai votre party tranquille.',
+      'Je ne laisserai pas la tâche de mon père inachevée. Si vous voulez sauver votre party et le monde, résolvez ces énigmes!',
     );
     expect(page.textContent).toContain(
-      'J’ai confiance en vous. Je suis sûre que vous allez avoir l’air de gros cons.',
+      'J’ai confiance en vous. Je suis sûre que vous n’aurez pas l’air de très gros cons.',
     );
     const cheatsheet = page.querySelector<HTMLAnchorElement>('.cheatsheet-link')!;
     expect(cheatsheet.pathname).toBe('/cheatsheet');

@@ -131,7 +131,9 @@ export class RiddleAnswer {
       if (correct) this.saveAnswer(answer);
       this.feedback.set({
         correct,
-        text: correct ? this.replies.correctAnswer() : this.replies.wrongAnswer(this.name()),
+        text: correct
+          ? this.replies.correctAnswer()
+          : this.replies.wrongAnswer(this.name(), { riddleId: this.riddleId(), answer }),
       });
       this.draft.set('');
       this.success.set(correct);

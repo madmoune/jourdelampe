@@ -1,29 +1,71 @@
-<p class="scroll-hint">Fais défiler la grille de gauche à droite pour voir toutes les cases.</p>
-<div class="scroll-grid" role="region" aria-label="Grille du méta">
-  @for (context of [storageKey()]; track context) {
-    <div class="board" [style.--columns]="width">
-      @for (capacity of capacities; track $index; let index = $index) {
-        @if (capacity) {
-          <input
-            #cell
-            [id]="'meta-cell-' + index"
-            class="cell entry"
-            type="text"
-            [maxLength]="capacity"
-            autocomplete="off"
-            autocapitalize="characters"
-            spellcheck="false"
-            [value]="letters()[index]"
-            [tabIndex]="focused() === index ? 0 : -1"
-            [attr.aria-label]="describeCell(index, capacity)"
-            (focus)="selectCell(cell, index)"
-            (input)="editCell($event, index, capacity)"
-            (keydown)="moveFocus($event, index)"
-          />
-        } @else {
-          <span class="cell" aria-hidden="true"></span>
-        }
+<div class="crossword-layout">
+  <div class="grid-area">
+    <p class="scroll-hint">
+      Faites défiler la grille de gauche à droite pour voir toutes les cases.
+    </p>
+    <button type="button" class="clear-grid" [disabled]="!hasLetters()" (click)="clearGrid()">
+      Vider la grille
+    </button>
+    <div class="scroll-grid" role="region" aria-label="Grille du méta">
+      @for (context of [storageKey()]; track context) {
+        <div class="board" [style.--columns]="width">
+          @for (capacity of capacities; track $index; let index = $index) {
+            @if (capacity) {
+              @let number = clueNumbers.get(index);
+              <div class="cell entry-cell" [class.numbered]="number">
+                @if (number) {
+                  <span class="cell-number" aria-hidden="true">{{ number }}</span>
+                }
+                <input
+                  #cell
+                  [id]="'meta-cell-' + index"
+                  class="entry"
+                  type="text"
+                  [maxLength]="capacity"
+                  autocomplete="off"
+                  autocapitalize="characters"
+                  spellcheck="false"
+                  [value]="letters()[index]"
+                  [tabIndex]="focused() === index ? 0 : -1"
+                  [attr.aria-label]="describeCell(index, capacity)"
+                  (focus)="selectCell(cell, index)"
+                  (input)="editCell($event, index, capacity)"
+                  (keydown)="moveFocus($event, index)"
+                />
+              </div>
+            } @else {
+              <span class="cell" aria-hidden="true"></span>
+            }
+          }
+        </div>
       }
     </div>
-  }
+  </div>
+
+  <aside class="clues" aria-label="Indices des mots croisés">
+    <p class="clue-help">Sélectionnez une phrase pour atteindre ses cases dans la grille.</p>
+    <div class="clue-groups">
+      @for (group of clueGroups; track group.label) {
+        <section>
+          <h2>{{ group.label }}</h2>
+          <ul role="list">
+            @for (clue of group.clues; track clue.number) {
+              <li>
+                <button type="button" (click)="chooseClue(clue)">
+                  <span class="clue-number">{{ clue.number }}</span>
+                  <span>
+                    {{ clue.text }}
+                    <strong class="clue-ending">{{
+                      clueCompletions()[clue.number - 1] || '______'
+                    }}</strong
+                    >.
+                  </span>
+                </button>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+    </div>
+  </aside>
 </div>

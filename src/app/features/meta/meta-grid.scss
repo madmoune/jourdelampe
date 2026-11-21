@@ -1,6 +1,26 @@
 :host {
   display: block;
   container-type: inline-size;
+  --min-cell-width: 10px;
+  --min-entry-size: 5px;
+  --min-number-size: 4px;
+}
+
+.crossword-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: 1.25rem;
+}
+
+@container (width >= 70rem) {
+  .crossword-layout {
+    grid-template-columns: max-content minmax(0, 1fr);
+  }
+}
+
+.grid-area {
+  min-width: 0;
 }
 
 .scroll-hint {
@@ -10,10 +30,42 @@
   font-size: 14px;
 }
 
-@container (width < 706px) {
+@container (width < 182px) {
   .scroll-hint {
     display: block;
   }
+}
+
+@media (pointer: coarse) {
+  :host {
+    --min-cell-width: 26px;
+    --min-entry-size: 9px;
+    --min-number-size: 6px;
+  }
+
+  // Les 18 colonnes de 26 px et les bordures occupent 470 px.
+  @container (width < 470px) {
+    .scroll-hint {
+      display: block;
+    }
+  }
+}
+
+.clear-grid {
+  min-height: 44px;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0.875rem;
+  border: 1px solid var(--puzzle-border);
+  background: var(--puzzle-panel);
+  color: var(--puzzle-title);
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.clear-grid:disabled {
+  opacity: 0.55;
+  cursor: default;
 }
 
 .scroll-grid {
@@ -26,7 +78,8 @@
 }
 
 .board {
-  --cell-width: clamp(10px, 4.52cqi, 36px);
+  --cell-width: clamp(var(--min-cell-width), calc((100cqi - 2px) / var(--columns)), 36px);
+  --cell-number-size: clamp(var(--min-number-size), 0.95cqi, 9px);
   display: grid;
   grid-template-columns: repeat(var(--columns), var(--cell-width));
   grid-auto-rows: calc(var(--cell-width) * 1.075);
@@ -42,22 +95,36 @@
   border-block-end: 1px solid #3f3153;
 }
 
-.cell:not(.entry) {
-  background: #100c23;
+.entry-cell {
+  position: relative;
+  background: #f3eef7;
+}
+
+.cell-number {
+  position: absolute;
+  top: 0;
+  left: 1px;
+  color: #503b68;
+  font: 700 var(--cell-number-size)/1 monospace;
+  pointer-events: none;
 }
 
 .entry {
   appearance: none;
+  display: block;
+  width: 100%;
+  height: 100%;
   margin: 0;
   padding: 0;
+  border: 0;
   border-radius: 0;
   overflow: hidden;
   color-scheme: light;
-  background: #f3eef7;
+  background: transparent;
   color: #172130;
   box-shadow: inset 0 0 0 1px #8d769f;
   font:
-    500 clamp(5px, 1.6cqi, 14px) / 1 Arial,
+    500 clamp(var(--min-entry-size), 1.6cqi, 14px) / 1 Arial,
     sans-serif;
   letter-spacing: -0.08em;
   text-overflow: clip;
@@ -68,4 +135,70 @@
 .entry:focus {
   outline: 2px solid #244b85;
   outline-offset: -2px;
+}
+
+.clue-help {
+  margin: 0 0 0.75rem;
+  color: var(--puzzle-muted);
+  font-size: 0.875rem;
+}
+
+.clue-groups {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+.clue-groups h2 {
+  margin: 0 0 0.375rem;
+  color: var(--puzzle-title);
+  font:
+    1.125rem/1.25 Georgia,
+    serif;
+}
+
+.clue-groups ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--puzzle-border);
+  background: var(--puzzle-panel);
+}
+
+.clue-groups li + li {
+  border-block-start: 1px solid var(--puzzle-divider);
+}
+
+.clues button {
+  display: grid;
+  grid-template-columns: 1.125rem minmax(0, 1fr);
+  width: 100%;
+  min-height: 44px;
+  padding: 0.5rem 0.625rem;
+  border: 0;
+  background: transparent;
+  color: var(--puzzle-text);
+  font: inherit;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  text-align: left;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.clear-grid:hover:enabled,
+.clues button:hover {
+  background: #342542;
+}
+
+.clear-grid:focus-visible,
+.clues button:focus-visible {
+  outline: 2px solid var(--puzzle-accent);
+  outline-offset: -2px;
+}
+
+.clue-number,
+.clue-ending {
+  color: var(--puzzle-accent);
+  font-weight: 700;
 }
