@@ -111,7 +111,7 @@ describe('interaction d’En manchettes', () => {
     1: 'HEYMANS',
     2: 'EMINEM',
     3: 'KOURSK',
-    4: 'FLORIDA',
+    4: 'FLORIDE',
     5: 'GLADIATOR',
     6: 'MOTELCAPRI',
     7: 'THESIMS',
