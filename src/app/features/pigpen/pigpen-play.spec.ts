@@ -68,6 +68,12 @@ describe('jeu des nonogrammes', () => {
     expect(first.textContent?.trim()).toBe('×');
     expect(first.getAttribute('aria-label')).toContain('barrée');
     expect(neighbour.getAttribute('aria-label')).toContain('vide');
+
+    first.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true, button: 2 }));
+    fixture.detectChanges();
+
+    expect(first.textContent?.trim()).toBe('');
+    expect(first.getAttribute('aria-label')).toContain('vide');
   });
 
   it('garde les cochons droits dans les sept enclos', () => {

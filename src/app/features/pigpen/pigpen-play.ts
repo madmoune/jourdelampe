@@ -48,7 +48,7 @@ export class PigpenPlay {
 
   protected markCross(event: MouseEvent, pen: number, cell: number): void {
     event.preventDefault();
-    this.setMark(pen, cell, 'cross');
+    this.setMark(pen, cell, this.boards()[pen][cell] === 'cross' ? '' : 'cross');
   }
 
   protected cellLabel(pen: number, row: number, column: number): string {
