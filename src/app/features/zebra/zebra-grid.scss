@@ -52,6 +52,8 @@ $block-border: 3px solid #a68eb8;
   overflow-x: auto;
   padding-bottom: 12px;
   overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y;
 }
 table {
   border-collapse: collapse;
@@ -219,6 +221,59 @@ button:focus-visible,
     align-items: stretch;
   }
 }
+
+@media (orientation: landscape) and (max-width: 900px) {
+  :host {
+    --row-group-width: 22px;
+    --row-label-width: 88px;
+  }
+  .grid-workspace {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .grid-main {
+    flex: 1 1 auto;
+  }
+  table {
+    font-size: 11px;
+  }
+  .group-headings th {
+    height: 28px;
+    font-size: 10px;
+  }
+  .value-headings th {
+    height: 88px;
+    min-width: 32px;
+  }
+  .value-headings th span {
+    max-height: 86px;
+    padding: 6px 0;
+  }
+  .value-headings .position-heading {
+    font-size: 18px;
+  }
+  .row-label {
+    padding-inline: 6px;
+    font-size: 11px;
+    line-height: 1.2;
+  }
+  .row-group {
+    font-size: 9px;
+  }
+  .cell {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+  }
+  .cell button {
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    font-size: 18px;
+  }
+}
+
 @media (max-width: 600px) {
   :host {
     --row-group-width: 24px;

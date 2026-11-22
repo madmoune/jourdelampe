@@ -227,3 +227,26 @@ button:focus-visible {
     padding: 22px;
   }
 }
+
+@media (orientation: landscape) and (max-width: 900px) {
+  .clues {
+    flex: 0 0 clamp(176px, 30vw, 250px);
+    width: auto;
+    padding: 12px;
+  }
+  .clues h3 {
+    margin-bottom: 8px;
+    font-size: 18px;
+  }
+  .clues ol {
+    padding-left: 18px;
+    font-size: 11px;
+    line-height: 1.35;
+  }
+  .clues li {
+    padding-left: 3px;
+  }
+  .clues li + li {
+    margin-top: 6px;
+  }
+}
