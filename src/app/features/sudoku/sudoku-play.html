@@ -91,15 +91,15 @@
         <li>
           <div
             class="signal-flags"
-            [attr.aria-label]="'Bloc ' + (box + 1) + ' : ' + pair[0] + ' et ' + pair[1]"
+            [attr.aria-label]="'Bloc ' + (box + 1) + ' : ' + pair[1] + ' et ' + pair[0]"
           >
-            <span class="digit-flag" role="img" [attr.aria-label]="'Drapeau ' + pair[0]">
-              <span class="flag-pole" aria-hidden="true"></span>
-              <span class="flag-cloth">{{ pair[0] }}</span>
-            </span>
             <span class="digit-flag" role="img" [attr.aria-label]="'Drapeau ' + pair[1]">
               <span class="flag-pole" aria-hidden="true"></span>
               <span class="flag-cloth">{{ pair[1] }}</span>
+            </span>
+            <span class="digit-flag" role="img" [attr.aria-label]="'Drapeau ' + pair[0]">
+              <span class="flag-pole" aria-hidden="true"></span>
+              <span class="flag-cloth">{{ pair[0] }}</span>
             </span>
           </div>
         </li>

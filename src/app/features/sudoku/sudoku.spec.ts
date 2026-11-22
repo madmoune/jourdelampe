@@ -109,6 +109,9 @@ describe('interface de La vigie', () => {
     expect(page.querySelectorAll('.signal-grid li')).toHaveLength(9);
     expect(page.querySelectorAll('.signal-flags')).toHaveLength(9);
     expect(page.querySelectorAll('.digit-flag')).toHaveLength(18);
+    expect(
+      page.querySelector<HTMLElement>('.signal-flags')?.textContent?.replace(/\s+/gu, ''),
+    ).toBe('92');
     const [blank, given] = cells;
     blank.focus();
     blank.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', cancelable: true }));
