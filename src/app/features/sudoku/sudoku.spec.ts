@@ -179,6 +179,40 @@ describe('interface de La vigie', () => {
     expect(JSON.parse(localStorage.getItem(storageKey)!).notes[0]).toBe('');
   });
 
+  it('vide les saisies du sudoku sans effacer les chiffres donnés', () => {
+    const fixture = TestBed.createComponent(SudokuPlay);
+    fixture.detectChanges();
+    const page: HTMLElement = fixture.nativeElement;
+    const cells = page.querySelectorAll<HTMLInputElement>('table input');
+    const firstBlank = SUDOKU_GIVENS.findIndex((digit) => digit === 0);
+    const secondBlank = SUDOKU_GIVENS.findIndex(
+      (digit, index) => digit === 0 && index !== firstBlank,
+    );
+    const entered = cells[firstBlank];
+    entered.value = '3';
+    entered.dispatchEvent(new Event('input', { bubbles: true }));
+    page.querySelector<HTMLButtonElement>('.notes-toggle')!.click();
+    fixture.detectChanges();
+    const noted = cells[secondBlank];
+    noted.value = '24';
+    noted.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+
+    const clear = page.querySelector<HTMLButtonElement>('.clear-grid')!;
+    expect(clear.disabled).toBe(false);
+    clear.click();
+    fixture.detectChanges();
+
+    expect(cells[firstBlank].value).toBe('');
+    expect(cells[secondBlank].value).toBe('');
+    expect(cells[1].value).toBe(String(SUDOKU_GIVENS[1]));
+    expect(JSON.parse(localStorage.getItem(storageKey)!)).toEqual({
+      board: SUDOKU_GIVENS,
+      notes: Array<string>(SUDOKU_GIVENS.length).fill(''),
+    });
+    expect(clear.disabled).toBe(true);
+  });
+
   it('permet aussi de retirer un candidat quand les neuf sont déjà présents', () => {
     const fixture = TestBed.createComponent(SudokuPlay);
     fixture.detectChanges();

@@ -11,6 +11,15 @@
       >
         {{ notesMode() ? 'Désactiver les notes' : 'Activer les notes' }}
       </button>
+      <button
+        type="button"
+        class="clear-grid"
+        title="Effacer les chiffres et les notes saisis"
+        [disabled]="!hasEntries()"
+        (click)="clearGrid()"
+      >
+        Vider le sudoku
+      </button>
       <span class="notes-shortcut">Touche <kbd>+</kbd></span>
     </div>
 

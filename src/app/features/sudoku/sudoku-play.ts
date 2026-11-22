@@ -53,6 +53,11 @@ export class SudokuPlay {
   protected readonly focused = signal(this.givens.findIndex((digit) => digit === 0));
   protected readonly complete = computed(() => isCompleteSudoku(this.board()));
   protected readonly filledCount = computed(() => this.board().filter(Boolean).length);
+  protected readonly hasEntries = computed(
+    () =>
+      this.board().some((digit, index) => !this.givens[index] && digit !== 0) ||
+      this.notes().some((note, index) => !this.givens[index] && note.length > 0),
+  );
 
   protected selectCell(event: FocusEvent, index: number): void {
     this.focused.set(index);
@@ -89,6 +94,13 @@ export class SudokuPlay {
 
   protected toggleNotesMode(): void {
     this.notesMode.update((enabled) => !enabled);
+  }
+
+  protected clearGrid(): void {
+    this.save({
+      board: [...this.givens],
+      notes: Array<string>(this.givens.length).fill(''),
+    });
   }
 
   protected toggleNotesFromHotkey(event: KeyboardEvent): void {

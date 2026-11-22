@@ -48,6 +48,26 @@ p {
   font-size: 14px;
 }
 
+.clear-grid {
+  min-height: 44px;
+  padding: 7px 11px;
+  border: 1px solid #927da4;
+  background: #241b30;
+  color: #f0dba7;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.clear-grid:hover:not(:disabled) {
+  background: #41334f;
+}
+
+.clear-grid:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
 .notes-toggle[aria-pressed='true'] {
   border-color: #dcff79;
   background: #dfff8a;
