@@ -32,8 +32,18 @@ progress {
   position: absolute;
   inset: auto 2% 3%;
   display: flex;
+  align-items: center;
   justify-content: space-between;
   pointer-events: none;
+}
+
+.attack-names {
+  display: grid;
+  gap: 3px;
+  color: #f4d0a2;
+  text-align: center;
+  text-shadow: 0 1px 3px #000, 0 0 2px #000;
+  font: 700 clamp(9px, 2.2cqi, 14px)/1 Georgia, serif;
 }
 
 .orb {

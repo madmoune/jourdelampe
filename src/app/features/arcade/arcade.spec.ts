@@ -189,6 +189,9 @@ it('affiche les poses et les dégâts binaires de Diablo et présente les jauges
     const console = page.querySelector('.console')!;
     const gauges = [...page.querySelectorAll('.golem-health, .orb')];
     expect(gauges.map((gauge) => gauge.textContent?.trim())).toEqual(['Golem de cendre', 'PV', 'PM']);
+    expect([...page.querySelectorAll('.attack-names span')].map((name) => name.textContent?.trim())).toEqual(
+      ['Attaque', 'Magie'],
+    );
     expect(page.querySelector('.last-attack')).toBeNull();
 
     page.querySelector<HTMLButtonElement>('[aria-label="A · Frapper"]')!.click();

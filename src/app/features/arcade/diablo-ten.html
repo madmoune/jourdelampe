@@ -78,6 +78,10 @@
         [style.--level]="game().hp / hpMax * 100 + '%'">
         <span aria-hidden="true">PV</span>
       </div>
+      <div class="attack-names" aria-label="Attaques disponibles">
+        <span>Attaque</span>
+        <span>Magie</span>
+      </div>
       <div class="orb mana" role="progressbar" aria-label="Mana du chevalier" aria-valuemin="0"
         [attr.aria-valuenow]="game().mana" [attr.aria-valuemax]="manaMax"
         [style.--level]="game().mana / manaMax * 100 + '%'">
