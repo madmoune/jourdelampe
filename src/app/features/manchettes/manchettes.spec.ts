@@ -24,6 +24,9 @@ describe('données des mots croisés et du démineur', () => {
     expect(CLUES).toHaveLength(28);
     expect(CLUES.filter((clue) => clue.direction === 'across')).toHaveLength(14);
     expect(CLUES.filter((clue) => clue.direction === 'down')).toHaveLength(14);
+    expect(CLUES.find((clue) => clue.number === 26)?.text).toBe(
+      'Groupe de Boom Desjardins derrière « Calvaire ».',
+    );
     const crosswordIndices = CROSSWORD_CELLS.filter((cell) => cell.open).map((cell) => cell.index);
     expect(crosswordIndices).toHaveLength(194);
     expect(new Set(CLUES.flatMap((clue) => clue.cells))).toEqual(new Set(crosswordIndices));
@@ -196,7 +199,9 @@ describe('interaction d’En manchettes', () => {
         (count, cell) =>
           initial[cell] === 'clear' &&
           count > 0 &&
-          NEIGHBORS[cell].some((neighbor) => initial[neighbor] === 'hidden' && !MINES.has(neighbor)),
+          NEIGHBORS[cell].some(
+            (neighbor) => initial[neighbor] === 'hidden' && !MINES.has(neighbor),
+          ),
       );
       expect(target).toBeGreaterThanOrEqual(0);
       const mineNeighbors = NEIGHBORS[target].filter((neighbor) => MINES.has(neighbor));

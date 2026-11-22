@@ -64,7 +64,7 @@ const CLUE_DATA: readonly ClueData[] = [
   { number: 23, direction: 'across', start: 357, length: 10, text: 'Groupe derrière les chansons « One Step Closer » et « In the End ».' },
   { number: 24, direction: 'down', start: 359, length: 7, text: 'Service de partage de MP3 au cœur d’une poursuite intentée par Metallica.' },
   { number: 25, direction: 'across', start: 368, length: 7, text: 'Nom du chanteur québécois Daniel qui interprète « La désise ».' },
-  { number: 26, direction: 'across', start: 405, length: 9, text: 'Groupe de Boom Desjardins derrière « Juste pour voir le monde ».' },
+  { number: 26, direction: 'across', start: 405, length: 9, text: 'Groupe de Boom Desjardins derrière « Calvaire ».' },
   { number: 27, direction: 'across', start: 443, length: 7, text: 'Nom de famille de Pierre Elliott, ancien premier ministre canadien.' },
   { number: 28, direction: 'across', start: 473, length: 8, text: 'Avion de ligne supersonique franco-britannique au nez basculant.' },
 ];
