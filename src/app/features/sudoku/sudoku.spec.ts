@@ -120,6 +120,8 @@ describe('interface de La vigie', () => {
     blank.dispatchEvent(new Event('input', { bubbles: true }));
     fixture.detectChanges();
     expect(blank.value).toBe('3');
+    expect(blank.selectionStart).toBe(1);
+    expect(blank.selectionEnd).toBe(1);
     expect(JSON.parse(localStorage.getItem(storageKey)!).board[0]).toBe(3);
   });
 

@@ -85,7 +85,6 @@ export class SudokuPlay {
       notes[index] = '';
       this.save({ board, notes });
     }
-    input.select();
   }
 
   protected toggleNotesMode(): void {
