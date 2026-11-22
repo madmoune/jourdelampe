@@ -25,6 +25,9 @@ const CORRECT_ANSWER_REPLIES = [
   'Tu viens de sauver une étincelle. Profites-en : je n’ai pas rayé la fin du monde du programme.',
 ] as const;
 
+const META_SUCCESS_REPLY =
+  'Félicitations! Vous avez résolu le méta, rassemblé les morceaux et déjoué le plan de mon père. Le party et le monde sont sauvés!';
+
 class ReplyRotation {
   private remaining: number[] = [];
   private last = -1;
@@ -63,7 +66,8 @@ export class RiddleReplies {
     return `${name}, ce n’est pas la bonne réponse. ${this.wrong.next()}`;
   }
 
-  correctAnswer(): string {
+  correctAnswer(riddleId?: string): string {
+    if (riddleId === META_ID) return META_SUCCESS_REPLY;
     return this.correct.next();
   }
 }

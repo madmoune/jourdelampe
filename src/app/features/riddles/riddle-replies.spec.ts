@@ -1,4 +1,5 @@
 import { RiddleReplies } from './riddle-replies';
+import { META_ID } from './riddle-pages';
 
 describe('répliques de l’AI aux réponses', () => {
   it('fait tourner douze répliques sans répétition et sans doublon entre deux séries', () => {
@@ -40,5 +41,13 @@ describe('répliques de l’AI aux réponses', () => {
     expect(second[0]).not.toBe(first.at(-1));
     expect(first.some((reply) => reply.includes('Détruire le monde'))).toBe(true);
     expect(first.some((reply) => reply.includes('premier brouillon'))).toBe(true);
+  });
+
+  it('félicite clairement le joueur après la résolution du méta', () => {
+    const replies = new RiddleReplies();
+
+    expect(replies.correctAnswer(META_ID)).toBe(
+      'Félicitations! Vous avez résolu le méta, rassemblé les morceaux et déjoué le plan de mon père. Le party et le monde sont sauvés!',
+    );
   });
 });

@@ -227,4 +227,34 @@ describe('page du méta', () => {
     );
     expect(page.querySelector('dialog')?.open).toBe(false);
   });
+
+  it('félicite le joueur après une bonne réponse au méta', async () => {
+    const submit = vi.mocked(TestBed.inject(RiddleSubmissions).submit);
+    submit.mockResolvedValue(true);
+    Object.defineProperty(HTMLDialogElement.prototype, 'showModal', {
+      configurable: true,
+      value: function (this: HTMLDialogElement) {
+        this.open = true;
+      },
+    });
+    Object.defineProperty(HTMLDialogElement.prototype, 'close', {
+      configurable: true,
+      value: function (this: HTMLDialogElement) {
+        this.open = false;
+      },
+    });
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/apercu-ia/enigmes/meta', MetaPage);
+    const page = harness.routeNativeElement!;
+    const input = page.querySelector<HTMLInputElement>('#answer-meta')!;
+    input.value = 'LEBUGDELAN2000';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    await harness.fixture.whenStable();
+    input.form!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    await harness.fixture.whenStable();
+
+    expect(page.querySelector('.success-reply')?.textContent).toContain('Félicitations!');
+    expect(page.querySelector('.success-reply')?.textContent).toContain('party et le monde');
+    expect(page.querySelector('dialog')?.open).toBe(true);
+  });
 });

@@ -132,7 +132,7 @@ export class RiddleAnswer {
       this.feedback.set({
         correct,
         text: correct
-          ? this.replies.correctAnswer()
+          ? this.replies.correctAnswer(this.riddleId())
           : this.replies.wrongAnswer(this.name(), { riddleId: this.riddleId(), answer }),
       });
       this.draft.set('');
