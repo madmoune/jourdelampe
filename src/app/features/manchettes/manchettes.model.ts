@@ -58,7 +58,7 @@ const CLUE_DATA: readonly ClueData[] = [
   { number: 17, direction: 'across', start: 264, length: 9, text: 'Nom de Simon, médaillé d’or canadien en triathlon aux Jeux olympiques.' },
   { number: 18, direction: 'across', start: 274, length: 10, text: 'Nom du pilote allemand Michael, sept fois champion du monde de Formule 1.' },
   { number: 19, direction: 'down', start: 294, length: 9, text: 'Film de Denis Villeneuve dont l’histoire est racontée par un poisson.' },
-  { number: 20, direction: 'down', start: 306, length: 7, text: 'Émission satirique animée par Jean-René Dufort.' },
+  { number: 20, direction: 'down', start: 306, length: 7, text: 'Rivière qui traverse Washington, D.C.' },
   { number: 21, direction: 'across', start: 318, length: 6, text: 'Surnom de Maurice Richard, légendaire numéro 9 du Canadien.' },
   { number: 22, direction: 'down', start: 331, length: 8, text: 'Groupe médiatique québécois propriétaire de TVA et de Vidéotron.' },
   { number: 23, direction: 'across', start: 357, length: 10, text: 'Groupe derrière les chansons « One Step Closer » et « In the End ».' },

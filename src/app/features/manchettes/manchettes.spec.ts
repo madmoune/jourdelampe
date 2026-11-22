@@ -27,6 +27,9 @@ describe('données des mots croisés et du démineur', () => {
     expect(CLUES.find((clue) => clue.number === 26)?.text).toBe(
       'Groupe de Boom Desjardins derrière « Calvaire ».',
     );
+    expect(CLUES.find((clue) => clue.number === 20)?.text).toBe(
+      'Rivière qui traverse Washington, D.C.',
+    );
     const crosswordIndices = CROSSWORD_CELLS.filter((cell) => cell.open).map((cell) => cell.index);
     expect(crosswordIndices).toHaveLength(194);
     expect(new Set(CLUES.flatMap((clue) => clue.cells))).toEqual(new Set(crosswordIndices));
