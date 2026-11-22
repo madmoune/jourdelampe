@@ -146,7 +146,15 @@ describe('gabarit Matchmaker', () => {
     inputs[0]!.dispatchEvent(new Event('input', { bubbles: true }));
     await fixture.whenStable();
     expect(marks()[0]).toBe('');
-    expect(marks()[1]).toBe('✓');
+    expect(marks()[1]).toBe('');
+
+    inputs[0]!.value = 'C';
+    inputs[0]!.dispatchEvent(new Event('input', { bubbles: true }));
+    inputs[1]!.value = 'Une autre phrase';
+    inputs[1]!.dispatchEvent(new Event('input', { bubbles: true }));
+    await fixture.whenStable();
+    expect(marks()[0]).toBe('');
+    expect(marks()[1]).toBe('');
   });
 
   it('affiche 14 débuts et 14 fins, dont la phrase de Britney Spears', async () => {

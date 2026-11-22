@@ -104,25 +104,27 @@ export class MatchmakerPlay {
       MATCHMAKER_ARTISTS[index].includes(normalizeAnswer(artist)),
     ),
   );
-  protected readonly correctStarts = computed(() =>
-    this.songs().map(({ startEntry }, index) =>
-      matchesArtistIndex(
+  private readonly correctLetterPairs = computed(() =>
+    this.songs().map(({ startEntry, endEntry }, index) => ({
+      start: matchesArtistIndex(
         startEntry,
         MATCHMAKER_ARTISTS[index]?.[0] ?? '',
         MATCHMAKER_ARTIST_INDICES[index]?.[0] ?? 0,
         false,
       ),
-    ),
-  );
-  protected readonly correctEnds = computed(() =>
-    this.songs().map(({ endEntry }, index) =>
-      matchesArtistIndex(
+      end: matchesArtistIndex(
         endEntry,
         MATCHMAKER_ARTISTS[index]?.[0] ?? '',
         MATCHMAKER_ARTIST_INDICES[index]?.[1] ?? 0,
         true,
       ),
-    ),
+    })),
+  );
+  protected readonly correctStarts = computed(() =>
+    this.correctLetterPairs().map(({ start, end }) => start && end),
+  );
+  protected readonly correctEnds = computed(() =>
+    this.correctLetterPairs().map(({ start, end }) => start && end),
   );
   protected readonly selectedLeft = signal<number | null>(null);
   protected readonly leftTexts = MATCHMAKER_CLUES.map((clue) => clue.start);
