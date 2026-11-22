@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { MATCHMAKER_CLUES, MATCHMAKER_SONG_CLUES } from './matchmaker-clues';
+import { MATCHMAKER_ARTISTS, MATCHMAKER_CLUES } from './matchmaker-clues';
 import { MatchmakerPlay } from './matchmaker-play';
 
 describe('gabarit Matchmaker', () => {
@@ -80,7 +80,9 @@ describe('gabarit Matchmaker', () => {
     artists.forEach((artist, index) => enterArtist(index, artist));
     await fixture.whenStable();
     expect(marks()).toEqual(Array(artists.length).fill('✓'));
-    expect(fields[0].querySelector('[role="status"] .sr-only')?.textContent).toBe('Artiste correct');
+    expect(fields[0].querySelector('[role="status"] .sr-only')?.textContent).toBe(
+      'Artiste correct',
+    );
 
     enterArtist(0, 'The Offspring');
     enterArtist(1, '');
@@ -90,23 +92,24 @@ describe('gabarit Matchmaker', () => {
     expect(marks().slice(2)).toEqual(Array(artists.length - 2).fill('✓'));
   });
 
-  it('confirme les bons débuts et fins et retire le crochet après une modification', async () => {
+  it('confirme la première et la dernière lettre de chaque artiste', async () => {
     const { fixture, page } = await setup();
     const fields = [...page.querySelectorAll('.letter-field')];
     const inputs = fields.map((field) => field.querySelector('input')!);
     const marks = () =>
       fields.map((field) => field.querySelector('.letter-mark [aria-hidden]')?.textContent ?? '');
 
-    expect(marks()).toEqual(Array(MATCHMAKER_SONG_CLUES.length * 2).fill(''));
-    MATCHMAKER_SONG_CLUES.forEach(({ start, end }, index) => {
-      inputs[index * 2]!.value = start;
+    expect(marks()).toEqual(Array(MATCHMAKER_ARTISTS.length * 2).fill(''));
+    MATCHMAKER_ARTISTS.forEach((artists, index) => {
+      const artist = artists[0]!;
+      inputs[index * 2]!.value = artist.slice(0, 1).toLowerCase();
       inputs[index * 2]!.dispatchEvent(new Event('input', { bubbles: true }));
-      inputs[index * 2 + 1]!.value = end;
+      inputs[index * 2 + 1]!.value = artist.slice(-1).toLowerCase();
       inputs[index * 2 + 1]!.dispatchEvent(new Event('input', { bubbles: true }));
     });
     await fixture.whenStable();
 
-    expect(marks()).toEqual(Array(MATCHMAKER_SONG_CLUES.length * 2).fill('✓'));
+    expect(marks()).toEqual(Array(MATCHMAKER_ARTISTS.length * 2).fill('✓'));
 
     inputs[0]!.value = 'Une autre phrase';
     inputs[0]!.dispatchEvent(new Event('input', { bubbles: true }));
@@ -122,7 +125,9 @@ describe('gabarit Matchmaker', () => {
 
     expect(starts).toHaveLength(14);
     expect(ends).toHaveLength(14);
-    const britneyStart = [...starts].find((text) => text.textContent?.trim() === 'I think I did it again');
+    const britneyStart = [...starts].find(
+      (text) => text.textContent?.trim() === 'I think I did it again',
+    );
     expect(britneyStart).toBeDefined();
     for (const text of [...starts, ...ends]) {
       expect(text.textContent?.trim().split(/\s+/u)).toHaveLength(text === britneyStart ? 6 : 5);
@@ -177,7 +182,9 @@ describe('gabarit Matchmaker', () => {
           return distance <= 12;
         })
         .sort((a, b) => a.x - b.x);
-      expect(crossed.map(({ value }) => value)).toEqual(MATCHMAKER_CLUES[index].indices.map(String));
+      expect(crossed.map(({ value }) => value)).toEqual(
+        MATCHMAKER_CLUES[index].indices.map(String),
+      );
       expect(crossed[0].x).toBeLessThan(50);
       expect(crossed[1].x).toBeGreaterThan(50);
     }

@@ -1,11 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, HostListener, signal } from '@angular/core';
 import { normalizeAnswer } from '../riddles/game.model';
-import {
-  MATCHMAKER_ARTISTS,
-  MATCHMAKER_CLUES,
-  MATCHMAKER_DECOYS,
-  MATCHMAKER_SONG_CLUES,
-} from './matchmaker-clues';
+import { MATCHMAKER_ARTISTS, MATCHMAKER_CLUES, MATCHMAKER_DECOYS } from './matchmaker-clues';
 
 export interface MatchmakerSongEntry {
   readonly excerpt: string;
@@ -55,12 +50,12 @@ export class MatchmakerPlay {
   );
   protected readonly correctStarts = computed(() =>
     this.songs().map(({ startEntry }, index) =>
-      matchesClue(startEntry, MATCHMAKER_SONG_CLUES[index]?.start ?? ''),
+      matchesArtistEdge(startEntry, MATCHMAKER_ARTISTS[index] ?? [], 'start'),
     ),
   );
   protected readonly correctEnds = computed(() =>
     this.songs().map(({ endEntry }, index) =>
-      matchesClue(endEntry, MATCHMAKER_SONG_CLUES[index]?.end ?? ''),
+      matchesArtistEdge(endEntry, MATCHMAKER_ARTISTS[index] ?? [], 'end'),
     ),
   );
   protected readonly pairs = signal<readonly MatchmakerPair[]>([]);
@@ -155,6 +150,16 @@ export class MatchmakerPlay {
   }
 }
 
-function matchesClue(value: string, expected: string): boolean {
-  return value.trim() !== '' && normalizeAnswer(value) === normalizeAnswer(expected);
+function matchesArtistEdge(
+  value: string,
+  expectedArtists: readonly string[],
+  edge: 'start' | 'end',
+): boolean {
+  const normalized = normalizeAnswer(value);
+  if (!normalized) return false;
+
+  return expectedArtists.some((artist) => {
+    const expected = edge === 'start' ? artist.slice(0, 1) : artist.slice(-1);
+    return normalized === expected;
+  });
 }
