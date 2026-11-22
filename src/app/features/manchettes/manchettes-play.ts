@@ -114,6 +114,12 @@ export class ManchettesPlay {
 
   protected selectLetter(event: FocusEvent, cell: number): void {
     this.letterFocus.set(cell);
+    // A crossing belongs to both entries: keep the direction while typing
+    // through it. Switch only when the focused cell cannot be part of the
+    // current entry (for example, after clicking a horizontal-only cell).
+    if (!CLUES_BY_CELL[cell].some((clue) => clue.direction === this.direction())) {
+      this.direction.set(CLUES_BY_CELL[cell][0]?.direction ?? this.direction());
+    }
     (event.target as HTMLInputElement).select();
   }
 
@@ -127,7 +133,8 @@ export class ManchettesPlay {
       letters[cell] = letter;
       this.save({ ...state, letters });
     }
-    const entry = this.activeClue()?.cells ?? [];
+    const entry =
+      CLUES_BY_CELL[cell].find((clue) => clue.direction === this.direction())?.cells ?? [];
     const next = entry[entry.indexOf(cell) + 1];
     if (letter && next !== undefined) this.focus('word-cell', next);
     else input.select();
@@ -140,7 +147,8 @@ export class ManchettesPlay {
       return;
     }
     if (event.key === 'Backspace' && !this.progress().letters[cell]) {
-      const entry = this.activeClue()?.cells ?? [];
+      const entry =
+        CLUES_BY_CELL[cell].find((clue) => clue.direction === this.direction())?.cells ?? [];
       const previous = entry[entry.indexOf(cell) - 1];
       if (previous !== undefined) {
         event.preventDefault();

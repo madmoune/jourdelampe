@@ -150,6 +150,29 @@ describe('interaction d’En manchettes', () => {
     );
   });
 
+  it('garde le sens horizontal en traversant une entrée verticale', () => {
+    const fixture = TestBed.createComponent(ManchettesPlay);
+    fixture.detectChanges();
+    const page: HTMLElement = fixture.nativeElement;
+    const horizontalClue = [...page.querySelectorAll<HTMLButtonElement>('.clues button')].find(
+      (button) => button.textContent?.includes('25.'),
+    )!;
+    horizontalClue.click();
+    fixture.detectChanges();
+
+    const enter = (cell: number, value: string) => {
+      const input = page.querySelector<HTMLInputElement>(`#word-cell-${cell}`)!;
+      input.value = value;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      fixture.detectChanges();
+    };
+
+    enter(368, 'D');
+    expect(page.querySelector<HTMLInputElement>('#word-cell-369')).toBe(document.activeElement);
+    enter(369, 'A');
+    expect(page.querySelector<HTMLInputElement>('#word-cell-370')).toBe(document.activeElement);
+  });
+
   it('signale visuellement une grille résolue', () => {
     const mines = Array<MineMark>(GRID_SIZE).fill('clear');
     for (const mine of MINES) mines[mine] = 'flagged';
