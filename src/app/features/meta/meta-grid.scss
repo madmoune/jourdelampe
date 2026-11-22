@@ -183,6 +183,8 @@
   line-height: 1.4;
   text-align: left;
   overflow-wrap: anywhere;
+  user-select: text;
+  -webkit-user-select: text;
   cursor: pointer;
 }
 
