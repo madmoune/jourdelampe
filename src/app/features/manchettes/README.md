@@ -27,4 +27,7 @@ Pour publier le dossier, ajouter `game/catalog/manchettes-01` :
 
 La réponse finale et sa forme normalisée s’ajoutent dans
 `riddleSecrets/manchettes-01/{answer, normalizedAnswer}`, et jamais
-dans le catalogue public.
+dans le catalogue public. La grille complétée, encodée de gauche à droite et
+de haut en bas dans les 194 cases ouvertes, doit être ajoutée dans
+`riddleSecrets/manchettes-01/gridAnswer` pour que le message de réussite
+n’apparaisse qu’après validation de toutes les réponses.

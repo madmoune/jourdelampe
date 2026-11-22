@@ -55,7 +55,10 @@ export function gameId(value: string): boolean {
 }
 
 export function validGridCode(value: unknown): value is string {
-  return typeof value === 'string' && (/^[1-8]{36}$/u.test(value) || /^[01]{110}$/u.test(value));
+  return (
+    typeof value === 'string' &&
+    (/^[1-8]{36}$/u.test(value) || /^[01]{110}$/u.test(value) || /^[A-Z]{194}$/u.test(value))
+  );
 }
 
 function record(value: unknown): Record<string, unknown> {

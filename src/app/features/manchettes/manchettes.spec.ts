@@ -1,7 +1,10 @@
-import { signal } from '@angular/core';
+import { signal, WritableSignal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { GameStore } from '../riddles/game-store';
 import { ParticipantStore } from '../riddles/participant-store';
+import { RiddleAttempt, RiddleAttempts } from '../riddles/riddle-attempts';
+import { MANCHETTES_ID } from '../riddles/riddle-pages';
+import { RiddleSubmissions } from '../riddles/riddle-submissions';
 import {
   CLUES,
   CROSSWORD_CELLS,
@@ -100,14 +103,67 @@ describe('données des mots croisés et du démineur', () => {
 
 describe('interaction d’En manchettes', () => {
   const key = 'jdl-manchettes-v1:alice:one';
+  let gameReady: WritableSignal<boolean>;
+  let attemptHistory: WritableSignal<readonly RiddleAttempt[]>;
+  let checkGrid: ReturnType<typeof vi.fn>;
+
+  const crosswordAnswers: Readonly<Record<number, string>> = {
+    1: 'HEYMANS',
+    2: 'EMINEM',
+    3: 'KOURSK',
+    4: 'FLORIDA',
+    5: 'GLADIATOR',
+    6: 'MOTELCAPRI',
+    7: 'THESIMS',
+    8: 'AUGER',
+    9: 'MAJORASMASK',
+    10: 'SYDNEY',
+    11: 'VIDEOTRON',
+    12: 'LESCOLOCS',
+    13: 'DIABLOII',
+    14: 'LAPOINTE',
+    15: 'DESJARDINS',
+    16: 'HOCHELAGA',
+    17: 'WHITFIELD',
+    18: 'SCHUMACHER',
+    19: 'MAELSTROM',
+    20: 'DONOVAN',
+    21: 'ROCKET',
+    22: 'QUEBECOR',
+    23: 'LINKINPARK',
+    24: 'NAPSTER',
+    25: 'BOUCHER',
+    26: 'LACHICANE',
+    27: 'TRUDEAU',
+    28: 'CONCORDE',
+  };
+
+  const correctCrossword = () => {
+    const letters = Array<string>(GRID_SIZE).fill('');
+    for (const clue of CLUES) {
+      const answer = crosswordAnswers[clue.number];
+      clue.cells.forEach((cell, index) => (letters[cell] = answer[index]));
+    }
+    return {
+      letters,
+      code: CROSSWORD_CELLS.filter((cell) => cell.open)
+        .map((cell) => letters[cell.index])
+        .join(''),
+    };
+  };
 
   beforeEach(() => {
     localStorage.removeItem(key);
+    gameReady = signal(false);
+    attemptHistory = signal<readonly RiddleAttempt[]>([]);
+    checkGrid = vi.fn().mockResolvedValue(false);
     TestBed.configureTestingModule({
       imports: [ManchettesPlay],
       providers: [
-        { provide: GameStore, useValue: { round: signal({ id: 'one' }) } },
+        { provide: GameStore, useValue: { round: signal({ id: 'one' }), ready: gameReady } },
         { provide: ParticipantStore, useValue: { participant: signal({ id: 'alice' }) } },
+        { provide: RiddleAttempts, useValue: { attempts: attemptHistory } },
+        { provide: RiddleSubmissions, useValue: { checkGrid } },
       ],
     });
   });
@@ -173,7 +229,7 @@ describe('interaction d’En manchettes', () => {
     expect(page.querySelector<HTMLInputElement>('#word-cell-370')).toBe(document.activeElement);
   });
 
-  it('affiche la réussite quand toutes les cases du crossword sont remplies', () => {
+  it('n’affiche pas la réussite quand toutes les cases sont remplies mais incorrectes', async () => {
     const letters = CROSSWORD_CELLS.map((cell) => (cell.open ? 'A' : ''));
     localStorage.setItem(
       key,
@@ -181,9 +237,33 @@ describe('interaction d’En manchettes', () => {
     );
     const fixture = TestBed.createComponent(ManchettesPlay);
     fixture.detectChanges();
+    gameReady.set(true);
+    fixture.detectChanges();
+    await vi.waitFor(() => expect(checkGrid).toHaveBeenCalledWith(MANCHETTES_ID, 'A'.repeat(194)));
+    const page: HTMLElement = fixture.nativeElement;
+    expect(page.querySelector('.crossword-success')).toBeNull();
+    expect(page.querySelector('.crossword-complete-section')).toBeNull();
+    expect(page.querySelector('.crossword-complete-grid')).toBeNull();
+  });
+
+  it('affiche la réussite seulement après la validation de toutes les réponses', async () => {
+    checkGrid.mockResolvedValue(true);
+    const { letters, code } = correctCrossword();
+    localStorage.setItem(
+      key,
+      JSON.stringify({ letters, mines: initialMinefield(), explosions: 0 }),
+    );
+    const fixture = TestBed.createComponent(ManchettesPlay);
+    fixture.detectChanges();
+    gameReady.set(true);
+    fixture.detectChanges();
+    await vi.waitFor(() => expect(checkGrid).toHaveBeenCalledWith(MANCHETTES_ID, code));
+    await vi.waitFor(() =>
+      expect(fixture.nativeElement.querySelector('.crossword-success')).not.toBeNull(),
+    );
     const page: HTMLElement = fixture.nativeElement;
     expect(page.querySelector('.crossword-success')?.textContent).toContain(
-      'Mots croisés complétés',
+      'Toutes les réponses sont bonnes',
     );
     expect(page.querySelector('.crossword-complete-section')).not.toBeNull();
     expect(page.querySelector('.crossword-complete-grid')).not.toBeNull();

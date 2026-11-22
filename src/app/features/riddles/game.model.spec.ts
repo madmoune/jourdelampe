@@ -4,6 +4,10 @@ describe('configuration privée des réponses et des grilles', () => {
   it('accepte une grille de mots cachés sans inventer de réponse finale', () => {
     const gridAnswer = '01'.repeat(55);
     expect(parseSecrets({ fourchette: { gridAnswer } })).toEqual({ fourchette: { gridAnswer } });
+    const crosswordAnswer = 'A'.repeat(194);
+    expect(parseSecrets({ manchettes: { gridAnswer: crosswordAnswer } })).toEqual({
+      manchettes: { gridAnswer: crosswordAnswer },
+    });
     expect(
       parseSecrets({
         zebra: { answer: 'Code', normalizedAnswer: 'CODE', gridAnswer: '1'.repeat(36) },
@@ -23,6 +27,7 @@ describe('configuration privée des réponses et des grilles', () => {
       expect(() => parseSecrets({ fourchette: secret })).toThrow();
     expect(validGridCode('1'.repeat(36))).toBe(true);
     expect(validGridCode('0'.repeat(110))).toBe(true);
+    expect(validGridCode('A'.repeat(194))).toBe(true);
     expect(validGridCode('9'.repeat(36))).toBe(false);
   });
 });

@@ -4,12 +4,17 @@ import {
   Component,
   computed,
   ElementRef,
+  effect,
   inject,
   linkedSignal,
   signal,
+  untracked,
 } from '@angular/core';
 import { GameStore } from '../riddles/game-store';
 import { ParticipantStore } from '../riddles/participant-store';
+import { RiddleAttempts } from '../riddles/riddle-attempts';
+import { MANCHETTES_ID } from '../riddles/riddle-pages';
+import { RiddleSubmissions } from '../riddles/riddle-submissions';
 import {
   CLUES,
   CROSSWORD_CELLS,
@@ -38,6 +43,7 @@ const CROSSWORD_START = CLUES[0].start;
 const CLUES_BY_CELL = CROSSWORD_CELLS.map(({ index }) =>
   CLUES.filter((clue) => clue.cells.includes(index)),
 );
+const CROSSWORD_CELL_COUNT = CROSSWORD_CELLS.filter((cell) => cell.open).length;
 const MAX_EXPLOSIONS = 5;
 
 interface Progress {
@@ -57,6 +63,8 @@ export class ManchettesPlay {
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly game = inject(GameStore);
   private readonly participants = inject(ParticipantStore);
+  private readonly attempts = inject(RiddleAttempts);
+  private readonly submissions = inject(RiddleSubmissions);
   private readonly key = computed(
     () =>
       `jdl-manchettes-v1:${this.participants.participant()?.id ?? 'anonymous'}:${this.game.round()?.id ?? 'preview'}`,
@@ -85,10 +93,46 @@ export class ManchettesPlay {
       CLUES_BY_CELL[this.letterFocus()][0],
   );
   protected readonly activeCells = computed(() => new Set(this.activeClue()?.cells));
-  protected readonly crosswordComplete = computed(() => {
-    const letters = this.progress().letters;
-    return this.cells.every((cell) => !cell.open || letters[cell.index].length === 1);
+  private readonly crosswordCode = computed(() =>
+    this.cells
+      .filter((cell) => cell.open)
+      .map((cell) => this.progress().letters[cell.index])
+      .join(''),
+  );
+  private readonly crosswordFilled = computed(
+    () => this.crosswordCode().length === CROSSWORD_CELL_COUNT,
+  );
+  private readonly verifiedCrosswordCode = computed(
+    () =>
+      this.attempts
+        .attempts()
+        .find(
+          (attempt) =>
+            attempt.riddleId === MANCHETTES_ID &&
+            attempt.roundId === this.game.round()?.id &&
+            attempt.kind === 'grid' &&
+            attempt.correct &&
+            /^[A-Z]{194}$/u.test(attempt.answer),
+        )?.answer ?? null,
+  );
+  private readonly crosswordVerdict = signal<{
+    readonly key: string;
+    readonly code: string;
+    readonly correct?: boolean;
+    readonly error?: string;
+  } | null>(null);
+  private crosswordRequestId = 0;
+  private lastCrosswordCheck = '';
+  protected readonly currentCrosswordVerdict = computed(() => {
+    const code = this.crosswordCode();
+    const key = this.key();
+    if (code && this.verifiedCrosswordCode() === code) return { correct: true };
+    const verdict = this.crosswordVerdict();
+    return verdict?.key === key && verdict.code === code ? verdict : null;
   });
+  protected readonly crosswordComplete = computed(
+    () => this.crosswordFilled() && this.currentCrosswordVerdict()?.correct === true,
+  );
   protected readonly crashed = computed(() => this.progress().mines.some((mark) => mark === 'hit'));
   protected readonly explosions = computed(() => this.progress().explosions);
   protected readonly canUndoExplosion = computed(
@@ -109,6 +153,22 @@ export class ManchettesPlay {
   protected readonly foundCount = computed(
     () => this.extracted().filter((item) => item.found).length,
   );
+
+  constructor() {
+    effect(() => {
+      const key = this.key();
+      const code = this.crosswordCode();
+      const ready = this.game.ready();
+      const round = this.game.round();
+      const verified = this.verifiedCrosswordCode();
+      if (!this.crosswordFilled() || !ready || !round || verified === code) return;
+      const checkKey = `${key}:${code}`;
+      if (this.lastCrosswordCheck === checkKey) return;
+      this.lastCrosswordCheck = checkKey;
+      const requestId = ++this.crosswordRequestId;
+      untracked(() => void this.checkCrossword(code, key, requestId));
+    });
+  }
 
   protected chooseClue(clue: CrosswordClue): void {
     this.direction.set(clue.direction);
@@ -286,6 +346,30 @@ export class ManchettesPlay {
     }
     if (mines.some((mark, index) => mark !== state.mines[index])) {
       this.save({ ...state, mines });
+    }
+  }
+
+  private async checkCrossword(code: string, key: string, requestId: number): Promise<void> {
+    this.crosswordVerdict.set(null);
+    try {
+      const correct = await this.submissions.checkGrid(MANCHETTES_ID, code);
+      if (
+        requestId === this.crosswordRequestId &&
+        this.key() === key &&
+        this.crosswordCode() === code
+      )
+        this.crosswordVerdict.set({ key, code, correct });
+    } catch (error: unknown) {
+      if (
+        requestId === this.crosswordRequestId &&
+        this.key() === key &&
+        this.crosswordCode() === code
+      )
+        this.crosswordVerdict.set({
+          key,
+          code,
+          error: error instanceof Error ? error.message : 'Vérification indisponible.',
+        });
     }
   }
 

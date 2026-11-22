@@ -168,7 +168,11 @@ await request(
         eric: 'CARTER',
       },
     },
-    'riddleSecrets/second': { answer: 'Party', normalizedAnswer: 'PARTY' },
+    'riddleSecrets/second': {
+      answer: 'Party',
+      normalizedAnswer: 'PARTY',
+      gridAnswer: 'A'.repeat(194),
+    },
   },
   200,
   admin,
@@ -331,6 +335,20 @@ await request(
   'game/attempts/player/first/grid-right',
   'PUT',
   attempt('123456781234567812341234567812341234', true, 'grid'),
+  200,
+  'player',
+);
+await request(
+  'game/attempts/player/second/grid-letter-wrong-length',
+  'PUT',
+  attempt('A'.repeat(193), false, 'grid'),
+  401,
+  'player',
+);
+await request(
+  'game/attempts/player/second/grid-letter-right',
+  'PUT',
+  attempt('A'.repeat(194), true, 'grid'),
   200,
   'player',
 );
