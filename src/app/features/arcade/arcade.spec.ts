@@ -1,12 +1,21 @@
 import { TestBed } from '@angular/core/testing';
 import { ArcadeRoom } from './arcade-room';
-import { BattleMusic } from './battle-music';
 import { BOSS_NAME, planPartyTurn, type PartyAction, startParty } from './combat';
 import { cryptBinary, CRYPT_ATTACKS, CRYPT_DAMAGE, stepCrypt, startCrypt, toScreen } from './crypt';
 import { DiabloTen } from './diablo-ten';
 import { PaperMorsio } from './paper-morsio';
 import { LEDGES, LONG_GAP, MARKERS, SHORT_GAP, startMorsio, stepMorsio } from './platformer';
-import { finishTrainerTurn, hitTrainer, nearbyTrainer, startTrailBattle, stepTrail, TRAIL_KEYS, TRAIL_START, TRAINERS, type TrainerId } from './trainer-map';
+import {
+  finishTrainerTurn,
+  hitTrainer,
+  nearbyTrainer,
+  startTrailBattle,
+  stepTrail,
+  TRAIL_KEYS,
+  TRAIL_START,
+  TRAINERS,
+  type TrainerId,
+} from './trainer-map';
 
 describe('mécaniques des bornes', () => {
   it.each([30, 60, 120])('permet à Morsio de franchir les dix trous à %i images/s', (fps) => {
@@ -60,7 +69,14 @@ describe('mécaniques des bornes', () => {
     expect(battle.status).toBe('win');
     const won = battle;
     for (let frame = 0; frame < 70; frame++) battle = stepCrypt(battle, 1, 0, 'spell', 1 / 60);
-    expect(battle).toMatchObject({ hero: won.hero, hp: won.hp, enemy: 0, effectTime: 0, hit: 0, damage: null });
+    expect(battle).toMatchObject({
+      hero: won.hero,
+      hp: won.hp,
+      enemy: 0,
+      effectTime: 0,
+      hit: 0,
+      damage: null,
+    });
     expect(stepCrypt(battle, 1, 0, 'spell', 1 / 60)).toBe(battle);
   });
 
@@ -75,7 +91,12 @@ describe('mécaniques des bornes', () => {
 
   it('allonge la portée de l’épée et ne montre des dégâts que sur un coup réussi', () => {
     for (const distance of [30, 31]) {
-      const opening = { ...startCrypt(), hero: { x: 30, y: 50 }, golem: { x: 30 + distance, y: 50 }, recovery: 1 };
+      const opening = {
+        ...startCrypt(),
+        hero: { x: 30, y: 50 },
+        golem: { x: 30 + distance, y: 50 },
+        recovery: 1,
+      };
       let next = stepCrypt(opening, 0, 0, 'strike', 0.04);
       for (let tick = 0; tick < 3; tick++) next = stepCrypt(next, 0, 0, null, 0.04);
       expect(next.enemy).toBe(opening.enemy - (distance === 30 ? CRYPT_DAMAGE.strike : 0));
@@ -85,7 +106,10 @@ describe('mécaniques des bornes', () => {
 
   it('applique les dégâts de C et K au moment de l’impact dans Diablo', () => {
     const opening = { ...startCrypt(), hero: { x: 50, y: 60 }, golem: { x: 54, y: 55 } };
-    for (const [action, letter] of [['strike', 'C'], ['spell', 'K']] as const) {
+    for (const [action, letter] of [
+      ['strike', 'C'],
+      ['spell', 'K'],
+    ] as const) {
       let next = stepCrypt(opening, 0, 0, action, 1 / 60);
       const bits = cryptBinary(CRYPT_DAMAGE[action], 8);
       expect(bits).toMatch(/^[01]{8}$/);
@@ -121,8 +145,9 @@ describe('mécaniques des bornes', () => {
   });
 
   it('affiche le nom chiffré et applique neuf dégâts par attaque jusqu’à la victoire', () => {
-    const decoded = [...BOSS_NAME].map((letter) =>
-      String.fromCharCode(65 + (letter.charCodeAt(0) - 65 + 26 - 9) % 26)).join('');
+    const decoded = [...BOSS_NAME]
+      .map((letter) => String.fromCharCode(65 + ((letter.charCodeAt(0) - 65 + 26 - 9) % 26)))
+      .join('');
     expect(decoded).toBe('MAN');
     const opening = planPartyTurn(startParty(), 'spell')!.end;
     expect(opening.actor).toBe(1);
@@ -133,9 +158,9 @@ describe('mécaniques des bornes', () => {
     expect(reply.targets).toEqual([1]);
     expect(reply.end.actor).toBe(0);
     expect(reply.end.hp[1]).toBe(33);
-    const nearEnd = Array<PartyAction>(8).fill('strike').reduce(
-      (battle, action) => planPartyTurn(battle, action)!.end, startParty(),
-    );
+    const nearEnd = Array<PartyAction>(8)
+      .fill('strike')
+      .reduce((battle, action) => planPartyTurn(battle, action)!.end, startParty());
     expect(nearEnd.enemy).toBe(9);
     const win = planPartyTurn(nearEnd, 'strike')!.end;
     expect(win.status).toBe('win');
@@ -150,19 +175,22 @@ describe('mécaniques des bornes', () => {
     ['A', [true, false, true, true, false, false]],
     ['B', [false, true, true, true, false, false]],
     ['C', [true, false, false, false, false, false]],
-  ] as const)('fait combattre seulement les créatures dans les cases pleines du dresseur %s', (trainer, pattern) => {
-    expect(TRAINERS[trainer].slots.map((slot) => !!slot)).toEqual(pattern);
-    const expected = pattern.flatMap((occupied, index) => occupied ? [index] : []);
-    const faced = new Set<number>();
-    let fight = startTrailBattle(trainer);
-    for (let turn = 0; turn < 12 && fight.hp && fight.enemy; turn++) {
-      faced.add(fight.active);
-      fight = finishTrainerTurn(hitTrainer(fight, fight.enemy > 8 && !!fight.sparks));
-    }
-    expect(fight.hp).toBeGreaterThan(0);
-    expect(fight.enemy).toBe(0);
-    expect([...faced]).toEqual(expected);
-  });
+  ] as const)(
+    'fait combattre seulement les créatures dans les cases pleines du dresseur %s',
+    (trainer, pattern) => {
+      expect(TRAINERS[trainer].slots.map((slot) => !!slot)).toEqual(pattern);
+      const expected = pattern.flatMap((occupied, index) => (occupied ? [index] : []));
+      const faced = new Set<number>();
+      let fight = startTrailBattle(trainer);
+      for (let turn = 0; turn < 12 && fight.hp && fight.enemy; turn++) {
+        faced.add(fight.active);
+        fight = finishTrainerTurn(hitTrainer(fight, fight.enemy > 8 && !!fight.sparks));
+      }
+      expect(fight.hp).toBeGreaterThan(0);
+      expect(fight.enemy).toBe(0);
+      expect([...faced]).toEqual(expected);
+    },
+  );
 });
 
 it('affiche les poses et les dégâts binaires de Diablo et présente les jauges sans chiffres', () => {
@@ -188,10 +216,14 @@ it('affiche les poses et les dégâts binaires de Diablo et présente les jauges
     const page: HTMLElement = fixture.nativeElement;
     const console = page.querySelector('.console')!;
     const gauges = [...page.querySelectorAll('.golem-health, .orb')];
-    expect(gauges.map((gauge) => gauge.textContent?.trim())).toEqual(['Golem de cendre', 'PV', 'PM']);
-    expect([...page.querySelectorAll('.attack-names span')].map((name) => name.textContent?.trim())).toEqual(
-      ['Attaque', 'Magie'],
-    );
+    expect(gauges.map((gauge) => gauge.textContent?.trim())).toEqual([
+      'Golem de cendre',
+      'PV',
+      'PM',
+    ]);
+    expect(
+      [...page.querySelectorAll('.attack-names span')].map((name) => name.textContent?.trim()),
+    ).toEqual(['Attaque', 'Magie']);
     expect(page.querySelector('.last-attack')).toBeNull();
 
     page.querySelector<HTMLButtonElement>('[aria-label="A · Frapper"]')!.click();
@@ -234,47 +266,6 @@ it('affiche les poses et les dégâts binaires de Diablo et présente les jauges
   }
 });
 
-describe('musique de combat', () => {
-  it('programme les notes après activation et ferme le son à l’arrêt', async () => {
-    const close = vi.fn().mockResolvedValue(undefined);
-    const osc = {
-      frequency: { value: 0 },
-      start: vi.fn(),
-      stop: vi.fn(),
-      connect: vi.fn().mockReturnValue({ connect: vi.fn() }),
-      disconnect: vi.fn(),
-    };
-    const gain = {
-      gain: {
-        setValueAtTime: vi.fn(),
-        linearRampToValueAtTime: vi.fn(),
-        exponentialRampToValueAtTime: vi.fn(),
-      },
-      disconnect: vi.fn(),
-    };
-    const browser = {
-      AudioContext: class {
-        readonly currentTime = 0;
-        readonly state = 'running';
-        resume = vi.fn().mockResolvedValue(undefined);
-        createOscillator = vi.fn().mockReturnValue(osc);
-        createGain = vi.fn().mockReturnValue(gain);
-        close = close;
-      },
-      setInterval: vi.fn().mockReturnValue(8),
-      clearInterval: vi.fn(),
-    };
-    const music = new BattleMusic(browser as unknown as Window & typeof globalThis);
-    expect(osc.start).not.toHaveBeenCalled();
-    await music.start();
-    expect(osc.start).toHaveBeenCalled();
-    expect(browser.setInterval).toHaveBeenCalledOnce();
-    music.stop();
-    expect(browser.clearInterval).toHaveBeenCalledWith(8);
-    expect(close).toHaveBeenCalledOnce();
-  });
-});
-
 describe('salle d’arcade', () => {
   const key = 'jdl-arcade-v1:anonymous:preview';
   const savedWins = '["morsio","diablo","trainers","fantaceasar"]';
@@ -287,11 +278,16 @@ describe('salle d’arcade', () => {
     const page: HTMLElement = fixture.nativeElement;
     const choices = page.querySelectorAll<HTMLButtonElement>('.cabinets button');
     expect([...choices].map((choice) => choice.textContent?.trim())).toEqual([
-      'Paper Morsio', 'Pokemon Gold & Blind', 'Diablo 10', 'Final Fantaceasar 9',
+      'Paper Morsio',
+      'Pokemon Gold & Blind',
+      'Diablo 10',
+      'Final Fantaceasar 9',
     ]);
-    expect([...choices].map((choice) => choice.querySelector('.cabinet-art')?.getAttribute('data-art')))
-      .toEqual(['morsio', 'trainers', 'diablo', 'fantaceasar']);
-    const patterns = () => [...choices].map((choice) => choice.nextElementSibling?.textContent?.trim());
+    expect(
+      [...choices].map((choice) => choice.querySelector('.cabinet-art')?.getAttribute('data-art')),
+    ).toEqual(['morsio', 'trainers', 'diablo', 'fantaceasar']);
+    const patterns = () =>
+      [...choices].map((choice) => choice.nextElementSibling?.textContent?.trim());
     expect(patterns()).toEqual(['???', '???', '??', '???']);
     expect(page.querySelector('.counter, .complete, .all-clear')).toBeNull();
     expect(page.querySelector('app-paper-morsio')).not.toBeNull();
@@ -311,7 +307,9 @@ describe('salle d’arcade', () => {
     };
     const mouse = (button: number, target: Element = field, pointerType = 'mouse') => {
       const options = { bubbles: true, cancelable: true, pointerId: 1, pointerType, button };
-      target.dispatchEvent(new PointerEvent('pointerdown', { ...options, buttons: button === 2 ? 2 : 1 }));
+      target.dispatchEvent(
+        new PointerEvent('pointerdown', { ...options, buttons: button === 2 ? 2 : 1 }),
+      );
       target.dispatchEvent(new PointerEvent('pointerup', options));
       fixture.detectChanges();
     };
@@ -331,12 +329,19 @@ describe('salle d’arcade', () => {
     expect(gold.querySelector('[aria-label="A · Combattre"]')).toBeNull();
     const menu = new MouseEvent('contextmenu', { bubbles: true, cancelable: true, button: 2 });
     expect(field.dispatchEvent(menu)).toBe(false);
-    expect(console.dispatchEvent(new MouseEvent('contextmenu', {
-      bubbles: true, cancelable: true, button: 2,
-    }))).toBe(true);
+    expect(
+      console.dispatchEvent(
+        new MouseEvent('contextmenu', {
+          bubbles: true,
+          cancelable: true,
+          button: 2,
+        }),
+      ),
+    ).toBe(true);
     mouse(0);
     mouse(0);
-    const slots = () => [...gold.querySelectorAll('.roster li')].map((slot) => !!slot.querySelector('img'));
+    const slots = () =>
+      [...gold.querySelectorAll('.roster li')].map((slot) => !!slot.querySelector('img'));
     expect(slots()).toEqual([true, false, true, true, false, false]);
     vi.useFakeTimers();
     try {
@@ -378,11 +383,17 @@ describe('salle d’arcade', () => {
     fixture.detectChanges();
     const fantaceasar = page.querySelector('app-final-fantaceasar')!;
     expect(fantaceasar.querySelector('.boss-hp')?.textContent?.trim()).toBe(BOSS_NAME);
-    expect(fantaceasar.textContent).toContain('Musique · coupée');
+    expect(fantaceasar.textContent).not.toContain('Musique');
     expect(fantaceasar.querySelectorAll('.commands button')).toHaveLength(2);
-    expect(fantaceasar.querySelector('.enemy-position')?.getAttribute('transform')).toBe('translate(132 171)');
-    expect(fantaceasar.querySelector('.party-position')?.getAttribute('transform')).toBe('translate(336 185)');
-    const action = fantaceasar.querySelector<HTMLButtonElement>('button[aria-label="A · Valider"]')!;
+    expect(fantaceasar.querySelector('.enemy-position')?.getAttribute('transform')).toBe(
+      'translate(132 171)',
+    );
+    expect(fantaceasar.querySelector('.party-position')?.getAttribute('transform')).toBe(
+      'translate(336 185)',
+    );
+    const action = fantaceasar.querySelector<HTMLButtonElement>(
+      'button[aria-label="A · Valider"]',
+    )!;
     const strike = fantaceasar.querySelectorAll<HTMLButtonElement>('.commands button')[0];
     const magic = fantaceasar.querySelectorAll<HTMLButtonElement>('.commands button')[1];
     vi.useFakeTimers();
@@ -435,11 +446,17 @@ it('gère deux doigts à la fois pour avancer et sauter, puis libère la directi
     const page: HTMLElement = fixture.nativeElement;
     const right = page.querySelector('[aria-label="Droite"]')!;
     const jump = page.querySelector('[aria-label="A · Sauter"]')!;
-    const touch = (target: Element, type: string, id: number) => target.dispatchEvent(
-      new PointerEvent(type, { bubbles: true, button: 0, pointerId: id, pointerType: 'touch' }),
-    );
-    const position = () => page.querySelector('.morse')?.getAttribute('transform')
-      ?.match(/^translate\(([^ ]+) ([^)]+)\)/)?.slice(1).map(Number) ?? [];
+    const touch = (target: Element, type: string, id: number) =>
+      target.dispatchEvent(
+        new PointerEvent(type, { bubbles: true, button: 0, pointerId: id, pointerType: 'touch' }),
+      );
+    const position = () =>
+      page
+        .querySelector('.morse')
+        ?.getAttribute('transform')
+        ?.match(/^translate\(([^ ]+) ([^)]+)\)/)
+        ?.slice(1)
+        .map(Number) ?? [];
 
     touch(right, 'pointerdown', 1);
     touch(jump, 'pointerdown', 2);

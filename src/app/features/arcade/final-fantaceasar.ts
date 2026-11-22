@@ -1,9 +1,21 @@
-import { DOCUMENT } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from '@angular/core';
-import { BattleMusic } from './battle-music';
 import {
-  BOSS_HP, BOSS_NAME, PARTY, PARTY_COMMANDS, PARTY_DAMAGE, type PartyAction, type PartyTurn,
-  planPartyTurn, startParty,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  signal,
+} from '@angular/core';
+import {
+  BOSS_HP,
+  BOSS_NAME,
+  PARTY,
+  PARTY_COMMANDS,
+  PARTY_DAMAGE,
+  type PartyAction,
+  type PartyTurn,
+  planPartyTurn,
+  startParty,
 } from './combat';
 import { ArcadeControls, Gamepad, type GameInput } from './gamepad';
 
@@ -29,9 +41,6 @@ const COUNTER_CAST_MS = 225;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinalFantaceasar {
-  private readonly browser = inject(DOCUMENT).defaultView;
-  private readonly music = this.browser ? new BattleMusic(this.browser) : null;
-  private audioRequest = 0;
   private turnTimer: ReturnType<typeof setTimeout> | undefined;
   protected readonly party = PARTY;
   protected readonly commands = PARTY_COMMANDS;
@@ -49,16 +58,19 @@ export class FinalFantaceasar {
   protected readonly ended = computed(() => this.battle().status !== 'playing');
   protected readonly resultVisible = computed(() => this.ended() && !this.animation());
   protected readonly mana = computed(() => this.battle().mp[this.battle().actor]);
-  protected readonly sound = signal<'off' | 'loading' | 'on'>('off');
-  protected readonly audioError = signal(false);
   protected readonly projectiles = computed(() => {
     const animation = this.animation();
     if (animation?.phase === 'attack' && animation.command === 'spell') {
       const hero = this.heroes[animation.actor];
       const from = { x: hero.x - hero.handX, y: hero.y - hero.handY };
-      return [{
-        ...from, dx: this.boss.x - from.x, dy: this.boss.y - 67 - from.y, counter: false,
-      }];
+      return [
+        {
+          ...from,
+          dx: this.boss.x - from.x,
+          dy: this.boss.y - 67 - from.y,
+          counter: false,
+        },
+      ];
     }
     if (animation?.phase === 'counter-cast') {
       const from = { x: this.boss.x + 48, y: this.boss.y - 125 };
@@ -71,10 +83,7 @@ export class FinalFantaceasar {
   });
 
   constructor() {
-    inject(DestroyRef).onDestroy(() => {
-      clearTimeout(this.turnTimer);
-      this.stopMusic();
-    });
+    inject(DestroyRef).onDestroy(() => clearTimeout(this.turnTimer));
   }
 
   protected input(event: GameInput): void {
@@ -84,8 +93,12 @@ export class FinalFantaceasar {
       return;
     }
     switch (event.key) {
-      case 'a': this.act(this.selected()); break;
-      case 'b': this.selected.set(0); break;
+      case 'a':
+        this.act(this.selected());
+        break;
+      case 'b':
+        this.selected.set(0);
+        break;
       case 'up':
       case 'left':
       case 'down':
@@ -101,7 +114,12 @@ export class FinalFantaceasar {
     const command = this.commands[choice].id;
     const turn = planPartyTurn(previous, command);
     if (!turn) return;
-    const cue: BattleAnimation = { phase: 'attack', command, actor: previous.actor, targets: turn.targets };
+    const cue: BattleAnimation = {
+      phase: 'attack',
+      command,
+      actor: previous.actor,
+      targets: turn.targets,
+    };
     this.selected.set(choice);
     this.animation.set(cue);
     this.battle.set({
@@ -116,26 +134,6 @@ export class FinalFantaceasar {
     this.animation.set(null);
     this.battle.set(startParty());
     this.selected.set(0);
-  }
-
-  protected async toggleMusic(): Promise<void> {
-    if (this.sound() !== 'off') {
-      this.stopMusic();
-      return;
-    }
-    const request = ++this.audioRequest;
-    this.audioError.set(false);
-    this.sound.set('loading');
-    try {
-      if (!this.music) throw new Error('Audio indisponible.');
-      await this.music.start();
-      if (this.audioRequest === request) this.sound.set('on');
-    } catch {
-      if (this.audioRequest === request) {
-        this.sound.set('off');
-        this.audioError.set(true);
-      }
-    }
   }
 
   private showImpact(turn: PartyTurn, cue: BattleAnimation): void {
@@ -163,7 +161,6 @@ export class FinalFantaceasar {
     this.battle.set(turn.end);
     this.animation.set(null);
     if (this.commands[this.selected()].cost > this.mana()) this.selected.set(0);
-    if (this.ended()) this.stopMusic();
   }
 
   private after(ms: number, next: () => void): void {
@@ -171,11 +168,5 @@ export class FinalFantaceasar {
       this.turnTimer = undefined;
       next();
     }, ms);
-  }
-
-  private stopMusic(): void {
-    this.audioRequest++;
-    this.music?.stop();
-    this.sound.set('off');
   }
 }

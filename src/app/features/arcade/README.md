@@ -3,19 +3,19 @@
 L’aperçu est disponible à `/apercu-ia/enigmes/salle-arcade`. Le lien public est
 `/enigmes/salle-arcade`. L’accès aux jeux utilise le profil des énigmes.
 
-| Borne | Croix | A | B |
-| --- | --- | --- | --- |
-| Paper Morsio | Avancer ou reculer | Sauter | Recommencer |
-| Pokemon Gold & Blind | Marcher ou choisir une attaque | Parler, combattre ou valider | Aide ou retour |
-| Diablo 10 | Se déplacer dans la crypte | Frapper à portée | Lancer un sort |
-| Final Fantaceasar 9 | Choisir une commande | Valider | Revenir à Attaquer |
+| Borne                | Croix                          | A                            | B                  |
+| -------------------- | ------------------------------ | ---------------------------- | ------------------ |
+| Paper Morsio         | Avancer ou reculer             | Sauter                       | Recommencer        |
+| Pokemon Gold & Blind | Marcher ou choisir une attaque | Parler, combattre ou valider | Aide ou retour     |
+| Diablo 10            | Se déplacer dans la crypte     | Frapper à portée             | Lancer un sort     |
+| Final Fantaceasar 9  | Choisir une commande           | Valider                      | Revenir à Attaquer |
 
 Au clavier, les flèches et WASD correspondent à la croix. Dans l’écran de jeu,
 le clic gauche déclenche A et le clic droit déclenche B. Z (ou Entrée ou
 Espace) et X restent utilisables pour A et B. Au tactile, la croix et A
 fonctionnent simultanément pour sauter en mouvement dans Paper Morsio et
 combattre dans Diablo 10. La musique originale de Final Fantaceasar est
-activée par le joueur et s’arrête à la fin du combat ou lorsqu’il quitte la borne.
+retirée; le jeu conserve ses animations et ses effets visuels.
 
 Les quatre jeux donnent des indices pour la réponse de l’arcade.
 Chaque groupe du format `??? ??? ?? ???` figure sous le bouton du jeu correspondant.
@@ -40,21 +40,21 @@ Les fichiers WebP dans `public/images/arcade` sont des illustrations originales
 créées avec ImageGen. Les décors sont exportés à 1 152 pixels de large. Les
 personnages détourés sont découpés dans leurs planches et optimisés pour le jeu.
 
-| Fichiers | Direction artistique demandée |
-| --- | --- |
-| `paper.webp` | Premier décor de Paper Morsio, un paysage en papier découpé et aquarelle. |
-| `morsio-castle.webp` | Décor de château de Paper Morsio, avec des arches en carton, des fenêtres et des torches. Les plateformes et la lave sont dessinées dans le jeu. |
-| `crypt.webp` | Crypte gothique isométrique, dalles sombres au centre, torches et arches sur les bords, rendu de jeu PC de la fin des années 1990. |
-| `knight.webp`, `golem.webp` | Chevalier en cotte de mailles et golem de braises en vue trois quarts, sur fond transparent. |
-| `knight-strike.webp`, `knight-spell.webp` | Trois poses du chevalier par attaque sur deux planches transparentes de 660 × 200 pixels. |
-| `trail.webp` | Clairière en pixel art aux teintes olives et dorées, deux plateformes d’herbe pour le combat sur console portable. |
-| `braisillon.webp`, `crinsauge.webp`, `flotillon.webp`, `schistoc.webp` | Quatre créatures originales en pixel art avec des contours francs et une palette limitée par créature. |
-| `braisillon-attacks.webp` | Préparation, charge et lancement d’Étincelle sur une planche de sprites de 336 × 108 pixels. |
-| `ruins.webp` | Terrasse médiévale au crépuscule, brume bleue, rendu 3D précalculé de la fin des années 1990. |
-| `romaine.webp`, `crouton.webp` | Bretteur en cape et chevalier en bronze, dans le même style de jeu de rôle 3D. |
-| `caesar.webp` | Jules César en toge et cape écarlate, couronné de laurier. |
-| `romaine-attacks.webp`, `crouton-attacks.webp`, `caesar-attacks.webp` | Deux poses par personnage sur des planches transparentes de 608 × 308 pixels. |
-| `sporastre.webp`, `volticole.webp`, `frilievre.webp` | Champignon violet, scarabée électrique et lièvre de glace dans le même style pixel art que les autres créatures. |
+| Fichiers                                                               | Direction artistique demandée                                                                                                                    |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `paper.webp`                                                           | Premier décor de Paper Morsio, un paysage en papier découpé et aquarelle.                                                                        |
+| `morsio-castle.webp`                                                   | Décor de château de Paper Morsio, avec des arches en carton, des fenêtres et des torches. Les plateformes et la lave sont dessinées dans le jeu. |
+| `crypt.webp`                                                           | Crypte gothique isométrique, dalles sombres au centre, torches et arches sur les bords, rendu de jeu PC de la fin des années 1990.               |
+| `knight.webp`, `golem.webp`                                            | Chevalier en cotte de mailles et golem de braises en vue trois quarts, sur fond transparent.                                                     |
+| `knight-strike.webp`, `knight-spell.webp`                              | Trois poses du chevalier par attaque sur deux planches transparentes de 660 × 200 pixels.                                                        |
+| `trail.webp`                                                           | Clairière en pixel art aux teintes olives et dorées, deux plateformes d’herbe pour le combat sur console portable.                               |
+| `braisillon.webp`, `crinsauge.webp`, `flotillon.webp`, `schistoc.webp` | Quatre créatures originales en pixel art avec des contours francs et une palette limitée par créature.                                           |
+| `braisillon-attacks.webp`                                              | Préparation, charge et lancement d’Étincelle sur une planche de sprites de 336 × 108 pixels.                                                     |
+| `ruins.webp`                                                           | Terrasse médiévale au crépuscule, brume bleue, rendu 3D précalculé de la fin des années 1990.                                                    |
+| `romaine.webp`, `crouton.webp`                                         | Bretteur en cape et chevalier en bronze, dans le même style de jeu de rôle 3D.                                                                   |
+| `caesar.webp`                                                          | Jules César en toge et cape écarlate, couronné de laurier.                                                                                       |
+| `romaine-attacks.webp`, `crouton-attacks.webp`, `caesar-attacks.webp`  | Deux poses par personnage sur des planches transparentes de 608 × 308 pixels.                                                                    |
+| `sporastre.webp`, `volticole.webp`, `frilievre.webp`                   | Champignon violet, scarabée électrique et lièvre de glace dans le même style pixel art que les autres créatures.                                 |
 
 ### Invites des vignettes de sélection
 
@@ -62,12 +62,12 @@ Les quatre vignettes ont été créées avec l’outil ImageGen intégré et exp
 en WebP de 480 × 270 pixels dans `src/app/features/arcade/covers`. Les styles
 de l’arcade incluent ces images à la compilation.
 
-| Jeu | Vignette | Références |
-| --- | --- | --- |
-| Paper Morsio | `cabinet-morsio.webp` | `morsio-castle.webp` |
-| Pokemon Gold & Blind | `cabinet-trainers.webp` | `braisillon.webp` |
-| Diablo 10 | `cabinet-diablo.webp` | `knight.webp`, `golem.webp` |
-| Final Fantaceasar 9 | `cabinet-fantaceasar.webp` | `romaine.webp`, `crouton.webp` |
+| Jeu                  | Vignette                   | Références                     |
+| -------------------- | -------------------------- | ------------------------------ |
+| Paper Morsio         | `cabinet-morsio.webp`      | `morsio-castle.webp`           |
+| Pokemon Gold & Blind | `cabinet-trainers.webp`    | `braisillon.webp`              |
+| Diablo 10            | `cabinet-diablo.webp`      | `knight.webp`, `golem.webp`    |
+| Final Fantaceasar 9  | `cabinet-fantaceasar.webp` | `romaine.webp`, `crouton.webp` |
 
 **Paper Morsio**
 
