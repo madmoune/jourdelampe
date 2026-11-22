@@ -123,6 +123,7 @@ describe('interaction d’En manchettes', () => {
     expect(page.querySelector('.mine-tools button:not([aria-pressed])')?.textContent).toContain(
       'Recommencer le démineur',
     );
+    expect(page.querySelector('.mine-lives')?.textContent).toContain('0 / 5');
     const first = EXTRACTION_CELLS[0];
     const letter = page.querySelector<HTMLInputElement>(`#word-cell-${first}`)!;
     letter.value = 'é';
@@ -227,7 +228,7 @@ describe('interaction d’En manchettes', () => {
     },
   );
 
-  it('montre la mine qui explose avant de permettre de recommencer', () => {
+  it('permet quatre annulations puis impose un redémarrage à la cinquième explosion', () => {
     const fixture = TestBed.createComponent(ManchettesPlay);
     fixture.detectChanges();
     const page: HTMLElement = fixture.nativeElement;
@@ -237,20 +238,36 @@ describe('interaction d’En manchettes', () => {
     letter.value = 'A';
     letter.dispatchEvent(new Event('input', { bubbles: true }));
     fixture.detectChanges();
+    const undo = () => page.querySelector<HTMLButtonElement>('.undo-mine');
+    for (let attempt = 1; attempt <= 4; attempt++) {
+      button.click();
+      fixture.detectChanges();
+      expect(page.querySelectorAll('.mine-square.hit')).toHaveLength(1);
+      expect(button.classList.contains('hit')).toBe(true);
+      expect(page.querySelector('.mine-lives')?.textContent).toContain(`${attempt} / 5`);
+      expect(undo()).not.toBeNull();
+      expect(page.textContent).toContain('Mine déclenchée.');
+
+      const storedAfterCrash: { letters: string[]; mines: MineMark[]; explosions: number } =
+        JSON.parse(localStorage.getItem(key)!);
+      expect(storedAfterCrash.explosions).toBe(attempt);
+      undo()!.click();
+      fixture.detectChanges();
+      expect(button.classList.contains('hit')).toBe(false);
+      expect(button.getAttribute('aria-label')).toContain('masquée');
+      expect(undo()).toBeNull();
+    }
+
+    expect(letter.value).toBe('A');
     button.click();
     fixture.detectChanges();
-    expect(page.querySelectorAll('.mine-square.hit')).toHaveLength(1);
-    expect(page.querySelectorAll('.mine-square.flagged')).toHaveLength(0);
-    expect(button.classList.contains('clear')).toBe(false);
     expect(button.classList.contains('hit')).toBe(true);
-    expect(button.querySelector('.mine-explosion')?.textContent).toBe('💥');
-    expect(page.textContent).toContain('Mine déclenchée.');
-    expect(page.textContent).not.toContain('Annuler');
-    expect(letter.value).toBe('A');
-    const storedAfterCrash: { letters: string[]; mines: MineMark[] } = JSON.parse(
+    expect(undo()).toBeNull();
+    expect(page.textContent).toContain('Cinquième mine déclenchée.');
+    const storedAtLimit: { letters: string[]; mines: MineMark[]; explosions: number } = JSON.parse(
       localStorage.getItem(key)!,
     );
-    expect(storedAfterCrash.mines).toEqual(initialMinefield());
+    expect(storedAtLimit.explosions).toBe(5);
 
     const safeCell = EXTRACTION_CELLS[0];
     const safe = page.querySelector<HTMLButtonElement>(`#mine-cell-${safeCell}`)!;
@@ -261,14 +278,16 @@ describe('interaction d’En manchettes', () => {
     fixture.detectChanges();
     expect(button.classList.contains('hit')).toBe(false);
     expect(letter.value).toBe('A');
-    const storedAfterRestart: { letters: string[]; mines: MineMark[] } = JSON.parse(
-      localStorage.getItem(key)!,
-    );
+    const storedAfterRestart: { letters: string[]; mines: MineMark[]; explosions: number } =
+      JSON.parse(localStorage.getItem(key)!);
     expect(storedAfterRestart.mines).toEqual(initialMinefield());
+    expect(storedAfterRestart.explosions).toBe(0);
     safe.click();
     fixture.detectChanges();
     expect(safe.classList.contains('clear')).toBe(true);
-    const stored: { letters: string[]; mines: MineMark[] } = JSON.parse(localStorage.getItem(key)!);
+    const stored: { letters: string[]; mines: MineMark[]; explosions: number } = JSON.parse(
+      localStorage.getItem(key)!,
+    );
     expect(stored.letters).toContain('A');
     expect(stored.mines[safeCell]).toBe('clear');
   });

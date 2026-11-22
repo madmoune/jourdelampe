@@ -11,7 +11,9 @@ cases sûres à huit mines correspondent aux quatorze lettres recherchées.
 Le petit numéro dans chacune donne l’ordre de lecture. Les lettres saisies
 dans la première grille sont reportées uniquement après ouverture de la
 case correspondante dans le démineur. Les deux états sont sauvegardés
-localement, par profil et par partie.
+localement, par profil et par partie. Une mine peut exploser cinq fois au total;
+les quatre premières explosions peuvent être annulées, tandis que la cinquième
+force le redémarrage du démineur.
 
 Pour publier le dossier, ajouter `game/catalog/manchettes-01` :
 

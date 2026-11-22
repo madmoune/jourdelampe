@@ -38,10 +38,12 @@ const CROSSWORD_START = CLUES[0].start;
 const CLUES_BY_CELL = CROSSWORD_CELLS.map(({ index }) =>
   CLUES.filter((clue) => clue.cells.includes(index)),
 );
+const MAX_EXPLOSIONS = 5;
 
 interface Progress {
   readonly letters: readonly string[];
   readonly mines: readonly MineMark[];
+  readonly explosions: number;
 }
 
 @Component({
@@ -75,6 +77,7 @@ export class ManchettesPlay {
   protected readonly letterFocus = signal(CROSSWORD_START);
   protected readonly mineFocus = signal(0);
   protected readonly flagMode = signal(false);
+  protected readonly maxExplosions = MAX_EXPLOSIONS;
   private readonly direction = signal<Direction>('across');
   protected readonly activeClue = computed(
     () =>
@@ -83,6 +86,10 @@ export class ManchettesPlay {
   );
   protected readonly activeCells = computed(() => new Set(this.activeClue()?.cells));
   protected readonly crashed = computed(() => this.progress().mines.some((mark) => mark === 'hit'));
+  protected readonly explosions = computed(() => this.progress().explosions);
+  protected readonly canUndoExplosion = computed(
+    () => this.crashed() && this.explosions() < MAX_EXPLOSIONS,
+  );
   protected readonly won = computed(
     () =>
       !this.crashed() &&
@@ -184,7 +191,17 @@ export class ManchettesPlay {
 
   protected resetMines(): void {
     this.flagMode.set(false);
-    this.save({ ...this.progress(), mines: initialMinefield() });
+    this.save({ ...this.progress(), mines: initialMinefield(), explosions: 0 });
+  }
+
+  protected undoExplosion(): void {
+    const state = this.progress();
+    if (!this.canUndoExplosion()) return;
+    const hit = state.mines.findIndex((mark) => mark === 'hit');
+    if (hit < 0) return;
+    const mines = [...state.mines];
+    mines[hit] = 'hidden';
+    this.save({ ...state, mines });
   }
 
   protected toggleFlagMode(): void {
@@ -248,7 +265,11 @@ export class ManchettesPlay {
 
   private saveMinefield(state: Progress, mines: readonly MineMark[]): void {
     if (mines.some((mark) => mark === 'hit')) {
-      this.progress.set({ ...state, mines });
+      this.save({
+        ...state,
+        mines,
+        explosions: Math.min(MAX_EXPLOSIONS, state.explosions + 1),
+      });
       return;
     }
     if (mines.some((mark, index) => mark !== state.mines[index])) {
@@ -271,11 +292,24 @@ export class ManchettesPlay {
         stored.mines.length === GRID_SIZE &&
         stored.mines.every(
           (mark: unknown, cell: number) =>
-            mark === 'hidden' || mark === 'flagged' || (!MINES.has(cell) && mark === 'clear'),
+            mark === 'hidden' ||
+            mark === 'flagged' ||
+            (!MINES.has(cell) && mark === 'clear') ||
+            (MINES.has(cell) && mark === 'hit'),
         )
       )
-        return { letters: stored.letters, mines: stored.mines };
+        return {
+          letters: stored.letters,
+          mines: stored.mines,
+          explosions:
+            typeof stored.explosions === 'number' &&
+            Number.isInteger(stored.explosions) &&
+            stored.explosions >= 0 &&
+            stored.explosions <= MAX_EXPLOSIONS
+              ? stored.explosions
+              : 0,
+        };
     } catch {}
-    return { letters: Array<string>(GRID_SIZE).fill(''), mines: initialMinefield() };
+    return { letters: Array<string>(GRID_SIZE).fill(''), mines: initialMinefield(), explosions: 0 };
   }
 }

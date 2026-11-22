@@ -86,10 +86,20 @@
       Mode drapeau
     </button>
     <button type="button" (click)="resetMines()">Recommencer le démineur</button>
+    <p class="mine-lives" role="status">
+      {{ explosions() }} / {{ maxExplosions }} explosions utilisées
+    </p>
     @if (crashed()) {
       <p class="mine-crash" role="alert">
-        Mine déclenchée. Recommence le démineur pour repartir du début.
+        @if (canUndoExplosion()) {
+          Mine déclenchée. Tu peux annuler cette mine avant la 5e explosion.
+        } @else {
+          Cinquième mine déclenchée. Recommence le démineur pour repartir du début.
+        }
       </p>
+      @if (canUndoExplosion()) {
+        <button type="button" class="undo-mine" (click)="undoExplosion()">Annuler la mine</button>
+      }
     }
   </div>
   <p class="scroll-hint">Fais défiler la grille de gauche à droite.</p>
