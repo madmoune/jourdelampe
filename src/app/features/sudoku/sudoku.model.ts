@@ -14,15 +14,15 @@ export const SUDOKU_GIVENS: readonly number[] = [
 ];
 
 export const FLAG_DIGITS: readonly (readonly [number, number])[] = [
-  [2, 9],
-  [3, 8],
-  [3, 5],
-  [1, 4],
-  [1, 6],
-  [6, 7],
-  [6, 9],
-  [5, 7],
-  [1, 2],
+  [9, 1],
+  [5, 6],
+  [3, 7],
+  [1, 3],
+  [6, 1],
+  [2, 7],
+  [5, 4],
+  [1, 9],
+  [4, 1],
 ];
 
 export function boxCell(box: number, cell: number): number {

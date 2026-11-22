@@ -4,7 +4,6 @@ import { SEMAPHORE_SIGNALS } from '../cheatsheet/cheatsheet';
 import { GameStore } from '../riddles/game-store';
 import { ParticipantStore } from '../riddles/participant-store';
 import {
-  boxCell,
   flagCells,
   FLAG_DIGITS,
   isCompleteSudoku,
@@ -44,8 +43,8 @@ const solveBySingles = () => {
 };
 
 describe('les neuf signaux du sudoku', () => {
-  const left = { up: 1, high: 0, out: 3, low: 6, down: 7, 'across-high': 2, 'across-low': 8 };
-  const right = { up: 1, high: 2, out: 5, low: 8, down: 7, 'across-high': 0, 'across-low': 6 };
+  const left = { up: 1, high: 2, out: 5, low: 8, down: 7, 'across-high': 0, 'across-low': 6 };
+  const right = { up: 1, high: 0, out: 3, low: 6, down: 7, 'across-high': 2, 'across-low': 8 };
   const poseKey = (positions: readonly number[]) => [...positions].sort((a, b) => a - b).join();
 
   it('se résout sans deviner, avec 36 chiffres de départ', () => {
@@ -58,7 +57,7 @@ describe('les neuf signaux du sudoku', () => {
     expect(isCompleteSudoku(solved)).toBe(false);
   });
 
-  it('cache les 18 chiffres des drapeaux et produit neuf poses non ambiguës', () => {
+  it('cache les chiffres des drapeaux et produit CITADELLE en vue de face', () => {
     const solved = solveBySingles();
     const knownPoses = new Set(
       SEMAPHORE_SIGNALS.map((signal) => poseKey([left[signal.left], right[signal.right]])),
@@ -69,10 +68,18 @@ describe('les neuf signaux du sudoku', () => {
       expect(pair[0]).not.toBe(pair[1]);
       const cells = flagCells(solved, box);
       expect(cells).toHaveLength(2);
-      expect(cells).not.toContain(4);
-      expect(cells.every((cell) => SUDOKU_GIVENS[boxCell(box, cell)] === 0)).toBe(true);
       expect(knownPoses.has(poseKey(cells))).toBe(true);
     }
+    expect(
+      FLAG_DIGITS.map((pair, box) => {
+        const cells = flagCells(solved, box);
+        return SEMAPHORE_SIGNALS.find(
+          (signal) =>
+            knownPoses.has(poseKey([left[signal.left], right[signal.right]])) &&
+            poseKey([left[signal.left], right[signal.right]]) === poseKey(cells),
+        )?.letter;
+      }).join(''),
+    ).toBe('CITADELLE');
   });
 });
 
@@ -111,7 +118,7 @@ describe('interface de La vigie', () => {
     expect(page.querySelectorAll('.digit-flag')).toHaveLength(18);
     expect(
       page.querySelector<HTMLElement>('.signal-flags')?.textContent?.replace(/\s+/gu, ''),
-    ).toBe('92');
+    ).toBe('19');
     const [blank, given] = cells;
     blank.focus();
     blank.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', cancelable: true }));
