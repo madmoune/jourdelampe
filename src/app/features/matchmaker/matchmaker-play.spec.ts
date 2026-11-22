@@ -11,7 +11,7 @@ describe('gabarit Matchmaker', () => {
     return { fixture, page: fixture.nativeElement as HTMLElement };
   }
 
-  it('affiche les quatorze extraits avec les champs artiste, début et fin', async () => {
+  it('affiche les quatorze extraits avec les champs artiste, du début et de la fin', async () => {
     const { page } = await setup();
     expect(page.querySelectorAll('.song-row')).toHaveLength(14);
     expect(page.querySelectorAll('.song-excerpt audio')).toHaveLength(14);
@@ -116,7 +116,7 @@ describe('gabarit Matchmaker', () => {
 
     expect(
       [...page.querySelectorAll('.pairing-labels span')].map((label) => label.textContent),
-    ).toEqual(['Début', 'Fin']);
+    ).toEqual(['Du début', 'De la fin']);
     expect(markers).toHaveLength(40);
     expect(markers.filter(({ x }) => x < 50)).toHaveLength(20);
     expect(markers.filter(({ x }) => x > 50)).toHaveLength(20);

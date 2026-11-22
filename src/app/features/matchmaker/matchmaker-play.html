@@ -8,8 +8,8 @@
       <div class="songs-header" role="row">
         <span role="columnheader">Extrait</span>
         <span role="columnheader">Artiste</span>
-        <span role="columnheader">Début</span>
-        <span role="columnheader">Fin</span>
+        <span role="columnheader">Du début</span>
+        <span role="columnheader">De la fin</span>
       </div>
       @for (song of songs(); track $index; let index = $index) {
         <div class="song-row" role="row">
@@ -44,8 +44,8 @@
             </span>
           </label>
           <label class="letter-field" role="cell">
-            <span class="mobile-field-label" aria-hidden="true">Début</span>
-            <span class="sr-only">Début de l’extrait {{ rowNumbers[index] }}</span>
+            <span class="mobile-field-label" aria-hidden="true">Du début</span>
+            <span class="sr-only">Du début de l’extrait {{ rowNumbers[index] }}</span>
             <input
               type="text"
               inputmode="text"
@@ -57,8 +57,8 @@
             />
           </label>
           <label class="letter-field" role="cell">
-            <span class="mobile-field-label" aria-hidden="true">Fin</span>
-            <span class="sr-only">Fin de l’extrait {{ rowNumbers[index] }}</span>
+            <span class="mobile-field-label" aria-hidden="true">De la fin</span>
+            <span class="sr-only">De la fin de l’extrait {{ rowNumbers[index] }}</span>
             <input
               type="text"
               inputmode="text"
@@ -85,8 +85,8 @@
 
     <div class="pairing-board" [style.--match-row-count]="rowNumbers.length">
       <div class="pairing-labels">
-        <span>Début</span>
-        <span>Fin</span>
+        <span>Du début</span>
+        <span>De la fin</span>
       </div>
       <div class="pairing-center" aria-hidden="true">
         <svg class="pair-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -111,7 +111,7 @@
           [attr.aria-pressed]="selectedLeft() === index"
           (click)="selectLeft(index)"
         >
-          <span class="sr-only">Début </span>
+          <span class="sr-only">Du début </span>
           <span class="match-number">{{ rowNumbers[index].toString().padStart(2, '0') }}</span>
           <span class="match-text">{{ text }}</span>
           @if (pair) {
@@ -132,7 +132,7 @@
           [attr.aria-pressed]="!!pair"
           (click)="selectRight(index)"
         >
-          <span class="sr-only">Fin </span>
+          <span class="sr-only">De la fin </span>
           <span class="match-number">{{ rowNumbers[index].toString().padStart(2, '0') }}</span>
           <span class="match-text">{{ text }}</span>
           @if (pair) {
