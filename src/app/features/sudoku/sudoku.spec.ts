@@ -48,9 +48,9 @@ describe('les neuf signaux du sudoku', () => {
   const right = { up: 1, high: 2, out: 5, low: 8, down: 7, 'across-high': 0, 'across-low': 6 };
   const poseKey = (positions: readonly number[]) => [...positions].sort((a, b) => a - b).join();
 
-  it('se résout sans deviner, avec 31 chiffres de départ', () => {
+  it('se résout sans deviner, avec 36 chiffres de départ', () => {
     expect(SUDOKU_GIVENS).toHaveLength(81);
-    expect(SUDOKU_GIVENS.filter(Boolean)).toHaveLength(31);
+    expect(SUDOKU_GIVENS.filter(Boolean)).toHaveLength(36);
     expect(isCompleteSudoku(SUDOKU_GIVENS)).toBe(false);
     const solved = solveBySingles();
     expect(isCompleteSudoku(solved)).toBe(true);
@@ -100,7 +100,7 @@ describe('interface de La vigie', () => {
     const page: HTMLElement = fixture.nativeElement;
     const cells = page.querySelectorAll<HTMLInputElement>('table input');
     expect(cells).toHaveLength(81);
-    expect(page.querySelectorAll('input[readonly]')).toHaveLength(31);
+    expect(page.querySelectorAll('input[readonly]')).toHaveLength(36);
     expect(page.querySelector('#sudoku-guide')).toBeNull();
     expect(page.querySelector('table')?.getAttribute('aria-describedby')).toBeNull();
     expect(page.querySelector('.sudoku .file-label')).toBeNull();

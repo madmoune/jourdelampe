@@ -3,7 +3,7 @@
 Routes : `/enigmes/la-vigie` et `/apercu-ia/enigmes/la-vigie`.
 La liste d’aperçu inclut ce dossier avant son inscription dans Firebase.
 
-Le sudoku de 9 × 9 contient 31 chiffres donnés et se déduit sans supposition.
+Le sudoku de 9 × 9 contient 36 chiffres donnés et se déduit sans supposition.
 Les deux chiffres indiqués pour chacun des neuf blocs sont absents de son
 énoncé; leurs positions, vues depuis la personne qui signale, forment les
 poses du [sémaphore](https://www.nist.gov/system/files/documents/2022/08/24/ccaw_flag_poster_508compliant.pdf)
