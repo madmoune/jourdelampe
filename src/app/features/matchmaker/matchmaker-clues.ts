@@ -126,6 +126,8 @@ const TRACK_CLUES: readonly TrackClue[] = [
 
 export const MATCHMAKER_ARTISTS = TRACK_CLUES.map(({ artists }) => artists.map(normalizeAnswer));
 
+export const MATCHMAKER_SONG_CLUES = TRACK_CLUES.map(({ start, end }) => ({ start, end }));
+
 // Ordre des débuts. Les pistes et rangées commencent à 0, et les positions X sont en %.
 const BOARD_LAYOUT: readonly {
   readonly track: number;

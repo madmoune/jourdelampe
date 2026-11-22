@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { MATCHMAKER_CLUES } from './matchmaker-clues';
+import { MATCHMAKER_CLUES, MATCHMAKER_SONG_CLUES } from './matchmaker-clues';
 import { MatchmakerPlay } from './matchmaker-play';
 
 describe('gabarit Matchmaker', () => {
@@ -88,6 +88,31 @@ describe('gabarit Matchmaker', () => {
     await fixture.whenStable();
     expect(marks().slice(0, 2)).toEqual(['', '']);
     expect(marks().slice(2)).toEqual(Array(artists.length - 2).fill('✓'));
+  });
+
+  it('confirme les bons débuts et fins et retire le crochet après une modification', async () => {
+    const { fixture, page } = await setup();
+    const fields = [...page.querySelectorAll('.letter-field')];
+    const inputs = fields.map((field) => field.querySelector('input')!);
+    const marks = () =>
+      fields.map((field) => field.querySelector('.letter-mark [aria-hidden]')?.textContent ?? '');
+
+    expect(marks()).toEqual(Array(MATCHMAKER_SONG_CLUES.length * 2).fill(''));
+    MATCHMAKER_SONG_CLUES.forEach(({ start, end }, index) => {
+      inputs[index * 2]!.value = start;
+      inputs[index * 2]!.dispatchEvent(new Event('input', { bubbles: true }));
+      inputs[index * 2 + 1]!.value = end;
+      inputs[index * 2 + 1]!.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    await fixture.whenStable();
+
+    expect(marks()).toEqual(Array(MATCHMAKER_SONG_CLUES.length * 2).fill('✓'));
+
+    inputs[0]!.value = 'Une autre phrase';
+    inputs[0]!.dispatchEvent(new Event('input', { bubbles: true }));
+    await fixture.whenStable();
+    expect(marks()[0]).toBe('');
+    expect(marks()[1]).toBe('✓');
   });
 
   it('affiche 14 débuts et 14 fins, dont la phrase de Britney Spears', async () => {

@@ -1,6 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, HostListener, signal } from '@angular/core';
 import { normalizeAnswer } from '../riddles/game.model';
-import { MATCHMAKER_ARTISTS, MATCHMAKER_CLUES, MATCHMAKER_DECOYS } from './matchmaker-clues';
+import {
+  MATCHMAKER_ARTISTS,
+  MATCHMAKER_CLUES,
+  MATCHMAKER_DECOYS,
+  MATCHMAKER_SONG_CLUES,
+} from './matchmaker-clues';
 
 export interface MatchmakerSongEntry {
   readonly excerpt: string;
@@ -46,6 +51,16 @@ export class MatchmakerPlay {
   protected readonly correctArtists = computed(() =>
     this.songs().map(({ artist }, index) =>
       MATCHMAKER_ARTISTS[index].includes(normalizeAnswer(artist)),
+    ),
+  );
+  protected readonly correctStarts = computed(() =>
+    this.songs().map(({ startEntry }, index) =>
+      matchesClue(startEntry, MATCHMAKER_SONG_CLUES[index]?.start ?? ''),
+    ),
+  );
+  protected readonly correctEnds = computed(() =>
+    this.songs().map(({ endEntry }, index) =>
+      matchesClue(endEntry, MATCHMAKER_SONG_CLUES[index]?.end ?? ''),
     ),
   );
   protected readonly pairs = signal<readonly MatchmakerPair[]>([]);
@@ -138,4 +153,8 @@ export class MatchmakerPlay {
   protected lineY(index: number): number {
     return ((index + 0.5) / MATCHMAKER_COUNT) * 100;
   }
+}
+
+function matchesClue(value: string, expected: string): boolean {
+  return value.trim() !== '' && normalizeAnswer(value) === normalizeAnswer(expected);
 }

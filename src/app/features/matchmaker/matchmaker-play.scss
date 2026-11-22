@@ -105,6 +105,13 @@ h2 {
   justify-items: center;
 }
 
+.letter-entry {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
 .mobile-field-label {
   display: none;
 }
@@ -143,8 +150,22 @@ input {
   pointer-events: none;
 }
 
+.letter-mark {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 4px;
+  display: grid;
+  place-items: center;
+  color: #d9f58a;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+}
+
 .letter-field input {
-  padding: 8px 4px;
+  display: block;
+  padding: 8px 24px 8px 4px;
   text-align: center;
   text-transform: uppercase;
 }

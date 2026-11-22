@@ -46,28 +46,44 @@
           <label class="letter-field" role="cell">
             <span class="mobile-field-label" aria-hidden="true">Du début</span>
             <span class="sr-only">Du début de l’extrait {{ rowNumbers[index] }}</span>
-            <input
-              type="text"
-              inputmode="text"
-              autocomplete="off"
-              autocapitalize="characters"
-              spellcheck="false"
-              [value]="song.startEntry"
-              (input)="updateSong(index, 'startEntry', $any($event.target).value)"
-            />
+            <span class="letter-entry">
+              <input
+                type="text"
+                inputmode="text"
+                autocomplete="off"
+                autocapitalize="characters"
+                spellcheck="false"
+                [value]="song.startEntry"
+                (input)="updateSong(index, 'startEntry', $any($event.target).value)"
+              />
+              <span class="letter-mark" role="status">
+                @if (correctStarts()[index]) {
+                  <span aria-hidden="true">✓</span>
+                  <span class="sr-only">Du début correct</span>
+                }
+              </span>
+            </span>
           </label>
           <label class="letter-field" role="cell">
             <span class="mobile-field-label" aria-hidden="true">De la fin</span>
             <span class="sr-only">De la fin de l’extrait {{ rowNumbers[index] }}</span>
-            <input
-              type="text"
-              inputmode="text"
-              autocomplete="off"
-              autocapitalize="characters"
-              spellcheck="false"
-              [value]="song.endEntry"
-              (input)="updateSong(index, 'endEntry', $any($event.target).value)"
-            />
+            <span class="letter-entry">
+              <input
+                type="text"
+                inputmode="text"
+                autocomplete="off"
+                autocapitalize="characters"
+                spellcheck="false"
+                [value]="song.endEntry"
+                (input)="updateSong(index, 'endEntry', $any($event.target).value)"
+              />
+              <span class="letter-mark" role="status">
+                @if (correctEnds()[index]) {
+                  <span aria-hidden="true">✓</span>
+                  <span class="sr-only">De la fin correcte</span>
+                }
+              </span>
+            </span>
           </label>
         </div>
       }
