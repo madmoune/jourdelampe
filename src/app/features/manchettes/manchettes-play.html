@@ -1,8 +1,14 @@
-<section aria-labelledby="crossword-title">
+<section aria-labelledby="crossword-title" [class.crossword-complete-section]="crosswordComplete()">
   <h2 id="crossword-title">Mots croisés</h2>
   <p class="instructions">
     Écris une lettre par case, sans espace ni accent. Sélectionne une définition pour aller au mot.
   </p>
+  @if (crosswordComplete()) {
+    <div class="crossword-success" role="status" aria-live="polite">
+      <span aria-hidden="true">✓</span>
+      <p><strong>Mots croisés complétés&nbsp;!</strong> Toutes les cases sont remplies.</p>
+    </div>
+  }
   <div class="crossword-layout">
     <div>
       @if (activeClue(); as clue) {
@@ -15,7 +21,13 @@
         </p>
       }
       <p class="scroll-hint">Fais défiler la grille de gauche à droite.</p>
-      <div class="scroll-grid" role="region" aria-label="Grille de mots croisés" tabindex="0">
+      <div
+        class="scroll-grid"
+        [class.crossword-complete-grid]="crosswordComplete()"
+        role="region"
+        aria-label="Grille de mots croisés"
+        tabindex="0"
+      >
         <div class="board crossword" [style.--columns]="width">
           @for (cell of cells; track cell.index) {
             @if (cell.open) {

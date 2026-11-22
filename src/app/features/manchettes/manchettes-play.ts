@@ -85,6 +85,10 @@ export class ManchettesPlay {
       CLUES_BY_CELL[this.letterFocus()][0],
   );
   protected readonly activeCells = computed(() => new Set(this.activeClue()?.cells));
+  protected readonly crosswordComplete = computed(() => {
+    const letters = this.progress().letters;
+    return this.cells.every((cell) => !cell.open || letters[cell.index].length === 1);
+  });
   protected readonly crashed = computed(() => this.progress().mines.some((mark) => mark === 'hit'));
   protected readonly explosions = computed(() => this.progress().explosions);
   protected readonly canUndoExplosion = computed(

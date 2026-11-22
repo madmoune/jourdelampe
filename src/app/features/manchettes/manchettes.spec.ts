@@ -173,6 +173,22 @@ describe('interaction d’En manchettes', () => {
     expect(page.querySelector<HTMLInputElement>('#word-cell-370')).toBe(document.activeElement);
   });
 
+  it('affiche la réussite quand toutes les cases du crossword sont remplies', () => {
+    const letters = CROSSWORD_CELLS.map((cell) => (cell.open ? 'A' : ''));
+    localStorage.setItem(
+      key,
+      JSON.stringify({ letters, mines: initialMinefield(), explosions: 0 }),
+    );
+    const fixture = TestBed.createComponent(ManchettesPlay);
+    fixture.detectChanges();
+    const page: HTMLElement = fixture.nativeElement;
+    expect(page.querySelector('.crossword-success')?.textContent).toContain(
+      'Mots croisés complétés',
+    );
+    expect(page.querySelector('.crossword-complete-section')).not.toBeNull();
+    expect(page.querySelector('.crossword-complete-grid')).not.toBeNull();
+  });
+
   it('signale visuellement une grille résolue', () => {
     const mines = Array<MineMark>(GRID_SIZE).fill('clear');
     for (const mine of MINES) mines[mine] = 'flagged';
