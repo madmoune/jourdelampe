@@ -33,6 +33,7 @@
                 [attr.aria-label]="'Artiste de l’extrait ' + rowNumbers[index]"
                 [value]="song.artist"
                 placeholder="Artiste"
+                [readOnly]="solved()"
                 (input)="updateSong(index, 'artist', $any($event.target).value)"
               />
               <span class="artist-mark" role="status">
@@ -54,6 +55,7 @@
                 autocapitalize="characters"
                 spellcheck="false"
                 [value]="song.startEntry"
+                [readOnly]="solved()"
                 (input)="updateSong(index, 'startEntry', $any($event.target).value)"
               />
               <span class="letter-mark" role="status">
@@ -75,6 +77,7 @@
                 autocapitalize="characters"
                 spellcheck="false"
                 [value]="song.endEntry"
+                [readOnly]="solved()"
                 (input)="updateSong(index, 'endEntry', $any($event.target).value)"
               />
               <span class="letter-mark" role="status">
@@ -125,6 +128,7 @@
           [class.selected]="selectedLeft() === index"
           [class.connected]="pair"
           [attr.aria-pressed]="selectedLeft() === index"
+          [disabled]="solved()"
           (click)="selectLeft(index)"
         >
           <span class="sr-only">Du début </span>
@@ -146,6 +150,7 @@
           [style.grid-row]="index + 2"
           [class.connected]="pair"
           [attr.aria-pressed]="!!pair"
+          [disabled]="solved()"
           (click)="selectRight(index)"
         >
           <span class="sr-only">De la fin </span>
@@ -164,7 +169,7 @@
       <button
         type="button"
         class="clear-links"
-        [disabled]="pairs().length === 0"
+        [disabled]="solved() || pairs().length === 0"
         (click)="clearPairs()"
       >
         Effacer tous les liens

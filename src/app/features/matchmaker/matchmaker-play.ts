@@ -1,7 +1,20 @@
-import { ChangeDetectionStrategy, Component, computed, HostListener, signal } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  HostListener,
+  inject,
+  linkedSignal,
+  signal,
+} from '@angular/core';
+import { GameStore } from '../riddles/game-store';
 import { normalizeAnswer } from '../riddles/game.model';
+import { ParticipantStore } from '../riddles/participant-store';
+import { MATCHMAKER_ID } from '../riddles/riddle-pages';
 import {
   MATCHMAKER_ARTIST_INDICES,
+  MATCHMAKER_ARTIST_NAMES,
   MATCHMAKER_ARTISTS,
   MATCHMAKER_CLUES,
   MATCHMAKER_DECOYS,
@@ -32,6 +45,15 @@ interface MatchmakerPair {
   readonly right: number;
 }
 
+interface MatchmakerProgress {
+  readonly songs: readonly MatchmakerSongEntry[];
+  readonly pairs: readonly MatchmakerPair[];
+}
+
+const MATCHMAKER_SOLUTION_PAIRS: readonly MatchmakerPair[] = MATCHMAKER_CLUES.map(
+  ({ endRow }, left) => ({ left, right: endRow }),
+);
+
 @Component({
   selector: 'app-matchmaker-play',
   templateUrl: './matchmaker-play.html',
@@ -39,14 +61,43 @@ interface MatchmakerPair {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MatchmakerPlay {
-  protected readonly songs = signal<readonly MatchmakerSongEntry[]>(
-    MATCHMAKER_SONGS.map((excerpt, index) => ({
+  private readonly browser = inject(DOCUMENT).defaultView;
+  private readonly game = inject(GameStore);
+  private readonly participants = inject(ParticipantStore);
+  private readonly storageKey = computed(
+    () =>
+      `jdl-matchmaker-v1:${this.participants.participant()?.id ?? 'anonymous'}:${this.game.round()?.id ?? 'preview'}`,
+  );
+  private readonly progress = linkedSignal({
+    source: this.storageKey,
+    computation: (key) => this.restore(key),
+  });
+  protected readonly solved = computed(() => {
+    const riddle = this.game.riddles().find((item) => item.id === MATCHMAKER_ID);
+    if (!riddle) return false;
+    if (this.game.mode() === 'team') return riddle.solutions.length > 0;
+    const participantId = this.participants.participant()?.id;
+    return (
+      !!participantId &&
+      riddle.solutions.some((solution) => solution.participantId === participantId)
+    );
+  });
+  private readonly solutionSongs = MATCHMAKER_SONGS.map((excerpt, index) => {
+    const artist = MATCHMAKER_ARTISTS[index]?.[0] ?? '';
+    const [startIndex, endIndex] = MATCHMAKER_ARTIST_INDICES[index] ?? [0, 0];
+    return {
       excerpt,
       audioSrc: MATCHMAKER_AUDIO_PATHS[index] ?? '',
-      artist: '',
-      startEntry: '',
-      endEntry: '',
-    })),
+      artist: MATCHMAKER_ARTIST_NAMES[index] ?? artist,
+      startEntry: artist[startIndex - 1] ?? '',
+      endEntry: artist[artist.length - endIndex] ?? '',
+    };
+  });
+  protected readonly songs = computed(() =>
+    this.solved() ? this.solutionSongs : this.progress().songs,
+  );
+  protected readonly pairs = computed(() =>
+    this.solved() ? MATCHMAKER_SOLUTION_PAIRS : this.progress().pairs,
   );
   protected readonly correctArtists = computed(() =>
     this.songs().map(({ artist }, index) =>
@@ -73,7 +124,6 @@ export class MatchmakerPlay {
       ),
     ),
   );
-  protected readonly pairs = signal<readonly MatchmakerPair[]>([]);
   protected readonly selectedLeft = signal<number | null>(null);
   protected readonly leftTexts = MATCHMAKER_CLUES.map((clue) => clue.start);
   protected readonly rightTexts = [...MATCHMAKER_CLUES]
@@ -99,14 +149,16 @@ export class MatchmakerPlay {
     field: 'artist' | 'startEntry' | 'endEntry',
     value: string,
   ): void {
-    const next = [...this.songs()];
+    if (this.solved()) return;
+    const next = [...this.progress().songs];
     const entry = next[index];
     if (!entry) return;
     next[index] = { ...entry, [field]: value };
-    this.songs.set(next);
+    this.save({ ...this.progress(), songs: next });
   }
 
   protected selectLeft(index: number): void {
+    if (this.solved()) return;
     if (!Number.isInteger(index) || index < 0 || index >= MATCHMAKER_COUNT) return;
     const pair = this.pairForLeft(index);
     if (pair) {
@@ -118,6 +170,7 @@ export class MatchmakerPlay {
   }
 
   protected selectRight(index: number): void {
+    if (this.solved()) return;
     const left = this.selectedLeft();
     if (!Number.isInteger(index) || index < 0 || index >= MATCHMAKER_COUNT) return;
     const pair = this.pairForRight(index);
@@ -130,10 +183,13 @@ export class MatchmakerPlay {
       this.selectedLeft.set(null);
       return;
     }
-    this.pairs.update((pairs) => [
-      ...pairs.filter((pair) => pair.left !== left && pair.right !== index),
-      { left, right: index },
-    ]);
+    this.save({
+      ...this.progress(),
+      pairs: [
+        ...this.progress().pairs.filter((pair) => pair.left !== left && pair.right !== index),
+        { left, right: index },
+      ],
+    });
     this.selectedLeft.set(null);
   }
 
@@ -144,11 +200,15 @@ export class MatchmakerPlay {
   }
 
   private removePair(left: number): void {
-    this.pairs.update((pairs) => pairs.filter((pair) => pair.left !== left));
+    this.save({
+      ...this.progress(),
+      pairs: this.progress().pairs.filter((pair) => pair.left !== left),
+    });
   }
 
   protected clearPairs(): void {
-    this.pairs.set([]);
+    if (this.solved()) return;
+    this.save({ ...this.progress(), pairs: [] });
     this.selectedLeft.set(null);
   }
 
@@ -162,6 +222,73 @@ export class MatchmakerPlay {
 
   protected lineY(index: number): number {
     return ((index + 0.5) / MATCHMAKER_COUNT) * 100;
+  }
+
+  private save(progress: MatchmakerProgress): void {
+    this.progress.set(progress);
+    try {
+      this.browser?.localStorage.setItem(this.storageKey(), JSON.stringify(progress));
+    } catch {
+      /* Les réponses restent disponibles en mémoire. */
+    }
+  }
+
+  private restore(key: string): MatchmakerProgress {
+    const songs = MATCHMAKER_SONGS.map((excerpt, index) => ({
+      excerpt,
+      audioSrc: MATCHMAKER_AUDIO_PATHS[index] ?? '',
+      artist: '',
+      startEntry: '',
+      endEntry: '',
+    }));
+    try {
+      const raw = JSON.parse(this.browser?.localStorage.getItem(key) ?? 'null') as Record<
+        string,
+        unknown
+      > | null;
+      if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return { songs, pairs: [] };
+      const savedSongs = Array.isArray(raw['songs']) ? raw['songs'] : [];
+      const restoredSongs = songs.map((song, index) => {
+        const saved = savedSongs[index];
+        if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return song;
+        const entry = saved as Record<string, unknown>;
+        return {
+          ...song,
+          artist: typeof entry['artist'] === 'string' ? entry['artist'] : '',
+          startEntry: typeof entry['startEntry'] === 'string' ? entry['startEntry'] : '',
+          endEntry: typeof entry['endEntry'] === 'string' ? entry['endEntry'] : '',
+        };
+      });
+      const pairs: MatchmakerPair[] = [];
+      const usedLeft = new Set<number>();
+      const usedRight = new Set<number>();
+      const savedPairs = Array.isArray(raw['pairs']) ? raw['pairs'] : [];
+      for (const value of savedPairs) {
+        if (!value || typeof value !== 'object' || Array.isArray(value)) continue;
+        const pair = value as Record<string, unknown>;
+        const left = pair['left'];
+        const right = pair['right'];
+        if (
+          typeof left !== 'number' ||
+          !Number.isInteger(left) ||
+          left < 0 ||
+          left >= MATCHMAKER_COUNT ||
+          typeof right !== 'number' ||
+          !Number.isInteger(right) ||
+          right < 0 ||
+          right >= MATCHMAKER_COUNT ||
+          usedLeft.has(left) ||
+          usedRight.has(right)
+        )
+          continue;
+        usedLeft.add(left);
+        usedRight.add(right);
+        pairs.push({ left, right });
+      }
+      return { songs: restoredSongs, pairs };
+    } catch {
+      return { songs, pairs: [] };
+    }
   }
 }
 

@@ -1,14 +1,39 @@
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import {
   MATCHMAKER_ARTIST_INDICES,
   MATCHMAKER_ARTISTS,
   MATCHMAKER_CLUES,
 } from './matchmaker-clues';
+import { GameStore } from '../riddles/game-store';
+import { ParticipantStore } from '../riddles/participant-store';
+import { MATCHMAKER_ID } from '../riddles/riddle-pages';
 import { MatchmakerPlay } from './matchmaker-play';
 
 describe('gabarit Matchmaker', () => {
-  async function setup() {
-    await TestBed.configureTestingModule({ imports: [MatchmakerPlay] }).compileComponents();
+  afterEach(() => localStorage.clear());
+
+  async function setup(solved = false) {
+    const riddles = signal([
+      {
+        id: MATCHMAKER_ID,
+        solutions: solved ? [{ participantId: 'alice' }] : [],
+      },
+    ]);
+    await TestBed.configureTestingModule({
+      imports: [MatchmakerPlay],
+      providers: [
+        {
+          provide: GameStore,
+          useValue: {
+            round: signal({ id: 'one', resetAt: 1 }),
+            mode: signal('team'),
+            riddles,
+          },
+        },
+        { provide: ParticipantStore, useValue: { participant: signal({ id: 'alice' }) } },
+      ],
+    }).compileComponents();
     const fixture = TestBed.createComponent(MatchmakerPlay);
     fixture.detectChanges();
     await fixture.whenStable();
@@ -258,5 +283,40 @@ describe('gabarit Matchmaker', () => {
     expect(page.querySelectorAll('.pair-lines line')).toHaveLength(0);
     expect(page.querySelectorAll('.match-item.connected')).toHaveLength(0);
     expect(clear.disabled).toBe(true);
+  });
+
+  it('restaure les artistes, lettres et liens enregistrés après une réouverture', async () => {
+    localStorage.setItem(
+      'jdl-matchmaker-v1:alice:one',
+      JSON.stringify({
+        songs: [
+          { artist: 'La Chicane', startEntry: 'C', endEntry: 'E' },
+          { artist: 'The Offspring', startEntry: 'O', endEntry: 'S' },
+        ],
+        pairs: [{ left: 0, right: 5 }],
+      }),
+    );
+    const { page } = await setup();
+    const songs = page.querySelectorAll('.song-row');
+    expect(songs[0]?.querySelector<HTMLInputElement>('.artist-field input')?.value).toBe(
+      'La Chicane',
+    );
+    expect(songs[0]?.querySelectorAll<HTMLInputElement>('.letter-field input')[0]?.value).toBe('C');
+    expect(songs[0]?.querySelectorAll<HTMLInputElement>('.letter-field input')[1]?.value).toBe('E');
+    expect(page.querySelectorAll('.pair-lines line')).toHaveLength(1);
+    expect(page.querySelector('.match-left')?.textContent).toContain('↔ 06');
+  });
+
+  it('réaffiche les solutions intermédiaires quand le dossier est déjà résolu', async () => {
+    const { page } = await setup(true);
+    expect(page.querySelector<HTMLInputElement>('.artist-field input')?.value).toBe('La Chicane');
+    expect(page.querySelectorAll<HTMLInputElement>('.letter-field input')[0]?.value).toBe('C');
+    expect(page.querySelectorAll<HTMLInputElement>('.letter-field input')[1]?.value).toBe('E');
+    expect(page.querySelectorAll<HTMLInputElement>('.artist-field input[readonly]')).toHaveLength(
+      14,
+    );
+    expect(page.querySelectorAll('.letter-field input[readonly]')).toHaveLength(28);
+    expect(page.querySelectorAll('.pair-lines line')).toHaveLength(14);
+    expect(page.querySelector<HTMLButtonElement>('.clear-links')?.disabled).toBe(true);
   });
 });
