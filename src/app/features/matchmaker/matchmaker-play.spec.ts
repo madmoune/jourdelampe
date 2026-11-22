@@ -1,5 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { MATCHMAKER_ARTISTS, MATCHMAKER_CLUES } from './matchmaker-clues';
+import {
+  MATCHMAKER_ARTIST_INDICES,
+  MATCHMAKER_ARTISTS,
+  MATCHMAKER_CLUES,
+} from './matchmaker-clues';
 import { MatchmakerPlay } from './matchmaker-play';
 
 describe('gabarit Matchmaker', () => {
@@ -92,7 +96,7 @@ describe('gabarit Matchmaker', () => {
     expect(marks().slice(2)).toEqual(Array(artists.length - 2).fill('✓'));
   });
 
-  it('confirme la première et la dernière lettre de chaque artiste', async () => {
+  it('confirme les lettres extraites par les indices du Matchmaker', async () => {
     const { fixture, page } = await setup();
     const fields = [...page.querySelectorAll('.letter-field')];
     const inputs = fields.map((field) => field.querySelector('input')!);
@@ -102,14 +106,16 @@ describe('gabarit Matchmaker', () => {
     expect(marks()).toEqual(Array(MATCHMAKER_ARTISTS.length * 2).fill(''));
     MATCHMAKER_ARTISTS.forEach((artists, index) => {
       const artist = artists[0]!;
-      inputs[index * 2]!.value = artist.slice(0, 1).toLowerCase();
+      const indices = MATCHMAKER_ARTIST_INDICES[index]!;
+      inputs[index * 2]!.value = artist[indices[0] - 1]!;
       inputs[index * 2]!.dispatchEvent(new Event('input', { bubbles: true }));
-      inputs[index * 2 + 1]!.value = artist.slice(-1).toLowerCase();
+      inputs[index * 2 + 1]!.value = artist[artist.length - indices[1]]!;
       inputs[index * 2 + 1]!.dispatchEvent(new Event('input', { bubbles: true }));
     });
     await fixture.whenStable();
 
     expect(marks()).toEqual(Array(MATCHMAKER_ARTISTS.length * 2).fill('✓'));
+    expect(inputs.slice(0, 4).map((input) => input.value)).toEqual(['C', 'E', 'O', 'S']);
 
     inputs[0]!.value = 'Une autre phrase';
     inputs[0]!.dispatchEvent(new Event('input', { bubbles: true }));

@@ -125,6 +125,7 @@ const TRACK_CLUES: readonly TrackClue[] = [
 ];
 
 export const MATCHMAKER_ARTISTS = TRACK_CLUES.map(({ artists }) => artists.map(normalizeAnswer));
+export const MATCHMAKER_ARTIST_INDICES = TRACK_CLUES.map(({ indices }) => indices);
 
 export const MATCHMAKER_SONG_CLUES = TRACK_CLUES.map(({ start, end }) => ({ start, end }));
 
