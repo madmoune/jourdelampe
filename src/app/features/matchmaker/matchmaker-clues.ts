@@ -15,7 +15,7 @@ const TRACK_CLUES: readonly TrackClue[] = [
   {
     artists: ['La Chicane'],
     start: 'C’est plus l’temps de reculer',
-    end: 'pas moé qui va changer',
+    end: 'juste pour voir le monde',
     indices: [3, 1],
   },
   // Original Prankster
