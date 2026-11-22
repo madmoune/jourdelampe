@@ -282,6 +282,9 @@ describe('interaction d’En manchettes', () => {
     expect(page.querySelector('.mine-section')?.classList.contains('solved')).toBe(true);
     expect(page.querySelector('.mine-section .board-status')).toBeNull();
     expect(page.querySelector('.mine-complete')?.textContent).toContain('Terrain déminé');
+    expect(page.querySelector('.mine-complete')?.nextElementSibling?.classList).toContain(
+      'scroll-grid',
+    );
   });
 
   it('pose et retire un drapeau par simple pression sans ouvrir la case', () => {

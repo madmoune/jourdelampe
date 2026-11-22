@@ -21,6 +21,13 @@
         </p>
       }
       <p class="scroll-hint">Fais défiler la grille de gauche à droite.</p>
+  @if (won()) {
+    <p class="mine-complete" role="status">Terrain déminé</p>
+  } @else {
+    <p class="board-status" role="status">
+      {{ foundCount() }} / {{ extracted().length }} cases d’extraction trouvées
+    </p>
+  }
       <div
         class="scroll-grid"
         [class.crossword-complete-grid]="crosswordComplete()"
@@ -160,11 +167,4 @@
       }
     </div>
   </div>
-  @if (won()) {
-    <p class="mine-complete" role="status">Terrain déminé</p>
-  } @else {
-    <p class="board-status" role="status">
-      {{ foundCount() }} / {{ extracted().length }} cases d’extraction trouvées
-    </p>
-  }
 </section>
