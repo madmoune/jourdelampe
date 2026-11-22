@@ -28,7 +28,7 @@ describe('données des mots croisés et du démineur', () => {
       'Groupe de Boom Desjardins derrière « Calvaire ».',
     );
     expect(CLUES.find((clue) => clue.number === 20)?.text).toBe(
-      'Rivière qui traverse Washington, D.C.',
+      'Chanteur britannique qui apparaît dans son propre rôle dans un épisode de Futurama diffusé en 2000.',
     );
     const crosswordIndices = CROSSWORD_CELLS.filter((cell) => cell.open).map((cell) => cell.index);
     expect(crosswordIndices).toHaveLength(194);
