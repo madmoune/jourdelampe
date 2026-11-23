@@ -10,7 +10,7 @@ export const RIDDLE_PREVIEW_PATH = '/apercu-ia';
 
 export const META_PREVIEW_UNLOCKED = new InjectionToken<boolean>('META_PREVIEW_UNLOCKED', {
   providedIn: 'root',
-  factory: () => true,
+  factory: () => false,
 });
 
 export const RIDDLE_OPEN_EARLY = new InjectionToken<boolean>('RIDDLE_OPEN_EARLY', {

@@ -199,8 +199,8 @@ et par partie. Pour activer la validation finale, configurer `game/catalog/meta`
 (titre, énoncé, ordre) et `riddleSecrets/meta` (réponse, réponse normalisée).
 Le méta ne compte pas dans la progression des huit énigmes.
 
-L’aperçu `/apercu-ia/enigmes/meta` est temporairement accessible sans réussir les
-huit énigmes. Le réglage `META_PREVIEW_UNLOCKED` se trouve dans `riddle-release.ts`.
+L’aperçu `/apercu-ia/enigmes/meta` applique le même verrou : il faut réussir les
+huit énigmes avant d’accéder à la grille du méta.
 
 ## Intégration publique
 

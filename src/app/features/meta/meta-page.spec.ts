@@ -208,6 +208,16 @@ describe('page du méta', () => {
     expect(page.querySelector('app-meta-grid')).toBeNull();
   });
 
+  it('garde le méta verrouillé dans l’aperçu sans les huit résolutions', async () => {
+    TestBed.overrideProvider(META_PREVIEW_UNLOCKED, { useValue: false });
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/apercu-ia/enigmes/meta', MetaPage);
+    const page = harness.routeNativeElement!;
+
+    expect(page.textContent).toContain('Résous les huit énigmes');
+    expect(page.querySelector('app-meta-grid')).toBeNull();
+  });
+
   it.each(['2000', '2 000!'])('affiche la réplique du méta pour « %s » seul', async (answer) => {
     const submit = vi.mocked(TestBed.inject(RiddleSubmissions).submit);
     submit.mockResolvedValue(false);
