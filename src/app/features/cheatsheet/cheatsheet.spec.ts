@@ -160,8 +160,8 @@ describe('lien de retour de la cheatsheet', () => {
   const origin = 'http://localhost:4200';
 
   it('retourne à l’énigme qui a ouvert la fiche', () => {
-    expect(resolveCheatsheetBackLink(`${origin}/apercu-ia/enigmes/la-vigie`, origin)).toBe(
-      '/apercu-ia/enigmes/la-vigie',
+    expect(resolveCheatsheetBackLink(`${origin}/apercu-ia/enigmes/sudoquoi`, origin)).toBe(
+      '/apercu-ia/enigmes/sudoquoi',
     );
   });
 
@@ -178,8 +178,8 @@ describe('lien de retour de la cheatsheet', () => {
 
   it('retire le chemin de base GitHub Pages du lien de provenance', () => {
     const base = 'https://madmoune.github.io/jourdelampe/';
-    expect(resolveCheatsheetBackLink(`${base}apercu-ia/enigmes/la-vigie`, base)).toBe(
-      '/apercu-ia/enigmes/la-vigie',
+    expect(resolveCheatsheetBackLink(`${base}apercu-ia/enigmes/sudoquoi`, base)).toBe(
+      '/apercu-ia/enigmes/sudoquoi',
     );
   });
 

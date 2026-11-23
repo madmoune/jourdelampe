@@ -55,10 +55,10 @@ dossiers prévus même si une entrée manque encore dans `game/catalog`; ces dos
 apparaissent alors « À venir » jusqu’à leur configuration. Les énigmes et leurs
 réponses sont configurées manuellement lors de leur intégration; le tableau de
 bord ne propose ni ajout ni modification. Les pages intégrées sont **Zebra Pretzel**
-(Zebra, `/enigmes/zebra`), **La Fourchette** (`/enigmes/la-fourchette`),
+(Zebra Pretzel, `/enigmes/zebra-pretzel`), **La Fourchette** (`/enigmes/la-fourchette`),
 **Le début de la fin** (Matchmaker, `/enigmes/le-debut-de-la-fin`), **La
-porcherie** (`/enigmes/la-porcherie`), **La vigie** (`/enigmes/la-vigie`), **En
-manchettes** (`/enigmes/en-manchettes`), **Arcade** (`/enigmes/salle-arcade`) et
+porcherie** (`/enigmes/la-porcherie`), **Sudoquoi?** (`/enigmes/sudoquoi`), **Crossword
+Démineur** (`/enigmes/crossword-demineur`), **Arcade** (`/enigmes/arcade`) et
 **Sens Dessus Dessous (in english!)** (`/enigmes/sens-dessus-dessous`). La gestion
 indique « À définir » tant que la réponse finale privée n’a pas été fournie.
 
@@ -193,13 +193,13 @@ un autre. Tant que les huit dossiers ne sont pas publiés et résolus selon le
 mode actif, la carte du méta reste verrouillée. Une remise à zéro la verrouille
 immédiatement; un changement de mode recalcule l’accès, sans effacer les réussites.
 
-La carte finale ouvre `/enigmes/meta` après déverrouillage. La grille accueille
+La carte finale ouvre `/enigmes/hommage-a-mon-pere` après déverrouillage. La grille accueille
 les réponses des huit énigmes et conserve la saisie dans le navigateur, par profil
 et par partie. Pour activer la validation finale, configurer `game/catalog/meta`
 (titre, énoncé, ordre) et `riddleSecrets/meta` (réponse, réponse normalisée).
 Le méta ne compte pas dans la progression des huit énigmes.
 
-L’aperçu `/apercu-ia/enigmes/meta` applique le même verrou : il faut réussir les
+L’aperçu `/apercu-ia/enigmes/hommage-a-mon-pere` applique le même verrou : il faut réussir les
 huit énigmes avant d’accéder à la grille du méta.
 
 ## Intégration publique

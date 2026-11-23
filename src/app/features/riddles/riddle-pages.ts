@@ -12,21 +12,21 @@ export const RIDDLE_LIST_PATH = '/enigmes';
 export const META_ID = 'meta';
 export const RIDDLE_COUNT = 8;
 export const RIDDLE_PAGES = {
-  [ZEBRA_ID]: { path: '/enigmes/zebra', title: ZEBRA_TITLE },
+  [ZEBRA_ID]: { path: '/enigmes/zebra-pretzel', title: ZEBRA_TITLE },
   [FOURCHETTE_ID]: { path: '/enigmes/la-fourchette', title: 'La Fourchette' },
   [MATCHMAKER_ID]: { path: '/enigmes/le-debut-de-la-fin', title: 'Le début de la fin' },
   [PIGPEN_ID]: { path: '/enigmes/la-porcherie', title: 'La porcherie' },
-  [SUDOKU_ID]: { path: '/enigmes/la-vigie', title: 'Sudoquoi?' },
+  [SUDOKU_ID]: { path: '/enigmes/sudoquoi', title: 'Sudoquoi?' },
   [MANCHETTES_ID]: {
-    path: '/enigmes/en-manchettes',
+    path: '/enigmes/crossword-demineur',
     title: 'Crossword Démineur (ne jamais oublier le word)',
   },
-  [ARCADE_ID]: { path: '/enigmes/salle-arcade', title: 'Arcade' },
+  [ARCADE_ID]: { path: '/enigmes/arcade', title: 'Arcade' },
   [SENS_DESSUS_DESSOUS_ID]: {
     path: '/enigmes/sens-dessus-dessous',
     title: 'Sens Dessus Dessous (in english!)',
   },
-  [META_ID]: { path: '/enigmes/meta', title: 'Hommage à mon père (méta)' },
+  [META_ID]: { path: '/enigmes/hommage-a-mon-pere', title: 'Hommage à mon père (méta)' },
 } as const;
 
 export function riddlePage(

@@ -1,6 +1,6 @@
 # En manchettes · dossier 06
 
-Routes : `/enigmes/en-manchettes` et `/apercu-ia/enigmes/en-manchettes`.
+Routes : `/enigmes/crossword-demineur` et `/apercu-ia/enigmes/crossword-demineur`.
 Le dossier est déjà visible en aperçu. Le corrigé de l’organisateur a servi
 à transcrire la grille et les 28 définitions; aucune lettre du corrigé
 n’est incluse dans le client.

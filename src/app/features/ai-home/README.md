@@ -33,7 +33,7 @@ sans rechargement.
 `/apercu-ia` utilise le même `AiHome` en mode `RIDDLE_PREVIEW` : accès direct au
 portail complet, sans attendre ni manipuler les ampoules. Le fournisseur de ce
 mode et l’état du portail sont limités à cette route et à ses jeux enfants,
-dont `/apercu-ia/enigmes/zebra`. Les liens des jeux et de retour conservent le
+dont `/apercu-ia/enigmes/zebra-pretzel`. Les liens des jeux et de retour conservent le
 mode aperçu. L’aperçu n’est pas lié depuis le site public; il partage les vrais
 profils, énigmes et résultats. La route publique Zebra attend aussi l’ouverture.
 

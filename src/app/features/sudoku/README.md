@@ -1,6 +1,6 @@
 # La vigie · dossier 05
 
-Routes : `/enigmes/la-vigie` et `/apercu-ia/enigmes/la-vigie`.
+Routes : `/enigmes/sudoquoi` et `/apercu-ia/enigmes/sudoquoi`.
 La liste d’aperçu inclut ce dossier avant son inscription dans Firebase.
 
 Le sudoku de 9 × 9 contient 36 chiffres donnés et se déduit sans supposition.

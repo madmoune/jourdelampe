@@ -1,6 +1,6 @@
 # Premier puzzle Zebra
 
-Page : `/enigmes/zebra`, intitulée **Zebra Pretzel**, accessible depuis le portail de l’AI après saisie du nom.
+Page : `/enigmes/zebra-pretzel`, intitulée **Zebra Pretzel**, accessible depuis le portail de l’AI après saisie du nom.
 La saisie et la modification du nom sont dans `/enigmes#profil`.
 La page Zebra attend le profil et n’affiche le jeu qu’avec un nom enregistré;
 sinon, elle propose un lien vers la section des énigmes du portail.

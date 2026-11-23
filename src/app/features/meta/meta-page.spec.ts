@@ -56,7 +56,7 @@ describe('page du méta', () => {
 
   it('ouvre en aperçu la grille vide et conserve les cases de plusieurs lettres par partie', async () => {
     const harness = await RouterTestingHarness.create();
-    await harness.navigateByUrl('/apercu-ia/enigmes/meta', MetaPage);
+    await harness.navigateByUrl('/apercu-ia/enigmes/hommage-a-mon-pere', MetaPage);
     const page = harness.routeNativeElement!;
     const cells = Array.from(page.querySelectorAll<HTMLInputElement>('app-meta-grid input'));
     expect(cells).toHaveLength(63);
@@ -101,7 +101,7 @@ describe('page du méta', () => {
       localStorage.setItem(previousStorageKey, JSON.stringify(previous));
 
       const harness = await RouterTestingHarness.create();
-      await harness.navigateByUrl('/apercu-ia/enigmes/meta', MetaPage);
+      await harness.navigateByUrl('/apercu-ia/enigmes/hommage-a-mon-pere', MetaPage);
       const page = harness.routeNativeElement!;
       const cells = [...page.querySelectorAll<HTMLInputElement>('.board input')];
       expect(cells.map((cell) => cell.value).filter((value) => value.length > 1)).toEqual([
@@ -127,7 +127,7 @@ describe('page du méta', () => {
 
   it('relie les huit phrases aux départs numérotés et les complète avec la saisie', async () => {
     const harness = await RouterTestingHarness.create();
-    await harness.navigateByUrl('/apercu-ia/enigmes/meta', MetaPage);
+    await harness.navigateByUrl('/apercu-ia/enigmes/hommage-a-mon-pere', MetaPage);
     const page = harness.routeNativeElement!;
     expect(page.querySelector('h1')?.textContent).toBe('Hommage à mon père (méta)');
     expect(page.querySelector('.flavor-text')?.textContent).toContain(
@@ -189,7 +189,7 @@ describe('page du méta', () => {
 
   it('applique le verrou sur la route publique, même si elle est ouverte directement', async () => {
     const harness = await RouterTestingHarness.create();
-    await harness.navigateByUrl('/enigmes/meta', MetaPage);
+    await harness.navigateByUrl('/enigmes/hommage-a-mon-pere', MetaPage);
     const page = harness.routeNativeElement!;
     expect(page.textContent).toContain('Résous les huit énigmes');
     expect(page.querySelector('app-meta-grid')).toBeNull();
@@ -211,7 +211,7 @@ describe('page du méta', () => {
   it('garde le méta verrouillé dans l’aperçu sans les huit résolutions', async () => {
     TestBed.overrideProvider(META_PREVIEW_UNLOCKED, { useValue: false });
     const harness = await RouterTestingHarness.create();
-    await harness.navigateByUrl('/apercu-ia/enigmes/meta', MetaPage);
+    await harness.navigateByUrl('/apercu-ia/enigmes/hommage-a-mon-pere', MetaPage);
     const page = harness.routeNativeElement!;
 
     expect(page.textContent).toContain('Résous les huit énigmes');
@@ -222,7 +222,7 @@ describe('page du méta', () => {
     const submit = vi.mocked(TestBed.inject(RiddleSubmissions).submit);
     submit.mockResolvedValue(false);
     const harness = await RouterTestingHarness.create();
-    await harness.navigateByUrl('/apercu-ia/enigmes/meta', MetaPage);
+    await harness.navigateByUrl('/apercu-ia/enigmes/hommage-a-mon-pere', MetaPage);
     const page = harness.routeNativeElement!;
     const input = page.querySelector<HTMLInputElement>('#answer-meta')!;
     input.value = answer;
@@ -254,7 +254,7 @@ describe('page du méta', () => {
       },
     });
     const harness = await RouterTestingHarness.create();
-    await harness.navigateByUrl('/apercu-ia/enigmes/meta', MetaPage);
+    await harness.navigateByUrl('/apercu-ia/enigmes/hommage-a-mon-pere', MetaPage);
     const page = harness.routeNativeElement!;
     const input = page.querySelector<HTMLInputElement>('#answer-meta')!;
     input.value = 'LEBUGDELAN2000';

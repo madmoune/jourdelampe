@@ -19,8 +19,8 @@ import { META_PREVIEW_UNLOCKED, RIDDLE_PREVIEW } from './riddle-release';
 
 describe('liens du catalogue des énigmes', () => {
   it.each([
-    { preview: false, path: '/enigmes/zebra' },
-    { preview: true, path: '/apercu-ia/enigmes/zebra' },
+    { preview: false, path: '/enigmes/zebra-pretzel' },
+    { preview: true, path: '/apercu-ia/enigmes/zebra-pretzel' },
   ])('ouvre le bon lien avec le mode aperçu à $preview', async ({ preview, path }) => {
     const catalog = [
       {
@@ -70,13 +70,13 @@ describe('liens du catalogue des énigmes', () => {
       `${preview ? '/apercu-ia' : ''}/enigmes/la-porcherie`,
     );
     expect(links[4]?.getAttribute('href')).toBe(
-      preview ? '/apercu-ia/enigmes/la-vigie' : undefined,
+      preview ? '/apercu-ia/enigmes/sudoquoi' : undefined,
     );
     expect(links[5]?.getAttribute('href')).toBe(
-      preview ? '/apercu-ia/enigmes/en-manchettes' : undefined,
+      preview ? '/apercu-ia/enigmes/crossword-demineur' : undefined,
     );
     expect(links[6]?.getAttribute('href')).toBe(
-      preview ? '/apercu-ia/enigmes/salle-arcade' : undefined,
+      preview ? '/apercu-ia/enigmes/arcade' : undefined,
     );
     expect(links[7]?.getAttribute('href')).toBe(
       preview ? '/apercu-ia/enigmes/sens-dessus-dessous' : undefined,
@@ -95,7 +95,7 @@ describe('liens du catalogue des énigmes', () => {
       preview ? undefined : 'Énigme verrouillée',
     );
     expect(meta.querySelector('.puzzle-link')?.getAttribute('href')).toBe(
-      preview ? '/apercu-ia/enigmes/meta' : undefined,
+      preview ? '/apercu-ia/enigmes/hommage-a-mon-pere' : undefined,
     );
     expect(page.textContent).not.toContain('Réponse masquée jusqu’à la résolution.');
   });
@@ -137,7 +137,7 @@ describe('liens du catalogue des énigmes', () => {
     await fixture.whenStable();
     expect(page.querySelector('.meta-status')?.textContent).toContain('Déverrouillé');
     expect(page.querySelector('.meta-status .puzzle-link')?.getAttribute('href')).toBe(
-      '/enigmes/meta',
+      '/enigmes/hommage-a-mon-pere',
     );
     expect(page.querySelector('.lock-indicator')).toBeNull();
     expect(page.querySelector('.prompt')).toBeNull();

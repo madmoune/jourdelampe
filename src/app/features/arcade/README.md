@@ -1,7 +1,7 @@
 # Arcade · dossier 07
 
-L’aperçu est disponible à `/apercu-ia/enigmes/salle-arcade`. Le lien public est
-`/enigmes/salle-arcade`. L’accès aux jeux utilise le profil des énigmes.
+L’aperçu est disponible à `/apercu-ia/enigmes/arcade`. Le lien public est
+`/enigmes/arcade`. L’accès aux jeux utilise le profil des énigmes.
 
 | Borne                | Croix                          | A                            | B                  |
 | -------------------- | ------------------------------ | ---------------------------- | ------------------ |

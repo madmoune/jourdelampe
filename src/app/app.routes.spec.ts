@@ -14,15 +14,15 @@ class RouteProbe {
 
 const puzzlePaths = [
   '/enigmes',
-  '/enigmes/zebra',
+  '/enigmes/zebra-pretzel',
   '/enigmes/la-fourchette',
   '/enigmes/le-debut-de-la-fin',
   '/enigmes/la-porcherie',
-  '/enigmes/la-vigie',
-  '/enigmes/en-manchettes',
-  '/enigmes/salle-arcade',
+  '/enigmes/sudoquoi',
+  '/enigmes/crossword-demineur',
+  '/enigmes/arcade',
   '/enigmes/sens-dessus-dessous',
-  '/enigmes/meta',
+  '/enigmes/hommage-a-mon-pere',
 ];
 
 function probeRoutes(config: Routes): Routes {
